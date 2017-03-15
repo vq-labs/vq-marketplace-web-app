@@ -1,0 +1,210 @@
+
+body {
+  line-height: 1.5em;
+}
+
+.with-pointer {
+    cursor: pointer;
+}
+
+.vq-category-main {
+  text-transform: uppercase; 
+}
+
+.display-on-hover:hover {
+  display: block !important;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  fontSize: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.st-profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.app-shop-logo {
+  width: 100px;
+}
+
+.responsive-img {
+  height: 400px;
+
+  }
+
+.st-menu-group a {
+  color: #ffab40 !important;
+  text-transform: uppercase;
+}
+
+.st-menu-line h5 {
+    fontSize: 1.64rem;
+    line-height: 110%;
+    margin: .82rem 0 .656rem 0;
+    text-transform: uppercase;
+}
+
+.st-welcome {
+    width: 100%;
+    height: 230px;
+    background: url('https://studentask.de/images/startup.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+ .st-half-transparent {
+    background: rgba(70, 72, 82, 0.5);
+} 
+.st-dark-bg {
+    background-color: #000;
+    color: #546e7a;
+}
+
+ .st-h1 {
+    font-size: 24px;
+ }
+
+ h1 {
+        color: #546e7a;
+        font-size: 24px;
+        font-weight: 400;
+ }
+
+ h2 {
+        color: #546e7a;
+        fontSize: 23px;
+        font-weight: 400;
+  }
+ h3 {
+        fontSize: 22px;
+        font-weight: 400;
+    }
+    
+h4 {
+    color: #546e7a;
+    fontSize: 21px;
+    font-weight: 400;
+}
+.buttonColor {
+  background-color : #26a69a !important;
+}
+.displayed {
+  display: block;
+  marginLeft: auto;
+  marginRight: auto;
+  height:70px;   
+}
+.crimg {
+    height:188.69px; 
+    width:351.06px;
+}
+.logos{
+  height:40px; 
+  width:172px;
+  }
+.inno{
+height:40px; 
+width:172px;
+}
+.sap  {
+    height:39.98px; 
+    width:66.84px;
+  }
+  .wall {
+      height:39.98px; 
+      width:66.84px;
+  }
+  .fzi{
+      height:40px; 
+      width:24px;
+  }
+  .menuIconStyle {
+      display: none !important;
+  }
+  @media screen and (max-width: 767px) {
+    .menuIconStyle {
+        display: block !important;
+    }
+  }
+  @media all and (max-width:767px) {
+    .imgCenter {
+      display:block;margin:0 auto;
+    }
+    .custom-xs-style {
+      padding: 0px !important;
+    }
+  }
+  /*@media only screen and (min-device-width: 679px) and (max-device-width: 767px) {
+    .customMapIconStyle {
+      max-width:6% !important;
+    }
+  }
+  @media only screen and (min-device-width: 501px) and (max-device-width: 678px) {
+    .customMapIconStyle {
+      max-width:8% !important;
+    }
+  }
+  @media only screen and (min-device-width: 300px) and (max-device-width: 500px) {
+    .customMapIconStyle {
+      max-width:14% !important;
+    }
+  }*/
+  @media only screen and (min-width: 992px) and (max-width: 1024px){
+    .col-md-1 {
+        width: 16.333333% !important;
+        max-width: 16.333333% !important;
+     }
+  }
+  @media only screen and (min-width: 1025px){
+
+  .col-md-1 {
+    max-width: 11.333333% !important;
+    width: 11.333333% !important;
+}
+}
+  .st-nav  {
+    position: relative ;
+    height: 100%;
+    background-color: #fff !important;
+  }
+.iconHeightAdjust {
+  margin-top : 20px !important;
+  padding-top: 20px !important;
+  color : "red" !important;
+}
+
+.dropzone  {
+      width: 181px !important;
+      height: 181px !important;
+      border-color: rgb(255, 255, 255) !important;
+    }
+  
+
+
+
+
+

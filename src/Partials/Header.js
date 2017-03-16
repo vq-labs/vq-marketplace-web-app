@@ -28,7 +28,6 @@ class Header extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-
     if (nextProps.user) {
        this.setState({
         userId: nextProps.user._id,
@@ -112,7 +111,7 @@ class Header extends Component {
                           
                           { coreAuth.isAdmin() && 
                           <MenuItem onClick={
-                            () => browserHistory.push('/app/admin')
+                            () => browserHistory.push('/app/admin/overview')
                           } primaryText="Admin dashboard"
                           /> 
                           }

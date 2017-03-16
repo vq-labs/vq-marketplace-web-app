@@ -25,19 +25,21 @@ import SectionBasics from './Basics';
 
 export default class DrawerSimpleExample extends React.Component {
 
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-        section: props.params.section,
-        isAddingNewCategory: false,
-        users: [],
-        categories: [],
-        newCategory: {},
-        meta: {}
-    };
-  }
-
+        this.state = {
+            section: props.params.section,
+            isAddingNewCategory: false,
+            users: [],
+            categories: [],
+            newCategory: {},
+            meta: {}
+        };
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState({ section: nextProps.params.section });
+    }
     componentDidMount() {
         switch (this.state.section) {
             case 'overview': 
@@ -76,7 +78,7 @@ export default class DrawerSimpleExample extends React.Component {
         autoEditMode={typeof index !== 'undefined'}
         values={ values } 
         placeholder={ 'Neue Kategorie' }
-        onCancel={ () => {
+        onCancel={() => {
             if (typeof index !== 'undefined') {
                 this.state.categories[index].editMode = false;
             } 
@@ -89,7 +91,7 @@ export default class DrawerSimpleExample extends React.Component {
                 categories: this.state.categories 
             });
         }}
-        onChange={ newCategory => {
+        onChange={newCategory => {
             const categories = this.state.categories;
                 newCategory.editMode = false;
 
@@ -185,13 +187,13 @@ export default class DrawerSimpleExample extends React.Component {
         <Drawer open={true}>
           <h3>Users</h3>
           <MenuItem>Overview</MenuItem>
-          <MenuItem onClick={ () => this.setState({ activeView: 'users' }) }>Manage Users</MenuItem>
-          <MenuItem onClick={ () => this.setState({ activeView: 'analytics' }) }>Analytics</MenuItem>
+          <MenuItem onClick={ () => coreNavigation.goTo('/admin/users') }>Manage Users</MenuItem>
+          <MenuItem onClick={ () => coreNavigation.goTo('/admin/analytics') }>Analytics</MenuItem>
 
           <h3>Configuration</h3>
-          <MenuItem onClick={ () => coreNavigation.goTo('admin/basics') }>Basics details</MenuItem>
-          <MenuItem onClick={ () => this.setState({ activeView: 'design' }) }>Design</MenuItem>
-          <MenuItem onClick={ () => this.setState({ activeView: 'categories' }) }>Listing categories</MenuItem>
+          <MenuItem onClick={ () => coreNavigation.goTo('/admin/basics') }>Basics details</MenuItem>
+          <MenuItem onClick={ () => coreNavigation.goTo('/admin/design') }>Design</MenuItem>
+          <MenuItem onClick={ () => coreNavigation.goTo('/admin/categories') }>Listing categories</MenuItem>
         </Drawer>
 
         <div className="row" style={{ paddingLeft: '256px' }}>
@@ -202,8 +204,8 @@ export default class DrawerSimpleExample extends React.Component {
 
                         </div>     
                         <div className="col-xs-12">
-                            { this.state.activeView === 'users' && SectionUsers } 
-                            { this.state.activeView === 'categories' && SectionCategories }
+                            { this.state.section === 'users' && SectionUsers } 
+                            { this.state.section === 'categories' && SectionCategories }
                             { this.state.section === 'basics' && <SectionBasics /> }
                         </div> 
                         </div> 

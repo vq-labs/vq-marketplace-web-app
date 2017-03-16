@@ -108,7 +108,7 @@ export default class Onboarding extends Component {
                                                     <CardMedia
                                                         overlay={<CardTitle title={translate(tile.code)} />}
                                                         >
-                                                        <img src={`/images/categories/${tile.code}.jpg`} />
+                                                        <img src={tile.imageUrl} />
                                                     </CardMedia>
                                                     </Card>
                                             </div>

@@ -1,1 +1,1 @@
-This project is deployed into production at [StudenTask](https://studentask.de/app).
+This project is deployed into production at [StudenTask](https://studentask.de/app) - a marketplace connecting startups to freelancer.

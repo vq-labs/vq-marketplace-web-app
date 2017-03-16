@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import { Card,  CardMedia, CardTitle,  } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Autocomplete from 'react-google-autocomplete';
-import Paper from 'material-ui/Paper';
 import LoginSignup from '../Components/LoginSignup';
 
 import * as coreAuth from '../core/auth';
@@ -17,13 +16,13 @@ import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import { formatGeoResults } from '../core/util';
 
-const _chunk = require('lodash.chunk');
+const _chunk=require('lodash.chunk');
 
 export default class Onboarding extends Component {
     constructor(props) {
         super();
 
-        this.state = {
+        this.state={
             value: 'signup',
             auth: coreAuth.getUserId(),
             step: 1,
@@ -41,7 +40,7 @@ export default class Onboarding extends Component {
             }
         };
 
-        this.handlePriceTypeChange = this.handlePriceTypeChange.bind(this);
+        this.handlePriceTypeChange=this.handlePriceTypeChange.bind(this);
         this.handlePriceChange=this.handlePriceChange.bind(this);
         this.handleDescChange=this.handleDescChange.bind(this);
         this.handleTitleChange=this.handleTitleChange.bind(this);
@@ -53,38 +52,64 @@ export default class Onboarding extends Component {
         });
     }
     setTaskPrice (price) {
-      this.state.task.price = Number(price);
+      this.setState({
+          task: {
+          price:Number(price)
+      }
+    })
       this.setState({
           task: this.state.task
       });
     }
     handlePriceTypeChange (event) {
-      this.state.task.priceType = Number(event.target.value);
+      this.setState({
+          task:{
+              priceType:Number(event.target.value)
+          }
+      })
       this.setState({
           task: this.state.task
       });
     }
     handleTitleChange (event) {
-      this.state.task.title = event.target.value;
+      this.setState({
+          task: {
+             title:event.target.value 
+            }
+      });
+      this.setState({
+          task: {
+             title:event.target.value 
+            }
+      });
       this.setState({
           task: this.state.task
       });
     }
     handleDescChange (event) {
-        this.state.task.description = event.target.value;
+        this.setState({
+          task: {
+             description:event.target.value
+            }
+      });
         this.setState({
             task: this.state.task
         });
     }
     handlePriceChange (event) {
-        this.state.task.price = Number(event.target.value);
+       
+        this.setState({
+            task:{
+            price:Number(event.target.value)    
+            }
+        });
         console.log(this.state.task)
         this.setState({
            task: this.state.task
         });
     }
     render() {
-            const step1 = <div className="container">
+            const step1=<div className="container">
                         <div className="row">
                             <div className="col-xs-12">
                                 <h1 className="text-left">SCHRITT 1. Was möchtest du anbieten?</h1>
@@ -98,17 +123,17 @@ export default class Onboarding extends Component {
                                         { row.map(tile =>
                                             <div className="col-xs-12 col-sm-6">
                                                     <Card onClick={() => {
-                                                        const task = this.state.task;
-                                                        const category = { label: translate(tile.code), code: tile.code };
+                                                        const task=this.state.task;
+                                                        const category={ label: translate(tile.code), code: tile.code };
 
-                                                        task.categories = [ category ];    
+                                                        task.categories=[ category ];    
 
                                                         this.setState({ step: 2, task });
                                                     }}>
                                                     <CardMedia
                                                         overlay={<CardTitle title={translate(tile.code)} />}
                                                         >
-                                                        <img src={tile.imageUrl} />
+                                                        <img alt="url of view" src={tile.imageUrl} />
                                                     </CardMedia>
                                                     </Card>
                                             </div>
@@ -165,7 +190,7 @@ export default class Onboarding extends Component {
                             <div className="row">
                                 <div className="col-xs-12">
                                     <em>Schnelle Auswahl:</em>
-                                    { this.state.task.priceType === 1 &&
+                                    { this.state.task.priceType===1 &&
                                         <div>
                                             <FlatButton label="10€" onClick={() => this.setTaskPrice(10)}/>
                                             <FlatButton label="20€" onClick={() => this.setTaskPrice(20)} />
@@ -233,7 +258,12 @@ export default class Onboarding extends Component {
                                             style={{width: '100%'}}
             
                                             onPlaceSelected={ place => {
-                                                this.state.task.location = formatGeoResults([place])[0];
+                                            
+                                                this.setState({
+                                                    task:{
+                                                        location:formatGeoResults([place])[0]
+                                                    }
+                                                })
 
                                                 this.setState({ task: this.state.task });
                                             }}
@@ -320,7 +350,7 @@ export default class Onboarding extends Component {
 
 
 
-              const success = <div className="container">
+              const success=<div className="container">
                 <div className="row">
                     <div className="col-xs-12">
                         <h1>Bravo! Dein Angebot ist online!</h1>
@@ -331,10 +361,10 @@ export default class Onboarding extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                            <RaisedButton
-                                label = { 'Zur Angebot-Seite' }
-                                primary = { true }
-                                disabled = { false }
-                                onTouchTap = { () => browserHistory.push(`/app/task/${this.state.insertedTask._id}`) }
+                                label={ 'Zur Angebot-Seite' }
+                                primary={ true }
+                                disabled={ false }
+                                onTouchTap={ () => browserHistory.push(`/app/task/${this.state.insertedTask._id}`) }
                             />
                         </div>
                     </div>
@@ -363,15 +393,15 @@ export default class Onboarding extends Component {
 
             return (
                     <div className="container">
-                        { this.state.step === 1 && step1 }
+                        { this.state.step===1 && step1 }
                           { this.state.step > 1 &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
-                            { this.state.step === 2 && step2 }
-                            { this.state.step === 3 && step3 }
-                            { this.state.step === 4 && this.state.auth && confirmBeforePosting }
-                            { this.state.step === 4 && !this.state.auth && createAccountSection }
+                            { this.state.step===2 && step2 }
+                            { this.state.step===3 && step3 }
+                            { this.state.step===4 && this.state.auth && confirmBeforePosting }
+                            { this.state.step===4 && !this.state.auth && createAccountSection }
 
-                            { this.state.step === 5 && success }
+                            { this.state.step===5 && success }
 
                             
 
@@ -381,31 +411,35 @@ export default class Onboarding extends Component {
                                 { this.state.step !== 5 &&  this.state.step !== 1 &&    
                                     <FlatButton
                                         style={ { float: 'left' } }
-                                        label = 'Zurück' 
-                                        primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { () => this.setState({ step: this.state.step - 1 }) }
+                                        label='Zurück' 
+                                        primary={ true }
+                                        disabled={ false }
+                                        onTouchTap={ () => this.setState({ step: this.state.step - 1 }) }
                                     />
                                 }
                                 { this.state.step > 1 && this.state.step < 4 && 
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label = 'Weiter'
-                                        primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { () => {
+                                        label='Weiter'
+                                        primary={ true }
+                                        disabled={ false }
+                                        onTouchTap={ () => {
                                             this.setState({ step: this.state.step + 1 })
                                         } }
                                     />
                                 }
-                                { this.state.step === 4 && this.state.auth &&
+                                { this.state.step===4 && this.state.auth &&
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label = 'Inserieren'
-                                        primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { () => {
-                                            this.state.task.price = this.state.task.price * 100;
+                                        label='Inserieren'
+                                        primary={ true }
+                                        disabled={ false }
+                                        onTouchTap={ () => {
+                                            this.setState({
+                                                task:{
+                                                    price:this.state.task.price * 100
+                                                }
+                                            })
                                             
                                             apiTask.createItem(this.state.task).then(task => {
                                                 console.log(task);

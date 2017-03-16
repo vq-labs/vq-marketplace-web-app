@@ -1,32 +1,18 @@
 import React, { Component } from 'react';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
-import { browserHistory } from 'react-router';
+import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
 import TaskCategories from '../Partials/TaskCategories';
-import Paper from 'material-ui/Paper';
 import GoogleAd from 'react-google-ad'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
-import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
-import AppBar from 'material-ui/AppBar';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
-import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip';
-
-import DropDownMenu from 'material-ui/DropDownMenu';
-
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
 
@@ -36,7 +22,7 @@ class Task extends Component {
     constructor(props) {
         super(props);
    
-        this.state = {
+        this.state={
             open: false,
             applicationInProgress: false,
             isLoading: true,
@@ -83,12 +69,12 @@ class Task extends Component {
     };
 
     componentDidMount() {
-      let taskId = this.props.params.taskId;
+      let taskId=this.props.params.taskId;
       
       apiTask.getItem(taskId).then(rTask => this.setState({
         isLoading: false,
         task: rTask,
-        isMyTask: rTask.ownerUserId === coreAuth.getUserId()
+        isMyTask: rTask.ownerUserId===coreAuth.getUserId()
       }));
   }
 
@@ -133,7 +119,7 @@ class Task extends Component {
                                             <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
                                             <p>
                                                 {
-                                                    this.state.task.priceType == 0 ?
+                                                    this.state.task.priceType===0 ?
                                                     'pro Auftrag' : 'pro Stunde'
                                                 }
                                             </p>
@@ -143,7 +129,7 @@ class Task extends Component {
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
                                                 style={{width:  '100%'}}
-                                                label={this.state.task.taskType === 1 ? "Anfrage senden" : "Bewerbung senden" } 
+                                                label={this.state.task.taskType===1 ? "Anfrage senden" : "Bewerbung senden" } 
                                                 onClick={ () => {
                                                     this.setState({ applicationInProgress: true });
                                         } }/> 
@@ -239,7 +225,7 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog taskId = {this.state.task._id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog taskId={this.state.task._id} open={this.state.applicationInProgress} />
             </div>
         );
   }

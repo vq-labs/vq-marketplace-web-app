@@ -1,29 +1,8 @@
 import React, { Component } from 'react';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import ApplicationDialog from '../Application/ApplicationDialog';
-import TaskCategories from '../Partials/TaskCategories';
-import Paper from 'material-ui/Paper';
-import GoogleAd from 'react-google-ad'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import Avatar from 'material-ui/Avatar';
-import Moment from 'react-moment';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
-import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import FlatButton from 'material-ui/FlatButton';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import AppBar from 'material-ui/AppBar';
-import FileCloud from 'material-ui/svg-icons/file/cloud';
-import MapsPlace from 'material-ui/svg-icons/maps/place';
-import FontIcon from 'material-ui/FontIcon';
-import Chip from 'material-ui/Chip';
 
 import TextField from 'material-ui/TextField';
 
@@ -37,18 +16,18 @@ export default class TaskEdit extends Component {
     constructor(props) {
         super(props);
    
-        this.state = {
+        this.state={
             isLoading: true,
             task: {},
             updatedTask: {}  
         };
 
-         this.handleFieldChange = this.handleFieldChange.bind(this);
-         this.handleUpdate = this.handleUpdate.bind(this);
+         this.handleFieldChange=this.handleFieldChange.bind(this);
+         this.handleUpdate=this.handleUpdate.bind(this);
     }
    
     componentDidMount() {
-      let taskId = this.props.params.taskId;
+      let taskId=this.props.params.taskId;
 
       apiTask.getItem(taskId).then(rTask => {
         this.setState({
@@ -65,16 +44,16 @@ export default class TaskEdit extends Component {
 
   handleFieldChange (field)  {
         return (event, value) => {
-            const updatedTask = this.state.updatedTask;
+            const updatedTask=this.state.updatedTask;
 
-            updatedTask[field] = value;
+            updatedTask[field]=value;
             
             this.setState( { updatedTask } );
         }
   } 
 
   handleUpdate ()  {
-    const updatedTask = this.state.updatedTask;
+    const updatedTask=this.state.updatedTask;
 
     updatedTask.price *= 100;
 
@@ -131,19 +110,19 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                     <FlatButton
                                         style={ { float: 'left' } }
-                                        label = 'Abbrechen' 
-                                        primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { () => coreNavigation.goBack() }
+                                        label='Abbrechen' 
+                                        primary={ true }
+                                        disabled={ false }
+                                        onTouchTap={ () => coreNavigation.goBack() }
                                     />
                                 
                                 
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label = 'Übernehmen'
-                                        primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { this.handleUpdate }
+                                        label='Übernehmen'
+                                        primary={ true }
+                                        disabled={ false }
+                                        onTouchTap={ this.handleUpdate }
                                     />
                                 </div>
                              </div>

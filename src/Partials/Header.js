@@ -74,16 +74,16 @@ class Header extends Component {
                             <FlatButton label={translate('BROWSE_TASKS')}  onClick={ 
                               () => { browserHistory.push('/app'); 
                             }
-                            } style={{ 'margin-right': '0px', 'margin-left': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
+                            } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                             { !this.state.logged &&
                             <FlatButton label="Registrieren" onClick={ 
                               () => { browserHistory.push('/app/signup'); 
-                            }} style={{ 'margin-right': '0px', 'margin-left': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                            }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                             }
                             { !this.state.logged &&
                             <FlatButton label="Log-in" onClick={ 
                               () => { browserHistory.push('/app/login'); 
-                            }} style={{ 'margin-right': '0px', 'margin-left': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                            }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                             }
                       <ToolbarSeparator />     
 

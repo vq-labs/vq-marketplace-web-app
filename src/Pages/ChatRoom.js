@@ -1,33 +1,16 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-import { Card, CardActions, CardHeader, CardTitle, CardText } from 'material-ui/Card';
-import { List, ListItem } from 'material-ui/List';
-import AutoComplete from 'material-ui/AutoComplete';
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
 
 import Ad from '../Components/Ad';
 import Moment from 'react-moment';
-
-import StActions from '../StActions';
-import * as apiSkills from '../api/skills';
-import apiTask from '../api/task';
 import * as coreAuth from '../core/auth';
 import * as apiChat from '../api/chat';
 import '../App.css';
 import '../Chat.css';
-
-import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 
 
 import '../App.css';
@@ -35,18 +18,18 @@ import '../App.css';
 export default class ChatRoom extends Component {
   constructor() {
     super();
-    this.state = {
+    this.state={
         newMessage: '',
         task: {},
         users: {},
         messages: [] 
     };
 
-    this.handleNewMessage = this.handleNewMessage.bind(this);
+    this.handleNewMessage=this.handleNewMessage.bind(this);
   }
 
   componentDidMount() {
-        let chatId = this.props.params.chatId;
+        let chatId=this.props.params.chatId;
 
         apiChat.getItem(chatId).then(chat => {
             this.setState({
@@ -60,11 +43,11 @@ export default class ChatRoom extends Component {
   handleNewMessage (event) {
         event.preventDefault()
        
-        const data = {
+        const data={
             message: this.refs.newMessage.getValue()
         };
 
-        this.refs.newMessage.value = "";
+        this.refs.newMessage.value="";
 
         this.state.messages.push({ 
             message: data.message, 
@@ -106,7 +89,7 @@ export default class ChatRoom extends Component {
                                         <div className="row">
                                             <div className="col-xs-2 col-sm-1">
                                                 <a href={ '/app/profile/' + message.senderUserId }>
-                                                    <img style={ { width: '60px', height: '60px' } } src={this.state.users[message.senderUserId].profile.imageUrl || 'images/avatar.png'} />
+                                                    <img alt="profile data" style={ { width: '60px', height: '60px' } } src={this.state.users[message.senderUserId].profile.imageUrl || 'images/avatar.png'} />
                                                 </a>
                                             </div>
                                             <div className="col-xs-10 col-sm-11">
@@ -142,7 +125,7 @@ export default class ChatRoom extends Component {
                                             onChange={ (event, target, value) => {
                                                 this.setState( { newMessage: value } );
                                             }}
-                                            value = {this.state.newMessage}
+                                            value={this.state.newMessage}
                                             ref="newMessage"
                                             style={ { width: '100%' } }
                                             floatingLabelText="Antworten"
@@ -169,7 +152,7 @@ export default class ChatRoom extends Component {
                                     { Object.keys(this.state.users).map(userId => <div className="row" style={ { marginBottom: '10px' } }>
                                         <a href={ '/app/profile/' + userId }>
                                             <div className="col-xs-3">
-                                                <img style={ { width: '60px', height: '60px' } } src={this.state.users[userId].profile.imageUrl || 'images/avatar.png'} />
+                                                <img  alt="profile data" style={ { width: '60px', height: '60px' } } src={this.state.users[userId].profile.imageUrl || 'images/avatar.png'} />
                                             </div>
                                             <div className="col-xs-9">
                                                 

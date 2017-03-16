@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
-import { Card, CardText } from 'material-ui/Card';
-import { List, ListItem } from 'material-ui/List';
 import RaisedButton from 'material-ui/RaisedButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 

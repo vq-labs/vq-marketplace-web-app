@@ -3,9 +3,7 @@ import { browserHistory } from 'react-router';
 import Login from '../Components/Login';
 
 export default class LoginPage extends Component {
-  constructor(props) {
-    super(props);
-  }
+ 
   
   render() {
     return (

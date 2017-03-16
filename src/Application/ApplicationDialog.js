@@ -14,22 +14,26 @@ import * as coreAuth from '../core/auth';
 const _ = require('underscore');
 
 export default class ApplicationDialog extends React.Component {
-  state = {
-      isBeingPosted: false,
-      mask: 'init', 
-      logged: Boolean(coreAuth.getToken()),
-      open: false,
-      application: {
-          taskId: this.props.taskId,
-          message: ''
-      }
+    constructor(props) {
+    super(props);
+
+    this.state={
+        isBeingPosted: false,
+        mask: 'init', 
+        logged: Boolean(coreAuth.getToken()),
+        open: false,
+        application: {
+            taskId: this.props.taskId,
+            message: ''
+        }
+    }
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.taskId){
-        const application = _.extend({}, this.state.application);
+        const application=_.extend({}, this.state.application);
 
-        application.taskId = nextProps.taskId;
+        application.taskId=nextProps.taskId;
 
         this.setState({ application: application });
     }
@@ -81,7 +85,7 @@ export default class ApplicationDialog extends React.Component {
 
                 break;
             case 'confirmation':
-                const methodName = AuthService.isAuth() ? 'sendApplication' : 'loginAndSendApplication';    
+                const methodName=AuthService.isAuth() ? 'sendApplication' : 'loginAndSendApplication';    
 
                 this.setState({ isBeingPosted: true });
 
@@ -97,24 +101,24 @@ export default class ApplicationDialog extends React.Component {
         }   
   }
   getDialogTitle = currentMask => 
-  currentMask === 'success' ? "Die Nachricht wurde erfolgreich gesendet" : "Ihre Nachricht";
+  currentMask==='success' ? "Die Nachricht wurde erfolgreich gesendet" : "Ihre Nachricht";
   
   render() {
-     const backBtn = <FlatButton
+     const backBtn=<FlatButton
         onTouchTap={ () => this.goBack(this.state.mask) }
         label={ this.showBackBtnLabel(this.state.mask) }
         disabled={ false }
         primary={ true }
       />;
 
-      const continueBtn = <FlatButton
-        label = { this.showContinueBtnLabel(this.state.mask) }
-        primary = { true }
-        disabled = { false }
-        onTouchTap = { () => this.continuePosting(this.state.mask) }
+      const continueBtn=<FlatButton
+        label={ this.showContinueBtnLabel(this.state.mask) }
+        primary={ true }
+        disabled={ false }
+        onTouchTap={ () => this.continuePosting(this.state.mask) }
       />;
      
-     const getActions = currentMask => currentMask !== 'success' ? [
+     const getActions=currentMask => currentMask !== 'success' ? [
       backBtn,
       continueBtn
     ] : [ continueBtn ];
@@ -123,19 +127,19 @@ export default class ApplicationDialog extends React.Component {
         <div>
                 <div className="row"> 
                     <TextField
-                        rows = {4}
-                        multiLine = {true}
+                        rows={4}
+                        multiLine={true}
                         onChange={ e => {
-                            const newState = _.extend({}, this.state.application);
-                            newState.message = e.target.value;
+                            const newState=_.extend({}, this.state.application);
+                            newState.message=e.target.value;
                             this.setState({
                                 application: newState
                             });
                         }}
-                        value = { this.state.application.message }
-                        style = {{width: '100%'}}
-                        inputStyle = {{width: '100%'}}
-                        floatingLabelText = "Nachricht"
+                        value={ this.state.application.message }
+                        style={{width: '100%'}}
+                        inputStyle={{width: '100%'}}
+                        floatingLabelText="Nachricht"
                     />
                 </div>
             
@@ -156,7 +160,7 @@ export default class ApplicationDialog extends React.Component {
         }
     </div>;
 
-    const Success = <div>
+    const Success=<div>
         <div className="col-sm-12 col-xs-12">
             <h3>
                 Die Nachricht wurde geschickt.
@@ -176,17 +180,17 @@ export default class ApplicationDialog extends React.Component {
     return (
       <Dialog
           autoScrollBodyContent={true}
-          title = { this.getDialogTitle(this.state.currentMask) }
-          actions = { getActions(this.state.currentMask) }
-          modal = { true }
-          open = { this.state.open }
+          title={ this.getDialogTitle(this.state.currentMask) }
+          actions={ getActions(this.state.currentMask) }
+          modal={ true }
+          open={ this.state.open }
         >
-          { this.state.mask === 'init' && InitApplication }
-          { this.state.mask === 'auth' && <LoginSignup
+          { this.state.mask==='init' && InitApplication }
+          { this.state.mask==='auth' && <LoginSignup
                 onSuccess={ () => this.setState({ mask: 'confirmation' }) }
           /> }
-          { this.state.mask === 'confirmation' && ApplicationConfirmation }
-          { this.state.mask === 'success' && Success }
+          { this.state.mask==='confirmation' && ApplicationConfirmation }
+          { this.state.mask==='success' && Success }
         </Dialog>
     );
   }

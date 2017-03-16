@@ -1,13 +1,9 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { List, ListItem } from 'material-ui/List';
-import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -17,7 +13,6 @@ import * as apiAdmin from '../api/admin';
 import * as apiConfig from '../api/config';
 
 import * as coreNavigation from '../core/navigation';
-import * as coreAuth from '../core/auth';
 
 import EditableText from '../Components/EditableText';
 
@@ -80,11 +75,14 @@ export default class DrawerSimpleExample extends React.Component {
         placeholder={ 'Neue Kategorie' }
         onCancel={() => {
             if (typeof index !== 'undefined') {
-                this.state.categories[index].editMode = false;
+                 this.state.categories[index].editMode = false;
             } 
             if (this.state.isAddingNewCategory) {
-                this.state.isAddingNewCategory = false;
+                
+                this.setState({isAddingNewCategory : false})
                 this.state.categories.pop();
+                
+
             }
             this.setState({ 
                 isAddingNewCategory: this.state.isAddingNewCategory, 

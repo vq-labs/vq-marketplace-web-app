@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-
-import Moment from 'react-moment';
-
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import Divider from 'material-ui/Divider';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
-import FlatButton from 'material-ui/FlatButton';
 import TaskCard from '../Components/TaskCard';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import Autocomplete from 'react-google-autocomplete';
 
-import TaskCategories from '../Partials/TaskCategories';
-
-import { serializeQueryObj, updateQueryStringParameter, formatGeoResults } from '../core/util';
+import { serializeQueryObj, formatGeoResults } from '../core/util';
 import { translate } from '../core/i18n';
 
 import apiTask from '../api/task';

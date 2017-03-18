@@ -258,8 +258,8 @@ class Profile extends Component {
                                         } else {
                                             apiSkills.createItem({ skill }).then(talent => {
                                                 this.state.profile.talents[this.state.profile.talents.length - 1]=talent;
-                                                this.setState( { profile: this.state.profile });
-                                            });;
+                                                
+                                            });
                                         }
                                     }}
                                     onDelete={ () => {

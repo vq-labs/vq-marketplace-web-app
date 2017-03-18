@@ -68,7 +68,7 @@ export default class DrawerSimpleExample extends React.Component {
                 desc: { type: 'string', placeholder: 'Enter category description' },
                 imageUrl: { type: 'image', placeholder: 'Add category image' },
                 bigImageUrl: { type: 'image', placeholder: 'Add high resolution category image' },
-            } }
+            } }category
         style={{  'marginTop': '20px'  }}
         autoEditMode={typeof index !== 'undefined'}
         values={ values } 
@@ -76,6 +76,7 @@ export default class DrawerSimpleExample extends React.Component {
         onCancel={() => {
             if (typeof index !== 'undefined') {
                  this.state.categories[index].editMode = false;
+                 this.forceUpdate()
             } 
             if (this.state.isAddingNewCategory) {
                 

@@ -35,10 +35,7 @@ class Profile extends Component {
         offers: [],
         profile: {
             talents: [],
-            profile : {},
-            Lists: {
-                skills: []
-            },
+            profile : {}
         }
     };
 
@@ -63,37 +60,35 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-        let userId=this.props.params.profileId;
-        let section=this.props.params.section;
+    let userId=this.props.params.profileId;
+    let section=this.props.params.section;
 
-        apiSkills.getItems().then(skills => {
-            this.setState( { skills: skills });
-        });
+    apiSkills.getItems().then(skills => {
+        this.setState( { skills: skills });
+    });
 
-        apiTask.getItems({
-            owner_user_id: userId,
-            task_type: 1
-        }).then(offers => {
-            this.setState( { offers: offers });
-        });
+    apiTask.getItems({
+        owner_user_id: userId,
+        task_type: 1
+    }).then(offers => {
+        this.setState( { offers: offers });
+    });
 
-        apiUser.getItem(userId).then(result => this.setState({
-            isMyProfile: coreAuth.getUserId()===userId,
-            userId: userId,
-            profile: result,
-            section: section,
-        }));
-
-      coreAuth.addListener('login', () => this.setState({
+    apiUser.getItem(userId).then(result => this.setState({
         isMyProfile: coreAuth.getUserId()===userId,
-      }));
+        userId: userId,
+        profile: result,
+        section: section,
+    }));
+
+    coreAuth.addListener('login', () => this.setState({
+        sMyProfile: coreAuth.getUserId()===userId,
+    }));
   }
   
   goToDashboard() {
-      browserHistory.push('/profile/'+this.state.userId+'/dashboard');
-        this.setState({
-                section: 'dashboard'
-        });
+    browserHistory.push('/profile/'+this.state.userId+'/dashboard');
+    this.setState({ section: 'dashboard' });
   }
 
   goToNewTask() {
@@ -184,10 +179,32 @@ class Profile extends Component {
                                 }}
                             />
                         </div>
-                        <div className="col-xs-12">
-                               
-                        </div>
-                     </div>   
+                     </div>
+                     <div className="row">
+                                <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
+                                    <EditableText 
+                                        style={{  'marginTop': '20px', 'padding': 10  }} 
+                                        values={this.state.profile.profile}
+                                        fields={{ website: { type: 'string', placeholder: 'Verlinken Sie hier Ihre Webseite' }}} 
+                                        displayValue={ 
+                                            <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website} </a> || 'Verlinken Sie hier Ihre Webseite' }
+                                        onChange={ newProfile => {
+                                            const profile = this.state.profile;
+                                            
+                                            profile.profile.website = newProfile.website;
+
+                                            this.setState({ isLoading: true, profile });
+
+                                            apiUser.updateItem(coreAuth.getUserId(), {
+                                                profile: { 
+                                                    website: profile.profile.website 
+                                                }
+                                            })
+                                            .then(() => this.setState({ isLoading: false }));
+                                        }}
+                                    />
+                                </div>
+                         </div>  
                 </div>
             </div>;
     const newOfferBtn = 

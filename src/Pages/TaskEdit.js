@@ -3,6 +3,7 @@ import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 import TextField from 'material-ui/TextField';
 
@@ -22,6 +23,7 @@ export default class TaskEdit extends Component {
             updatedTask: {}  
         };
 
+
          this.handleFieldChange=this.handleFieldChange.bind(this);
          this.handleUpdate=this.handleUpdate.bind(this);
     }
@@ -37,32 +39,30 @@ export default class TaskEdit extends Component {
                 title: rTask.title,
                 description: rTask.description,
                 price: rTask.price / 100,
+                priceType: rTask.priceType
             }
       });
     });
   }
 
-  handleFieldChange (field)  {
+  handleFieldChange (field, transform)  {
         return (event, value) => {
-            const updatedTask=this.state.updatedTask;
+            const updatedTask = this.state.updatedTask;
 
-            updatedTask[field]=value;
+            updatedTask[field] = transform ? transform(value) : value;
             
             this.setState( { updatedTask } );
         }
   } 
-
   handleUpdate ()  {
-    const updatedTask=this.state.updatedTask;
+    const updatedTask = this.state.updatedTask;
 
     updatedTask.price *= 100;
 
     apiTask.updateItem(this.state.task._id, updatedTask).then(task => {
         browserHistory.push(`/app/task/${this.state.task._id}`);
     });
-                                     
-  } 
-
+  }
   render() {
         return (
             <div >
@@ -95,6 +95,27 @@ export default class TaskEdit extends Component {
                                                 floatingLabelText="Beschreibung"
                                             />
                                 </div>
+
+                                <div className="col-xs-12">
+                                    <h4>Abbrechungsmodel</h4>
+                                    <RadioButtonGroup 
+                                        name="priceType" 
+                                        onChange={ this.handleFieldChange('priceType', value => Number(value))} 
+                                        ref="priceType"
+                                        style={{width: '100%'}}
+                                        inputStyle={{width: '100%'}}
+                                        defaultSelected={this.state.task.priceType}>
+                                            <RadioButton
+                                                value={1}
+                                                label="pro Stunde"
+                                            />
+                                            <RadioButton
+                                                value={0}
+                                                label="pro Auftrag"
+                                            />
+                                    </RadioButtonGroup>
+                                </div>
+
                                 <div className="col-xs-12">
                                             <TextField
                                                 onChange={ this.handleFieldChange('price') }
@@ -115,8 +136,6 @@ export default class TaskEdit extends Component {
                                         disabled={ false }
                                         onTouchTap={ () => coreNavigation.goBack() }
                                     />
-                                
-                                
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label='Übernehmen'

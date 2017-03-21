@@ -12,8 +12,8 @@ export default class SectionBasics extends React.Component {
     }
 
     componentDidMount() {
-        apiAdmin.overview.getItems().then(overview => {
-            this.setState({ overview });
+        apiConfig.meta.getItems().then(meta => {
+            this.setState({ meta: meta[0] });
         });
     }
 
@@ -33,15 +33,15 @@ export default class SectionBasics extends React.Component {
                             The name of your marketplace. This is shown to users in emails and various other places.
                         </p>
                         <EditableText
-                            fields={ {
-                                name: { type: 'string', placeholder: 'Marketplace name' },
-                            } }
-                            style={{  'marginTop': '20px'  }}
-                            autoEditMode={ false }
+                            fields={{
+                                name: {type: 'string', placeholder: 'Marketplace name'}
+                            }}
+                            style={{'marginTop': '20px'}}
+                            autoEditMode={false}
                             alwaysShowEditIcon={true}
                             values={this.state.meta}
                             displayValue={this.state.meta.name}
-                            onCancel={ () => {}}
+                            onCancel={() => {}}
                             onChange={this.handleAppMetaChange}
                         />
                     </div>

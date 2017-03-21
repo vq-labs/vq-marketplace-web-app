@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-import { Card,  CardMedia, CardTitle,  } from 'material-ui/Card';
+import { Card, CardMedia, CardTitle } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 import TextField from 'material-ui/TextField';
@@ -32,7 +32,7 @@ export default class Onboarding extends Component {
                 taskType: 1,
                 categories: [],
                 price: 20,
-                priceType: 0,
+                priceType: 1,
                 utm: {
                     source: 'web-app',
                     medium: 'web'
@@ -53,33 +53,42 @@ export default class Onboarding extends Component {
     }
     
     setTaskPrice (price) {
-        const task = this.state.task; 
-        task.price=Number(price)
-        this.setState({ task });
+      const task = this.state.task;
+
+      task.price = Number(price);
+
+      this.setState({ task })
     }
 
     handlePriceTypeChange (event) {
-        const task = this.state.task;  
-        task.priceType=Number(event.target.value)
-        this.setState({ task });
+      const task = this.state.task;
+      task.priceType = Number(event.target.value);
+
+      this.setState({ task });
     }
 
     handleTitleChange (event) {
-        const task = this.state.task;
-        task.title = event.target.value;
-        this.setState({ task });
+      const task = this.state.task;
+      
+      task.title = event.target.value;
+
+      this.setState({ task });
     }
 
     handleDescChange (event) {
-        const task = this.state.task;
-        task.description=event.target.value;
-        this.setState({ task });
+      const task = this.state.task;
+      
+      task.description = event.target.value;
+
+      this.setState({ task });
     }
 
     handlePriceChange (event) {
-        const task = this.state.task;
-        task.price=Number(event.target.value)    
-        this.setState({ task });
+      const task = this.state.task;
+      
+      task.price = event.target.value;
+
+      this.setState({ task });
     }
     
     render() {
@@ -97,17 +106,17 @@ export default class Onboarding extends Component {
                                         { row.map(tile =>
                                             <div className="col-xs-12 col-sm-6">
                                                     <Card onClick={() => {
-                                                        const task=this.state.task;
-                                                        const category={ label: translate(tile.code), code: tile.code };
+                                                        const task= this.state.task;
+                                                        const category= { label: translate(tile.code), code: tile.code };
 
-                                                        task.categories=[ category ];    
+                                                        task.categories = [ category ];    
 
                                                         this.setState({ step: 2, task });
                                                     }}>
                                                     <CardMedia
                                                         overlay={<CardTitle title={translate(tile.code)} />}
                                                         >
-                                                        <img alt="url of view" src={tile.imageUrl} />
+                                                        <img alt="category" src={tile.imageUrl} />
                                                     </CardMedia>
                                                     </Card>
                                             </div>
@@ -134,17 +143,17 @@ export default class Onboarding extends Component {
                                         ref="priceType"
                                         style={{width: '100%'}}
                                         inputStyle={{width: '100%'}}
-                                        defaultSelected={1}>
+                                        defaultSelected={this.state.task.priceType}>
                                             <RadioButton
-                                                value={1}
-                                                label="pro Stunde"
-                                            
-                                        />
-                                        <RadioButton
-                                            value={0}
-                                            label="pro Auftrag"
+                                                    value={1}
+                                                    label="pro Stunde"
+                                                
+                                            />
+                                            <RadioButton
+                                                value={0}
+                                                label="pro Auftrag"
 
-                                        />
+                                            />
                                     </RadioButtonGroup>
                                  </div>   
                             </div>
@@ -232,14 +241,11 @@ export default class Onboarding extends Component {
                                             style={{width: '100%'}}
             
                                             onPlaceSelected={ place => {
-                                            
-                                                this.setState({
-                                                    task:{
-                                                        location:formatGeoResults([place])[0]
-                                                    }
-                                                })
+                                                const task = this.state.task;
 
-                                                this.setState({ task: this.state.task });
+                                                task.location = formatGeoResults([ place ])[0];
+
+                                                this.setState({ task });
                                             }}
                                             types={['(regions)']}
                                         />
@@ -398,6 +404,7 @@ export default class Onboarding extends Component {
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => {
+                                            debugger;
                                             this.setState({ step: this.state.step + 1 })
                                         } }
                                     />
@@ -409,17 +416,18 @@ export default class Onboarding extends Component {
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => {
-                                            this.setState({
-                                                task:{
-                                                    price:this.state.task.price * 100
-                                                }
-                                            })
-                                            
-                                            apiTask.createItem(this.state.task).then(task => {
-                                                console.log(task);
+                                            const task = this.state.task;
 
-                                                this.setState({ insertedTask: task, step: this.state.step + 1 });
-                                            });
+                                            task.price = this.state.task.price * 100;
+
+                                            this.setState({ task });
+                                            
+                                            apiTask
+                                                .createItem(this.state.task)
+                                                .then(task => this.setState({ 
+                                                    insertedTask: task, 
+                                                    step: this.state.step + 1
+                                                }));
                                         } }
                                     />
                                 }

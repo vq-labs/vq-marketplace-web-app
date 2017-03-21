@@ -10,38 +10,48 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import Autocomplete from 'react-google-autocomplete';
-
 import { serializeQueryObj, formatGeoResults } from '../core/util';
 import { translate } from '../core/i18n';
 
 import apiTask from '../api/task';
+import * as apiConfig from '../api/config';
 import * as apiCategory from '../api/category';
 
 import '../App.css';
 
 const _chunk = require('lodash.chunk');
 
+
+
 class Offers extends Component {
-  constructor(props) {
-    super(props);
-    this.state={
-        queryCity: null,
-        autoCompleteText: '',
-        isLoading: false,
-        appliedFilter: {
-            category: this.props.location.query.category,
-            lat: this.props.location.query.lat,
-            lng: this.props.location.query.lng
-        },
-        offer: {
-            utm: {}
-        }
-    };
-    this.displayPrice = this.displayPrice.bind(this); 
-    this.displayTitle = this.displayTitle.bind(this);
-  }
- 
-  displayIconElement (offer) {
+    constructor(props) {
+        super(props);
+        this.state = {
+            queryCity: null,
+            autoCompleteText: '',
+            isLoading: false,
+            meta: {},
+            appliedFilter: {
+                category: this.props.location.query.category,
+                lat: this.props.location.query.lat,
+                lng: this.props.location.query.lng
+            },
+            offer: {
+                utm: {}
+            }
+        };
+        this.displayPrice = this.displayPrice.bind(this); 
+        this.displayTitle = this.displayTitle.bind(this);
+    }
+    componentDidMount() {
+        this.setState({ isLoading: true });
+
+        apiCategory.getItems().then(categories => this.setState({ categories }));
+        apiConfig.meta.getItems().then(meta => this.setState({ meta: meta[0] }))
+
+        this.loadTasks(this.props.location.query);
+    }
+    displayIconElement (offer) {
         if(offer && offer.location && offer.location.formattedAddress){
             return <MapsPlace viewBox='-20 -7 50 10' />;
         }else{
@@ -49,62 +59,56 @@ class Offers extends Component {
                 <FileCloud viewBox='-20 -7 50 10'/>);
         }
     };
-  
-    displayPrice (offer) {
-        let label = String((offer.price / 100 ).toFixed(0)) + '€';
-            
-        if (offer.priceType===0) {
-            label += " pro Auftrag";
-        } else {
-            label += " pro Stunde";
-        }
-
-        return label;
-    }
-
-    displayLocation (task) {
-        if (task.location) {
-            return task.location.formattedAddress || 'Online';
-        } else {
-            return 'Online';
-        }  
-    }
-
-    displayTitle (title) {
-        if (title.length > 24) {
-            return title.substring(0, 23) + '...';
-        }
-
-        return title;
-    }
-    loadTasks(query) {
-        this.setState({
-            isLoading: true
-        });
+    
+displayPrice (offer) {
+    let label = String((offer.price / 100 ).toFixed(0)) + '€';
         
-        apiTask.getItems({
-            task_type: 1,
-            status: 'ACTIVE',
-            lat: query.lat,
-            lng: query.lng,
-            category: query.category
-        }).then(offers => {
-           this.setState({
-                isLoading: false,
-                offers: offers,
-                offersChunks: _chunk(offers, 3)
-            });
-        });
+    if (offer.priceType===0) {
+        label += " pro Auftrag";
+    } else {
+        label += " pro Stunde";
     }
-    componentDidMount() {
-        this.setState({ isLoading: true });
 
-        apiCategory.getItems().then(categories => {
-            this.setState({ categories });
-        });
+    return label;
+}
 
-        this.loadTasks(this.props.location.query);
+displayLocation (task) {
+    if (task.location) {
+        return task.location.formattedAddress || 'Online';
+    } else {
+        return 'Online';
+    }  
+}
+
+displayTitle (title) {
+    if (title.length > 24) {
+        return title.substring(0, 23) + '...';
     }
+
+    return title;
+}
+
+loadTasks(query) {
+    this.setState({
+        isLoading: true
+    });
+    
+    apiTask.getItems({
+        task_type: 1,
+        status: 'ACTIVE',
+        lat: query.lat,
+        lng: query.lng,
+        category: query.category
+    })
+    .then(offers => {
+        this.setState({
+            isLoading: false,
+            offers: offers,
+            offersChunks: _chunk(offers, 3)
+        });
+    });
+}
+    
     searchUpdated (term) {
         this.setState({searchTerm: term})
     }
@@ -128,10 +132,10 @@ class Offers extends Component {
             <div className="st-welcome text-center">
                 <div className="col-xs-12" style={ { marginTop: 30 } }>
                     <h1 style={ { color: "white", fontSize: 35 } }>
-                        Find freelance services online
+                        {this.state.meta.slogan}
                     </h1>
                     <h2 style={ { color: "white", fontSize: 20 } }>
-                        Browse offers by freelancers and use the great talent for your startup.
+                        {this.state.meta.desc}
                     </h2>
                 </div>
             </div>

@@ -31,8 +31,6 @@ coreNavigation.setBase('app');
 
 Object.keys(TRANSLATIONS).forEach(langKey => corei18n.addLang(langKey, TRANSLATIONS[langKey]));
 
-
-// Custom styles
 import './App.css';
 
 class App extends Component {

@@ -51,63 +51,37 @@ export default class Onboarding extends Component {
             this.setState({ categories: _chunk(categories, 2) });
         });
     }
+    
     setTaskPrice (price) {
-      this.setState({
-          task: {
-          price:Number(price)
-      }
-    })
-      this.setState({
-          task: this.state.task
-      });
+        const task = this.state.task; 
+        task.price=Number(price)
+        this.setState({ task });
     }
+
     handlePriceTypeChange (event) {
-      this.setState({
-          task:{
-              priceType:Number(event.target.value)
-          }
-      })
-      this.setState({
-          task: this.state.task
-      });
+        const task = this.state.task;  
+        task.priceType=Number(event.target.value)
+        this.setState({ task });
     }
+
     handleTitleChange (event) {
-      this.setState({
-          task: {
-             title:event.target.value 
-            }
-      });
-      this.setState({
-          task: {
-             title:event.target.value 
-            }
-      });
-      this.setState({
-          task: this.state.task
-      });
+        const task = this.state.task;
+        task.title = event.target.value;
+        this.setState({ task });
     }
+
     handleDescChange (event) {
-        this.setState({
-          task: {
-             description:event.target.value
-            }
-      });
-        this.setState({
-            task: this.state.task
-        });
+        const task = this.state.task;
+        task.description=event.target.value;
+        this.setState({ task });
     }
+
     handlePriceChange (event) {
-       
-        this.setState({
-            task:{
-            price:Number(event.target.value)    
-            }
-        });
-        console.log(this.state.task)
-        this.setState({
-           task: this.state.task
-        });
+        const task = this.state.task;
+        task.price=Number(event.target.value)    
+        this.setState({ task });
     }
+    
     render() {
             const step1=<div className="container">
                         <div className="row">

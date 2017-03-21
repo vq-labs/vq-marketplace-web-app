@@ -188,7 +188,7 @@ class Profile extends Component {
                                         fields={{ website: { type: 'string', placeholder: 'Verlinken Sie hier Ihre Webseite' }}} 
                                         displayValue={ 
                                             <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website} </a> || 'Verlinken Sie hier Ihre Webseite' }
-                                        onChange={ newProfile => {
+                                        onChange={newProfile => {
                                             const profile = this.state.profile;
                                             
                                             profile.profile.website = newProfile.website;

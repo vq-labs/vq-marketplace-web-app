@@ -56,7 +56,7 @@ export default class DrawerSimpleExample extends React.Component {
         }
   }
 
-  handleToggle = () => this.setState({open: !this.state.open});
+  handleToggle = () => this.setState({ open: !this.state.open });
   
   render() { 
     const EditableCategory = (values, index) =>

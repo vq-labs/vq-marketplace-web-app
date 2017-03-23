@@ -46,26 +46,31 @@ export default class Skill extends Component {
 
         this.setState(newState);
     } 
+    getEditMenu () {
+        if (this.state.allowChange) {
+            return <IconMenu
+                        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                        >
+                        <MenuItem primaryText="Editieren" onClick={ () => { 
+                            this.setState({ editMode: true });
+                        } }/>
+                        <MenuItem primaryText="Entfernen" onClick={ () => { 
+                            this.props.onDelete(this.state.skill);
+                        } }/>
+                    </IconMenu>;
+        }
 
+        return <div></div>;
+    }
 
     getStaticSkill(skill) {
-        return <ListItem
+
+                return <ListItem
                         primaryText={skill.name}
                         secondaryText={SKILL_LEVELS[skill.level]}
-                        rightIcon={ this.state.allowChange && 
-                                <IconMenu
-                                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                                >
-                                <MenuItem primaryText="Editieren" onClick={ () => { 
-                                    this.setState({ editMode: true });
-                                } }/>
-                                <MenuItem primaryText="Entfernen" onClick={ () => { 
-                                    this.props.onDelete(this.state.skill);
-                                } }/>
-                                </IconMenu>
-                         }
+                        rightIcon={ this.getEditMenu() }
                 />;
     }
     getDataSource() {

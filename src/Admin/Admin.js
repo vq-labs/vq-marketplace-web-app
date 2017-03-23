@@ -75,16 +75,18 @@ export default class DrawerSimpleExample extends React.Component {
         placeholder={ 'Neue Kategorie' }
         onCancel={() => {
             if (typeof index !== 'undefined') {
-                 this.state.categories[index].editMode = false;
-                 this.forceUpdate()
-            } 
+                const categories = this.state.categories;
+
+                categories[index].editMode = false;
+     
+                this.forceUpdate();
+            }
+
             if (this.state.isAddingNewCategory) {
-                
                 this.setState({isAddingNewCategory : false})
                 this.state.categories.pop();
-                
-
             }
+
             this.setState({ 
                 isAddingNewCategory: this.state.isAddingNewCategory, 
                 categories: this.state.categories 

@@ -193,8 +193,8 @@ loadTasks(query) {
                         {  
                             this.state.categories && 
                             this.state.categories.map((category, index) =>
-                               <div>
-                                    <span style={
+                               <div key={index}>
+                                    <span  style={
                                         {
                                             fontWeight: this.state.appliedFilter.category === category.code ? 'bold' : 'normal'
                                         }
@@ -222,10 +222,10 @@ loadTasks(query) {
                                 {  
                                     !this.state.isLoading && this.state.offersChunks && 
                                     this.state.offersChunks.map((offerRow, index) => 
-                                        <div className="row">
-                                            { this.state.offersChunks[index].map(offer =>
-                                                <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                    <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                        <div className="row" key={index} >
+                                            { this.state.offersChunks[index].map((offer, _id) =>
+                                                <div key={offer._id} className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
+                                                    <TaskCard task={offer} displayPrice={true} />
                                                 </div>
                                             )}
                                         </div>

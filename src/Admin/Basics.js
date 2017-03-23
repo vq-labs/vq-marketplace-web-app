@@ -1,7 +1,6 @@
 import EditableText from '../Components/EditableText';
 import React from 'react';
 import * as apiConfig from '../api/config';
-import * as apiAdmin from '../api/admin';
 
 export default class SectionBasics extends React.Component {
     constructor() {

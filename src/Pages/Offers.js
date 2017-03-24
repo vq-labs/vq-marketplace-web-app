@@ -40,8 +40,6 @@ class Offers extends Component {
                 utm: {}
             }
         };
-        this.displayPrice = this.displayPrice.bind(this); 
-        this.displayTitle = this.displayTitle.bind(this);
     }
     componentDidMount() {
         this.setState({ isLoading: true });
@@ -60,18 +58,6 @@ class Offers extends Component {
         }
     };
     
-displayPrice (offer) {
-    let label = String((offer.price / 100 ).toFixed(0)) + '€';
-        
-    if (offer.priceType===0) {
-        label += " pro Auftrag";
-    } else {
-        label += " pro Stunde";
-    }
-
-    return label;
-}
-
 displayLocation (task) {
     if (task.location) {
         return task.location.formattedAddress || 'Online';
@@ -104,7 +90,8 @@ loadTasks(query) {
         this.setState({
             isLoading: false,
             offers: offers,
-            offersChunks: _chunk(offers, 3)
+            offersChunksMD: _chunk(offers, 3),
+            offersChunksXS: _chunk(offers, 2)
         });
     });
 }
@@ -219,19 +206,30 @@ loadTasks(query) {
                                             <CircularProgress size={80} thickness={5} />
                                     </div>
                                 }
-                                {  
-                                    !this.state.isLoading && this.state.offersChunks && 
-                                    this.state.offersChunks.map((offerRow, index) => 
-                                        <div className="row">
-                                            { this.state.offersChunks[index].map(offer =>
-                                                <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                    <TaskCard task={offer} displayPrice={true} key={offer._id}  />
-                                                </div>
-                                            )}
-                                        </div>
-                                    )
-
-                                }
+                                <div className="row visible-xs visible-sm" >
+                                    { !this.state.isLoading && this.state.offersChunksXS && 
+                                        this.state.offersChunksXS.map((offerRow, index) =>
+                                            <div className="row">
+                                                { this.state.offersChunksXS[index].map(offer =>
+                                                    <div className="col-xs-12 col-sm-6" style={ { marginBottom: 10} }>
+                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                    </div>
+                                                )}
+                                            </div>
+                                    )}
+                                </div>
+                                <div className="row hidden-xs hidden-sm" >
+                                    { !this.state.isLoading && this.state.offersChunksMD && 
+                                        this.state.offersChunksMD.map((offerRow, index) =>
+                                            <div className="row">
+                                                { this.state.offersChunksMD[index].map(offer =>
+                                                    <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
+                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                    </div>
+                                                )}
+                                            </div>
+                                    )}
+                                </div>
                         </div>
             </div>
             </div>

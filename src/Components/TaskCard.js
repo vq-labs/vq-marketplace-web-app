@@ -5,10 +5,9 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
-
 import StActions from '../StActions';
-
 import * as coreNavigation from '../core/navigation';
+import { translate } from '../core/i18n';
 
 export default class TaskCard extends Component {
   constructor(props) {
@@ -20,15 +19,21 @@ export default class TaskCard extends Component {
   }
 
   displayPrice (offer) {
-        let label = String((offer.price / 100 ).toFixed(0)) + '€';
+    if (offer.priceType === 2) {
+        return translate('PRICING_MODEL_REQUEST_QUOTE');
+    }
 
-        if (offer.priceType === 0) {
-            label += " pro Auftrag";
-        } else {
-            label += " pro Stunde";
-        }
+    let priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
+        
+    if (offer.priceType === 0) {
+        return `${priceLabel} ${translate('PRICING_MODEL_TOTAL')}`;
+    }
 
-        return label;
+    if (offer.priceType === 1) {
+        return `${priceLabel} ${translate('PRICING_MODEL_HOURLY')}`;
+    }
+
+    throw new Error(`Unknown price model ${offer.priceType}`);
   }
 
   handleGoToTask (taskId) {

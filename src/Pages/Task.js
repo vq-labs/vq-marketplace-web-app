@@ -14,6 +14,7 @@ import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import Chip from 'material-ui/Chip';
 import * as coreAuth from '../core/auth';
+import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
 
 import '../App.css';
@@ -69,12 +70,14 @@ class Task extends Component {
     };
 
     componentDidMount() {
-      let taskId=this.props.params.taskId;
-      
+      let taskId = this.props.params.taskId;
+
+      pricingModelProvider.get().then(pricingModels => this.setState({ pricingModels }));
+
       apiTask.getItem(taskId).then(rTask => this.setState({
         isLoading: false,
         task: rTask,
-        isMyTask: rTask.ownerUserId===coreAuth.getUserId()
+        isMyTask: rTask.ownerUserId === coreAuth.getUserId()
       }));
   }
 
@@ -82,11 +85,10 @@ class Task extends Component {
   render() {
         return (
             <div >
-
               { this.state.isLoading && 
-                          <div className="text-center" style={{ 'marginTop': '40px' }}>
-                                <CircularProgress size={80} thickness={5} />
-                          </div>
+                <div className="text-center" style={{ 'marginTop': '40px' }}>
+                    <CircularProgress size={80} thickness={5} />
+                </div>
               }
               { !this.state.isLoading &&           
                     <div className="container-fluid" >
@@ -113,49 +115,29 @@ class Task extends Component {
                                         </div>  
                                     </div>     
                                 </div>
-                                <div className="col-xs-12 col-sm-4" style={{'marginTop': '15px'}}>
-                                    <Card>                                                    
-                                        <CardText>
-                                            <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
-                                            <p>
-                                                {
-                                                    this.state.task.priceType===0 ?
-                                                    'pro Auftrag' : 'pro Stunde'
-                                                }
-                                            </p>
-                                        </CardText>
-                                        
-                                        { !this.state.isMyTask && <RaisedButton
+                                <div className="col-xs-12 col-sm-4">
+                                    <Card style={{'marginTop': 60}}>
+                                        { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
+                                            <CardText>
+                                                <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
+                                                <p>
+                                                    {
+                                                        this.state.task.priceType===0 ?
+                                                        'pro Auftrag' : 'pro Stunde'
+                                                    }
+                                                </p>
+                                            </CardText>
+                                        }
+                                        { !this.state.isMyTask && 
+                                            <RaisedButton
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
                                                 style={{width:  '100%'}}
-                                                label={this.state.task.taskType===1 ? "Anfrage senden" : "Bewerbung senden" } 
-                                                onClick={ () => {
-                                                    this.setState({ applicationInProgress: true });
-                                        } }/> 
+                                                label= {this.state.task.taskType===1 ? "Anfrage senden" : "Bewerbung senden" } 
+                                                onClick={ () => this.setState({ applicationInProgress: true }) 
+                                            }/> 
                                        } 
-
-                                </Card> 
-                                      <div style={{'marginTop': '15px'}}>
-                                         <RaisedButton
-                                            style={{ width: '100%' }}
-                                            onTouchTap={this.handleTouchTap}
-                                            label="Mehr"
-                                            labelColor={"#546e7a"}
-                                            />
-                                            
-                                            <Popover
-                                                    open={this.state.open}
-                                                    anchorEl={this.state.anchorEl}
-                                                    onRequestClose={this.handleRequestClose}
-                                                    >
-                                                    <Menu>
-           
-                                                        <MenuItem onTouchTap={ () => location.href="http://studentask.de/aufgabe-vergeben?title=" + this.state.task.title}  primaryText="Ähnliches Inserat erfassen" />
-        
-                                                    </Menu>
-                                            </Popover>
-                                    </div> 
+                                    </Card> 
                                 </div> 
                             </div>
                         </div>

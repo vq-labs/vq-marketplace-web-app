@@ -16,7 +16,13 @@ import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import { formatGeoResults } from '../core/util';
 
-const _chunk=require('lodash.chunk');
+const _chunk = require('lodash.chunk');
+
+const PRICING_MODELS = {
+    TOTAL: 0,
+    HOURLY: 1,
+    REQUEST_QUOTE: 2
+};
 
 export default class Onboarding extends Component {
     constructor(props) {
@@ -60,6 +66,7 @@ export default class Onboarding extends Component {
     }
     handlePriceTypeChange (event) {
       const task = this.state.task;
+
       task.priceType = Number(event.target.value);
 
       this.setState({ task });
@@ -86,7 +93,7 @@ export default class Onboarding extends Component {
       this.setState({ task });
     }
     render() {
-            const step1=<div className="container">
+            const step1 = <div className="container">
                         <div className="row">
                             <div className="col-xs-12">
                                 <h1 className="text-left">SCHRITT 1. Was möchtest du anbieten?</h1>
@@ -121,6 +128,8 @@ export default class Onboarding extends Component {
                         </div>
                 </div>;
         
+                
+
                 const step2 = 
                     <div className="col-xs-12">
                         <div className="row">
@@ -130,61 +139,65 @@ export default class Onboarding extends Component {
                         </div>
                         <hr />
                         <div className="row">
-                                <div className="col-xs-12">
-                                    <RadioButtonGroup 
-                                        name="shipSpeed" 
-                                        onChange={this.handlePriceTypeChange} 
-                                        ref="priceType"
-                                        style={{width: '100%'}}
-                                        inputStyle={{width: '100%'}}
-                                        defaultSelected={this.state.task.priceType}>
+                            <div className="col-xs-12">
+                                <RadioButtonGroup 
+                                    name="priceTypeButtons" 
+                                    onChange={this.handlePriceTypeChange} 
+                                    ref="priceType"
+                                    style={{width: '100%'}}
+                                    inputStyle={{width: '100%'}}
+                                    defaultSelected={this.state.task.priceType}>
                                             <RadioButton
-                                                    value={1}
-                                                    label="pro Stunde"
-                                                
+                                                value={PRICING_MODELS.HOURLY}
+                                                label={translate("PRICING_MODEL_HOURLY")}
                                             />
                                             <RadioButton
-                                                value={0}
-                                                label="pro Auftrag"
-
+                                                value={PRICING_MODELS.TOTAL}
+                                                label={translate("PRICING_MODEL_TOTAL")}
                                             />
-                                    </RadioButtonGroup>
-                                 </div>   
-                            </div>
-
-                            <div className="row">
-                                <div className="col-xs-12">
-                                    <TextField
-                                        onChange={this.handlePriceChange}
-                                        value={this.state.task.price}
-                                        style={{width: '100%'}}
-                                        inputStyle={{width: '100%'}}
-                                        floatingLabelText="Preis"
-                                    />
-                                </div>
-                            </div>  
-
-                            <div className="row">
-                                <div className="col-xs-12">
-                                    <em>Schnelle Auswahl:</em>
-                                    { this.state.task.priceType===1 &&
-                                        <div>
-                                            <FlatButton label="10€" onClick={() => this.setTaskPrice(10)}/>
-                                            <FlatButton label="20€" onClick={() => this.setTaskPrice(20)} />
-                                            <FlatButton label="30€" onClick={() => this.setTaskPrice(30)} />
-                                            <FlatButton label="40€" onClick={() => this.setTaskPrice(40)} />
-                                        </div>
-                                    }
-                                    { this.state.task.priceType === 0 &&
-                                        <div>
-                                            <FlatButton label="20€" onClick={() => this.setTaskPrice(20)} />
-                                            <FlatButton label="50€" onClick={() => this.setTaskPrice(50)} />
-                                            <FlatButton label="100€" onClick={() => this.setTaskPrice(100)} />
-                                            <FlatButton label="500€" onClick={() => this.setTaskPrice(500)} />
-                                        </div>
-                                    }
+                                            <RadioButton
+                                                value={PRICING_MODELS.REQUEST_QUOTE}
+                                                label={translate("PRICING_MODEL_REQUEST_QUOTE")}
+                                            />
+                                </RadioButtonGroup>
                                 </div>
                             </div>
+                            { this.state.task.priceType !== 2 &&
+                                <div className="row">
+                                    <div className="col-xs-12">
+                                        <TextField
+                                            onChange={this.handlePriceChange}
+                                            value={this.state.task.price}
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                            floatingLabelText="Preis"
+                                        />
+                                    </div>
+                                </div>
+                            } 
+                            { this.state.task.priceType !== 2 &&
+                                <div className="row">
+                                    <div className="col-xs-12">
+                                        <em>Schnelle Auswahl:</em>
+                                        { this.state.task.priceType===1 &&
+                                            <div>
+                                                <FlatButton label="10€" onClick={() => this.setTaskPrice(10)}/>
+                                                <FlatButton label="20€" onClick={() => this.setTaskPrice(20)} />
+                                                <FlatButton label="30€" onClick={() => this.setTaskPrice(30)} />
+                                                <FlatButton label="40€" onClick={() => this.setTaskPrice(40)} />
+                                            </div>
+                                        }
+                                        { this.state.task.priceType === 0 &&
+                                            <div>
+                                                <FlatButton label="20€" onClick={() => this.setTaskPrice(20)} />
+                                                <FlatButton label="50€" onClick={() => this.setTaskPrice(50)} />
+                                                <FlatButton label="100€" onClick={() => this.setTaskPrice(100)} />
+                                                <FlatButton label="500€" onClick={() => this.setTaskPrice(500)} />
+                                            </div>
+                                        }
+                                </div>
+                            </div>
+                          }
                 </div>;
 
             const step3 = 

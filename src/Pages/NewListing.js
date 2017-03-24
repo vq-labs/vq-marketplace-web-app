@@ -57,13 +57,15 @@ export default class Onboarding extends Component {
             this.setState({ categories: _chunk(categories, 2) });
         });
     }
+    
     setTaskPrice (price) {
       const task = this.state.task;
 
       task.price = Number(price);
 
-      this.setState({ task})
+      this.setState({ task })
     }
+
     handlePriceTypeChange (event) {
       const task = this.state.task;
 
@@ -71,6 +73,7 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
+
     handleTitleChange (event) {
       const task = this.state.task;
       
@@ -78,6 +81,7 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
+
     handleDescChange (event) {
       const task = this.state.task;
       
@@ -85,6 +89,7 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
+
     handlePriceChange (event) {
       const task = this.state.task;
       
@@ -92,6 +97,7 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
+    
     render() {
             const step1 = <div className="container">
                         <div className="row">

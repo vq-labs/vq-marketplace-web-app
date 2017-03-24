@@ -186,7 +186,7 @@ class Task extends Component {
                                                                 display: 'flex',
                                                                 flexWrap: 'wrap',
                                                             }}>
-                                                            {this.state.task.taskOwner.talents.map( talent => <Chip style={ { margin: 3} }>{talent.name}</Chip>)}
+                                                            {this.state.task.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: 3} } key={i} >{talent.name}</Chip>)}
                                                             </div>
                                                         </div>
                                                     </div>

@@ -180,8 +180,8 @@ loadTasks(query) {
                         {  
                             this.state.categories && 
                             this.state.categories.map((category, index) =>
-                               <div>
-                                    <span style={
+                               <div key={index}>
+                                    <span  style={
                                         {
                                             fontWeight: this.state.appliedFilter.category === category.code ? 'bold' : 'normal'
                                         }
@@ -209,7 +209,7 @@ loadTasks(query) {
                                 <div className="row visible-xs visible-sm" >
                                     { !this.state.isLoading && this.state.offersChunksXS && 
                                         this.state.offersChunksXS.map((offerRow, index) =>
-                                            <div className="row">
+                                            <div className="row" key={index}>
                                                 { this.state.offersChunksXS[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-6" style={ { marginBottom: 10} }>
                                                         <TaskCard task={offer} displayPrice={true} key={offer._id}  />
@@ -221,7 +221,7 @@ loadTasks(query) {
                                 <div className="row hidden-xs hidden-sm" >
                                     { !this.state.isLoading && this.state.offersChunksMD && 
                                         this.state.offersChunksMD.map((offerRow, index) =>
-                                            <div className="row">
+                                            <div className="row" key={index}>
                                                 { this.state.offersChunksMD[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
                                                         <TaskCard task={offer} displayPrice={true} key={offer._id}  />
@@ -231,7 +231,7 @@ loadTasks(query) {
                                     )}
                                 </div>
                         </div>
-            </div>
+                </div>
             </div>
         );
     }

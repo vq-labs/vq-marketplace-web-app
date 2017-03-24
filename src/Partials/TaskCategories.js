@@ -31,7 +31,7 @@ export default class TaskCategories extends Component {
         return (
              <div style={styles.wrapper}>
                     { this.props.categories && this.props.categories.map( 
-                        category => this.getChip(category)
+                        (category, i) => this.getChip(category)
                     ) }
             </div>
         );

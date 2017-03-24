@@ -97,17 +97,12 @@ class Profile extends Component {
 
   onDrop(files) {
         StActions.uploadImage(files[0], response => {
-             this.setState({
-                profile:{
-                    profile:{
-                        imageUrl:response.url
-                    }
-                }
-            }); 
-           
-            this.setState({
-                profile: this.state.profile
-            });
+         
+            const profile = this.state.profile;
+
+            profile.profile.imageUrl= response.url;  
+        
+            this.setState({ profile });
         });
   }
 
@@ -224,8 +219,8 @@ class Profile extends Component {
         </Paper>;
 
     const OfferSection = 
-        <div class="row" style={{ 'marginTop': '40px' }}>
-                <div class="col-xs-12">
+        <div className="row" style={{ 'marginTop': '40px' }}>
+                <div className="col-xs-12">
                                 <h2>
                                     {this.state.profile.profile.firstName + "'s Angebote"}
                                     {this.state.isMyProfile && <div className="pull-right">{newOfferBtn}</div> }
@@ -235,8 +230,8 @@ class Profile extends Component {
 
                 <Divider />
                 
-                <div class="col-xs-12" style={ { marginTop: '20px' } }>                
-                    { this.state.offers && this.state.offers.filter( offer => this.state.isMyProfile ? true : offer.status===0).map(offer =>
+                <div className="col-xs-12" style={ { marginTop: '20px' } }>                
+                    { this.state.offers && this.state.offers.filter( offer => this.state.isMyProfile ? true : offer.status===0).map((offer, _id) =>
                             <div key={offer._id} className="col-xs-12 col-sm-6 text-left" style={{ 'marginBottom': '40px' }}>
                                 <TaskCard task={offer} displayManagement={this.state.isMyProfile} displayPrice={false} />
                             </div>
@@ -251,9 +246,8 @@ class Profile extends Component {
                             <CardTitle title="Skills" subtitle="Das kann ich am Besten." />
   
                             { this.state.profile.talents.map((talent, index) =>
-                            <div className="row">
+                            <div className="row" key={'talent' + index} >
                                 <EditableSkill
-                                    key={index}
                                     skillId={talent._id}
                                     allowChange={this.state.isMyProfile}
                                     skill={talent} 
@@ -274,7 +268,14 @@ class Profile extends Component {
                                             apiSkills.createItem({ skill });
                                         } else {
                                             apiSkills.createItem({ skill }).then(talent => {
-                                                this.state.profile.talents[this.state.profile.talents.length - 1]=talent;
+                                               // this.state.profile.talents[this.state.profile.talents.length - 1]=talent;
+
+                                                const talents = this.state.profile.talents;
+
+                                                talents[this.state.profile.talents.length - 1] = talent;
+
+                                                this.setState({ profile: talents });
+
                                                 
                                             });
                                         }

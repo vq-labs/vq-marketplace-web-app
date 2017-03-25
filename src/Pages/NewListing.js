@@ -53,7 +53,7 @@ export default class Onboarding extends Component {
 
     componentDidMount() {
         apiCategory.getItems().then(categories => {
-            this.setState({ categories: _chunk(categories, 2) });
+            this.setState({ categories: _chunk(categories, 3) });
         });
     }
     
@@ -110,7 +110,7 @@ export default class Onboarding extends Component {
                                 {this.state.categories.map(row => (
                                     <div className="row" style={ { marginBottom: 10 } }>
                                         { row.map(tile =>
-                                            <div className="col-xs-12 col-sm-6">
+                                            <div className="col-xs-12 col-sm-4">
                                                     <Card onClick={() => {
                                                         const task= this.state.task;
                                                         const category= { label: translate(tile.code), code: tile.code };

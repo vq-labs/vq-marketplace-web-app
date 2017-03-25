@@ -17,8 +17,6 @@ import * as coreNavigation from '../core/navigation';
 
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
-import EditableText from '../Components/EditableText';
-
 import TaskCard from '../Components/TaskCard';
 
 import '../App.css';
@@ -99,10 +97,9 @@ class Profile extends Component {
 
   onDrop(files) {
         StActions.uploadImage(files[0], response => {
-         
             const profile = this.state.profile;
 
-            profile.profile.imageUrl= response.url;  
+            profile.profile.imageUrl = response.url;  
         
             this.setState({ profile });
         });

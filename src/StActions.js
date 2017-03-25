@@ -174,10 +174,9 @@ const StActions = {
       });
   },
  uploadImage: (file, cb) => {
+    const data = new FormData()
 
-     const data = new FormData()
-
-     data.append('file', file, file.name);
+    data.append('file', file, file.name);
 
     fetch(API_URL + '/upload/image?json=true', {
           method: 'POST',

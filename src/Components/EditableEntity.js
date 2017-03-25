@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
 import TextField from 'material-ui/TextField';
-
-import apiUser from '../api/user';
-
 import * as coreNavigation from '../core/navigation';
-
 import '../App.css';
 
 export default class EditableEntity extends Component {
@@ -48,9 +41,7 @@ export default class EditableEntity extends Component {
                 this.setState({ updatedEntity });
             };
     }
-    handleUpdate ()  {
-        const updatedEntity = this.state.updatedEntity;
-
+    handleUpdate () {
         this.props.onConfirm(this.state.updatedEntity);
     }
     render() {

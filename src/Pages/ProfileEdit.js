@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import FlatButton from 'material-ui/FlatButton';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
-import TextField from 'material-ui/TextField';
-
 import apiUser from '../api/user';
-
-import * as coreNavigation from '../core/navigation';
-
 import EditableEntity from '../Components/EditableEntity';
-
+import * as coreNavigation from '../core/navigation';
 import '../App.css';
 
 export default class ProfileEdit extends Component {
@@ -61,7 +50,7 @@ export default class ProfileEdit extends Component {
                             onConfirm={
                                 updatedEntity => apiUser
                                     .updateItem(this.state.user._id, { profile: updatedEntity })
-                                    .then(task => browserHistory.push(`/app/profile/${this.state.user._id}`))
+                                    .then(task => coreNavigation.goTo(`/profile/${this.state.user._id}`))
                             }
                         />
                     </div>    

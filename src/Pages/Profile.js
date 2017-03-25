@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import { Card,  CardTitle } from 'material-ui/Card';
 import Chip from 'material-ui/Chip';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import RaisedButton from 'material-ui/RaisedButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import FormatQuote from 'material-ui/svg-icons/editor/format-quote';
@@ -12,6 +13,7 @@ import * as apiSkills from '../api/skills';
 import apiTask from '../api/task';
 import apiUser from '../api/user';
 import * as coreAuth from '../core/auth';
+import * as coreNavigation from '../core/navigation';
 
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
@@ -118,32 +120,8 @@ class Profile extends Component {
                     <div className="row">  
                         <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
                             <h1 style={{ 'marginTop': '20px'  }}>
-                                <EditableText 
-                                    style={{  'marginTop': '20px'  }}
-                                    fields={{
-                                        firstName: { type: 'string', placeholder: 'Vorname' },
-                                        lastName: { type: 'string', placeholder: 'Nachname' }
-                                    }}
-                                    values={this.state.profile.profile}
-                                    displayValue={
-                                        this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName
-                                    }
-                                    placeholder={ 'Dein Name' }
-                                    onCancel={ () => {}}
-                                    onChange={ newProfile => {
-                                        const profile=this.state.profile;
-                                        
-                                        profile.profile.firstName=newProfile.firstName;
-                                        profile.profile.lastName=newProfile.lastName;
-
-                                        this.setState({ isLoading: true, profile });
-
-                                        apiUser.updateItem(coreAuth.getUserId(), { profile: { 
-                                            firstName: profile.profile.firstName, 
-                                            lastName: profile.profile.lastName 
-                                        }}).then(() => this.setState({ isLoading: false }));
-                                    }}
-                            />
+                                { this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName }
+                               
                             </h1>
                         </div>
                     </div>
@@ -152,54 +130,22 @@ class Profile extends Component {
                               
                         </div>
                         <div className="col-xs-1"><FormatQuote /></div>
-                        <div className="col-xs-11" style={{  'padding': 10  }} >
-                            <EditableText 
-                                style={{  'marginTop': '20px', 'padding': 10  }} 
-                                values={this.state.profile.profile}
-                                fields={{ bio: { type: 'string', placeholder: 'Erzählen Sie Profilbesuchern in einem kurzen Satz, wer Sie sind.' }}} 
-                                displayValue={ this.state.profile.profile.bio }
-                                onChange={ newProfile => {
-                                    const profile=this.state.profile;
-                                    
-                                    profile.profile.bio=newProfile.bio;
-
-                                    this.setState({ isLoading: true, profile });
-
-                                    apiUser.updateItem(coreAuth.getUserId(), {
-                                        profile: { 
-                                            bio: profile.profile.bio 
-                                        }
-                                    })
-                                    .then(() => this.setState({ isLoading: false }));
-                                }}
-                            />
+                        <div className="col-xs-11 text-muted" style={{ padding: 10 }} >
+                            <p>{ this.state.profile.profile.bio }</p>
                         </div>
                      </div>
                      <div className="row">
-                                <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
-                                    <EditableText 
-                                        style={{  'marginTop': '20px', 'padding': 10  }} 
-                                        values={this.state.profile.profile}
-                                        fields={{ website: { type: 'string', placeholder: 'Verlinken Sie hier Ihre Webseite' }}} 
-                                        displayValue={ 
-                                            <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website} </a> || 'Verlinken Sie hier Ihre Webseite' }
-                                        onChange={newProfile => {
-                                            const profile = this.state.profile;
-                                            
-                                            profile.profile.website = newProfile.website;
-
-                                            this.setState({ isLoading: true, profile });
-
-                                            apiUser.updateItem(coreAuth.getUserId(), {
-                                                profile: { 
-                                                    website: profile.profile.website 
-                                                }
-                                            })
-                                            .then(() => this.setState({ isLoading: false }));
-                                        }}
-                                    />
-                                </div>
-                         </div>  
+                        <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
+                            <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website}</a>
+                        </div>
+                    </div>
+                    { this.state.isMyProfile &&
+                        <div className="row">
+                            <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                <RaisedButton label="Profil bearbeiten" onTouchTap={ () => coreNavigation.goTo(`/profile/${this.state.profile._id}/edit`)} />
+                            </div>    
+                        </div>
+                    }
                 </div>
             </div>;
     const newOfferBtn = 

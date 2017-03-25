@@ -103,6 +103,7 @@ export default class Skill extends Component {
                                         this.setState({ skill: newSkill });
                                     }
                                 }
+                                menuStyle={{ maxHeight: '300px' }}
                                 searchText={this.state.skill.name}
                                 floatingLabelText="Type your skill e.g 'JavaScript'"
                                 filter={AutoComplete.caseInsensitiveFilter}

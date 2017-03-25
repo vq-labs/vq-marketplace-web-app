@@ -57,8 +57,13 @@
   "dependencies": {
     "babel-polyfill": "^6.20.0",
     "classnames": "^2.2.5",
+    "dompurify": "^0.8.5",
+    "draft-js": "^0.10.0",
+    "draft-js-export-html": "^0.5.2",
+    "draft-js-import-html": "^0.3.2",
     "flexboxgrid": "^6.3.1",
     "gulp-replace-task": "^0.11.0",
+    "immutable": "^3.8.1",
     "lodash.chunk": "^4.2.0",
     "material-ui": "^0.16.2",
     "moment": "^2.17.1",

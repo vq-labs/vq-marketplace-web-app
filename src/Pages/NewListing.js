@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-
 import { Card, CardMedia, CardTitle } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
+import DOMPurify from 'dompurify'
+import HtmlTextField from '../Components/HtmlTextField';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Autocomplete from 'react-google-autocomplete';
 import LoginSignup from '../Components/LoginSignup';
-
 import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import apiTask from '../api/task';
@@ -82,10 +81,10 @@ export default class Onboarding extends Component {
       this.setState({ task });
     }
 
-    handleDescChange (event) {
+    handleDescChange (event, value) {
       const task = this.state.task;
       
-      task.description = event.target.value;
+      task.description = value || event.target.value;
 
       this.setState({ task });
     }
@@ -211,46 +210,37 @@ export default class Onboarding extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                             <h1>SCHRITT 3. Beschreib dein Angebot.</h1>
-                            <p className="text-muted">Titel, Kurzbeschreibung</p>
                         </div>
                     </div>
                     <hr />
                     <div className="row"> 
                         <div className="col-xs-12">
                             <div className="row">
-                            <div className="col-xs-12"> 
+                            <div className="col-xs-12">
+                                <h4>Titel</h4>
                                 <TextField
                                     name="title"
                                     onChange={this.handleTitleChange}
                                     style={{width: '100%'}}
                                     inputStyle={{width: '100%'}}
-                                    floatingLabelText="Titel"
                                     value={this.state.task.title}
                                 />
                             </div>  
                         </div>  
                         <div className="row">
-                            <div className="col-xs-12"> 
-                                <TextField
-                                    name="desc"
-                                    onChange={this.handleDescChange}
-                                    floatingLabelText="Beschreibung"
-                                    hintText="Beschreib hier dein Angebot"
-                                    multiLine={true}
-                                    rows={4}
-                                    style={{width: '100%'}}
-                                    inputStyle={{width: '100%'}}
-                                    value={this.state.task.description}
-                                />
+                            <div className="col-xs-12">
+                                <h4>Beschreibung</h4>
+                                <HtmlTextField onChange={this.handleDescChange} value={this.state.task.description}/>
+                                <hr />
                             </div>    
                         </div>
 
                         <div className="row">
-                           <div className="col-xs-12"> 
+                           <div className="col-xs-12">
+                                    <h4>Ort (optional)</h4>
                                     <TextField name="location" style={{width: '100%'}}
                                         >
                                         <Autocomplete
-                                            placeholder="Ort (optional)"
                                             style={{width: '100%'}}
             
                                             onPlaceSelected={ place => {
@@ -282,62 +272,40 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h2>
-                                Kategorie: { this.state.task.categories.map(category => <span>{category.label}</span>) }
-                            </h2>
+                            <h4>Kategorie</h4>
+                            { this.state.task.categories.map(category => <span>{category.label}</span>) }
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-xs-12">
-                            <TextField
-                                name="title"
-                                onChange={this.handleTitleChange}
-                                style={{width: '100%'}}
-                                disabled={true}
-                                inputStyle={{width: '100%'}}
-                                floatingLabelText="Titel"
-                                value={this.state.task.title}
-                            />
+                            <h4>Titel</h4>
+                            {this.state.task.title}
                         </div>
                     </div>
                    
                     <div className="row">
                         <div className="col-xs-12">
-                            <TextField
-                                style={{width: '100%'}}
-                                disabled={true}
-                                inputStyle={{width: '100%'}}
-                                floatingLabelText="Kurzbeschreibung"
-                                value={this.state.task.description}
-                            />
+                            <h4>Kurzbeschreibung</h4>
+                            <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-xs-12">
-                            <TextField
-                                style={{width: '100%'}}
-                                disabled={true}
-                                inputStyle={{width: '100%'}}
-                                floatingLabelText="Preistyp"
-                                value={this.state.task.priceType}
-                            />
+                            <h4>Abbrechnugsmodell</h4>
+                            { this.state.task.priceType === 1 ? 'pro Stunde' : this.state.task.priceType === 0 ? 'pro Auftrag' : 'auf Anfrage' }
                         </div>
                     </div>
 
-
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <TextField
-                                style={{width: '100%'}}
-                                disabled={true}
-                                inputStyle={{width: '100%'}}
-                                floatingLabelText="Preis"
-                                value={this.state.task.price + '€' }
-                            />
+                    { this.state.task.priceType !== 2 && 
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4>Preis</h4>
+                                {this.state.task.price + '€' }
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
               </div>;
 
@@ -422,7 +390,7 @@ export default class Onboarding extends Component {
                                         } }
                                     />
                                 }
-                                { this.state.step===4 && this.state.auth &&
+                                { this.state.step === 4 && this.state.auth &&
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label='Inserieren'
@@ -431,7 +399,7 @@ export default class Onboarding extends Component {
                                         onTouchTap={ () => {
                                             const task = this.state.task;
 
-                                            task.price = this.state.task.price * 100;
+                                            task.price = task.priceType === 2 ? 0 : task.price * 100;
 
                                             this.setState({ task });
                                             

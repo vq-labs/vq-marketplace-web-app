@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-import { Card,  CardTitle } from 'material-ui/Card';
 import Chip from 'material-ui/Chip';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -185,11 +184,36 @@ class Profile extends Component {
     ;
 
     const SkillSection = 
-        <Card style={{ 'marginTop': '40px' }}>
-                            <CardTitle title="Skills" subtitle="Das kann ich am Besten." />
-  
+        <Paper style={{ 'marginTop': '40px' }}>
+                            <div className="row">
+                                <div className="col-xs-12">
+                                    <h3 style={{ padding: 2, marginLeft: 10 }}>
+                                        <span>Skills</span>
+                                        { this.state.isMyProfile && 
+                                            <div style={ { float: 'right', padding: '5px' }}>
+                                                <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 
+                                                    onClick={ () => {
+                                                        this.state.profile.talents.unshift({ 
+                                                            level: 0, 
+                                                            name: '', 
+                                                            editMode: true 
+                                                        });
+                                                        
+                                                        this.setState({
+                                                            profile: this.state.profile
+                                                        });
+                                                    }} >
+                                                    <ContentAdd />
+                                                </FloatingActionButton>
+                                            </div>
+                                        }
+                                    </h3>
+                                </div>
+                            </div>
+                              
+
                             { this.state.profile.talents.map((talent, index) =>
-                            <div className="row" key={'talent' + index} >
+                            <div className="row" key={`talent-${index}-${talent.editMode}`} >
                                 <EditableSkill
                                     skillId={talent._id}
                                     allowChange={this.state.isMyProfile}
@@ -234,30 +258,11 @@ class Profile extends Component {
                                     }}
                                 />
                             </div>        
-                            ) } 
-                            
-                            { this.state.isMyProfile && 
-                                <div style={ { float: 'right', padding: '10px' }}>
-                                    <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 
-                                        onClick={ () => {
-                                            this.state.profile.talents.push({ 
-                                                level: 0, 
-                                                name: '', 
-                                                editMode: true 
-                                            });
-                                            
-                                            this.setState({
-                                                profile: this.state.profile
-                                            });
-                                        }} >
-                                        <ContentAdd />
-                                    </FloatingActionButton>
-                                </div>
-                             }   
-        </Card>;
+                            ) }
+        </Paper>;
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginBottom: 20 }}>
             <div className="col-xs-12"> 
                 <div className="row">
                     <div className="col-xs-12">

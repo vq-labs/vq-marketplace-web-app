@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, CardText } from 'material-ui/Card';
+import DOMPurify from 'dompurify'
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
@@ -7,9 +8,6 @@ import TaskCategories from '../Partials/TaskCategories';
 import GoogleAd from 'react-google-ad'
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
-import MenuItem from 'material-ui/MenuItem';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import Chip from 'material-ui/Chip';
@@ -23,14 +21,14 @@ class Task extends Component {
     constructor(props) {
         super(props);
    
-        this.state={
+        this.state = {
             open: false,
             applicationInProgress: false,
             isLoading: true,
             isMyTask: false,
             task: {
                 categories: [ ],
-                location:  {  },        
+                location:  {},        
                 meta: {
                     taskOwner: {
                         stats: {},
@@ -67,8 +65,7 @@ class Task extends Component {
             return (
                 <FileCloud viewBox='-20 -7 50 10'/>);
         }
-    };
-
+    }
     componentDidMount() {
       let taskId = this.props.params.taskId;
 
@@ -79,10 +76,8 @@ class Task extends Component {
         task: rTask,
         isMyTask: rTask.ownerUserId === coreAuth.getUserId()
       }));
-  }
-
-
-  render() {
+    }
+    render() {
         return (
             <div >
               { this.state.isLoading && 
@@ -133,7 +128,7 @@ class Task extends Component {
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
                                                 style={{width:  '100%'}}
-                                                label= {this.state.task.taskType===1 ? "Anfrage senden" : "Bewerbung senden" } 
+                                                label={this.state.task.taskType === 1 ?"Anfrage senden" : "Bewerbung senden" } 
                                                 onClick={ () => this.setState({ applicationInProgress: true }) 
                                             }/> 
                                        } 
@@ -155,7 +150,7 @@ class Task extends Component {
                                                     </p>
                                                 </CardText>
                                                 <CardText>
-                                                    {this.state.task.description}
+                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
                                                 </CardText>
                                             </Card>
                                          </div>                                                                 
@@ -194,11 +189,6 @@ class Task extends Component {
                                             </Card>
                                           </div>                                                               
                                       </div>
-                                      <div className="row">  
-                                            <h4 className="text-left">
-                                                {this.state.task.applyingUsers.length + " Anfragen"}
-                                            </h4>
-                                      </div>
                                 </div>
                                 <div className="col-sm-3">
                                     <GoogleAd client="ca-pub-2487354108758644" slot="4660780818" format="auto" />
@@ -210,7 +200,7 @@ class Task extends Component {
                   <ApplicationDialog taskId={this.state.task._id} open={this.state.applicationInProgress} />
             </div>
         );
-  }
+    }
 }
 
 export default Task;

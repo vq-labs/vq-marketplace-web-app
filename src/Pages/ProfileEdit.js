@@ -18,7 +18,7 @@ export default class ProfileEdit extends Component {
         let userId = this.props.params.profileId;
 
         apiUser.getItem(userId).then(user => this.setState({
-        user, isLoading: false
+            user, isLoading: false
         }));
     }
     render() {
@@ -27,8 +27,10 @@ export default class ProfileEdit extends Component {
                     <div className="col-xs-12">
                         <h1>Profil bearbeiten</h1>
 
-                        <EditableEntity 
-                            value={this.state.user && this.state.user.profile} fields={[
+                        <EditableEntity
+                            showCancelBtn={true}
+                            value={this.state.user && this.state.user.profile} 
+                            fields={[
                                 {
                                     key: 'firstName',
                                     label: 'Vorname'

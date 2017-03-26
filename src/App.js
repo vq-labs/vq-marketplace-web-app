@@ -18,14 +18,15 @@ import Chat from './Pages/Chat';
 import ChatRoom from './Pages/ChatRoom';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
-
+    
 import * as coreAuth from './core/auth';
 import * as coreStyle from './core/style';
 import * as coreTracking from './core/tracking';
-
-import * as apiAuth from './api/auth';
 import * as corei18n from './core/i18n.js'
 import * as coreNavigation from './core/navigation';
+import * as apiAuth from './api/auth';
+import * as apiConfig from './api/config';
+
 import TRANSLATIONS from './generated/Translations.js';
 
 coreNavigation.setBase('app');
@@ -39,7 +40,8 @@ class App extends Component {
     super();
 
     this.state = {
-      user: null
+      user: null,
+      meta: {}
     };
 
     coreAuth.addListener('login', () => {
@@ -61,15 +63,18 @@ class App extends Component {
     coreAuth.addListener('logout', () => {
       this.setState({ user: null });
     });
-
+    
     coreAuth.loadFromLocalStorage();
+
+    apiConfig.meta.getItems({}, { cache: true })
+      .then(meta => this.setState({ meta: meta[0] }));
   }
 
   render() {
       return (
       <MuiThemeProvider>
         <div>
-          <Header logo={coreStyle.get('logo')} user={this.state.user}></Header>
+          <Header logo={this.state.meta.logoUrl} homeLabel={this.state.meta.listingLabel} user={this.state.user}></Header>
           <Router history={browserHistory} onUpdate={coreTracking.pageView}>
             <Route path="/app">
               <IndexRoute component={Offers}/>

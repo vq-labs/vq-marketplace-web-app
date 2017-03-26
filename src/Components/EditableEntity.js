@@ -17,7 +17,8 @@ export default class EditableEntity extends Component {
         this.state = {
             isLoading: true,
             fields: props.fields,
-            updatedEntity: props.value || updatedEntity
+            updatedEntity: props.value || updatedEntity,
+            dirty: false
         };
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -38,10 +39,11 @@ export default class EditableEntity extends Component {
 
                 updatedEntity[field] = transform ? transform(value) : value;
                 
-                this.setState({ updatedEntity });
+                this.setState({ updatedEntity, dirty: true });
             };
     }
     handleUpdate () {
+        this.setState({ dirty: false });
         this.props.onConfirm(this.state.updatedEntity);
     }
     render() {
@@ -57,32 +59,34 @@ export default class EditableEntity extends Component {
                                 <div className="col-xs-12 col-sm-8">
                                     { this.props.fields.map((field, index) =>
                                         <div className="col-xs-12" key={index}>
-                                            <TextField
-                                                ref="title"
-                                                onChange={ this.handleFieldChange(field.key) }
-                                                value={this.state.updatedEntity[field.key]}
-                                                style={{width: '100%'}}
-                                                inputStyle={{width: '100%'}}
-                                                floatingLabelText={field.label}
-                                                hintText={field.hint}
-                                                floatingLabelFixed={true}
-                                            />
+                                                <TextField
+                                                    ref="title"
+                                                    onChange={ this.handleFieldChange(field.key) }
+                                                    value={this.state.updatedEntity[field.key]}
+                                                    style={{width: '100%'}}
+                                                    inputStyle={{width: '100%'}}
+                                                    floatingLabelText={field.label}
+                                                    hintText={field.hint}
+                                                    floatingLabelFixed={true}
+                                                />
                                         </div> 
                                     )}
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>
-                                            <FlatButton
-                                                style={ { float: 'left' } }
-                                                label='Abbrechen' 
-                                                primary={ true }
-                                                disabled={ false }
-                                                onTouchTap={ () => coreNavigation.goBack() }
-                                            />
+                                            { this.state.showCancelBtn &&  
+                                                <FlatButton
+                                                    style={ { float: 'left' } }
+                                                    label='Abbrechen' 
+                                                    primary={ true }
+                                                    disabled={ false }
+                                                    onTouchTap={ () => coreNavigation.goBack() }
+                                                />
+                                            }
                                             <RaisedButton
+                                                disabled={!this.state.dirty}
                                                 style={ { float: 'right' } }
                                                 label='Übernehmen'
                                                 primary={ true }
-                                                disabled={ false }
                                                 onTouchTap={ this.handleUpdate }
                                             />
                                         </div>

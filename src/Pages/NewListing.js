@@ -14,7 +14,9 @@ import * as apiCategory from '../api/category';
 import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import { formatGeoResults } from '../core/util';
+import Snackbar from 'material-ui/Snackbar';
 
+import Paper from 'material-ui/Paper';
 const _chunk = require('lodash.chunk');
 
 const PRICING_MODELS = {
@@ -101,7 +103,7 @@ export default class Onboarding extends Component {
             const step1 = <div className="container">
                         <div className="row">
                             <div className="col-xs-12">
-                                <h1 className="text-left">SCHRITT 1. Was möchtest du anbieten?</h1>
+                                <h1 className="text-left">Step 1. What would you like to offer?</h1>
                             </div>
                         </div>
                         <hr />
@@ -119,11 +121,11 @@ export default class Onboarding extends Component {
 
                                                         this.setState({ step: 2, task });
                                                     }}>
-                                                    <CardMedia
-                                                        overlay={<CardTitle title={translate(tile.code)} />}
-                                                        >
-                                                        <img alt="category" src={tile.imageUrl} />
-                                                    </CardMedia>
+                                                        <CardMedia
+                                                            overlay={<CardTitle title={translate(tile.code)} />}
+                                                            >
+                                                            <img alt="category" src={tile.imageUrl} />
+                                                        </CardMedia>
                                                     </Card>
                                             </div>
                                         )} 
@@ -139,7 +141,7 @@ export default class Onboarding extends Component {
                     <div className="col-xs-12">
                         <div className="row">
                             <div className="col-xs-12">
-                                <h1>SCHRITT 2. Angaben zum Preis</h1>
+                                <h1>Step 2. Determine the pricing</h1>
                             </div>
                         </div>
                         <hr />
@@ -183,7 +185,7 @@ export default class Onboarding extends Component {
                             { this.state.task.priceType !== 2 &&
                                 <div className="row">
                                     <div className="col-xs-12">
-                                        <em>Schnelle Auswahl:</em>
+                                        <em>Quick choice:</em>
                                         { this.state.task.priceType===1 &&
                                             <div>
                                                 <FlatButton label="10€" onClick={() => this.setTaskPrice(10)}/>
@@ -209,7 +211,7 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>SCHRITT 3. Beschreib dein Angebot.</h1>
+                            <h1>Step 3. Describe your offer</h1>
                         </div>
                     </div>
                     <hr />
@@ -217,7 +219,7 @@ export default class Onboarding extends Component {
                         <div className="col-xs-12">
                             <div className="row">
                             <div className="col-xs-12">
-                                <h4>Titel</h4>
+                                <h4>Title</h4>
                                 <TextField
                                     name="title"
                                     onChange={this.handleTitleChange}
@@ -229,7 +231,7 @@ export default class Onboarding extends Component {
                         </div>  
                         <div className="row">
                             <div className="col-xs-12">
-                                <h4>Beschreibung</h4>
+                                <h4>Description</h4>
                                 <HtmlTextField onChange={this.handleDescChange} value={this.state.task.description}/>
                                 <hr />
                             </div>    
@@ -237,7 +239,7 @@ export default class Onboarding extends Component {
 
                         <div className="row">
                            <div className="col-xs-12">
-                                    <h4>Ort (optional)</h4>
+                                    <h4>Location (optional)</h4>
                                     <TextField name="location" style={{width: '100%'}}
                                         >
                                         <Autocomplete
@@ -264,7 +266,7 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>SCHRITT 4. Bestätigung</h1>
+                            <h1>Step 4. Confirm before posting</h1>
                         </div>
                     </div>
                 
@@ -272,28 +274,28 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Kategorie</h4>
+                            <h4>Category</h4>
                             { this.state.task.categories.map(category => <span>{category.label}</span>) }
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Titel</h4>
+                            <h4>Title</h4>
                             {this.state.task.title}
                         </div>
                     </div>
                    
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Kurzbeschreibung</h4>
+                            <h4>Description</h4>
                             <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Abbrechnugsmodell</h4>
+                            <h4>Pricing</h4>
                             { this.state.task.priceType === 1 ? 'pro Stunde' : this.state.task.priceType === 0 ? 'pro Auftrag' : 'auf Anfrage' }
                         </div>
                     </div>
@@ -301,7 +303,7 @@ export default class Onboarding extends Component {
                     { this.state.task.priceType !== 2 && 
                         <div className="row">
                             <div className="col-xs-12">
-                                <h4>Preis</h4>
+                                <h4>Price</h4>
                                 {this.state.task.price + '€' }
                             </div>
                         </div>
@@ -314,7 +316,7 @@ export default class Onboarding extends Component {
               const success=<div className="container">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1>Bravo! Dein Angebot ist online!</h1>
+                        <h1>Bravo! Your offer is online!</h1>
                     </div>
                 </div>
 
@@ -322,7 +324,7 @@ export default class Onboarding extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                            <RaisedButton
-                                label={ 'Zur Angebot-Seite' }
+                                label={ 'Go to your offer' }
                                 primary={ true }
                                 disabled={ false }
                                 onTouchTap={ () => browserHistory.push(`/app/task/${this.state.insertedTask._id}`) }
@@ -385,7 +387,22 @@ export default class Onboarding extends Component {
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => {
-                                            debugger;
+                                            const nextStep = this.state.step + 1;
+
+                                            if (nextStep === 4) {
+                                                if (!this.state.task.title) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: "Titel fehlt"
+                                                    });
+                                                }
+                                                if (!this.state.task.description) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: "Beschreibung fehlt"
+                                                    });
+                                                }
+                                            }
                                             this.setState({ step: this.state.step + 1 })
                                         } }
                                     />
@@ -412,11 +429,15 @@ export default class Onboarding extends Component {
                                         } }
                                     />
                                 }
+                                <Snackbar
+                                    open={this.state.openSnackbar}
+                                    message={this.state.snackbarMessage}
+                                    autoHideDuration={4000}
+                                />
                             </div>
                         </div> 
                         }
                     </div>
-                    
             );
     }
 };

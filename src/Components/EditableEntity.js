@@ -76,7 +76,7 @@ export default class EditableEntity extends Component {
                                             { this.state.showCancelBtn &&  
                                                 <FlatButton
                                                     style={ { float: 'left' } }
-                                                    label='Abbrechen' 
+                                                    label={this.props.cancelLabel}
                                                     primary={ true }
                                                     disabled={ false }
                                                     onTouchTap={ () => coreNavigation.goBack() }
@@ -85,7 +85,7 @@ export default class EditableEntity extends Component {
                                             <RaisedButton
                                                 disabled={!this.state.dirty}
                                                 style={ { float: 'right' } }
-                                                label='Übernehmen'
+                                                label={this.props.saveLabel}
                                                 primary={ true }
                                                 onTouchTap={ this.handleUpdate }
                                             />

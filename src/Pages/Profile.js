@@ -17,6 +17,7 @@ import * as coreNavigation from '../core/navigation';
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
+import { translate } from '../core/i18n';
 
 import '../App.css';
 
@@ -38,7 +39,6 @@ class Profile extends Component {
         }
     };
 
-    this.goToDashboard=this.goToDashboard.bind(this);
     this.getUserTalent=this.getUserTalent.bind(this);
     this.goToNewTask=this.goToNewTask.bind(this);
     this.onDrop=this.onDrop.bind(this);
@@ -83,11 +83,6 @@ class Profile extends Component {
     coreAuth.addListener('login', () => this.setState({
         sMyProfile: coreAuth.getUserId()===userId,
     }));
-  }
-  
-  goToDashboard() {
-    browserHistory.push('/profile/'+this.state.userId+'/dashboard');
-    this.setState({ section: 'dashboard' });
   }
 
   goToNewTask() {
@@ -138,8 +133,8 @@ class Profile extends Component {
                     { this.state.isMyProfile &&
                         <div className="row">
                             <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                <RaisedButton label="Profil bearbeiten" onTouchTap={ () => coreNavigation.goTo(`/profile/${this.state.profile._id}/edit`)} />
-                            </div>    
+                                <RaisedButton label={ translate('EDIT_PROFILE') } onTouchTap={ () => coreNavigation.goTo(`/profile/${this.state.profile._id}/edit`)} />
+                            </div>
                         </div>
                     }
                 </div>
@@ -152,22 +147,19 @@ class Profile extends Component {
 
 
     const NoOfferSection = 
-        <Paper style={{ 'marginTop': '40px' }}>
-                <div className="row">
-                    <div className="col-xs-12 text-center" style={ { marginTop: '20px', marginBottom: '20px' } }>
-                            <h3>Du bietest noch nichts an!</h3>
-                        </div>
-                </div>      
-        </Paper>;
+        <div className="text-center">
+            <h4>{ translate('NO_ACTIVE_LISTINGS') }</h4>
+            <RaisedButton onTouchTap={() => coreNavigation.goTo('/new-listing')} label={ translate('POST_NEW_LISTING') } primary={true}  />
+        </div>;
 
     const OfferSection = 
         <div className="row" style={{ 'marginTop': '40px' }}>
                 <div className="col-xs-12">
-                                <h2>
-                                    {this.state.profile.profile.firstName + "'s Angebote"}
-                                    {this.state.isMyProfile && <div className="pull-right">{newOfferBtn}</div> }
-                                </h2>
-                                <p className="text-muted">Das biete ich an.</p> 
+                    <h2>
+                        { translate('ACTIVE_LISTINGS') }
+                        {this.state.isMyProfile && <div className="pull-right">{newOfferBtn}</div> }
+                    </h2>
+                    <p className="text-muted">{ translate('ACTIVE_LISTINGS_DESC') }</p> 
                 </div>
 
                 <Divider />
@@ -188,7 +180,7 @@ class Profile extends Component {
                             <div className="row">
                                 <div className="col-xs-12">
                                     <h3 style={{ padding: 2, marginLeft: 10 }}>
-                                        <span>Skills</span>
+                                        <span>{ translate('TALENTS') }</span>
                                         { this.state.isMyProfile && 
                                             <div style={ { float: 'right', padding: '5px' }}>
                                                 <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 
@@ -210,8 +202,13 @@ class Profile extends Component {
                                     </h3>
                                 </div>
                             </div>
-                              
-
+                             { this.state.profile.talents.length === 0 &&
+                                <div className="row">
+                                    <div className="col-xs-12" style={{ marginLeft: 10, paddingBottom: 10 }}>
+                                       { translate('NO_TALENTS') }
+                                    </div>    
+                                </div>    
+                             }
                             { this.state.profile.talents.map((talent, index) =>
                             <div className="row" key={`talent-${index}-${talent.editMode}`} >
                                 <EditableSkill
@@ -273,17 +270,11 @@ class Profile extends Component {
                     <div className="col-xs-12 col-sm-6 col-md-4">
                         {SkillSection}   
                     </div>
+                    <div className="col-xs-12 col-sm-6 col-md-8">
+                        {OfferSection}     
 
-                    <Paper zDepth={1}>
-                        <div className="col-xs-12 col-sm-6 col-md-8">
-                            
-                                {OfferSection}     
-                            
-
-                                { this.state.isMyProfile && this.state.offers && !this.state.offers.length && NoOfferSection }
-                
-                        </div>
-                    </Paper>  
+                        { this.state.isMyProfile && this.state.offers && !this.state.offers.length && NoOfferSection }
+                    </div>
                 </div>
             </div>
         </div>

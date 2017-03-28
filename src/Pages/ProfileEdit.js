@@ -3,6 +3,7 @@ import apiUser from '../api/user';
 import EditableEntity from '../Components/EditableEntity';
 import * as coreNavigation from '../core/navigation';
 import '../App.css';
+import { translate } from '../core/i18n';
 
 export default class ProfileEdit extends Component {
     constructor(props) {
@@ -25,28 +26,30 @@ export default class ProfileEdit extends Component {
             return (
                 <div className="container">
                     <div className="col-xs-12">
-                        <h1>Profil bearbeiten</h1>
+                        <h1>{ translate('EDIT_PROFILE') }</h1>
 
                         <EditableEntity
+                            cancelLabel={translate('CANCEL')}
+                            saveLabel={translate('SAVE')}
                             showCancelBtn={true}
                             value={this.state.user && this.state.user.profile} 
                             fields={[
                                 {
                                     key: 'firstName',
-                                    label: 'Vorname'
+                                    label: translate('FIRST_NAME')
                                 },
                                 {
                                     key: 'lastName',
-                                    label: 'Nachname'
+                                    label: translate('LAST_NAME') 
                                 },
                                 {
                                     key: 'bio',
-                                    label: 'Profilbeschreibung',
-                                    hint: 'Erzählen Sie Profilbesuchern in einem kurzen Satz, wer Sie sind.'
+                                    label: translate('PROFILE_BIO'),
+                                    hint: translate('PROFILE_BIO_DESC'),
                                 },
                                 {
                                     key: 'website',
-                                    label: 'Webseite'
+                                    label: translate('WEBSITE')
                                 }
                             ]}
                             onConfirm={

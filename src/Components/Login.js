@@ -61,7 +61,7 @@ export default class Login extends Component {
             </div>
           </div>
           <hr/>
-           <div class="row">
+           <div className="row">
                 <div className="col-xs-12">
                     <p className="text-center text-muted">
                         <a href="https://studentask.de/pw-recovery" target="_blank">Password vergessen?</a>

@@ -1,4 +1,10 @@
 {
+  "CANCEL": "Abbrechen",  
+  "SAVE": "Übernehmen",
+  "FIRST_NAME": "Vorname",
+  "LAST_NAME": "Nachname",
+  "PROFILE_BIO": "Profilbeschreibung",
+  "PROFILE_BIO_DESC": "Tell the visitors on your profile about you. First impression matters!",
   "CHANGE_PROFILE_PICTURE": "Profilbild ändern",
   "PRICING_MODEL_HOURLY": "Pro Stunde",
   "PRICING_MODEL_TOTAL": "Pro Auftrag",

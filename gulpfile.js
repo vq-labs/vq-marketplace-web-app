@@ -6,7 +6,8 @@ const concat = require('gulp-concat');
 gulp.task('prepare', cb => {
     const env = args.env || 'production';
     const settings = require(`./config/setups/${env}.json`);
-    const translations = require(`./config/app/i18n/de.json`);
+    const translationsDE = require(`./config/app/i18n/de.json`);
+    const translationsEN = require(`./config/app/i18n/en.json`);
     const style = require(`./config/app/style.json`);
 
     console.log(settings);
@@ -28,8 +29,12 @@ gulp.task('prepare', cb => {
                     replacement: settings.GOOGLE_ANALYTICS_ID
                 },
                 {
-                    match: 'TRANSLATIONS',
-                    replacement: translations
+                    match: 'TRANSLATIONS_DE',
+                    replacement: translationsDE
+                },
+                {
+                    match: 'TRANSLATIONS_EN',
+                    replacement: translationsEN
                 }
             ]
         }))

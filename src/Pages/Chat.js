@@ -5,13 +5,10 @@ import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
 import * as apiChat from '../api/chat';
-
-
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
-
 import Ad from '../Components/Ad';
 
-
+import { translate } from '../core/i18n';
 
 import '../App.css';
 
@@ -24,14 +21,12 @@ export default class Chat extends Component {
   }
 
   componentDidMount() {
-        apiChat.getItems().then(messages => {
-            this.setState( { messages: messages });
-        });
+    apiChat.getItems().then(messages => {
+        this.setState( { messages: messages });
+    });
   }
- 
-  render() {
-    
 
+  render() {
     return (
         <div className="container">
             <div className="col-xs-12 col-sm-8">
@@ -39,16 +34,13 @@ export default class Chat extends Component {
                     <div class="row">
                         <div class="col-xs-12">
                             <List>
-                                <Subheader>Nachrichten und Anfragen</Subheader>
-
+                                <Subheader>{ translate('REQUESTS') }</Subheader>
                                 { !this.state.messages.length && 
                                     <p style={ { padding: '20px' } }>
-                                        Keine Anfragen
+                                        { translate('NO_REQUESTS') }
                                     </p>
                                 }
-
                                 { this.state.messages.map(message =>  
-                                
                                     <ListItem
                                         onClick={ () => { browserHistory.push('/app/chat/' + message._id ); }}
                                         primaryText={ '"' + message.task.title + '", ' + message.users[message.withUserId].profile.firstName + ' ' + message.users[message.withUserId].profile.lastName  }

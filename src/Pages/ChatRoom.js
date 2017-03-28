@@ -9,10 +9,10 @@ import Ad from '../Components/Ad';
 import Moment from 'react-moment';
 import * as coreAuth from '../core/auth';
 import * as apiChat from '../api/chat';
+import { translate } from '../core/i18n';
+
 import '../App.css';
 import '../Chat.css';
-
-
 import '../App.css';
 
 export default class ChatRoom extends Component {
@@ -144,7 +144,7 @@ export default class ChatRoom extends Component {
                          <Paper zDepth={1} style={ { padding: '10px' } }>
                             <div className="row">
                                 <div className="col-xs-12" style={ { marginBottom: '20px'} }>
-                                    <h4>In diesem Chat</h4>
+                                    <h4>{translate("IN_THIS_CHAT")}</h4>
                                 </div>    
                             </div>   
                             <div className="row">
@@ -181,6 +181,3 @@ export default class ChatRoom extends Component {
     );
    }
 };
-
-
-// this.getUserEditableTalent(talent)

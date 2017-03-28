@@ -16,7 +16,6 @@ import { translate } from '../core/i18n';
 import { formatGeoResults } from '../core/util';
 import Snackbar from 'material-ui/Snackbar';
 
-import Paper from 'material-ui/Paper';
 const _chunk = require('lodash.chunk');
 
 const PRICING_MODELS = {
@@ -103,7 +102,7 @@ export default class Onboarding extends Component {
             const step1 = <div className="container">
                         <div className="row">
                             <div className="col-xs-12">
-                                <h1 className="text-left">Step 1. What would you like to offer?</h1>
+                                <h1 className="text-left">{translate("STEP")} 1. {translate("CHOOSE_CATEGORY_LISTING")}</h1>
                             </div>
                         </div>
                         <hr />
@@ -141,7 +140,7 @@ export default class Onboarding extends Component {
                     <div className="col-xs-12">
                         <div className="row">
                             <div className="col-xs-12">
-                                <h1>Step 2. Determine the pricing</h1>
+                                <h1>{translate("STEP")} 2. {translate("DETERMINE_PRICING_MODEL")}</h1>
                             </div>
                         </div>
                         <hr />
@@ -185,7 +184,7 @@ export default class Onboarding extends Component {
                             { this.state.task.priceType !== 2 &&
                                 <div className="row">
                                     <div className="col-xs-12">
-                                        <em>Quick choice:</em>
+                                        <em>{translate("QUICK_CHOICE")}:</em>
                                         { this.state.task.priceType===1 &&
                                             <div>
                                                 <FlatButton label="10€" onClick={() => this.setTaskPrice(10)}/>
@@ -211,7 +210,7 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>Step 3. Describe your offer</h1>
+                            <h1>{translate("STEP")} 3. {translate("DESCRIBE_YOUR_LISTING")}</h1>
                         </div>
                     </div>
                     <hr />
@@ -219,7 +218,7 @@ export default class Onboarding extends Component {
                         <div className="col-xs-12">
                             <div className="row">
                             <div className="col-xs-12">
-                                <h4>Title</h4>
+                                <h4>{translate("TITLE")}</h4>
                                 <TextField
                                     name="title"
                                     onChange={this.handleTitleChange}
@@ -231,7 +230,7 @@ export default class Onboarding extends Component {
                         </div>  
                         <div className="row">
                             <div className="col-xs-12">
-                                <h4>Description</h4>
+                                <h4>{translate("DESCRIPTION")}</h4>
                                 <HtmlTextField onChange={this.handleDescChange} value={this.state.task.description}/>
                                 <hr />
                             </div>    
@@ -239,7 +238,7 @@ export default class Onboarding extends Component {
 
                         <div className="row">
                            <div className="col-xs-12">
-                                    <h4>Location (optional)</h4>
+                                    <h4>{translate("LOCATION")} ({translate("OPTIONAL")})</h4>
                                     <TextField name="location" style={{width: '100%'}}
                                         >
                                         <Autocomplete
@@ -266,7 +265,7 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>Step 4. Confirm before posting</h1>
+                            <h1>Step 4. {translate("CONFIRM_BEFORE_POSTING")}</h1>
                         </div>
                     </div>
                 
@@ -274,36 +273,35 @@ export default class Onboarding extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Category</h4>
+                            <h4>{translate("CATEGORY")}</h4>
                             { this.state.task.categories.map(category => <span>{category.label}</span>) }
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Title</h4>
+                            <h4>{translate("TITLE")}</h4>
                             {this.state.task.title}
                         </div>
                     </div>
                    
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Description</h4>
+                            <h4>{translate("DESCRIPTION")}</h4>
                             <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
                         </div>
                     </div>
-
                     <div className="row">
                         <div className="col-xs-12">
-                            <h4>Pricing</h4>
-                            { this.state.task.priceType === 1 ? 'pro Stunde' : this.state.task.priceType === 0 ? 'pro Auftrag' : 'auf Anfrage' }
+                            <h4>{translate("PRICING")}</h4>
+                            { this.state.task.priceType === 1 ? translate("PRICING_MODEL_HOURLY") : this.state.task.priceType === 0 ? translate("PRICING_MODEL_TOTAL") : translate("PRICING_MODEL_REQUEST_QUOTE") }
                         </div>
                     </div>
 
                     { this.state.task.priceType !== 2 && 
                         <div className="row">
                             <div className="col-xs-12">
-                                <h4>Price</h4>
+                                <h4>{translate("PRICE")}</h4>
                                 {this.state.task.price + '€' }
                             </div>
                         </div>
@@ -316,7 +314,7 @@ export default class Onboarding extends Component {
               const success=<div className="container">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1>Bravo! Your offer is online!</h1>
+                        <h1>Bravo! {translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
                     </div>
                 </div>
 
@@ -337,21 +335,12 @@ export default class Onboarding extends Component {
 
               const createAccountSection = 
                 <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h1>Erstellen Sie ein Konto</h1>
+                        <div className="row">
+                            <LoginSignup
+                                onSuccess={ () => this.setState({ auth: true }) }
+                            />
                         </div>
-                    </div>
-                
-
-                <div className="col-xs-12">
-                    <div className="row">
-                        <LoginSignup
-                            onSuccess={ () => this.setState({ auth: true }) }
-                        />
-                    </div>
-                </div>
-              </div>;
+                </div>;
 
 
             return (
@@ -374,7 +363,7 @@ export default class Onboarding extends Component {
                                 { this.state.step !== 5 &&  this.state.step !== 1 &&    
                                     <FlatButton
                                         style={ { float: 'left' } }
-                                        label='Zurück' 
+                                        label={translate("BACK")}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => this.setState({ step: this.state.step - 1 }) }
@@ -383,7 +372,7 @@ export default class Onboarding extends Component {
                                 { this.state.step > 1 && this.state.step < 4 && 
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label='Weiter'
+                                        label={translate("CONTINUE")}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => {
@@ -393,13 +382,13 @@ export default class Onboarding extends Component {
                                                 if (!this.state.task.title) {
                                                     return this.setState({
                                                         openSnackbar: true,
-                                                        snackbarMessage: "Titel fehlt"
+                                                        snackbarMessage: translate("TITLE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
                                                 if (!this.state.task.description) {
                                                     return this.setState({
                                                         openSnackbar: true,
-                                                        snackbarMessage: "Beschreibung fehlt"
+                                                        snackbarMessage: translate("DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
                                             }
@@ -410,7 +399,7 @@ export default class Onboarding extends Component {
                                 { this.state.step === 4 && this.state.auth &&
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label='Inserieren'
+                                        label={translate("CONFIRM_AND_POST")}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => {

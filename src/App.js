@@ -20,7 +20,6 @@ import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
     
 import * as coreAuth from './core/auth';
-import * as coreStyle from './core/style';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js'
 import * as coreNavigation from './core/navigation';

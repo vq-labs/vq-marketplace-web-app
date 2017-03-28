@@ -70,7 +70,7 @@ class Header extends Component {
         <div >
           <Toolbar className="st-nav">
             <a href="/" target="_self">
-              <img className='imgCenter' src={this.props.logo} role="presentation" style={{ 'marginTop': '6px','marginBottom': '8px', maxHeight: '45px' }}/>
+              <img className='imgCenter hidden-xs' src={this.props.logo} role="presentation" style={{ 'marginTop': '6px','marginBottom': '8px', maxHeight: '45px' }}/>
             </a>  
                 <ToolbarGroup>
                           { this.state.homeLabel && 
@@ -80,12 +80,12 @@ class Header extends Component {
                             } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                           }
                           { !this.state.logged &&
-                          <FlatButton label="Registrieren" onClick={ 
+                          <FlatButton label={translate("SIGNUP")} onClick={ 
                             () => { browserHistory.push('/app/signup'); 
                           }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                           }
                           { !this.state.logged &&
-                          <FlatButton label="Log-in" onClick={ 
+                          <FlatButton label={translate("LOGIN")} onClick={ 
                             () => { browserHistory.push('/app/login'); 
                           }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                           }
@@ -110,7 +110,7 @@ class Header extends Component {
                             iconButtonElement={ <Avatar src={this.state.user.profile.imageUrl || 'https://studentask.de/images/avatar.png'} size={40} />}
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                        <MenuItem onClick={ () => { browserHistory.push('/app/profile/' + this.state.user._id ) }} primaryText="Profil" />                 
+                        <MenuItem onClick={ () => { browserHistory.push('/app/profile/' + this.state.user._id ) }} primaryText={translate("PROFILE")} />                 
                         
                         
                         { coreAuth.isAdmin() && 

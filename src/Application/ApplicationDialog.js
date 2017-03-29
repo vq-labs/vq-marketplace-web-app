@@ -3,13 +3,13 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
-import AuthService from '../AuthService';
-import StActions from '../StActions';
+import Snackbar from 'material-ui/Snackbar';
 import GoogleAd from 'react-google-ad'
 import LoginSignup from '../Components/LoginSignup';
-
 import { browserHistory } from 'react-router';
+import apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
+import { translate } from '../core/i18n';
 
 const _ = require('underscore');
 
@@ -30,10 +30,10 @@ export default class ApplicationDialog extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.taskId){
-        const application=_.extend({}, this.state.application);
+    if (nextProps.taskId) {
+        const application = _.extend({}, this.state.application);
 
-        application.taskId=nextProps.taskId;
+        application.taskId = nextProps.taskId;
 
         this.setState({ application: application });
     }
@@ -70,28 +70,33 @@ export default class ApplicationDialog extends React.Component {
             return 'Anfrage senden';
     }
   }
+  sendRequest() {
+    if (Boolean(coreAuth.getToken())) {
+            this.setState({ isBeingPosted: true });
+            apiRequest.createItem(this.state.application)
+            .then(result => this.setState({ 
+                mask: 'success', 
+                isBeingPosted: false 
+            }));
+    } else {
+        this.setState({ mask: 'auth' });
+    }
+  }
   continuePosting (currentMask) {
+      debugger;
+         if (!this.state.application.message) {
+            return this.setState({
+                openSnackbar: true,
+                snackbarMessage: translate("MESSAGE") + " " + translate("IS_REQUIRED")
+            });
+         }
+
          switch (currentMask) {
             case 'init':
-                if (Boolean(coreAuth.getToken())) {
-                    StActions['sendApplication'](this.state.application, result => {
-                        this.setState({ mask: 'success', isBeingPosted: false });
-                    });
-
-                    this.setState({ mask: 'success', isBeingPosted: false });
-                } else {
-                    this.setState({ mask: 'auth' });
-                }
-
+                this.sendRequest();
                 break;
             case 'confirmation':
-                const methodName=AuthService.isAuth() ? 'sendApplication' : 'loginAndSendApplication';    
-
-                this.setState({ isBeingPosted: true });
-
-                StActions[methodName](this.state.application, result => {
-                    this.setState({ mask: 'success', isBeingPosted: false });
-                });
+                this.sendRequest();
 
                 break;
             case 'success':
@@ -104,24 +109,30 @@ export default class ApplicationDialog extends React.Component {
   currentMask==='success' ? "Die Nachricht wurde erfolgreich gesendet" : "Ihre Nachricht";
   
   render() {
-     const backBtn=<FlatButton
+     const backBtn = <FlatButton
         onTouchTap={ () => this.goBack(this.state.mask) }
         label={ this.showBackBtnLabel(this.state.mask) }
         disabled={ false }
         primary={ true }
       />;
 
-      const continueBtn=<FlatButton
+      const continueBtn = <FlatButton
         label={ this.showContinueBtnLabel(this.state.mask) }
         primary={ true }
         disabled={ false }
         onTouchTap={ () => this.continuePosting(this.state.mask) }
       />;
      
-     const getActions=currentMask => currentMask !== 'success' ? [
-      backBtn,
-      continueBtn
-    ] : [ continueBtn ];
+     const getActions = currentMask => {
+         if (currentMask === 'auth') {
+             return [ ];
+         }
+
+         return currentMask !== 'success' ? [
+            backBtn,
+            continueBtn
+         ] : [ continueBtn ];
+    };
 
     const InitApplication = 
         <div>
@@ -162,11 +173,9 @@ export default class ApplicationDialog extends React.Component {
 
     const Success=<div>
         <div className="col-sm-12 col-xs-12">
-            <h3>
-                Die Nachricht wurde geschickt.
-            </h3>
+            <h3>Die Nachricht wurde geschickt.</h3>
 
-            <div>
+            <div className="hidden">
                 <a href="https://geo.itunes.apple.com/de/app/studentask/id1084813293?mt=8" target="_blank">
                     <img style={{ "width": "120px;" }} alt="Get StudenTask App on Google Play" src="https://studentask.de/images/badge_appstore-lrg.svg"/>
                 </a>
@@ -180,18 +189,24 @@ export default class ApplicationDialog extends React.Component {
     return (
       <Dialog
           autoScrollBodyContent={true}
-          title={ this.getDialogTitle(this.state.currentMask) }
-          actions={ getActions(this.state.currentMask) }
+          title={ this.getDialogTitle(this.state.mask) }
+          actions={ getActions(this.state.mask) }
           modal={ true }
           open={ this.state.open }
         >
           { this.state.mask==='init' && InitApplication }
           { this.state.mask==='auth' && <LoginSignup
-                onSuccess={ () => this.setState({ mask: 'confirmation' }) }
+                onSuccess={ () => this.sendRequest() }
           /> }
           { this.state.mask==='confirmation' && ApplicationConfirmation }
           { this.state.mask==='success' && Success }
+          <Snackbar
+            open={this.state.openSnackbar}
+            message={this.state.snackbarMessage}
+            autoHideDuration={4000}
+          />
         </Dialog>
+
     );
   }
 }  

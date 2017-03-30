@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/app",
   "author": "Adrian Barwicki",
-  "licence": "MIT",
+  "licence": "UNLICENCED",
   "devDependencies": {
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",

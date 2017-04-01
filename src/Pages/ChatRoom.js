@@ -18,36 +18,35 @@ import '../App.css';
 export default class ChatRoom extends Component {
   constructor() {
     super();
-    this.state={
+
+    this.state = {
         newMessage: '',
         task: {},
         users: {},
         messages: [] 
     };
 
-    this.handleNewMessage=this.handleNewMessage.bind(this);
+    this.handleNewMessage = this.handleNewMessage.bind(this);
   }
 
   componentDidMount() {
-        let chatId=this.props.params.chatId;
+        let chatId = this.props.params.chatId;
 
-        apiChat.getItem(chatId).then(chat => {
-            this.setState({
-                messages: chat.messages, 
-                users: chat.users, 
-                task: chat.task 
-            });
-        });
+        apiChat.getItem(chatId).then(chat => this.setState({
+            messages: chat.messages,
+            users: chat.users,
+            task: chat.task
+        }));
   }
  
   handleNewMessage (event) {
         event.preventDefault()
        
-        const data={
+        const data = {
             message: this.refs.newMessage.getValue()
         };
 
-        this.refs.newMessage.value="";
+        this.refs.newMessage.value = "";
 
         this.state.messages.push({ 
             message: data.message, 

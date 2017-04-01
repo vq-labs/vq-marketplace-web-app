@@ -21,7 +21,8 @@ import AdminPage from './Admin/Admin';
     
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
-import * as corei18n from './core/i18n.js'
+import * as corei18n from './core/i18n.js';
+import * as coreUtil from './core/util.js'
 import * as coreNavigation from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
@@ -35,13 +36,15 @@ Object.keys(TRANSLATIONS).forEach(langKey => corei18n.addLang(langKey, TRANSLATI
 import './App.css';
 
 class App extends Component {
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
 
     this.state = {
       user: null,
       meta: {}
     };
+
+    const params = coreUtil.getParams(location.search);
 
     coreAuth.addListener('login', () => {
       apiAuth.me()
@@ -63,7 +66,11 @@ class App extends Component {
       this.setState({ user: null });
     });
     
-    coreAuth.loadFromLocalStorage();
+    if (params.token) {
+      coreAuth.setToken(params.token);
+    } else {
+      coreAuth.loadFromLocalStorage();
+    }
 
     apiConfig.meta.getItems({}, { cache: true })
       .then(meta => this.setState({ meta: meta[0] }));

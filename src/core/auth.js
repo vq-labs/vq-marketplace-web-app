@@ -19,21 +19,37 @@ export const loadFromLocalStorage = () => {
     userId = localStorage.getItem('ST_AUTH_USERID');
     token = localStorage.getItem('ST_AUTH_TOKEN');
 
+    if (user === 'null' || token === 'null') {
+        return;
+    }
+
     if (userId && token) {
         emitChange('login');
     }
 };
 
 export const setUser = _user => {
+    if (user === 'null') {
+        return;
+    }
+
     user = _user;
 };
 
 export const setUserId = id => {
+    if (user === 'null') {
+        return;
+    }
+
     localStorage.setItem('ST_AUTH_USERID', id);
     userId = id;
 };
 
 export const setToken = tk => {
+    if (user === 'null') {
+        return;
+    }
+
     localStorage.setItem('ST_AUTH_TOKEN', tk);
     token = tk;
 

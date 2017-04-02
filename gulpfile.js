@@ -76,20 +76,3 @@ gulp.task('deploy', [ 'build' ], cb => {
         cb(code !== 0 ? 'error in build' : null);
     });
 });
-
-const deploy = cb => {
-    const args = [ './**', '--region', 'eu-central-1', '--bucket', 'st-app-web', '--gzip' ];
-    const npm = spawn("s3-deploy", args, { cwd: './projects/st-app-web/build' });
-
-    npm.stdout.on('data', data => {
-        console.log(`stdout: ${data}`);
-    });
-
-    npm.stderr.on('data', data => {
-        console.log(`stderr: ${data}`);
-    });
-
-    npm.on('close', code => {
-        cb(code !== 0 ? 'error in build' : null);
-    });
-};

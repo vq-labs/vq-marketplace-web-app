@@ -1,4 +1,5 @@
 {
+  "CONFIRM_BEFORE_POSTING": "Review & Beschtätigung",
   "ACTIVATE": "Aktivieren",
   "DEACTIVATE": "Deaktivieren",
   "EDIT": "Editieren",
@@ -43,7 +44,7 @@
   "PRICING_MODEL_REQUEST_QUOTE": "Auf Anfrage",
   "BUYERS_SLOGAN_HEADER" : "Put your ideas into action",
   "BUYERS_SLOGAN_SUBHEADER" : "Browse offers from freelancers and use the great talent for your startup.",
-  "VIDEO_FILM": "Video & Film",
+  "VIDEO_FILM": "Video & Animations",
   "MARKETING": "Marketing",
   "DESIGN": "Design",
   "WEB_DEVELOPMENT": "Web-Entwicklung",

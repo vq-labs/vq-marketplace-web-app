@@ -1,4 +1,6 @@
 {
+  "SALES": "Sales",
+  "CATEGORY": "Category",
   "CONFIRM_BEFORE_POSTING": "Review & Confirmation",
   "ACTIVATE": "Activate",
   "DEACTIVATE": "Deaktivate",

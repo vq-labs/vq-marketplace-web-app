@@ -1,4 +1,6 @@
 {
+  "SALES": "Vertrieb", 
+  "CATEGORY": "Kategorie",
   "CONFIRM_BEFORE_POSTING": "Review & Beschtätigung",
   "ACTIVATE": "Aktivieren",
   "DEACTIVATE": "Deaktivieren",

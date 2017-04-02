@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const replace = require('gulp-replace-task');
+const spawn = require('child_process').spawn;
 const args = require('yargs').argv;
 const concat = require('gulp-concat');
 
@@ -40,3 +41,39 @@ gulp.task('prepare', cb => {
         }))
         .pipe(gulp.dest('src/generated'));
 });
+
+gulp.task('build', cb => {
+    const npm = spawn('npm', [ 'run', 'build' ], { cwd: './'  });
+
+    npm.stdout.on('data', data => {
+        console.log(`${data}`);
+    });
+
+    npm.stderr.on('data', err => {
+        console.log(`stderr: ${err}`);
+    });
+
+    npm.on('close', code => {
+        cb(code !== 0 ? 'error in build' : null);
+    });
+};
+
+
+gulp.task('deploy', cb => {
+    const npm = spawn('npm', [ 'run', 'deploy' ], { cwd: './'  });
+
+    npm.stdout.on('data', data => {
+        console.log(`stdout: ${data}`);
+    });
+
+    npm.stderr.on('data', data => {
+        console.log(`stderr: ${data}`);
+    });
+
+    npm.on('close', code => {
+        cb(code !== 0 ? 'error in build' : null);
+    });
+});
+
+module.exports = deploy;
+

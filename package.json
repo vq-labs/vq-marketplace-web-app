@@ -46,6 +46,7 @@
     "react-dev-utils": "^0.3.0",
     "recursive-readdir": "2.1.0",
     "rimraf": "2.5.4",
+    "s3-deploy": "^0.7.3",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
@@ -90,7 +91,8 @@
     "start:production": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/start.js",
     "start:local-production": "node ./node_modules/gulp/bin/gulp.js prepare --env local-production && node scripts/start.js",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "deploy": "node ./node_modules/s3-deploy/.bin/s3-deploy ./** --region eu-central-1' --bucket st-app-web"
   },
   "jest": {
     "moduleFileExtensions": [

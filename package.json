@@ -92,7 +92,7 @@
     "start:local-production": "node ./node_modules/gulp/bin/gulp.js prepare --env local-production && node scripts/start.js",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "deploy": "node ./node_modules/s3-deploy/.bin/s3-deploy ./** --region eu-central-1' --bucket st-app-web"
+    "deploy": "cd build && node ../node_modules/s3-deploy/.bin/s3-deploy ** --region eu-central-1 --bucket st-app-web && cd .."
   },
   "jest": {
     "moduleFileExtensions": [

@@ -40,9 +40,11 @@ gulp.task('prepare', cb => {
             ]
         }))
         .pipe(gulp.dest('src/generated'));
+
+        cb();
 });
 
-gulp.task('build', cb => {
+gulp.task('build', [ "prepare" ], cb => {
     const npm = spawn('npm', [ 'run', 'build' ], { cwd: './'  });
 
     npm.stdout.on('data', data => {
@@ -56,11 +58,12 @@ gulp.task('build', cb => {
     npm.on('close', code => {
         cb(code !== 0 ? 'error in build' : null);
     });
-};
+});
 
 
-gulp.task('deploy', cb => {
-    const npm = spawn('npm', [ 'run', 'deploy' ], { cwd: './'  });
+gulp.task('deploy', [ 'build' ], cb => {
+    const args = [ './**', '--region', 'eu-central-1', '--bucket', 'st-app-web' ];
+    const npm = spawn("s3-deploy", args, { cwd: './build' });
 
     npm.stdout.on('data', data => {
         console.log(`stdout: ${data}`);
@@ -75,5 +78,20 @@ gulp.task('deploy', cb => {
     });
 });
 
-module.exports = deploy;
 
+const deploy = cb => {
+    const args = [ './**', '--region', 'eu-central-1', '--bucket', 'st-app-web', '--gzip' ];
+    const npm = spawn("s3-deploy", args, { cwd: './projects/st-app-web/build' });
+
+    npm.stdout.on('data', data => {
+        console.log(`stdout: ${data}`);
+    });
+
+    npm.stderr.on('data', data => {
+        console.log(`stderr: ${data}`);
+    });
+
+    npm.on('close', code => {
+        cb(code !== 0 ? 'error in build' : null);
+    });
+};

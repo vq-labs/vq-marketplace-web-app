@@ -109,15 +109,16 @@ class Profile extends Component {
     const ProfileHeader = 
             <div className="row">
                 <div className="col-xs-12 col-sm-3 col-md-2">
-                    <ProfileImage allowChange={this.state.isMyProfile} onDrop={this.onDrop} image={this.state.profile.profile.imageUrl || 'https://studentask.de/images/avatar.png'} />
+                    <ProfileImage allowChange={this.state.isMyProfile} onDrop={this.onDrop} image={this.state.profile.profile && this.state.profile.profile.imageUrl || 'https://studentask.de/images/avatar.png'} />
                 </div>
                 <div className="col-xs-12 col-sm-9 col-md-10">
                     <div className="row">  
                         <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
-                            <h1 style={{ 'marginTop': '20px'  }}>
-                                { this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName }
-                               
-                            </h1>
+                            { this.state.profile.profile && 
+                                <h1 style={{ 'marginTop': '20px'  }}>
+                                    { this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName }
+                                </h1>
+                            }
                         </div>
                     </div>
                     <div className="row">
@@ -126,12 +127,16 @@ class Profile extends Component {
                         </div>
                         <div className="col-xs-1"><FormatQuote /></div>
                         <div className="col-xs-11 text-muted" style={{ padding: 10 }} >
-                            <p>{ this.state.profile.profile.bio }</p>
+                             { this.state.profile.profile && 
+                                <p>{ this.state.profile.profile.bio }</p>
+                             }
                         </div>
                      </div>
                      <div className="row">
                         <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
-                            <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website}</a>
+                            { this.state.profile.profile && 
+                                <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website}</a>
+                            }
                         </div>
                     </div>
                     { this.state.isMyProfile &&
@@ -189,15 +194,15 @@ class Profile extends Component {
                                             <div style={ { float: 'right', padding: '5px' }}>
                                                 <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 
                                                     onClick={ () => {
-                                                        this.state.profile.talents.unshift({ 
+                                                        const profile = this.state.profile;
+                                                        
+                                                        profile.talents.unshift({
                                                             level: 0, 
                                                             name: '', 
                                                             editMode: true 
                                                         });
                                                         
-                                                        this.setState({
-                                                            profile: this.state.profile
-                                                        });
+                                                        this.setState({ profile });
                                                     }} >
                                                     <ContentAdd />
                                                 </FloatingActionButton>
@@ -223,10 +228,11 @@ class Profile extends Component {
                                     onCancel={
                                         skill => {
                                             if (!skill._id) {
-                                                const index = this.state.profile.talents.indexOf(talent);
-            
-                                                this.state.profile.talents.splice(index, 1);
-                                                this.setState( { profile: this.state.profile });
+                                                const profile = this.state.profile;
+
+                                                profile.talents.splice(index, 1);
+
+                                                this.setState( { profile });
                                             }
                                         }
                                     }
@@ -236,15 +242,11 @@ class Profile extends Component {
                                             apiSkills.createItem({ skill });
                                         } else {
                                             apiSkills.createItem({ skill }).then(talent => {
-                                               // this.state.profile.talents[this.state.profile.talents.length - 1]=talent;
+                                                const profile = this.state.profile;
 
-                                                const talents = this.state.profile.talents;
+                                                profile.talents[index] = talent;
 
-                                                talents[this.state.profile.talents.length - 1] = talent;
-
-                                                this.setState({ profile: talents });
-
-                                                
+                                                this.setState({ profile });
                                             });
                                         }
                                     }}

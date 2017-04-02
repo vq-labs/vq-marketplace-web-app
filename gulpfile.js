@@ -60,7 +60,6 @@ gulp.task('build', [ "prepare" ], cb => {
     });
 });
 
-
 gulp.task('deploy', [ 'build' ], cb => {
     const args = [ './**', '--region', 'eu-central-1', '--bucket', 'st-app-web' ];
     const npm = spawn("s3-deploy", args, { cwd: './build' });
@@ -77,7 +76,6 @@ gulp.task('deploy', [ 'build' ], cb => {
         cb(code !== 0 ? 'error in build' : null);
     });
 });
-
 
 const deploy = cb => {
     const args = [ './**', '--region', 'eu-central-1', '--bucket', 'st-app-web', '--gzip' ];

@@ -99,10 +99,11 @@ export default class TaskCard extends Component {
                               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                               targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            >
-                                { task.status !== 0 && <MenuItem primaryText="Aktivieren" onTouchTap={ () => this.changeStatus(task._id, 0) } /> }
-                                { task.status === 0 && <MenuItem primaryText="Deaktivieren" onTouchTap={ () => this.changeStatus(task._id, 103) } /> }
-                                <MenuItem primaryText="Editieren" onTouchTap={ () => coreNavigation.goTo(`/task/${task._id}/edit`) } />
+                            > 
+                                <MenuItem primaryText={translate('EDIT')} onTouchTap={ () => coreNavigation.goTo(`/task/${task._id}/edit`) } />
+                                { task.status !== 0 && <MenuItem primaryText={translate('ACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 0) } /> }
+                                { task.status === 0 && <MenuItem primaryText={translate('DEACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 103) } /> }
+                                
                             </IconMenu>
                       </div>
                     </div> 

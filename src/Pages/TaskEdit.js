@@ -8,6 +8,8 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import apiTask from '../api/task';
 import * as coreNavigation from '../core/navigation';
+import ImageUploader from '../Components/ImageUploader';
+import { translate } from '../core/i18n';
 
 import '../App.css';
 
@@ -27,13 +29,14 @@ export default class TaskEdit extends Component {
     }
    
     componentDidMount() {
-      let taskId=this.props.params.taskId;
+      let taskId = this.props.params.taskId;
 
       apiTask.getItem(taskId).then(rTask => {
         this.setState({
             isLoading: false,
             task: rTask,
             updatedTask: {
+                images: rTask.images,
                 title: rTask.title,
                 description: rTask.description,
                 price: rTask.price / 100,
@@ -54,7 +57,7 @@ export default class TaskEdit extends Component {
   } 
   handleUpdate ()  {
     const updatedTask = this.state.updatedTask;
-    console.log(updatedTask);
+
     updatedTask.price *= 100;
 
     apiTask.updateItem(this.state.task._id, updatedTask).then(task => {
@@ -111,15 +114,15 @@ export default class TaskEdit extends Component {
                                         defaultSelected={this.state.task.priceType}>
                                             <RadioButton
                                                 value={1}
-                                                label="pro Stunde"
+                                                label={translate("PRICING_MODEL_HOURLY")}
                                             />
                                             <RadioButton
                                                 value={0}
-                                                label="pro Auftrag"
+                                                label={translate("PRICING_MODEL_TOTAL")}
                                             />
                                             <RadioButton
                                                 value={2}
-                                                label="auf Anfrage"
+                                                label={translate("PRICING_MODEL_REQUEST_QUOTE")}
                                             />
                                     </RadioButtonGroup>
                                 </div>
@@ -132,10 +135,21 @@ export default class TaskEdit extends Component {
                                                     value={this.state.updatedTask.price }
                                                     style={{width: '100%'}}
                                                     inputStyle={{width: '100%'}}
-                                                    floatingLabelText="Preis (in €)"
+                                                    floatingLabelText={translate("PRICE")}
                                                 />
                                     </div>
                                 }
+
+                                <div className="col-xs-12">
+                                    <h4>Photos</h4>
+                                    <ImageUploader images={this.state.updatedTask.images} onChange={images => {
+                                            const updatedTask = this.state.updatedTask;
+
+                                            updatedTask.images = images;
+                            
+                                            this.setState({ updatedTask });
+                                    }} />
+                                </div> 
                                 <div className="col-xs-12">
                                     <FlatButton
                                         style={ { float: 'left' } }

@@ -7,12 +7,12 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import FormatQuote from 'material-ui/svg-icons/editor/format-quote';
-import StActions from '../StActions';
 import * as apiSkills from '../api/skills';
 import apiTask from '../api/task';
 import apiUser from '../api/user';
 import * as coreAuth from '../core/auth';
 import * as coreNavigation from '../core/navigation';
+import * as apiMedia from '../api/media';
 
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
@@ -90,13 +90,17 @@ class Profile extends Component {
   }
 
   onDrop(files) {
-        StActions.uploadImage(files[0], response => {
+      apiMedia.upload(files[0], { width: 150, height: 150 })
+        .then(result => {
+            const imageUrl = result.url;
             const profile = this.state.profile;
 
-            profile.profile.imageUrl = response.url;  
-        
+            profile.profile.imageUrl = imageUrl;  
+            
             this.setState({ profile });
-        });
+
+            apiUser.updateItem(this.state.user._id, { profile: { imageUrl } });
+        })
   }
 
   render() {
@@ -247,7 +251,7 @@ class Profile extends Component {
                                     onDelete={ () => {
                                         apiSkills.deleteItem(this.state.userId, talent._id);
                                         
-                                        const index=this.state.profile.talents.indexOf(talent);
+                                        const index = this.state.profile.talents.indexOf(talent);
                                         
                                         this.state.profile.talents.splice(index, 1);
                                         

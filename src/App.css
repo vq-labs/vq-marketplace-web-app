@@ -196,14 +196,27 @@ width:172px;
   color : "red" !important;
 }
 
-.dropzone  {
+.st-profile-dropzone  {
       width: 181px !important;
       height: 181px !important;
       border-color: rgb(255, 255, 255) !important;
     }
   
 
+.dropzone.dz-clickable {
+    cursor: pointer;
+}
 
+.dropzone {
+    min-height: 150px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 20px 20px;
+}
+
+.dropzone, .dropzone * {
+    box-sizing: border-box;
+}
 
 
 

@@ -1,3 +1,19 @@
+export const parseJSON = response => {
+  if (response.status !== 200) {
+      throw new Error(response.json());
+  }
+  
+  let jsonResponse;
+
+  try {
+      jsonResponse = response.json();
+  } catch (err) {
+      console.warn("jsonResponse could not be parsed")
+  }
+  
+  return jsonResponse;
+};
+
 export const serializeQueryObj = (obj, prefix) => {
   let str = [], p;
 

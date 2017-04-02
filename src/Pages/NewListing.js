@@ -9,6 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Autocomplete from 'react-google-autocomplete';
 import LoginSignup from '../Components/LoginSignup';
+import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import apiTask from '../api/task';
@@ -35,10 +36,12 @@ export default class Onboarding extends Component {
             categories: [],
             insertedTask: {},
             task: {
+                virtual: true,
                 taskType: 1,
                 categories: [],
                 price: 20,
                 priceType: 1,
+                images: [],
                 utm: {
                     source: 'web-app',
                     medium: 'web'
@@ -114,7 +117,10 @@ export default class Onboarding extends Component {
                                             <div className="col-xs-12 col-sm-4">
                                                     <Card onClick={() => {
                                                         const task= this.state.task;
-                                                        const category= { label: translate(tile.code), code: tile.code };
+                                                        const category= { 
+                                                            label: translate(tile.code),
+                                                            code: tile.code 
+                                                        };
 
                                                         task.categories = [ category ];    
 
@@ -176,7 +182,7 @@ export default class Onboarding extends Component {
                                             value={this.state.task.price}
                                             style={{width: '100%'}}
                                             inputStyle={{width: '100%'}}
-                                            floatingLabelText="Preis"
+                                            floatingLabelText={translate("PRICE")}
                                         />
                                     </div>
                                 </div>
@@ -248,6 +254,7 @@ export default class Onboarding extends Component {
                                                 const task = this.state.task;
 
                                                 task.location = formatGeoResults([ place ])[0];
+                                                task.virtual = false;
 
                                                 this.setState({ task });
                                             }}
@@ -309,8 +316,6 @@ export default class Onboarding extends Component {
                 </div>
               </div>;
 
-
-
               const success=<div className="container">
                 <div className="row">
                     <div className="col-xs-12">
@@ -332,6 +337,26 @@ export default class Onboarding extends Component {
                 </div>
               </div>;
 
+              const addImages =
+                <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
+                       
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h1>{translate("STEP")} 4. {translate("ADD_PICTURE_HEADER")}</h1>
+                                <p className="text-muted">{translate("ADD_PICTURE_DESC")}</p>
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                            <ImageUploader images={this.state.task.images} onChange={images => {
+                                    const task = this.state.task;
+
+                                    task.images = images;
+                       
+                                    this.setState({ task });
+                             }} />
+                        </div>
+                </div>;
 
               const createAccountSection = 
                 <div className="col-xs-12">
@@ -350,17 +375,17 @@ export default class Onboarding extends Component {
                         <div className="col-xs-12 col-sm-8 col-md-6">
                             { this.state.step===2 && step2 }
                             { this.state.step===3 && step3 }
-                            { this.state.step===4 && this.state.auth && confirmBeforePosting }
+                            { this.state.step===4 && this.state.auth && addImages }
                             { this.state.step===4 && !this.state.auth && createAccountSection }
-
-                            { this.state.step===5 && success }
+                            { this.state.step===5 && this.state.auth && confirmBeforePosting }
+                            { this.state.step===6 && success }
 
                             
 
                             { this.state.step !== 5 && <hr /> }
                             
                             <div class="row" style={ { marginTop: 20 } }>
-                                { this.state.step !== 5 &&  this.state.step !== 1 &&    
+                                { this.state.step !== 6 &&  this.state.step !== 1 &&    
                                     <FlatButton
                                         style={ { float: 'left' } }
                                         label={translate("BACK")}
@@ -369,7 +394,7 @@ export default class Onboarding extends Component {
                                         onTouchTap={ () => this.setState({ step: this.state.step - 1 }) }
                                     />
                                 }
-                                { this.state.step > 1 && this.state.step < 4 && 
+                                { this.state.step > 1 && this.state.step < 5 && 
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label={translate("CONTINUE")}
@@ -396,7 +421,7 @@ export default class Onboarding extends Component {
                                         } }
                                     />
                                 }
-                                { this.state.step === 4 && this.state.auth &&
+                                { this.state.step === 5 && this.state.auth &&
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label={translate("CONFIRM_AND_POST")}
@@ -405,10 +430,8 @@ export default class Onboarding extends Component {
                                         onTouchTap={ () => {
                                             const task = this.state.task;
 
-                                            task.price = task.priceType === 2 ? 0 : task.price * 100;
+                                            task.price *= 100;
 
-                                            this.setState({ task });
-                                            
                                             apiTask
                                                 .createItem(this.state.task)
                                                 .then(task => this.setState({ 

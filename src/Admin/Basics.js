@@ -18,7 +18,7 @@ export default class SectionBasics extends React.Component {
         return (
             <div className="row">
                     <div className="col-xs-12">
-                        <h1>Marktplace basics</h1>
+                        <h1>Marketplace basics</h1>
                         { this.state.meta &&
                             <EditableEntity
                                 showCancelBtn={false}

@@ -1,3 +1,9 @@
-import * as RestResourceFactory from '../core/rest-resource-factory';
+import * as communication from '../core/communication'
 
-export default RestResourceFactory.create('task/apply');
+export const getItems = () => communication.doGet('/request');
+
+export const getItem = requestId => communication.doGet('/request/' + requestId);
+
+export const createItem = data => communication.doPost('/request', data);
+
+export const createItemMessage = (requestId, data) => communication.doPost('/request/' + requestId + '/message', data);

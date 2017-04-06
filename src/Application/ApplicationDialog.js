@@ -6,36 +6,37 @@ import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
 import GoogleAd from 'react-google-ad'
 import LoginSignup from '../Components/LoginSignup';
-import { browserHistory } from 'react-router';
-import apiRequest from '../api/request';
+import * as apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
 import { translate } from '../core/i18n';
+import { browserHistory } from 'react-router';
 
 const _ = require('underscore');
 
 export default class ApplicationDialog extends React.Component {
     constructor(props) {
-    super(props);
+        super(props);
 
-    this.state={
-        isBeingPosted: false,
-        mask: 'init', 
-        logged: Boolean(coreAuth.getToken()),
-        open: false,
-        application: {
-            taskId: this.props.taskId,
-            message: ''
-        }
-    }
-  };
-
+        this.state = {
+            isBeingPosted: false,
+            mask: 'init', 
+            logged: Boolean(coreAuth.getToken()),
+            open: false,
+            application: {
+                toUserId: this.props.toUserId,
+                taskId: this.props.taskId,
+                message: ''
+            }
+        };
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.taskId) {
+    if (nextProps.taskId && nextProps.toUserId) {
         const application = _.extend({}, this.state.application);
 
         application.taskId = nextProps.taskId;
-
-        this.setState({ application: application });
+        application.toUserId = nextProps.toUserId;
+        
+        this.setState({ application });
     }
 
     if (nextProps.open !== this.state.open) {
@@ -74,16 +75,15 @@ export default class ApplicationDialog extends React.Component {
     if (Boolean(coreAuth.getToken())) {
             this.setState({ isBeingPosted: true });
             apiRequest.createItem(this.state.application)
-            .then(result => this.setState({ 
-                mask: 'success', 
-                isBeingPosted: false 
-            }));
+                .then(result => this.setState({
+                    mask: 'success', 
+                    isBeingPosted: false 
+                }));
     } else {
         this.setState({ mask: 'auth' });
     }
   }
   continuePosting (currentMask) {
-      debugger;
          if (!this.state.application.message) {
             return this.setState({
                 openSnackbar: true,
@@ -141,8 +141,8 @@ export default class ApplicationDialog extends React.Component {
                         rows={4}
                         multiLine={true}
                         onChange={ e => {
-                            const newState=_.extend({}, this.state.application);
-                            newState.message=e.target.value;
+                            const newState = _.extend({}, this.state.application);
+                            newState.message = e.target.value;
                             this.setState({
                                 application: newState
                             });

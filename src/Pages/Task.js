@@ -231,7 +231,7 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog taskId={this.state.task._id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog toUserId={this.state.task.ownerUserId} taskId={this.state.task._id} open={this.state.applicationInProgress} />
             </div>
         );
     }

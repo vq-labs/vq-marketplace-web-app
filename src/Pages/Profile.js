@@ -188,7 +188,7 @@ class Profile extends Component {
         <Paper style={{ 'marginTop': '40px' }}>
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <h3 style={{ padding: 2, marginLeft: 10 }}>
+                                    <h2 style={{ padding: 2, marginLeft: 10 }}>
                                         <span>{ translate('TALENTS') }</span>
                                         { this.state.isMyProfile && 
                                             <div style={ { float: 'right', padding: '5px' }}>
@@ -208,7 +208,7 @@ class Profile extends Component {
                                                 </FloatingActionButton>
                                             </div>
                                         }
-                                    </h3>
+                                    </h2>
                                 </div>
                             </div>
                              { this.state.profile.talents.length === 0 &&

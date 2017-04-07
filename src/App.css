@@ -63,7 +63,7 @@ body {
 .st-menu-line h5 {
     fontSize: 1.64rem;
     line-height: 110%;
-    margin: .82rem 0 .656rem 0;
+    margin: .82rem 0rem .656rem 0rem;
     text-transform: uppercase;
 }
 
@@ -90,7 +90,7 @@ body {
  h1 {
         color: #546e7a;
         font-size: 24px;
-        font-weight: 400;
+        font-weight: 400px;
  }
 
  h2 {
@@ -154,7 +154,7 @@ width:172px;
       display:block;margin:0 auto;
     }
     .custom-xs-style {
-      padding: 0px !important;
+      padding: 0 !important;
     }
   }
   /*@media only screen and (min-device-width: 679px) and (max-device-width: 767px) {
@@ -196,12 +196,14 @@ width:172px;
   color : "red" !important;
 }
 
+
 .st-profile-dropzone  {
-      width: 181px !important;
-      height: 181px !important;
+      width: 150px !important;
+      height: 150px !important;
       border-color: rgb(255, 255, 255) !important;
-    }
-  
+   }
+
+
 
 .dropzone.dz-clickable {
     cursor: pointer;

@@ -8,8 +8,8 @@ const styles = {
     margin: '4px',
   },
   span: {
-      marginRight: '5px',
-      fontSize: '11px'
+        marginRight: '5px',
+        fontSize: '11px'
   },
   wrapper: {
     display: 'flex',

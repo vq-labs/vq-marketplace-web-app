@@ -12,6 +12,7 @@ import LoginPage from './Pages/LoginPage';
 import SignupPage from './Pages/SignupPage';
 import Profile from './Pages/Profile';
 import ProfileEdit from './Pages/ProfileEdit';
+import YourInserate from './Components/YourInserate';
 import Offers from './Pages/Offers';
 import NewTask from './Pages/NewListing';
 import Chat from './Pages/Chat';
@@ -94,6 +95,7 @@ class App extends Component {
               <Route path="task/:taskId" component={Task}></Route>
               <Route path="task/:taskId/edit" component={TaskEdit}></Route>
               <Route path="profile/:profileId" component={Profile}></Route>
+              <Route path="yourInserate" component={YourInserate}></Route>
               <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
             </Route>
           </Router>

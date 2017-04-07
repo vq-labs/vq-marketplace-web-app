@@ -76,6 +76,7 @@ export default class TaskEdit extends Component {
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
                                         <TextField
+                                            
                                             ref="title"
                                             onChange={ this.handleFieldChange('title') }
                                             value={this.state.updatedTask.title}
@@ -86,6 +87,7 @@ export default class TaskEdit extends Component {
                                 </div> 
                                 <div className="col-xs-12">
                                             <TextField
+                                                
                                                 rows={4}
                                                 ref="description"
                                                 onChange={ this.handleFieldChange('description') }
@@ -118,6 +120,7 @@ export default class TaskEdit extends Component {
 
                                 <div className="col-xs-12">
                                             <TextField
+                                                
                                                 onChange={ this.handleFieldChange('price') }
                                                 ref="price"
                                                 type="number"

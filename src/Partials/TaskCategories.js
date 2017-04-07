@@ -5,7 +5,7 @@ import Chip from 'material-ui/Chip';
 
 const styles = {
   chip: {
-    margin: 4,
+    margin: '4px',
   },
   span: {
       marginRight: '5px',
@@ -15,12 +15,16 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
   },
+  marginBottom: {
+      marginBottom:'2px',
+      marginRight:'2px',
+  },
 };
 
 export default class TaskCategories extends Component {
     getChip(category) {
         return (
-             <a>
+             <a style={styles.marginBottom}>
                 <Chip key={category.label} style={styles.margin} onClick={() => browserHistory.push('/app?category=' + category.code)} >
                     <div>{category.label}</div>
                 </Chip> 

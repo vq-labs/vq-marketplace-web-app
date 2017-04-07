@@ -1,25 +1,9 @@
 import 'whatwg-fetch';
 import { getToken } from './auth'
-import { serializeQueryObj } from './util'
+import { serializeQueryObj, parseJSON } from './util'
 import CONFIG from '../generated/ConfigProvider.js'
 
 const API_URL = CONFIG.API_URL;
-
-const parseJSON = response => {
-  if (response.status !== 200) {
-      throw new Error(response.json());
-  }
-  
-  let jsonResponse;
-
-  try {
-      jsonResponse = response.json();
-  } catch (err) {
-      console.warn("jsonResponse could not be parsed")
-  }
-  
-  return jsonResponse;
-};
 
 export const doGet = (url, queryObject) => {
     url = API_URL + url;

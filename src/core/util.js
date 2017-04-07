@@ -1,3 +1,19 @@
+export const parseJSON = response => {
+  if (response.status !== 200) {
+      throw new Error(response.json());
+  }
+  
+  let jsonResponse;
+
+  try {
+      jsonResponse = response.json();
+  } catch (err) {
+      console.warn("jsonResponse could not be parsed")
+  }
+  
+  return jsonResponse;
+};
+
 export const serializeQueryObj = (obj, prefix) => {
   let str = [], p;
 
@@ -50,6 +66,20 @@ export const updateQueryStringParameter = (keyOrQuery, value, url) => {
             return url;
     }
 }
+
+export const getParams = query => {
+  if (!query) {
+    return { };
+  }
+
+  return (/^[?#]/.test(query) ? query.slice(1) : query)
+    .split('&')
+    .reduce((params, param) => {
+      let [ key, value ] = param.split('=');
+      params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+      return params;
+    }, { });
+};
 
 export const formatGeoResults = locations => {
 		const results = locations.map(item => {

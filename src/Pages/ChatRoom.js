@@ -1,65 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { browserHistory } from 'react-router';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-
 import Ad from '../Components/Ad';
 import Moment from 'react-moment';
 import * as coreAuth from '../core/auth';
-import * as apiChat from '../api/chat';
+import * as apiRequest from '../api/request';
+import { translate } from '../core/i18n';
 import '../App.css';
 import '../Chat.css';
-
-
 import '../App.css';
 
-export default class ChatRoom extends Component {
+const _ = require('underscore');
+
+export default class ChatRoom extends React.Component {
   constructor() {
     super();
-    this.state={
+
+    this.state = {
         newMessage: '',
         task: {},
         users: {},
         messages: [] 
     };
 
-    this.handleNewMessage=this.handleNewMessage.bind(this);
+    this.handleNewMessage = this.handleNewMessage.bind(this);
   }
 
   componentDidMount() {
-        let chatId=this.props.params.chatId;
+        let requestId = this.props.params.chatId;
 
-        apiChat.getItem(chatId).then(chat => {
-            this.setState({
-                messages: chat.messages, 
-                users: chat.users, 
-                task: chat.task 
-            });
-        });
+        apiRequest.getItem(requestId).then(chat => this.setState({
+            requestId,
+            fromUserId: coreAuth.getUserId(),
+            toUserId: chat.messages[0].fromUserId === coreAuth.getUserId() ? chat.messages[0].toUserId : chat.messages[0].fromUserId,
+            messages: chat.messages,
+            users: chat.users,
+            task: chat.task
+        }));
   }
  
   handleNewMessage (event) {
         event.preventDefault()
        
-        const data={
+        const data = {
+            taskId: this.state.task._id,
+            toUserId: this.state.toUserId,
+            fromUserId: this.state.fromUserId,
+            requestId: this.state.requestId,
             message: this.refs.newMessage.getValue()
         };
 
-        this.refs.newMessage.value="";
+        this.refs.newMessage.value = "";
 
-        this.state.messages.push({ 
-            message: data.message, 
-            senderUserId: coreAuth.getUserId()
-        });
+        this.state.messages.push(data);
         
         this.setState({
             newMessage: '',
             messages: this.state.messages
         });
 
-        apiChat.createItem(this.state.messages[0].chatId, data).then(chatMessage => {
+        apiRequest.createItemMessage(this.state.requestId, data).then(chatMessage => {
             console.log(chatMessage);
         });
   }
@@ -69,31 +72,33 @@ export default class ChatRoom extends Component {
             <div className="container st-chat-view">
                 <div className="col-xs-12 col-sm-8">
                     <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
-                        <div className="row">
-                            <div className="col-xs-12" style={ { margin: '10px' } }>
-                                <RaisedButton onClick={ () => browserHistory.push('/app/chat/') } label="Zurück zu allen Nachrichten"/>
-                            </div>    
-                            <div className="col-xs-12" style={ { margin: '10px' } }>
-                                <h1 className="st-h1">
-                                    <a href={ '/app/task/' + this.state.task._id }>
-                                        { this.state.task.title }
-                                    </a>
-                                </h1>
-                                <Divider />
+                        { this.state.task &&
+                            <div className="row">
+                                <div className="col-xs-12" style={ { margin: '10px' } }>
+                                    <RaisedButton onClick={ () => browserHistory.push('/app/chat') } label="Zurück zu allen Nachrichten"/>
+                                </div>    
+                                <div className="col-xs-12" style={ { margin: '10px' } }>
+                                    <h1 className="st-h1">
+                                        <a href={ '/app/task/' + this.state.task._id }>
+                                            { this.state.task.title }
+                                        </a>
+                                    </h1>
+                                    <Divider />
+                                </div>
                             </div>
-                        </div>
+                        }
                         { this.state.messages.map(message => 
                                 <div className="row" style={ { paddingLeft: '20px', marginTop: '20px'} }>
 
                                     <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                         <div className="row">
                                             <div className="col-xs-2 col-sm-1">
-                                                <a href={ '/app/profile/' + message.senderUserId }>
-                                                    <img alt="profile data" style={ { width: '60px', height: '60px' } } src={this.state.users[message.senderUserId].profile.imageUrl || 'images/avatar.png'} />
+                                                <a href={ '/app/profile/' + message.fromUserId }>
+                                                    <img alt="profile data" style={ { width: '60px', height: '60px' } } src={this.state.users[message.fromUserId].profile.imageUrl || 'images/avatar.png'} />
                                                 </a>
                                             </div>
                                             <div className="col-xs-10 col-sm-11">
-                                                <strong><a href={ '/app/profile/' + message.senderUserId }>{this.state.users[message.senderUserId].profile.firstName} {this.state.users[message.senderUserId].profile.lastName}</a></strong>
+                                                <strong><a href={ '/app/profile/' + message.fromUserId }>{this.state.users[message.fromUserId].profile.firstName} {this.state.users[message.fromUserId].profile.lastName}</a></strong>
                                                 <br />
                                                 <p className="text-muted">
                                                     <Moment format="DD.MM.YYYY">{message.timestamp}</Moment>
@@ -112,7 +117,7 @@ export default class ChatRoom extends Component {
 
                                 
                             ) }
-                            <div className="row" style={ { 
+                            <div className="row" style={ {
                                 paddingLeft: '20px',
                                 marginTop: '20px',
                                 paddingRight: '20px'
@@ -144,7 +149,7 @@ export default class ChatRoom extends Component {
                          <Paper zDepth={1} style={ { padding: '10px' } }>
                             <div className="row">
                                 <div className="col-xs-12" style={ { marginBottom: '20px'} }>
-                                    <h4>In diesem Chat</h4>
+                                    <h4>{translate("IN_THIS_CHAT")}</h4>
                                 </div>    
                             </div>   
                             <div className="row">
@@ -181,6 +186,3 @@ export default class ChatRoom extends Component {
     );
    }
 };
-
-
-// this.getUserEditableTalent(talent)

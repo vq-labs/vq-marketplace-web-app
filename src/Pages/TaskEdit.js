@@ -3,13 +3,13 @@ import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
+import HtmlTextField from '../Components/HtmlTextField';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-
 import TextField from 'material-ui/TextField';
-
 import apiTask from '../api/task';
-
 import * as coreNavigation from '../core/navigation';
+import ImageUploader from '../Components/ImageUploader';
+import { translate } from '../core/i18n';
 
 import '../App.css';
 
@@ -29,13 +29,14 @@ export default class TaskEdit extends Component {
     }
    
     componentDidMount() {
-      let taskId=this.props.params.taskId;
+      let taskId = this.props.params.taskId;
 
       apiTask.getItem(taskId).then(rTask => {
         this.setState({
             isLoading: false,
             task: rTask,
             updatedTask: {
+                images: rTask.images,
                 title: rTask.title,
                 description: rTask.description,
                 price: rTask.price / 100,
@@ -48,7 +49,7 @@ export default class TaskEdit extends Component {
   handleFieldChange (field, transform)  {
         return (event, value) => {
             const updatedTask = this.state.updatedTask;
-
+         
             updatedTask[field] = transform ? transform(value) : value;
             
             this.setState( { updatedTask } );
@@ -63,6 +64,18 @@ export default class TaskEdit extends Component {
         browserHistory.push(`/app/task/${this.state.task._id}`);
     });
   }
+
+  /**
+   *  <TextField
+                                                rows={4}
+                                                ref="description"
+                                                onChange={ this.handleFieldChange('description') }
+                                                value={this.state.updatedTask.description}
+                                                style={{width: '100%'}}
+                                                inputStyle={{width: '100%'}}
+                                                floatingLabelText="Beschreibung"
+                                            />
+   */
   render() {
         return (
             <div >
@@ -75,6 +88,7 @@ export default class TaskEdit extends Component {
                         <div className="container">
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
+                                        <h4>Titel</h4>
                                         <TextField
                                             
                                             ref="title"
@@ -82,20 +96,12 @@ export default class TaskEdit extends Component {
                                             value={this.state.updatedTask.title}
                                             style={{width: '100%'}}
                                             inputStyle={{width: '100%'}}
-                                            floatingLabelText="Titel"
                                         />
                                 </div> 
                                 <div className="col-xs-12">
-                                            <TextField
-                                                
-                                                rows={4}
-                                                ref="description"
-                                                onChange={ this.handleFieldChange('description') }
-                                                value={this.state.updatedTask.description}
-                                                style={{width: '100%'}}
-                                                inputStyle={{width: '100%'}}
-                                                floatingLabelText="Beschreibung"
-                                            />
+                                            <h4>Beschreibung</h4>
+                                            <HtmlTextField onChange={this.handleFieldChange('description')} value={this.state.updatedTask.description}/>
+                                            <hr />
                                 </div>
 
                                 <div className="col-xs-12">
@@ -109,28 +115,42 @@ export default class TaskEdit extends Component {
                                         defaultSelected={this.state.task.priceType}>
                                             <RadioButton
                                                 value={1}
-                                                label="pro Stunde"
+                                                label={translate("PRICING_MODEL_HOURLY")}
                                             />
                                             <RadioButton
                                                 value={0}
-                                                label="pro Auftrag"
+                                                label={translate("PRICING_MODEL_TOTAL")}
+                                            />
+                                            <RadioButton
+                                                value={2}
+                                                label={translate("PRICING_MODEL_REQUEST_QUOTE")}
                                             />
                                     </RadioButtonGroup>
                                 </div>
+                                { this.state.task.priceType !== 2 &&
+                                    <div className="col-xs-12">
+                                                <TextField
+                                                    onChange={ this.handleFieldChange('price') }
+                                                    ref="price"
+                                                    type="number"
+                                                    value={this.state.updatedTask.price }
+                                                    style={{width: '100%'}}
+                                                    inputStyle={{width: '100%'}}
+                                                    floatingLabelText={translate("PRICE")}
+                                                />
+                                    </div>
+                                }
 
                                 <div className="col-xs-12">
-                                            <TextField
-                                                
-                                                onChange={ this.handleFieldChange('price') }
-                                                ref="price"
-                                                type="number"
-                                                value={this.state.updatedTask.price }
-                                                style={{width: '100%'}}
-                                                inputStyle={{width: '100%'}}
-                                                floatingLabelText="Preis (in €)"
-                                            />
-                                </div>
+                                    <h4>Photos</h4>
+                                    <ImageUploader images={this.state.updatedTask.images} onChange={images => {
+                                            const updatedTask = this.state.updatedTask;
 
+                                            updatedTask.images = images;
+                            
+                                            this.setState({ updatedTask });
+                                    }} />
+                                </div> 
                                 <div className="col-xs-12">
                                     <FlatButton
                                         style={ { float: 'left' } }

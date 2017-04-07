@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, CardText } from 'material-ui/Card';
+import DOMPurify from 'dompurify'
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
@@ -7,14 +8,14 @@ import TaskCategories from '../Partials/TaskCategories';
 import GoogleAd from 'react-google-ad'
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
-import MenuItem from 'material-ui/MenuItem';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import Chip from 'material-ui/Chip';
 import * as coreAuth from '../core/auth';
+import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import { translate } from '../core/i18n';
 
 import '../App.css';
 
@@ -22,14 +23,16 @@ class Task extends Component {
     constructor(props) {
         super(props);
    
-        this.state={
+        this.state = {
+            tabIndex: 0,
             open: false,
             applicationInProgress: false,
             isLoading: true,
             isMyTask: false,
             task: {
+                images: [ ],
                 categories: [ ],
-                location:  {  },        
+                location:  {},        
                 meta: {
                     taskOwner: {
                         stats: {},
@@ -66,27 +69,25 @@ class Task extends Component {
             return (
                 <FileCloud viewBox='-20 -7 50 10'/>);
         }
-    };
-
+    }
     componentDidMount() {
-      let taskId=this.props.params.taskId;
-      
+      let taskId = this.props.params.taskId;
+
+      pricingModelProvider.get().then(pricingModels => this.setState({ pricingModels }));
+
       apiTask.getItem(taskId).then(rTask => this.setState({
         isLoading: false,
         task: rTask,
-        isMyTask: rTask.ownerUserId===coreAuth.getUserId()
+        isMyTask: rTask.ownerUserId === coreAuth.getUserId()
       }));
-  }
-
-
-  render() {
+    }
+    render() {
         return (
             <div >
-
               { this.state.isLoading && 
-                          <div className="text-center" style={{ 'marginTop': '40px' }}>
-                                <CircularProgress size={80} thickness={5} />
-                          </div>
+                <div className="text-center" style={{ 'marginTop': '40px' }}>
+                    <CircularProgress size={80} thickness={5} />
+                </div>
               }
               { !this.state.isLoading &&           
                     <div className="container-fluid" >
@@ -113,49 +114,29 @@ class Task extends Component {
                                         </div>  
                                     </div>     
                                 </div>
-                                <div className="col-xs-12 col-sm-4" style={{'marginTop': '15px'}}>
-                                    <Card>                                                    
-                                        <CardText>
-                                            <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
-                                            <p>
-                                                {
-                                                    this.state.task.priceType===0 ?
-                                                    'pro Auftrag' : 'pro Stunde'
-                                                }
-                                            </p>
-                                        </CardText>
-                                        
-                                        { !this.state.isMyTask && <RaisedButton
+                                <div className="col-xs-12 col-sm-4">
+                                    <Card style={{'marginTop': 60}}>
+                                        { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
+                                            <CardText>
+                                                <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
+                                                <p>
+                                                    {
+                                                        this.state.task.priceType===0 ?
+                                                        'pro Auftrag' : 'pro Stunde'
+                                                    }
+                                                </p>
+                                            </CardText>
+                                        }
+                                        { !this.state.isMyTask && 
+                                            <RaisedButton
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
                                                 style={{width:  '100%'}}
-                                                label={this.state.task.taskType===1 ? "Anfrage senden" : "Bewerbung senden" } 
-                                                onClick={ () => {
-                                                    this.setState({ applicationInProgress: true });
-                                        } }/> 
+                                                label={this.state.task.taskType === 1 ?"Anfrage senden" : "Bewerbung senden" } 
+                                                onClick={ () => this.setState({ applicationInProgress: true }) 
+                                            }/> 
                                        } 
-
-                                </Card> 
-                                      <div style={{'marginTop': '15px'}}>
-                                         <RaisedButton
-                                            style={{ width: '100%' }}
-                                            onTouchTap={this.handleTouchTap}
-                                            label="Mehr"
-                                            labelColor={"#546e7a"}
-                                            />
-                                            
-                                            <Popover
-                                                    open={this.state.open}
-                                                    anchorEl={this.state.anchorEl}
-                                                    onRequestClose={this.handleRequestClose}
-                                                    >
-                                                    <Menu>
-           
-                                                        <MenuItem onTouchTap={ () => location.href="http://studentask.de/aufgabe-vergeben?title=" + this.state.task.title}  primaryText="Ähnliches Inserat erfassen" />
-        
-                                                    </Menu>
-                                            </Popover>
-                                    </div> 
+                                    </Card> 
                                 </div> 
                             </div>
                         </div>
@@ -164,59 +145,84 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
-                                        <div className="col-xs-12">
-                                            <Card style={{width: '100%', 'marginBottom': '20px'}}>
-                                                <CardText>
-                                                    <h3 className="text-left">Über dieses Inserat</h3>
-                                                    <p className="text-muted">
-                                                        { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
-                                                    </p>
-                                                </CardText>
-                                                <CardText>
-                                                    {this.state.task.description}
-                                                </CardText>
-                                            </Card>
-                                         </div>                                                                 
-                                      </div>
-                                      <div className="row">
-                                          <div className="col-xs-12">
-                                            <Card style={{width: '100%', 'marginBottom': '20px'}}>
-                                                <CardText>
-                                                    <h3 className="text-left">Über {this.state.task.taskOwner.profile.firstName}</h3>
-                                                    <div className="row">
-                                                        <div className="col-xs-1">
-                                                            <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                                <Avatar src={this.state.task.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
-                                                            </a>
-                                                        </div>
-                                                        <div className="col-xs-11">     
-                                                            <strong><a href={ '/app/profile/' + this.state.task.ownerUserId }>{this.state.task.taskOwner.profile.firstName} {this.state.task.taskOwner.profile.lastName}</a></strong>
-                                                            
-                                                            <p className="text-muted">
-                                                                {this.state.task.taskOwner.profile.bio}
-                                                            </p>
-                                                        </div>  
-
-                                                        <div className="col-xs-12">     
-                                                            <h4>Skills</h4>
-
-                                                            <div style={{
-                                                                display: 'flex',
-                                                                flexWrap: 'wrap',
-                                                            }}>
-                                                            {this.state.task.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: '3px'} } key={i} >{talent.name}</Chip>)}
-                                                            </div>
-                                                        </div>
+                                        <Tabs
+                                            tabItemContainerStyle={{ backgroundColor: 'transparent', color: 'black' }}
+                                            onChange={ tabIndex => this.setState({ tabIndex }) }
+                                            value={this.state.tabIndex}
+                                            >
+                                            <Tab style={{ color: 'black' }} label={translate('LISTING_INFO')} value={0}>
+                                                { this.state.tabIndex === 0 && 
+                                                <div className="row">
+                                                    <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                        <Card style={{width: '100%', marginBottom: '20px'}}>
+                                                            <CardText>
+                                                                <h3 className="text-left">Über dieses Inserat</h3>
+                                                                <p className="text-muted">
+                                                                    { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
+                                                                </p>
+                                                            </CardText>
+                                                            <CardText>
+                                                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
+                                                            </CardText>
+                                                        </Card>
                                                     </div>
-                                                </CardText>
-                                            </Card>
-                                          </div>                                                               
+
+                                                    <div className="col-xs-12">
+                                                        <Card style={{width: '100%', 'marginBottom': '20px'}}>
+                                                            <CardText>
+                                                                <h3 className="text-left">Über {this.state.task.taskOwner.profile.firstName}</h3>
+                                                                <div className="row">
+                                                                    <div className="col-xs-1">
+                                                                        <a href={ '/app/profile/' + this.state.task.ownerUserId }>
+                                                                            <Avatar src={this.state.task.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div className="col-xs-11">     
+                                                                        <strong><a href={ '/app/profile/' + this.state.task.ownerUserId }>{this.state.task.taskOwner.profile.firstName} {this.state.task.taskOwner.profile.lastName}</a></strong>
+                                                                        
+                                                                        <p className="text-muted">
+                                                                            {this.state.task.taskOwner.profile.bio}
+                                                                        </p>
+                                                                    </div>  
+
+                                                                    <div className="col-xs-12">     
+                                                                        <h4>Skills</h4>
+
+                                                                        <div style={{
+                                                                            display: 'flex',
+                                                                            flexWrap: 'wrap',
+                                                                        }}>
+                                                                        {this.state.task.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: 3} } key={i} >{talent.name}</Chip>)}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </CardText>
+                                                        </Card>
+                                                    </div>   
+                                                </div>
+                                                }
+                                            </Tab>
+                                            <Tab style={{ color: 'black' }} label={translate('LISTING_IMAGES')} value={1} >
+                                                <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                    <div className="row">
+                                                        { this.state.task.images.map(img =>
+                                                            <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
+                                                                <img className="img-responsive" role="presentation" src={img.imageUrl}/>
+                                                            </div>
+                                                        )}
+                                                        { (!this.state.task.images.length) &&
+                                                            <div className="col-xs-12 text-center">
+                                                                <h4>{ translate('NO_LISTING_IMAGES') }</h4>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </Tab>
+                                        </Tabs>
+
+                                                                                                        
                                       </div>
-                                      <div className="row">  
-                                            <h4 className="text-left">
-                                                {this.state.task.applyingUsers.length + " Anfragen"}
-                                            </h4>
-                                      </div>
+                                     
                                 </div>
                                 <div className="col-sm-3">
                                     <GoogleAd client="ca-pub-2487354108758644" slot="4660780818" format="auto" />
@@ -225,10 +231,10 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog taskId={this.state.task._id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog toUserId={this.state.task.ownerUserId} taskId={this.state.task._id} open={this.state.applicationInProgress} />
             </div>
         );
-  }
+    }
 }
 
 export default Task;

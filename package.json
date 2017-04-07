@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/app",
   "author": "Adrian Barwicki",
-  "licence": "MIT",
+  "licence": "UNLICENCED",
   "devDependencies": {
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",
@@ -46,6 +46,7 @@
     "react-dev-utils": "^0.3.0",
     "recursive-readdir": "2.1.0",
     "rimraf": "2.5.4",
+    "s3-deploy": "^0.7.3",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
@@ -57,8 +58,13 @@
   "dependencies": {
     "babel-polyfill": "^6.20.0",
     "classnames": "^2.2.5",
+    "dompurify": "^0.8.5",
+    "draft-js": "^0.10.0",
+    "draft-js-export-html": "^0.5.2",
+    "draft-js-import-html": "^0.3.2",
     "flexboxgrid": "^6.3.1",
     "gulp-replace-task": "^0.11.0",
+    "immutable": "^3.8.1",
     "lodash.chunk": "^4.2.0",
     "material-ui": "^0.16.2",
     "moment": "^2.17.1",
@@ -85,7 +91,8 @@
     "start:production": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/start.js",
     "start:local-production": "node ./node_modules/gulp/bin/gulp.js prepare --env local-production && node scripts/start.js",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "deploy": "cd build && node ../node_modules/s3-deploy/.bin/s3-deploy ** --region eu-central-1 --bucket st-app-web && cd .."
   },
   "jest": {
     "moduleFileExtensions": [

@@ -5,11 +5,19 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
-
 import StActions from '../StActions';
-
 import * as coreNavigation from '../core/navigation';
+import { translate } from '../core/i18n';
 
+function strip(html) {
+   const tmp = document.createElement("DIV");
+
+   tmp.innerHTML = html;
+
+   const text = tmp.textContent || tmp.innerText || "";
+
+   return text;
+}
 export default class TaskCard extends Component {
   constructor(props) {
     super(props);
@@ -20,15 +28,21 @@ export default class TaskCard extends Component {
   }
 
   displayPrice (offer) {
-        let label = String((offer.price / 100 ).toFixed(0)) + '€';
+    if (offer.priceType === 2) {
+        return translate('PRICING_MODEL_REQUEST_QUOTE');
+    }
 
-        if (offer.priceType === 0) {
-            label += " pro Auftrag";
-        } else {
-            label += " pro Stunde";
-        }
+    let priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
+        
+    if (offer.priceType === 0) {
+        return `${priceLabel} ${translate('PRICING_MODEL_TOTAL')}`;
+    }
 
-        return label;
+    if (offer.priceType === 1) {
+        return `${priceLabel} ${translate('PRICING_MODEL_HOURLY')}`;
+    }
+
+    throw new Error(`Unknown price model ${offer.priceType}`);
   }
 
   handleGoToTask (taskId) {
@@ -69,7 +83,7 @@ export default class TaskCard extends Component {
                     lineHeight: '20px', 
                     overflow: 'hidden'
                 }}>
-                  {task.description.substring(0, 100) + '...'}
+                { strip(this.state.task.description).substring(0, 100) + '...' }
                 </CardText>
                 { this.props.displayManagement && 
                   <CardText style={{'marginBottom': '20px'}}>
@@ -82,15 +96,16 @@ export default class TaskCard extends Component {
                       </div>
                       <div className="col-xs-1 col-sm-2 col-md-2 col-lg-1"> 
                             <IconMenu
-                                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                                >
-                                { task.status !== 0 && <MenuItem primaryText="Aktivieren" onTouchTap={ () => this.changeStatus(task._id, 0) } /> }
-                                { task.status === 0 && <MenuItem primaryText="Deaktivieren" onTouchTap={ () => this.changeStatus(task._id, 103) } /> }
-                                <MenuItem primaryText="Editieren" onTouchTap={ () => coreNavigation.goTo(`/task/${task._id}/edit`) } />
+                              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                            > 
+                                <MenuItem primaryText={translate('EDIT')} onTouchTap={ () => coreNavigation.goTo(`/task/${task._id}/edit`) } />
+                                { task.status !== 0 && <MenuItem primaryText={translate('ACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 0) } /> }
+                                { task.status === 0 && <MenuItem primaryText={translate('DEACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 103) } /> }
+                                
                             </IconMenu>
-                      </div> 
+                      </div>
                     </div> 
                   </CardText>
                 }

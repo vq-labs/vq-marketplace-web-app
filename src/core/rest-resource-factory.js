@@ -1,6 +1,6 @@
 import * as communication from './communication'
 
-export const create = resource => {
+export const create = (resource, transformers) => {
     let cache = localStorage.getItem(`VQ_CACHE_${resource.toUpperCase()}`);
     
     cache = cache ? JSON.parse(cache) : {};
@@ -8,22 +8,30 @@ export const create = resource => {
     return {
         getItem: itemId => communication.doGet(`/${resource}/${itemId}`),
         getItems: (query, params) => new Promise((resolve, reject) => {
+            let resolved = false;
+
             params = params || {};
 
             const url = `/${resource}`;
 
             if (!params.force && params.cache && cache[url]) {
-                return resolve(cache[url]);
+                resolved = true;
+
+                resolve(cache[url]);
             }
 
             communication.doGet(`/${resource}`, query).then(data => {
+                const getItemsTransformer = transformers ? transformers.getItems : data => data;
+
+                data = getItemsTransformer(data);
+
                 if (params.cache) {
                    cache[url] = data;
 
                    localStorage.setItem(`VQ_CACHE_${resource.toUpperCase()}`, JSON.stringify(cache));
                 }
 
-                return resolve(data);
+                return !resolved && resolve(data);
             }, err => reject(err));
         }),
         createItem: data => communication.doPost(`/${resource}`, data),

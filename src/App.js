@@ -37,7 +37,6 @@ corei18n.addLang('de', {});
 corei18n.addLang('tr', {});
 corei18n.addLang('pl', {});
 
-
 class App extends Component {
   constructor (props) {
     super(props);
@@ -77,18 +76,15 @@ class App extends Component {
       coreAuth.loadFromLocalStorage();
     }
 
-    apiConfig.meta.getItems({}, { cache: true })
-        .then(meta => this.setState({ metaReady: true, meta: meta[0] }));
+    apiConfig.appConfig.getItems({}, { cache: true })
+        .then(config => {
+          return this.setState({ metaReady: true, meta: config })
+        });
 
     apiConfig.appLabel.getItems({ lang: 'en' }, { cache: true })
       .then(labels => {
-        const labelsObj = {};
-
-        labels.map(label => {
-          labelsObj[label.labelKey] = label.labelValue;
-        });
-
-        corei18n.addLang('en', labelsObj);
+        debugger;
+        corei18n.addLang('en', labels);
 
         this.setState({ labelsReady: true })
       });
@@ -98,7 +94,7 @@ class App extends Component {
       return (
         this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
           <div>
-            <Header logo={this.state.meta.logoUrl} homeLabel={this.state.meta.listingLabel} user={this.state.user}></Header>
+            <Header logo={this.state.meta.LOGO_URL} homeLabel={'Offer'} user={this.state.user}></Header>
             <Router history={browserHistory} onUpdate={coreTracking.pageView}>
               <Route path="/app">
                 <IndexRoute component={Offers}/>

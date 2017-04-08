@@ -20,18 +20,12 @@ export default class SectionLabels extends React.Component {
             labelsObj: {}
         };
 
-        this.getLabels = lang => apiConfig.appLabel.getItems({ lang: lang || this.state.lang }).then(labels => {
-            const labelsObj = this.state.labelsObj;
-
-            labels.forEach(label => {
-                labelsObj[label.labelKey] = label.labelValue;
-            });
-
-            labels = defaultLabels.map(labelKey => { 
+        this.getLabels = lang => apiConfig.appLabel.getItems({ lang: lang || this.state.lang }).then(labelsObj => {
+            const labels = defaultLabels.map(labelKey => { 
                 return { key: labelKey, label: labelKey }
             })
 
-            this.setState({ labels, labelsObj })
+            this.setState({ labels, labelsObj})
         });
     }
     componentDidMount() {

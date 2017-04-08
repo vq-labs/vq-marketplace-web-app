@@ -42,7 +42,9 @@ class Offers extends Component {
         this.setState({ isLoading: true });
 
         apiCategory.getItems().then(categories => this.setState({ categories }));
-        apiConfig.meta.getItems({}, { cache: true }).then(meta => this.setState({ meta: meta[0] }));
+
+        apiConfig.appConfig.getItems({}, { cache: true })
+            .then(meta => this.setState({ meta }));
 
         this.loadTasks(this.props.location.query);
     }
@@ -113,16 +115,16 @@ class Offers extends Component {
         return (
             <div>
             <div className="st-welcome text-center" style={{ 
-                background: `url(${this.state.meta.promoUrl}) no-repeat center center fixed`,
+                background: `url(${this.state.meta.PROMO_URL}) no-repeat center center fixed`,
                 backgroundSize: 'cover' 
             }}>
                 <div className="col-xs-12" style={ { marginTop: 20 } }>
-                    <div style={{backgroundColor: this.state.meta.teaserBoxColor, padding: 10, maxWidth: '600px', margin: '0 auto' }}>
+                    <div style={{backgroundColor: this.state.meta.teaserBoxColor, padding: 10, maxWidth: '850px', margin: '0 auto' }}>
                         <h1 style={ { color: "white", fontSize: 30 } }>
-                            {this.state.meta.slogan}
+                            {translate('PROMO_BUYER_SLOGAN')}
                         </h1>
                         <h2 style={ { color: "white", fontSize: 20 } }>
-                            {this.state.meta.desc}
+                            {translate('PROMO_BUYER_DESC')}
                         </h2>
                     </div>
                 </div>

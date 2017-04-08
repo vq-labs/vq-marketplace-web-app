@@ -90,6 +90,7 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                         <h4>Titel</h4>
                                         <TextField
+                                            
                                             ref="title"
                                             onChange={ this.handleFieldChange('title') }
                                             value={this.state.updatedTask.title}

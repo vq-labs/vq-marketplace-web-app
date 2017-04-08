@@ -28,9 +28,10 @@ export default class ProfileImage extends Component {
     } 
     render() {
         return (
+
                 <Dropzone onDrop={this.props.onDrop} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
                         <div style={ { width: '150px', height: '150px' } }>
-                            <img alt="profile" style={ { position: 'absolute', height: '150px', width: '150px' } } src={ this.state.image } />
+                            <img alt="profile" style={ { position: 'absolute', height: '150px', width: '150px', borderRadius: '100%' } } src={ this.state.image } />
                             { this.state.allowChange && this.state.hover &&  
                                 <div style={{ width: '150px', position: 'absolute', height: '30px', bottom: '2px', textAlign: "center" }}>
                                     { translate('CHANGE_PROFILE_PICTURE') }

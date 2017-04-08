@@ -1,9 +1,10 @@
 import * as communication from './communication'
 
 export const create = resource => {
-
-    const cache = {};
-
+    let cache = localStorage.getItem(`VQ_CACHE_${resource.toUpperCase()}`);
+    
+    cache = cache ? JSON.parse(cache) : {};
+   
     return {
         getItem: itemId => communication.doGet(`/${resource}/${itemId}`),
         getItems: (query, params) => new Promise((resolve, reject) => {
@@ -18,8 +19,9 @@ export const create = resource => {
             communication.doGet(`/${resource}`, query).then(data => {
                 if (params.cache) {
                    cache[url] = data;
+
+                   localStorage.setItem(`VQ_CACHE_${resource.toUpperCase()}`, JSON.stringify(cache));
                 }
-                
 
                 return resolve(data);
             }, err => reject(err));

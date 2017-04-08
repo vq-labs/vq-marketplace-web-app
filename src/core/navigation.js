@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import { serializeQueryObj } from './util';
 
 let BASE = '';
 
@@ -7,3 +8,7 @@ let BASE = '';
  export const goTo = url => browserHistory.push(`${BASE}${url}`);
 
  export const goBack = () => browserHistory.goBack();
+
+export const setQueryParams = query => {
+    browserHistory.push(`${location.pathname}?${serializeQueryObj(query)}`);
+}

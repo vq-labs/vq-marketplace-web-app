@@ -100,6 +100,7 @@ class App extends Component {
                 <IndexRoute component={Offers}/>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
+                <Route path="new-listing/:taskId" component={NewTask}></Route>
                 <Route path="premium" component={PremiumPage}></Route>
                 <Route path="chat" component={Chat}></Route>
                 <Route path="chat/:chatId" component={ChatRoom}></Route>

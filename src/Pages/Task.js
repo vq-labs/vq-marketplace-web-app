@@ -32,7 +32,7 @@ class Task extends Component {
             task: {
                 images: [ ],
                 categories: [ ],
-                location:  {},        
+                location:  { },        
                 meta: {
                     taskOwner: {
                         stats: {},

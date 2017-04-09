@@ -25,11 +25,11 @@ const PRICING_MODELS = {
     REQUEST_QUOTE: 2
 };
 
-export default class Onboarding extends Component {
+export default class NewListing extends Component {
     constructor(props) {
         super();
 
-        this.state={
+        this.state = {
             value: 'signup',
             auth: coreAuth.getUserId(),
             step: 1,
@@ -49,18 +49,28 @@ export default class Onboarding extends Component {
             }
         };
 
+            /*
+            if (!props.location.query.taskId) {
+                apiTask
+                    .createItem(this.state.task)
+                    .then(task => this.setState({ task }));
+            } else {
+                apiTask
+                    .createItem(this.state.task)
+                    .then(task => this.setState({ task }));
+            }
+            */
+            
         this.handlePriceTypeChange=this.handlePriceTypeChange.bind(this);
         this.handlePriceChange=this.handlePriceChange.bind(this);
         this.handleDescChange=this.handleDescChange.bind(this);
         this.handleTitleChange=this.handleTitleChange.bind(this);
     }
-
     componentDidMount() {
         apiCategory.getItems().then(categories => {
             this.setState({ categories: _chunk(categories, 3) });
         });
     }
-    
     setTaskPrice (price) {
       const task = this.state.task;
 
@@ -68,7 +78,6 @@ export default class Onboarding extends Component {
 
       this.setState({ task })
     }
-
     handlePriceTypeChange (event) {
       const task = this.state.task;
 
@@ -76,7 +85,6 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
-
     handleTitleChange (event) {
       const task = this.state.task;
       
@@ -84,7 +92,6 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
-
     handleDescChange (event, value) {
       const task = this.state.task;
       
@@ -92,7 +99,6 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
-
     handlePriceChange (event) {
       const task = this.state.task;
       
@@ -100,7 +106,6 @@ export default class Onboarding extends Component {
 
       this.setState({ task });
     }
-    
     render() {
             const step1 = <div className="container">
                         <div className="row">

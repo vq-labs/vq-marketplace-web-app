@@ -45,7 +45,7 @@ export default class Chat extends Component {
                                 { this.state.messages && Object.keys(this.state.messages).map(requestId => { 
                                     const message = this.state.messages[requestId];
 
-                                    return  <ListItem
+                                    return <ListItem
                                             onClick={ () => { goTo('/chat/' + requestId ) }}
                                             primaryText={ `${message.header}, ${message.otherUser.firstName} ${message.otherUser.lastName}`  }
                                             secondaryText={ `${message.lastMsgProfile.firstName} ${message.lastMsgProfile.lastName}: ${message.lastMsg}` }

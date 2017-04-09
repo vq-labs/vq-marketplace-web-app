@@ -1,4 +1,4 @@
-import * as communication from '../core/communication'
+import * as communication from '../core/communication';
 
 export const getItems = () => communication.doGet('/app_task_categories');
 

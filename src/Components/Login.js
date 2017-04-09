@@ -29,8 +29,6 @@ export default class Login extends Component {
 
         this.props.onLoginSuccess(result.user);
       }).catch(err => {
-        debugger;
-        
         alert('Wrong password');
       })
   }

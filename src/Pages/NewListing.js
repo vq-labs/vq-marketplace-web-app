@@ -13,7 +13,9 @@ import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import apiTask from '../api/task';
+import * as apiTaskCategory from '../api/task-category';
 import { translate } from '../core/i18n';
+import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
 import Snackbar from 'material-ui/Snackbar';
 
@@ -36,11 +38,8 @@ export default class NewListing extends Component {
             categories: [],
             insertedTask: {},
             task: {
-                virtual: true,
                 taskType: 1,
                 categories: [],
-                price: 20,
-                priceType: 1,
                 images: [],
                 utm: {
                     source: 'web-app',
@@ -48,19 +47,41 @@ export default class NewListing extends Component {
                 }
             }
         };
+        
+        if (!props.params.taskId) {
+            apiTask
+                .createItem({})
+                .then(task => {
+                    coreNavigation.goTo(`/new-listing/${task.id}`);
 
-            /*
-            if (!props.location.query.taskId) {
-                apiTask
-                    .createItem(this.state.task)
-                    .then(task => this.setState({ task }));
-            } else {
-                apiTask
-                    .createItem(this.state.task)
-                    .then(task => this.setState({ task }));
-            }
-            */
-            
+                    this.setState({ task });
+                });
+        } else {
+            apiTask
+                .getItem(props.params.taskId)
+                .then(task => {
+                    let step = 1;
+
+                    if (task.categories && task.categories.length) {
+                        step = 2;
+                    }
+
+                    if (typeof task.priceType !== 'undefined' & task.priceType !== null) {
+                        step = 3;
+                    }
+
+                    if (task.title && task.description) {
+                        step = 4;
+                    }
+
+                    if (task.images && task.images.length) {
+                        step = 5;
+                    }
+
+                    this.setState({ task, step })
+                });
+        }
+
         this.handlePriceTypeChange=this.handlePriceTypeChange.bind(this);
         this.handlePriceChange=this.handlePriceChange.bind(this);
         this.handleDescChange=this.handleDescChange.bind(this);
@@ -122,12 +143,10 @@ export default class NewListing extends Component {
                                             <div className="col-xs-12 col-sm-4">
                                                     <Card onClick={() => {
                                                         const task= this.state.task;
-                                                        const category= { 
-                                                            label: translate(tile.code),
-                                                            code: tile.code 
-                                                        };
+                                                      
+                                                        task.categories = [ tile.code ];    
 
-                                                        task.categories = [ category ];    
+                                                        apiTaskCategory.createItem(task.id, [ tile.code ]);
 
                                                         this.setState({ step: 2, task });
                                                     }}>
@@ -332,10 +351,10 @@ export default class NewListing extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                            <RaisedButton
-                                label={ 'Go to your offer' }
-                                primary={ true }
-                                disabled={ false }
-                                onTouchTap={ () => browserHistory.push(`/app/task/${this.state.insertedTask._id}`) }
+                                label={'Go to your offer'}
+                                primary={true}
+                                disabled={false}
+                                onTouchTap={() => coreNavigation.goTo(`/task/${this.state.task.id}`)}
                             />
                         </div>
                     </div>
@@ -363,7 +382,7 @@ export default class NewListing extends Component {
                         </div>
                 </div>;
 
-              const createAccountSection = 
+              const createAccountSection =
                 <div className="col-xs-12">
                         <div className="row">
                             <LoginSignup
@@ -371,7 +390,6 @@ export default class NewListing extends Component {
                             />
                         </div>
                 </div>;
-
 
             return (
                     <div className="container">
@@ -384,8 +402,6 @@ export default class NewListing extends Component {
                             { this.state.step===4 && !this.state.auth && createAccountSection }
                             { this.state.step===5 && this.state.auth && confirmBeforePosting }
                             { this.state.step===6 && success }
-
-                            
 
                             { this.state.step !== 5 && <hr /> }
                             
@@ -408,6 +424,8 @@ export default class NewListing extends Component {
                                         onTouchTap={ () => {
                                             const nextStep = this.state.step + 1;
 
+                                            apiTask.updateItem(this.state.task.id, this.state.task);
+
                                             if (nextStep === 4) {
                                                 if (!this.state.task.title) {
                                                     return this.setState({
@@ -422,6 +440,7 @@ export default class NewListing extends Component {
                                                     });
                                                 }
                                             }
+
                                             this.setState({ step: this.state.step + 1 })
                                         } }
                                     />
@@ -430,17 +449,16 @@ export default class NewListing extends Component {
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label={translate("CONFIRM_AND_POST")}
-                                        primary={ true }
-                                        disabled={ false }
+                                        primary={true}
+                                        disabled={false}
                                         onTouchTap={ () => {
                                             const task = this.state.task;
 
                                             task.price *= 100;
 
                                             apiTask
-                                                .createItem(this.state.task)
-                                                .then(task => this.setState({ 
-                                                    insertedTask: task, 
+                                                .updateItem(this.state.task.id, { status: 0 })
+                                                .then(task => this.setState({
                                                     step: this.state.step + 1
                                                 }));
                                         } }

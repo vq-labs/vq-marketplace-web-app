@@ -12,12 +12,14 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
+import apiTask from '../api/task';
 
 class Header extends Component {
   constructor(props) {
     super();
 
     this.state = {
+      tasks: [],
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
@@ -36,6 +38,16 @@ class Header extends Component {
         user: nextProps.user,
         logged: Boolean(nextProps.user)
       });
+
+      apiTask.getItems({
+          ownerUserId: nextProps.user._id,
+          taskType: 1,
+          status: 10,
+      })
+      .then(tasks => {
+        this.setState({ tasks });
+      });
+
     } else {
       this.setState({ homeLabel: nextProps.homeLabel, logged: false, userId: undefined, user: undefined });
     }
@@ -91,19 +103,37 @@ class Header extends Component {
                           }
                     <ToolbarSeparator />     
 
-                  
+                   { !Boolean(this.state.tasks.length) &&
                     <a onClick={ () => { browserHistory.push('/app/new-listing' ) }} target="_self">
                       <IconButton iconStyle={{ color: grey600 }}>
                         <ContentAdd />
                       </IconButton>
                     </a> 
-                    
-
-                    { this.state.logged && 
-                      <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { browserHistory.push('/app/chat' ) }}>
-                        <CommunicationChatBubble />
-                      </IconButton>
-                    }
+                   }
+                   { Boolean(this.state.tasks.length) &&
+                      <IconMenu
+                            iconButtonElement={ 
+                              <IconButton iconStyle={{ color: grey600 }}>
+                                <ContentAdd />
+                              </IconButton>
+                            }
+                            anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
+                        { this.state.tasks.map( task => 
+                          <MenuItem 
+                            onClick={ () => { browserHistory.push(`/app/new-listing/${task.id}` ) }} 
+                            target="_self" 
+                            primaryText={ `TaskId: ${task.id}` }
+                          />
+                        )}
+                        <MenuItem onClick={ () => { browserHistory.push('/app/new-listing' ) }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
+                    </IconMenu>
+                   }
+                  { this.state.logged && 
+                    <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { browserHistory.push('/app/chat' ) }}>
+                      <CommunicationChatBubble />
+                    </IconButton>
+                  }
 
                     { this.state.logged &&
                       <IconMenu

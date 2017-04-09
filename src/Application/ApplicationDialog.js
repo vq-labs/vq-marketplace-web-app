@@ -74,6 +74,7 @@ export default class ApplicationDialog extends React.Component {
   sendRequest() {
     if (Boolean(coreAuth.getToken())) {
             this.setState({ isBeingPosted: true });
+            
             apiRequest.createItem(this.state.application)
                 .then(result => this.setState({
                     mask: 'success', 
@@ -142,12 +143,14 @@ export default class ApplicationDialog extends React.Component {
                         multiLine={true}
                         onChange={ e => {
                             const newState = _.extend({}, this.state.application);
+
                             newState.message = e.target.value;
+
                             this.setState({
                                 application: newState
                             });
                         }}
-                        value={ this.state.application.message }
+                        value={this.state.application.message}
                         style={{width: '100%'}}
                         inputStyle={{width: '100%'}}
                         floatingLabelText="Nachricht"
@@ -174,15 +177,6 @@ export default class ApplicationDialog extends React.Component {
     const Success=<div>
         <div className="col-sm-12 col-xs-12">
             <h3>Die Nachricht wurde geschickt.</h3>
-
-            <div className="hidden">
-                <a href="https://geo.itunes.apple.com/de/app/studentask/id1084813293?mt=8" target="_blank">
-                    <img style={{ "width": "120px;" }} alt="Get StudenTask App on Google Play" src="https://studentask.de/images/badge_appstore-lrg.svg"/>
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=de.viciqloud.studentask" target="_blank">
-                    <img alt="Get StudenTask on App Store for iOS" style={{"width": "120px" }}src="https://studentask.de/images/badge_playstore_lrg.png"/>
-                </a>
-            </div>
         </div>
     </div>;
 

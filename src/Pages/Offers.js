@@ -79,11 +79,11 @@ class Offers extends Component {
         });
         
         apiTask.getItems({
-            task_type: 1,
-            status: 'ACTIVE',
-            lat: query.lat,
-            lng: query.lng,
-            category: query.category
+            taskType: 1,
+            status: 0,
+            // lat: query.lat,
+            // lng: query.lng,
+            // category: query.category
         })
         .then(offers => {
             this.setState({
@@ -217,7 +217,7 @@ class Offers extends Component {
                                             <div className="row" key={index}>
                                                 { this.state.offersChunksXS[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-6" style={ { marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
                                                     </div>
                                                 )}
                                             </div>
@@ -229,7 +229,7 @@ class Offers extends Component {
                                             <div className="row" key={index}>
                                                 { this.state.offersChunksMD[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
                                                     </div>
                                                 )}
                                             </div>

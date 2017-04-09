@@ -5,7 +5,6 @@ export const appLabel = RestResourceFactory.create('app_label', {
         const dataObj = {};
 
         data.map(item => {
-            debugger;
             dataObj[item.labelKey] = item.labelValue;
         })
 

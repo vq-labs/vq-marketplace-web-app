@@ -1,31 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import apiTask from '../api/task';
 import DOMPurify from 'dompurify';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Card, CardTitle, CardText} from 'material-ui/Card';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
 
-
-class YourInserate extends Component {
+export default class ListingInProgress extends React.Component {
     constructor(props) {
         super(props);
    
         this.state = {
-                    isLoading: false,
-                   description: "",
-                    title: "",
-               offers: []
-
-         
-            
+            isLoading: false,
+            description: "",
+            title: "",
+            offers: []
         };
-
-         
     }
-      componentDidMount() {
+    componentDidMount() {
         this.loadTasks(this.props.location.query);
     }
-    
-     loadTasks(query) {
+    loadTasks(query) {
          this.setState({
             isLoading: true
         });
@@ -38,14 +31,10 @@ class YourInserate extends Component {
             this.setState({
                 isLoading: false,
                 offers: offers
-                
             });
         });
     }
-    
-    
     render() {
-       
         return (
             <div>
                 <div className="container" >
@@ -60,18 +49,12 @@ class YourInserate extends Component {
                             <Card style={{ marginBottom:'40px' } } >
                                 <CardTitle title="In Progress" style={ { backgroundColor:'silver'  }} />
                                     <CardText>
-                                    
-                                      
                                     </CardText>
-                            
                             </Card>
-
                             <Card>
                                 <CardTitle title="Not Inserted" style={ { backgroundColor:'silver'  }} />
                                     <CardText>
-                                        
                                     </CardText>
-                            
                             </Card>
                         </div> 
                     </div> 
@@ -80,5 +63,3 @@ class YourInserate extends Component {
         )
     }
 }
-
-export default YourInserate;

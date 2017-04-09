@@ -63,18 +63,19 @@ class Profile extends Component {
     let section=this.props.params.section;
 
     apiSkills.getItems().then(skills => {
-        this.setState( { skills: skills });
+        this.setState({ skills: skills });
     });
 
     apiTask.getItems({
-        owner_user_id: userId,
-        task_type: 1
+        status: 0,
+        ownerUserId: userId,
+        taskType: 1
     }).then(offers => {
-        this.setState( { offers: offers });
+        this.setState({ offers: offers });
     });
 
     apiUser.getItem(userId).then(result => this.setState({
-        isMyProfile: coreAuth.getUserId()===userId,
+        isMyProfile: coreAuth.getUserId() === userId,
         userId: userId,
         profile: result,
         section: section,
@@ -86,7 +87,7 @@ class Profile extends Component {
   }
 
   goToNewTask() {
-      browserHistory.push('/new-task');
+    browserHistory.push('/new-task');
   }
 
   onDrop(files) {

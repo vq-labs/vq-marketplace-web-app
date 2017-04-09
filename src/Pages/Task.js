@@ -14,6 +14,7 @@ import Chip from 'material-ui/Chip';
 import * as coreAuth from '../core/auth';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import apiUser from '../api/user';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { translate } from '../core/i18n';
 
@@ -29,6 +30,7 @@ class Task extends Component {
             applicationInProgress: false,
             isLoading: true,
             isMyTask: false,
+            taskOwner: {},
             task: {
                 images: [ ],
                 categories: [ ],
@@ -75,11 +77,17 @@ class Task extends Component {
 
       pricingModelProvider.get().then(pricingModels => this.setState({ pricingModels }));
 
-      apiTask.getItem(taskId).then(rTask => this.setState({
-        isLoading: false,
-        task: rTask,
-        isMyTask: rTask.ownerUserId === coreAuth.getUserId()
-      }));
+      apiTask.getItem(taskId)
+      .then(rTask => {
+          this.setState({
+            isLoading: false,
+            task: rTask,
+            isMyTask: rTask.ownerUserId === coreAuth.getUserId()
+          });
+
+          apiUser.getItem(rTask.ownerUserId)
+          .then(taskOwner => this.setState({ taskOwner }));
+      });
     }
     render() {
         return (
@@ -102,12 +110,20 @@ class Task extends Component {
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-1">
-                                            <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                <Avatar src={this.state.task.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
-                                            </a>
+                                            {this.state.taskOwner.id &&
+                                                <a href={ '/app/profile/' + this.state.taskOwner.id }>
+                                                    <Avatar src={this.state.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
+                                                </a>
+                                            }
                                         </div>
-                                        <div className="col-xs-11">     
-                                            <strong><a href={ '/app/profile/' + this.state.task.ownerUserId }>{this.state.task.taskOwner.profile.firstName} {this.state.task.taskOwner.profile.lastName}</a></strong>
+                                        <div className="col-xs-11">
+                                            {this.state.taskOwner.id &&     
+                                            <strong>
+                                                <a href={ '/app/profile/' + this.state.task.ownerUserId }>
+                                                    {this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}
+                                                </a>
+                                            </strong>
+                                            }
                                             <p className="text-muted">
                                                 am <Moment format="DD.MM.YYYY">{this.state.task.createdAt}</Moment>
                                             </p>
@@ -151,7 +167,7 @@ class Task extends Component {
                                             value={this.state.tabIndex}
                                             >
                                             <Tab style={{ color: 'black' }} label={translate('LISTING_INFO')} value={0}>
-                                                { this.state.tabIndex === 0 && 
+                                                { this.state.tabIndex === 0 &&
                                                 <div className="row">
                                                     <div className="col-xs-12" style={{ marginTop: 10 }}>
                                                         <Card style={{width: '100%', marginBottom: '20px'}}>
@@ -166,38 +182,39 @@ class Task extends Component {
                                                             </CardText>
                                                         </Card>
                                                     </div>
-
                                                     <div className="col-xs-12">
-                                                        <Card style={{width: '100%', 'marginBottom': '20px'}}>
-                                                            <CardText>
-                                                                <h3 className="text-left">Über {this.state.task.taskOwner.profile.firstName}</h3>
-                                                                <div className="row">
-                                                                    <div className="col-xs-1">
-                                                                        <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                                            <Avatar src={this.state.task.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div className="col-xs-11">     
-                                                                        <strong><a href={ '/app/profile/' + this.state.task.ownerUserId }>{this.state.task.taskOwner.profile.firstName} {this.state.task.taskOwner.profile.lastName}</a></strong>
-                                                                        
-                                                                        <p className="text-muted">
-                                                                            {this.state.task.taskOwner.profile.bio}
-                                                                        </p>
-                                                                    </div>  
+                                                        {this.state.taskOwner._id &&
+                                                            <Card style={{width: '100%', 'marginBottom': '20px'}}>
+                                                                <CardText>
+                                                                    <h3 className="text-left">Über {this.state.taskOwner.profile.firstName}</h3>
+                                                                    <div className="row">
+                                                                        <div className="col-xs-1">
+                                                                            <a href={ '/app/profile/' + this.state.task.ownerUserId }>
+                                                                                <Avatar src={this.state.taskOwner.profile.imageUrl || 'https://talentwand.de/images/avatar.png' }/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div className="col-xs-11">     
+                                                                            <strong><a href={ '/app/profile/' + this.state.taskOwner._id }>{this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}</a></strong>
+                                                                            
+                                                                            <p className="text-muted">
+                                                                                {this.state.taskOwner.profile.bio}
+                                                                            </p>
+                                                                        </div>  
 
-                                                                    <div className="col-xs-12">     
-                                                                        <h4>Skills</h4>
+                                                                        <div className="col-xs-12">     
+                                                                            <h4>Skills</h4>
 
-                                                                        <div style={{
-                                                                            display: 'flex',
-                                                                            flexWrap: 'wrap',
-                                                                        }}>
-                                                                        {this.state.task.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: 3} } key={i} >{talent.name}</Chip>)}
+                                                                            <div style={{
+                                                                                display: 'flex',
+                                                                                flexWrap: 'wrap',
+                                                                            }}>
+                                                                            {this.state.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: 3} } key={i} >{talent.name}</Chip>)}
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </CardText>
-                                                        </Card>
+                                                                </CardText>
+                                                            </Card>
+                                                        }
                                                     </div>   
                                                 </div>
                                                 }
@@ -205,12 +222,12 @@ class Task extends Component {
                                             <Tab style={{ color: 'black' }} label={translate('LISTING_IMAGES')} value={1} >
                                                 <div className="col-xs-12" style={{ marginTop: 10 }}>
                                                     <div className="row">
-                                                        { this.state.task.images.map(img =>
+                                                        { this.state.task.images && this.state.task.images.map(img =>
                                                             <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
                                                                 <img className="img-responsive" role="presentation" src={img.imageUrl}/>
                                                             </div>
                                                         )}
-                                                        { (!this.state.task.images.length) &&
+                                                        { ( !this.state.task.images || !this.state.task.images.length) &&
                                                             <div className="col-xs-12 text-center">
                                                                 <h4>{ translate('NO_LISTING_IMAGES') }</h4>
                                                             </div>
@@ -231,7 +248,7 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog toUserId={this.state.task.ownerUserId} taskId={this.state.task._id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog toUserId={this.state.task.ownerUserId} taskId={this.state.task.id} open={this.state.applicationInProgress} />
             </div>
         );
     }

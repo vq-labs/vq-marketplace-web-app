@@ -28,19 +28,23 @@ import * as coreNavigation from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
 
-import TRANSLATIONS from './generated/Translations.js';
+import './App.css';
 
 coreNavigation.setBase('app');
 
-Object.keys(TRANSLATIONS).forEach(langKey => corei18n.addLang(langKey, TRANSLATIONS[langKey]));
-
-import './App.css';
+// dummy language init
+corei18n.addLang('en', {});
+corei18n.addLang('de', {});
+corei18n.addLang('tr', {});
+corei18n.addLang('pl', {});
 
 class App extends Component {
   constructor (props) {
     super(props);
 
     this.state = {
+      metaReady: false,
+      labelsReady: false,
       user: null,
       meta: {}
     };
@@ -59,7 +63,7 @@ class App extends Component {
         })
         .catch(err => {
           coreAuth.destroy();
-          browserHistory.push('/app/login');
+          coreNavigation.goTo('/login');
         });
     });
 
@@ -73,34 +77,44 @@ class App extends Component {
       coreAuth.loadFromLocalStorage();
     }
 
-    apiConfig.meta.getItems({}, { cache: true })
-      .then(meta => this.setState({ meta: meta[0] }));
+    apiConfig.appConfig.getItems({}, { cache: true })
+        .then(config => {
+          return this.setState({ metaReady: true, meta: config })
+        });
+
+    apiConfig.appLabel.getItems({ lang: 'en' }, { cache: true })
+      .then(labels => {
+        debugger;
+        corei18n.addLang('en', labels);
+
+        this.setState({ labelsReady: true })
+      });
   }
 
   render() {
       return (
-      <MuiThemeProvider>
-        <div>
-          <Header logo={this.state.meta.logoUrl} homeLabel={this.state.meta.listingLabel} user={this.state.user}></Header>
-          <Router history={browserHistory} onUpdate={coreTracking.pageView}>
-            <Route path="/app">
-              <IndexRoute component={Offers}/>
-              <Route path="admin/:section" component={AdminPage}></Route>
-              <Route path="new-listing" component={NewTask}></Route>
-              <Route path="premium" component={PremiumPage}></Route>
-              <Route path="chat" component={Chat}></Route>
-              <Route path="chat/:chatId" component={ChatRoom}></Route>
-              <Route path="signup" component={SignupPage}></Route>
-              <Route path="login" component={LoginPage}></Route>
-              <Route path="task/:taskId" component={Task}></Route>
-              <Route path="task/:taskId/edit" component={TaskEdit}></Route>
-              <Route path="profile/:profileId" component={Profile}></Route>
-              <Route path="yourInserate" component={YourInserate}></Route>
-              <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
-            </Route>
-          </Router>
-        </div>
-      </MuiThemeProvider>
+        this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
+          <div>
+            <Header logo={this.state.meta.LOGO_URL} homeLabel={'Offer'} user={this.state.user}></Header>
+            <Router history={browserHistory} onUpdate={coreTracking.pageView}>
+              <Route path="/app">
+                <IndexRoute component={Offers}/>
+                <Route path="yourInserate" component={YourInserate}></Route>
+                <Route path="admin/:section" component={AdminPage}></Route>
+                <Route path="new-listing" component={NewTask}></Route>
+                <Route path="premium" component={PremiumPage}></Route>
+                <Route path="chat" component={Chat}></Route>
+                <Route path="chat/:chatId" component={ChatRoom}></Route>
+                <Route path="signup" component={SignupPage}></Route>
+                <Route path="login" component={LoginPage}></Route>
+                <Route path="task/:taskId" component={Task}></Route>
+                <Route path="task/:taskId/edit" component={TaskEdit}></Route>
+                <Route path="profile/:profileId" component={Profile}></Route>
+                <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
+              </Route>
+            </Router>
+          </div>
+        </MuiThemeProvider> 
       );
    }
 }

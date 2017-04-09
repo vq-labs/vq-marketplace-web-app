@@ -1,11 +1,12 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
-import * as coreNavigation from '../core/navigation';
 import SectionOverview from './Overview';
 import SectionCategories from './Categories';
 import SectionBasics from './Basics';
 import SectionUsers from './Users';
+import SectionLabels from './Labels';
+import * as coreNavigation from '../core/navigation';
 
 export default class AdminPage extends React.Component {
     constructor(props) {
@@ -45,6 +46,7 @@ export default class AdminPage extends React.Component {
                     
                         <h4>Configuration</h4>
                             <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
+                            <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                             <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                             <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
                             <MenuItem onClick={ () => this.goToSection('basics') }>Pricing models</MenuItem>
@@ -57,6 +59,7 @@ export default class AdminPage extends React.Component {
                                     <div className="col-xs-12">
                                         { this.state.section === 'overview' && <SectionOverview /> } 
                                         { this.state.section === 'users' && <SectionUsers /> } 
+                                        { this.state.section === 'labels' && <SectionLabels /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
                                     </div> 

@@ -107,15 +107,15 @@ class Profile extends Component {
    
 
     const ProfileHeader = 
-            <div className="row">
-                <div className="col-xs-12 col-sm-3 col-md-2">
+            <div className="row" style={{ 'marginTop': 30}} >
+                <div className="col-xs-12 col-sm-3 col-md-2" style={{ 'paddingTop': 20}}>
                     <ProfileImage allowChange={this.state.isMyProfile} onDrop={this.onDrop} image={this.state.profile.profile && this.state.profile.profile.imageUrl || 'https://studentask.de/images/avatar.png'} />
                 </div>
                 <div className="col-xs-12 col-sm-9 col-md-10">
                     <div className="row">  
                         <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
                             { this.state.profile.profile && 
-                                <h1 style={{ 'marginTop': '20px'  }}>
+                                <h1>
                                     { this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName }
                                 </h1>
                             }

@@ -15,7 +15,7 @@ export default class EditableEntity extends Component {
         props.fields.map(field => updatedEntity[field.key] = '');
 
         this.state = {
-            isLoading: true,
+            isLoading: false,
             fields: props.fields,
             updatedEntity: props.value || updatedEntity,
             dirty: false
@@ -44,17 +44,18 @@ export default class EditableEntity extends Component {
     }
     handleUpdate () {
         this.setState({ dirty: false });
+
         this.props.onConfirm(this.state.updatedEntity);
     }
     render() {
             return (
                 <div>
-                { this.state.isLoading && 
+                { this.state.isLoading &&
                         <div className="text-center" style={{ 'marginTop': '40px' }}>
                             <CircularProgress size={80} thickness={5} />
                         </div>
                 }
-                { !this.state.isLoading &&    
+                { !this.state.isLoading &&
                             <div className="container">
                                 <div className="col-xs-12 col-sm-8">
                                     { this.props.fields.map((field, index) =>
@@ -76,7 +77,7 @@ export default class EditableEntity extends Component {
                                             { this.state.showCancelBtn &&  
                                                 <FlatButton
                                                     style={ { float: 'left' } }
-                                                    label={this.props.cancelLabel}
+                                                    label={this.props.cancelLabel || 'Cancel'}
                                                     primary={ true }
                                                     disabled={ false }
                                                     onTouchTap={ () => coreNavigation.goBack() }
@@ -85,7 +86,7 @@ export default class EditableEntity extends Component {
                                             <RaisedButton
                                                 disabled={!this.state.dirty}
                                                 style={ { float: 'right' } }
-                                                label={this.props.saveLabel}
+                                                label={this.props.saveLabel || 'Save'}
                                                 primary={ true }
                                                 onTouchTap={ this.handleUpdate }
                                             />

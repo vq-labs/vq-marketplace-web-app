@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
-import * as apiChat from '../api/chat';
-import apiMessage from '../api/message';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Ad from '../Components/Ad';
 
+import apiMessage from '../api/message';
 import { translate } from '../core/i18n';
+import { goTo } from '../core/navigation';
 
 import '../App.css';
 
@@ -47,7 +46,7 @@ export default class Chat extends Component {
                                     const message = this.state.messages[requestId];
 
                                     return  <ListItem
-                                            onClick={ () => { browserHistory.push('/app/chat/' + requestId ) }}
+                                            onClick={ () => { goTo('/chat/' + requestId ) }}
                                             primaryText={ `${message.header}, ${message.otherUser.firstName} ${message.otherUser.lastName}`  }
                                             secondaryText={ `${message.lastMsgProfile.firstName} ${message.lastMsgProfile.lastName}: ${message.lastMsg}` }
                                             leftAvatar={<Avatar src={ message.otherUser.imageUrl || '/images/avatar.png' } />}

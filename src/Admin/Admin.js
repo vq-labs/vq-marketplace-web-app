@@ -28,7 +28,7 @@ export default class AdminPage extends React.Component {
         };
     }
 
-    handleToggle = () => this.setState({ open: !this.state.open });
+    handleToggle() { return this.setState({ open: !this.state.open }) }
   
     render() { 
         return (

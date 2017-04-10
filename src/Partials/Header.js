@@ -120,7 +120,8 @@ class Header extends Component {
                         /> 
                         }
 
-                        <MenuItem onClick={ () => { browserHistory.push('/app/yourInserate'  ) }} primaryText="Deine Inserate" />
+                        <MenuItem onClick={ () => { browserHistory.push('/app/my-listings'  ) }} primaryText="Deine Inserate" />
+                        
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                       </IconMenu>
                     }

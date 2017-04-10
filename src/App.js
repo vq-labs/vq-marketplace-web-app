@@ -12,7 +12,7 @@ import LoginPage from './Pages/LoginPage';
 import SignupPage from './Pages/SignupPage';
 import Profile from './Pages/Profile';
 import ProfileEdit from './Pages/ProfileEdit';
-import YourInserate from './Components/YourInserate';
+import MyListings from './Pages/MyListings';
 import Offers from './Pages/Offers';
 import NewTask from './Pages/NewListing';
 import Chat from './Pages/Chat';
@@ -99,7 +99,7 @@ class App extends Component {
             <Router history={browserHistory} onUpdate={coreTracking.pageView}>
               <Route path="/app">
                 <IndexRoute component={Offers}/>
-                <Route path="yourInserate" component={YourInserate}></Route>
+                <Route path="my-listings" component={MyListings}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>

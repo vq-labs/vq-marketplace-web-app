@@ -91,7 +91,6 @@ export default class TaskCard extends Component {
                       <div className="col-xs-10 col-sm-9 col-md-9 col-lg-10 text-muted">
                         <p style={ { marginTop: '16px', marginLeft: '-17px'} }>
                         { task.status !== 0 && <span>Inaktiv</span> }
-                        { task.status === 0 && <span>{task.applyingUsers.length} Anfragen</span> }
                         </p>
                       </div>
                       <div className="col-xs-1 col-sm-2 col-md-2 col-lg-1"> 

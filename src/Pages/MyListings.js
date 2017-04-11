@@ -80,55 +80,51 @@ class MyListings extends Component {
 
     render() {
        
-        return (
-            <div>                   
-                <div className="container" >
-                    <div className="row">
-                        <div className="col-xs-3 col-xs-offset-1 ">
-                            <RaisedButton   label="Add new Insertion" primary={true}  onClick={ () => coreNavigation.goTo(`/new-listing`)} />
-                        </div> 
-                        <div className="col-xs-8">
-                            <h1 style={{ "fontSize":"30px"}}>In Progress</h1>
-                                { this.state.offers.map( offer => {
-                                  const offerProgress = this.getOfferProgress(offer);
-                                return(
-                                                    <Paper style={style} zDepth={1} >
-                                           
-                                                         <div className="container col-xs-12">
-                                                            <div className="row" >
-                                                                      <div className="col-xs-12" style={{'padding':'0'}} >
+        return (<div>
+                    <div className="container" >
+                            <div className="row">
+                                        <div className="col-xs-12 col-sm-4" style={{'paddingLeft':'20px'}} >
+                                                <RaisedButton   label="Add new Insertion" primary={true}  onClick={ () => coreNavigation.goTo(`/new-listing`)} />
+                                        </div>
+                                        <div className="col-xs-12 col-sm-8">
+                                            <div className="row" >
+                                                <div className="col-xs-12 col-sm-12">
+                                                     <h1 style={{'fontSize':'30px', 'marginTop':'0px'}} >In Progress</h1>
+                                                 </div>
+                                            
+                                             <div className="col-xs-12 col-sm-12" >
+                                               
+                                               { this.state.offers.map( offer => {
+                                                    const offerProgress = this.getOfferProgress(offer);
+                                                    return(
+                                                            <Paper style={style} zDepth={1} >
+                                                                        <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
                                                                         <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
-                                                                      </div>
-                                                            </div>
-                                                             <div className="row">
-                                                                    <div className="col-xs-12">
-                                                                        <div style={{ 'marginTop':'10px' }} >
-                                                                            <h3>{offer.title}</h3>
-                                                                        </div>
-                                                                    </div>
-                                                            </div>
-                                                            <div className="row" style={{ 'marginTop':'10px' }} >
-                                                                    <div className="col-xs-6" >
-                                                                        <LinearProgress mode="determinate" value={offerProgress}  />
-                                                                        <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
-                                                                    </div>
-                                                                    <div className="col-xs-6">
-                                                                        <RaisedButton label="Edit" primary={true}   />
-                                                                    </div>
-                                                            </div>
-                                                            
-                                                        </div>
-                                                   
-                                        </Paper>
-                                       
-                                        )    
-                                }) 
-                            }  
-                        </div> 
-                    </div> 
-                </div> 
-            </div>  
-        )
+                                                                        </div>     
+                                                                    
+                                                                            <div className="col-xs-12 col-sm-12"  >
+                                                                                    <h3>{offer.title}</h3>
+                                                                                </div>
+                                                                    
+                                                                    
+                                                                            <div className="col-xs-12 col-sm-6"  style={{ 'marginTop':'10px' }}>
+                                                                                <LinearProgress mode="determinate" value={offerProgress}  />
+                                                                                <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
+                                                                            </div>
+                                                                            <div className="col-xs-12 col-sm-6">
+                                                                                <RaisedButton label="Edit" primary={true} />
+                                                                            </div>
+                                                            </Paper>
+                                                        )    
+                                                    }) 
+                                                }     
+
+                                            </div>
+                                      </div>
+                                </div>
+                          </div>
+                    </div>
+          </div>)
     }
 }
 

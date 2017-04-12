@@ -29,7 +29,10 @@ export default class Chat extends Component {
       }
   }
   componentDidMount() {
-    apiMessage.getItems({ group_by: 'requestId' }).then(messages => this.setState( { messages }));
+    apiMessage.getItems({ 
+        group_by: 'requestId'
+    })
+    .then(messages => this.setState( { messages }));
   }
   render() {
     return (
@@ -38,10 +41,8 @@ export default class Chat extends Component {
                 <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
                     <div className="row">
                         <div className="col-xs-12">
-                           
                             <List>
                                 <Subheader>{ translate('REQUESTS') }</Subheader>
-                                
                                 { this.state.messages && Object.keys(this.state.messages).map((requestId, index) => { 
                                     const message = this.state.messages[requestId];
 

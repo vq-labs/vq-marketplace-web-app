@@ -56,21 +56,21 @@ class MyListings extends Component {
 
     getOfferProgress(offer) {
         var offerProgress = 0;
-        if (offer.title && offer.price && offer.description && offer.images) {
-            return  offerProgress = 100;
+        
+        if ( offer.title ) {
+             offerProgress++
         }
-        else if (offer.title && offer.price && offer.description ) {
-            return offerProgress = 75;
+        if ( offer.price ) {
+             offerProgress++
         }
-          else if (offer.title && offer.price  ) {
-            return offerProgress = 50;
+        if ( offer.description ) {
+             offerProgress++
         }
-          else if (offer.title ) {
-            return offerProgress = 25;
+        if ( offer.images) {
+             offerProgress++
         }
-          else {
-            return offerProgress;
-        }
+        return offerProgress * 25 ;
+        
     }
 
 

@@ -83,7 +83,7 @@ class Offers extends Component {
             status: 0,
             // lat: query.lat,
             // lng: query.lng,
-            // category: query.category
+            category: query.category
         })
         .then(offers => {
             this.setState({

@@ -36,16 +36,17 @@ export default class Chat extends Component {
         <div className="container">
             <div className="col-xs-12 col-sm-8">
                 <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
-                    <div class="row">
-                        <div class="col-xs-12">
+                    <div className="row">
+                        <div className="col-xs-12">
                            
                             <List>
                                 <Subheader>{ translate('REQUESTS') }</Subheader>
                                 
-                                { this.state.messages && Object.keys(this.state.messages).map(requestId => { 
+                                { this.state.messages && Object.keys(this.state.messages).map((requestId, index) => { 
                                     const message = this.state.messages[requestId];
 
                                     return <ListItem
+                                            key={index}
                                             onClick={ () => { goTo('/chat/' + requestId ) }}
                                             primaryText={ `${message.header}, ${message.otherUser.firstName} ${message.otherUser.lastName}`  }
                                             secondaryText={ `${message.lastMsgProfile.firstName} ${message.lastMsgProfile.lastName}: ${message.lastMsg}` }

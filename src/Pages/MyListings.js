@@ -91,8 +91,8 @@ class MyListings extends Component {
                                                 <div className="col-xs-12 col-sm-12">
                                                      <h1 style={{'fontSize':'30px', 'marginTop':'0px'}} >In Progress</h1>
                                                  </div>
-                                            
-                                             <div className="col-xs-12 col-sm-12" >
+                                             <div className="row" >
+                                             <div className="col-xs-12 col-sm-12"  >
                                                
                                                { this.state.offers.map( offer => {
                                                     const offerProgress = this.getOfferProgress(offer);
@@ -117,9 +117,12 @@ class MyListings extends Component {
                                                             </Paper>
                                                         )    
                                                     }) 
-                                                }     
-
+                                                }  
+                                                
                                             </div>
+                                            
+                                               
+                                                </div>
                                       </div>
                                 </div>
                           </div>

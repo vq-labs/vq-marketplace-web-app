@@ -46,7 +46,12 @@ class Offers extends Component {
         apiConfig.appConfig.getItems({}, { cache: true })
             .then(meta => this.setState({ meta }));
 
-        this.loadTasks(this.props.location.query);
+
+        const queryCategory = this.props.location.query ? this.props.location.query.category : null;
+
+        setTimeout(() => {
+            this.updateResults({ category: queryCategory });
+        }, 1100);
     }
     
     displayIconElement (offer) {
@@ -175,10 +180,7 @@ class Offers extends Component {
                                 }
                             }    
                             className="vq-category-main with-pointer" onClick={
-                                () => {
-                                    this.updateResults({ category: null }); 
-                                 }
-                            }>
+                                () => this.updateResults({ category: null })}>
                              { translate('ALL_CATEGORIES') }
                             </span>
                         </div>

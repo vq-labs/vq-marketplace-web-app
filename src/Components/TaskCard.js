@@ -70,15 +70,15 @@ export default class TaskCard extends Component {
 
   getTaskListItem(task) {
     return (
-            <Card key={task._id}>
+            <Card key={task.id}>
                 <CardText style={ {
                     height: '60px',
                     lineHeight: '20px', 
                     overflow: 'hidden'
-                }} onClick={() => this.handleGoToTask(task._id) } >    
+                }} onClick={() => this.handleGoToTask(task.id) } >    
                       <h4>{task.title.substring(0, 23) + '...'}</h4>
                 </CardText>  
-                <CardText onClick={() => this.handleGoToTask(task._id) } style={ {
+                <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
                     height: '60px',
                     lineHeight: '20px', 
                     overflow: 'hidden'
@@ -91,7 +91,6 @@ export default class TaskCard extends Component {
                       <div className="col-xs-10 col-sm-9 col-md-9 col-lg-10 text-muted">
                         <p style={ { marginTop: '16px', marginLeft: '-17px'} }>
                         { task.status !== 0 && <span>Inaktiv</span> }
-                        { task.status === 0 && <span>{task.applyingUsers.length} Anfragen</span> }
                         </p>
                       </div>
                       <div className="col-xs-1 col-sm-2 col-md-2 col-lg-1"> 
@@ -100,9 +99,9 @@ export default class TaskCard extends Component {
                               anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                               targetOrigin={{horizontal: 'right', vertical: 'top'}}
                             > 
-                                <MenuItem primaryText={translate('EDIT')} onTouchTap={ () => coreNavigation.goTo(`/task/${task._id}/edit`) } />
-                                { task.status !== 0 && <MenuItem primaryText={translate('ACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 0) } /> }
-                                { task.status === 0 && <MenuItem primaryText={translate('DEACTIVATE')} onTouchTap={ () => this.changeStatus(task._id, 103) } /> }
+                                <MenuItem primaryText={translate('EDIT')} onTouchTap={ () => coreNavigation.goTo(`/task/${task.id}/edit`) } />
+                                { task.status !== 0 && <MenuItem primaryText={translate('ACTIVATE')} onTouchTap={ () => this.changeStatus(task.id, 0) } /> }
+                                { task.status === 0 && <MenuItem primaryText={translate('DEACTIVATE')} onTouchTap={ () => this.changeStatus(task.id, 103) } /> }
                                 
                             </IconMenu>
                       </div>

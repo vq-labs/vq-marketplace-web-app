@@ -46,7 +46,7 @@ export default class ChatRoom extends React.Component {
         event.preventDefault()
        
         const data = {
-            taskId: this.state.task._id,
+            taskId: this.state.task.id,
             toUserId: this.state.toUserId,
             fromUserId: this.state.fromUserId,
             requestId: this.state.requestId,
@@ -75,11 +75,11 @@ export default class ChatRoom extends React.Component {
                         { this.state.task &&
                             <div className="row">
                                 <div className="col-xs-12" style={ { margin: '10px' } }>
-                                    <RaisedButton onClick={ () => browserHistory.push('/app/chat') } label="Zurück zu allen Nachrichten"/>
+                                    <RaisedButton onClick={ () => browserHistory.push('/app/chat') } label={translate('BACK')}/>
                                 </div>    
                                 <div className="col-xs-12" style={ { margin: '10px' } }>
                                     <h1 className="st-h1">
-                                        <a href={ '/app/task/' + this.state.task._id }>
+                                        <a href={ '/app/task/' + this.state.task.id }>
                                             { this.state.task.title }
                                         </a>
                                     </h1>
@@ -156,10 +156,10 @@ export default class ChatRoom extends React.Component {
                               <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                     { Object.keys(this.state.users).map(userId => <div className="row" style={ { marginBottom: '10px' } }>
                                         <a href={ '/app/profile/' + userId }>
-                                            <div className="col-xs-3">
+                                            <div className="col-xs-4 col-sm-3">
                                                 <img  alt="profile data" style={ { width: '60px', height: '60px' } } src={this.state.users[userId].profile.imageUrl || 'images/avatar.png'} />
                                             </div>
-                                            <div className="col-xs-9">
+                                            <div className="col-xs-8 col-sm-9">
                                                 
                                                     <strong>
                                                         {this.state.users[userId].profile.firstName} {this.state.users[userId].profile.lastName}

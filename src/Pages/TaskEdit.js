@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -7,6 +6,7 @@ import HtmlTextField from '../Components/HtmlTextField';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import apiTask from '../api/task';
+import * as apiTaskImage from '../api/task-image';
 import * as coreNavigation from '../core/navigation';
 import ImageUploader from '../Components/ImageUploader';
 import { translate } from '../core/i18n';
@@ -14,18 +14,17 @@ import { translate } from '../core/i18n';
 import '../App.css';
 
 export default class TaskEdit extends Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
    
-        this.state={
+        this.state = {
             isLoading: true,
             task: {},
             updatedTask: {}  
         };
 
-
-         this.handleFieldChange=this.handleFieldChange.bind(this);
-         this.handleUpdate=this.handleUpdate.bind(this);
+        this.handleFieldChange=this.handleFieldChange.bind(this);
+        this.handleUpdate=this.handleUpdate.bind(this);
     }
    
     componentDidMount() {
@@ -54,56 +53,46 @@ export default class TaskEdit extends Component {
             
             this.setState( { updatedTask } );
         }
-  } 
-  handleUpdate ()  {
+  }
+
+  handleUpdate () {
+    const taskId = this.state.task.id;
     const updatedTask = this.state.updatedTask;
 
     updatedTask.price *= 100;
 
-    apiTask.updateItem(this.state.task._id, updatedTask).then(task => {
-        browserHistory.push(`/app/task/${this.state.task._id}`);
-    });
+    apiTaskImage.createItem(taskId, updatedTask.images);
+
+    apiTask.updateItem(taskId, updatedTask).then(task => coreNavigation.goTo(`/task/${taskId}`));
   }
 
-  /**
-   *  <TextField
-                                                rows={4}
-                                                ref="description"
-                                                onChange={ this.handleFieldChange('description') }
-                                                value={this.state.updatedTask.description}
-                                                style={{width: '100%'}}
-                                                inputStyle={{width: '100%'}}
-                                                floatingLabelText="Beschreibung"
-                                            />
-   */
   render() {
         return (
             <div >
               { this.state.isLoading && 
-                          <div className="text-center" style={{ 'marginTop': '40px' }}>
-                                <CircularProgress size={80} thickness={5} />
-                          </div>
+                <div className="text-center" style={{ 'marginTop': '40px' }}>
+                    <CircularProgress size={80} thickness={5} />
+                </div>
               }
               { !this.state.isLoading &&           
                         <div className="container">
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
-                                        <h4>Titel</h4>
-                                        <TextField
-                                            
-                                            ref="title"
-                                            onChange={ this.handleFieldChange('title') }
-                                            value={this.state.updatedTask.title}
-                                            style={{width: '100%'}}
-                                            inputStyle={{width: '100%'}}
-                                        />
+                                    <h4>Titel</h4>
+                                    <TextField
+                                        
+                                        ref="title"
+                                        onChange={ this.handleFieldChange('title') }
+                                        value={this.state.updatedTask.title}
+                                        style={{width: '100%'}}
+                                        inputStyle={{width: '100%'}}
+                                    />
                                 </div> 
                                 <div className="col-xs-12">
-                                            <h4>Beschreibung</h4>
-                                            <HtmlTextField onChange={this.handleFieldChange('description')} value={this.state.updatedTask.description}/>
-                                            <hr />
+                                    <h4>Beschreibung</h4>
+                                    <HtmlTextField onChange={this.handleFieldChange('description')} value={this.state.updatedTask.description}/>
+                                    <hr />
                                 </div>
-
                                 <div className="col-xs-12">
                                     <h4>Abbrechungsmodel</h4>
                                     <RadioButtonGroup 
@@ -144,11 +133,11 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                     <h4>Photos</h4>
                                     <ImageUploader images={this.state.updatedTask.images} onChange={images => {
-                                            const updatedTask = this.state.updatedTask;
+                                        const updatedTask = this.state.updatedTask;
 
-                                            updatedTask.images = images;
-                            
-                                            this.setState({ updatedTask });
+                                        updatedTask.images = images;
+
+                                        this.setState({ updatedTask });
                                     }} />
                                 </div> 
                                 <div className="col-xs-12">

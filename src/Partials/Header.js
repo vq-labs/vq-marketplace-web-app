@@ -155,7 +155,7 @@ class Header extends Component {
                           } primaryText="Admin dashboard" /> 
                         }
 
-                        <MenuItem onClick={ () => goTo('/my-listings') } primaryText={translate("MY_LISTING")} />
+                        { false && 'Satya, for now it is disabled until the page works, you need to access it directly with url' && <MenuItem onClick={ () => goTo('/my-listings') } primaryText={translate("MY_LISTING")} /> }
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                       </IconMenu>
                     }

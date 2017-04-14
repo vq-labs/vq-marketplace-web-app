@@ -132,7 +132,7 @@ class Header extends Component {
                             }
                           />
                         )}
-                        <ListItem onClick={ () => { goTo('/new-listing' ) }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
+                        <ListItem onClick={ () => { goTo('/new-listing') }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
                     </IconMenu>
                    }
                   { this.state.logged && 
@@ -155,7 +155,7 @@ class Header extends Component {
                           } primaryText="Admin dashboard" /> 
                         }
 
-                        <MenuItem onClick={ () => { goTo('/yourInserate') }} primaryText="Deine Inserate" />
+                        <MenuItem onClick={ () => goTo('/my-listings') } primaryText={translate("MY_LISTING")} />
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                       </IconMenu>
                     }

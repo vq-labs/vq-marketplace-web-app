@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import apiTask from '../api/task';
-import DOMPurify from 'dompurify';
-import { Link } from 'react-router'
 import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as coreNavigation from '../core/navigation';
 import LinearProgress from 'material-ui/LinearProgress';
-import {Card, CardTitle, CardMedia, CardText} from 'material-ui/Card';
+
 
 const style = {
     height: 350,
@@ -60,21 +56,21 @@ class MyListings extends Component {
 
     getOfferProgress(offer) {
         var offerProgress = 0;
-        if (offer.title && offer.price && offer.description && offer.images) {
-            return  offerProgress = 100;
+        
+        if ( offer.title ) {
+             offerProgress++
         }
-        else if (offer.title && offer.price && offer.description ) {
-            return offerProgress = 75;
+        if ( offer.price ) {
+             offerProgress++
         }
-          else if (offer.title && offer.price  ) {
-            return offerProgress = 50;
+        if ( offer.description ) {
+             offerProgress++
         }
-          else if (offer.title ) {
-            return offerProgress = 25;
+        if ( offer.images) {
+             offerProgress++
         }
-          else {
-            return offerProgress;
-        }
+        return offerProgress * 25 ;
+        
     }
 
 
@@ -91,8 +87,9 @@ class MyListings extends Component {
                                                 <div className="col-xs-12 col-sm-12">
                                                      <h1 style={{'fontSize':'30px', 'marginTop':'0px'}} >In Progress</h1>
                                                  </div>
-                                            
-                                             <div className="col-xs-12 col-sm-12" >
+                                            </div>  {/* this respective row is closed  */}
+                                             <div className="row" >
+                                             <div className="col-xs-12 col-sm-12"  >
                                                
                                                { this.state.offers.map( offer => {
                                                     const offerProgress = this.getOfferProgress(offer);
@@ -117,13 +114,12 @@ class MyListings extends Component {
                                                             </Paper>
                                                         )    
                                                     }) 
-                                                }     
-
-                                            </div>
-                                      </div>
-                                </div>
-                          </div>
-                    </div>
+                                                }  
+                                                </div> {/* sm-12 closed */}
+                                      </div>   {/* row closed before sm-12 */}
+                                </div> {/* sm-8 close */}
+                          </div> {/* 1st row closed  */}
+                    </div> {/* container closed  */}
           </div>)
     }
 }

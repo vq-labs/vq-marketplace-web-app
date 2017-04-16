@@ -46,7 +46,12 @@ class Offers extends Component {
         apiConfig.appConfig.getItems({}, { cache: true })
             .then(meta => this.setState({ meta }));
 
-        this.loadTasks(this.props.location.query);
+
+        const queryCategory = this.props.location.query ? this.props.location.query.category : null;
+
+        setTimeout(() => {
+            this.updateResults({ category: queryCategory });
+        }, 1100);
     }
     
     displayIconElement (offer) {
@@ -79,10 +84,10 @@ class Offers extends Component {
         });
         
         apiTask.getItems({
-            task_type: 1,
-            status: 'ACTIVE',
-            lat: query.lat,
-            lng: query.lng,
+            taskType: 1,
+            status: 0,
+            // lat: query.lat,
+            // lng: query.lng,
             category: query.category
         })
         .then(offers => {
@@ -175,10 +180,7 @@ class Offers extends Component {
                                 }
                             }    
                             className="vq-category-main with-pointer" onClick={
-                                () => {
-                                    this.updateResults({ category: null }); 
-                                 }
-                            }>
+                                () => this.updateResults({ category: null })}>
                              { translate('ALL_CATEGORIES') }
                             </span>
                         </div>
@@ -217,7 +219,7 @@ class Offers extends Component {
                                             <div className="row" key={index}>
                                                 { this.state.offersChunksXS[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-6" style={ { marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
                                                     </div>
                                                 )}
                                             </div>
@@ -229,7 +231,7 @@ class Offers extends Component {
                                             <div className="row" key={index}>
                                                 { this.state.offersChunksMD[index].map(offer =>
                                                     <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer._id}  />
+                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
                                                     </div>
                                                 )}
                                             </div>

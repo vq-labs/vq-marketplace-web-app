@@ -9,15 +9,18 @@ import FlatButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-
+import { ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
+import apiTask from '../api/task';
+import { goTo } from '../core/navigation';
 
 class Header extends Component {
   constructor(props) {
     super();
 
     this.state = {
+      tasks: [],
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
@@ -36,6 +39,16 @@ class Header extends Component {
         user: nextProps.user,
         logged: Boolean(nextProps.user)
       });
+
+      apiTask.getItems({
+          ownerUserId: nextProps.user._id,
+          taskType: 1,
+          status: 10,
+      })
+      .then(tasks => {
+        this.setState({ tasks });
+      });
+
     } else {
       this.setState({ homeLabel: nextProps.homeLabel, logged: false, userId: undefined, user: undefined });
     }
@@ -75,52 +88,74 @@ class Header extends Component {
                 <ToolbarGroup>
                           { this.state.homeLabel && 
                             <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
-                              () => { browserHistory.push('/app');
+                              () => { goTo('/');
                             }
                             } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                           }
                           { !this.state.logged &&
                           <FlatButton label={translate("SIGNUP")} onClick={ 
-                            () => { browserHistory.push('/app/signup'); 
+                            () => { goTo('/signup'); 
                           }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                           }
                           { !this.state.logged &&
                           <FlatButton label={translate("LOGIN")} onClick={ 
-                            () => { browserHistory.push('/app/login'); 
+                            () => { goTo('/login'); 
                           }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                           }
                     <ToolbarSeparator />     
 
-                  
-                    <a onClick={ () => { browserHistory.push('/app/new-listing' ) }} target="_self">
+                   { !Boolean(this.state.tasks.length) &&
+                    <a onClick={ () => { goTo('/new-listing') }} target="_self">
                       <IconButton iconStyle={{ color: grey600 }}>
                         <ContentAdd />
                       </IconButton>
                     </a> 
-                    
-
-                    { this.state.logged && 
-                      <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { browserHistory.push('/app/chat' ) }}>
-                        <CommunicationChatBubble />
-                      </IconButton>
-                    }
+                   }
+                   { Boolean(this.state.tasks.length) &&
+                      <IconMenu
+                            iconButtonElement={ 
+                              <IconButton iconStyle={{ color: grey600 }}>
+                                <ContentAdd />
+                              </IconButton>
+                            }
+                            listStyle={{ width: 280 }}
+                            anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
+                        { this.state.tasks.map( task =>
+                          <ListItem
+                            onClick={ () => { goTo(`/new-listing/${task.id}` ) }} 
+                            target="_self"
+                            secondaryText={task.title}
+                            primaryText={translate(task.categories[0].code)}
+                            rightIcon={
+                              <span style={{ marginRight: '45px' }}>{translate('Continue')}</span>
+                            }
+                          />
+                        )}
+                        <ListItem onClick={ () => { goTo('/new-listing') }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
+                    </IconMenu>
+                   }
+                  { this.state.logged && 
+                    <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
+                      <CommunicationChatBubble />
+                    </IconButton>
+                  }
 
                     { this.state.logged &&
                       <IconMenu
                             iconButtonElement={ <Avatar src={this.state.user.profile.imageUrl || 'https://studentask.de/images/avatar.png'} size={40} />}
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                        <MenuItem onClick={ () => { browserHistory.push('/app/profile/' + this.state.user._id ) }} primaryText={translate("PROFILE")} />                 
+                        <MenuItem onClick={ () => { goTo('/profile/' + this.state.user._id ) }} primaryText={translate("PROFILE")} />                 
                         
                         
                         { coreAuth.isAdmin() && 
-                        <MenuItem onClick={
-                          () => browserHistory.push('/app/admin/overview')
-                        } primaryText="Admin dashboard"
-                        /> 
+                          <MenuItem onClick={
+                            () => goTo('/admin/overview')
+                          } primaryText="Admin dashboard" /> 
                         }
 
-                        
+                        { false && 'Satya, for now it is disabled until the page works, you need to access it directly with url' && <MenuItem onClick={ () => goTo('/my-listings') } primaryText={translate("MY_LISTING")} /> }
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                       </IconMenu>
                     }

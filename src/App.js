@@ -110,6 +110,7 @@ class App extends Component {
                 <Route path="task/:taskId" component={Task}></Route>
                 <Route path="task/:taskId/edit" component={TaskEdit}></Route>
                 <Route path="profile/:profileId" component={Profile}></Route>
+                <Route path="my-listings" component={MyListings}></Route>
                 <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
               </Route>
             </Router>

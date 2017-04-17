@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import apiTask from '../api/task';
 import Paper from 'material-ui/Paper';
+import coreAuth from '../core/auth';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as coreNavigation from '../core/navigation';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -41,9 +42,9 @@ class MyListings extends Component {
         });
         
         apiTask.getItems({
-            task_type: 1,
+            taskType: 1,
             // status: 0,
-            // owner_user_id: coreApi.getMyUserId
+           // owner_user_id: coreAuth.getUserId()
         })
         .then(offers => {
             this.setState({
@@ -93,25 +94,30 @@ class MyListings extends Component {
                                                
                                                { this.state.offers.map( offer => {
                                                     const offerProgress = this.getOfferProgress(offer);
-                                                    return(
+                                                    return( 
                                                             <Paper style={style} zDepth={1} >
-                                                                        <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
-                                                                        <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
-                                                                        </div>     
                                                                     
+                                                                         
+                                                                            <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
+                                                                                <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
+                                                                            </div>     
+                                                                          
+                                                                         
                                                                             <div className="col-xs-12 col-sm-12"  >
-                                                                                    <h3>{offer.title}</h3>
-                                                                                </div>
-                                                                    
-                                                                    
+                                                                                <h3>{offer.title}</h3>
+                                                                            </div>
+                                                                            
+                                                                         
                                                                             <div className="col-xs-12 col-sm-6"  style={{ 'marginTop':'10px' }}>
                                                                                 <LinearProgress mode="determinate" value={offerProgress}  />
-                                                                                <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
+                                                                                <h5 style={{'color':'#546e7a'}} >{offerProgress}%</h5>
                                                                             </div>
                                                                             <div className="col-xs-12 col-sm-6">
                                                                                 <RaisedButton label="Edit" primary={true} />
                                                                             </div>
-                                                            </Paper>
+                                                                         
+                                                                         
+                                                            </Paper> 
                                                         )    
                                                     }) 
                                                 }  

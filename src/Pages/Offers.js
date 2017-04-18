@@ -123,7 +123,7 @@ class Offers extends Component {
                 background: `url(${this.state.meta.PROMO_URL}) no-repeat center center fixed`,
                 backgroundSize: 'cover' 
             }}>
-                <div className="col-xs-12" style={ { marginTop: 20 } }>
+                <div className="col-xs-12" style={ { marginTop: 25 } }>
                     <div style={{backgroundColor: this.state.meta.teaserBoxColor, padding: 10, maxWidth: '850px', margin: '0 auto' }}>
                         <h1 style={ { color: "white", fontSize: 30 } }>
                             {translate('PROMO_BUYER_SLOGAN')}

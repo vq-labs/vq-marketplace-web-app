@@ -13,7 +13,6 @@ import apiUser from '../api/user';
 import * as coreAuth from '../core/auth';
 import * as coreNavigation from '../core/navigation';
 import * as apiMedia from '../api/media';
-
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
@@ -39,15 +38,15 @@ class Profile extends Component {
         }
     };
 
-    this.getUserTalent=this.getUserTalent.bind(this);
-    this.goToNewTask=this.goToNewTask.bind(this);
-    this.onDrop=this.onDrop.bind(this);
+    this.getUserTalent = this.getUserTalent.bind(this);
+    this.goToNewTask = this.goToNewTask.bind(this);
+    this.onDrop = this.onDrop.bind(this);
   }
 
  getUserTalent(skill) {
-    const styles={
+    const styles = {
         chip: {
-            margin: 4,
+            margin: 4
         }
     };
 
@@ -59,31 +58,44 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    let userId=this.props.params.profileId;
-    let section=this.props.params.section;
+    let userId = this.props.params.profileId;
+    let section = this.props.params.section;
+    let isMyProfile = coreAuth.getUserId() === userId;
+
+    const getProfileTasks = () => apiTask.getItems({
+        status: isMyProfile ? undefined : 0,
+        ownerUserId: userId,
+        taskType: 1
+    })
+    .then(offers => {
+        this.setState({ offers: offers });
+    });
 
     apiSkills.getItems().then(skills => {
         this.setState({ skills: skills });
     });
 
-    apiTask.getItems({
-        status: 0,
-        ownerUserId: userId,
-        taskType: 1
-    }).then(offers => {
-        this.setState({ offers: offers });
+    getProfileTasks();
+
+    apiUser.getItem(userId)
+    .then(result => new Promise(resolve => {
+        this.setState({
+            isMyProfile: coreAuth.getUserId() === userId,
+            userId: userId,
+            profile: result,
+            section: section,
+        });
+
+        return resolve();
+    }));
+
+    coreAuth.addListener('login', () => {
+        this.setState({
+            isMyProfile: coreAuth.getUserId() === userId,
+        });
+
+        getProfileTasks();
     });
-
-    apiUser.getItem(userId).then(result => this.setState({
-        isMyProfile: coreAuth.getUserId() === userId,
-        userId: userId,
-        profile: result,
-        section: section,
-    }));
-
-    coreAuth.addListener('login', () => this.setState({
-        sMyProfile: coreAuth.getUserId()===userId,
-    }));
   }
 
   goToNewTask() {

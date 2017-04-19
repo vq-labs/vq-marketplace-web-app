@@ -156,7 +156,7 @@ export default class NewListing extends Component {
                                                                     .then(data => {
                                                                         this.setState({ step: 2, task: rTask })
                                                                     });
-                                                                });
+                                                                }, coreNavigation.goTo('/login'));
                                                         }
                                                     }}>
                                                         <CardMedia

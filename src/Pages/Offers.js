@@ -23,6 +23,7 @@ const _chunk = require('lodash.chunk');
 class Offers extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             queryCity: null,
             autoCompleteText: '',
@@ -91,6 +92,16 @@ class Offers extends Component {
             category: query.category
         })
         .then(offers => {
+            offers = offers.filter(offer => {
+                if (offer.priceType === null) {
+                    console.error(`Task ${offer.id} has priceType of type null`);
+
+                    return false;
+                }
+
+                return true;
+            })
+
             this.setState({
                 isLoading: false,
                 offers: offers,

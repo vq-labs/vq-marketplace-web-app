@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
+import { translate } from '../core/i18n';
 
 import Chip from 'material-ui/Chip';
 
@@ -26,7 +27,7 @@ export default class TaskCategories extends Component {
         return (
              <a style={styles.marginBottom}>
                 <Chip key={category.label} style={styles.margin} onClick={() => browserHistory.push('/app?category=' + category.code)} >
-                    <div>{category.label}</div>
+                    <div>{translate(category.code)}</div>
                 </Chip> 
              </a>
         );

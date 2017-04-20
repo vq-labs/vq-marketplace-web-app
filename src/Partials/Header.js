@@ -113,7 +113,7 @@ class Header extends Component {
                    }
                    { Boolean(this.state.tasks.length) &&
                       <IconMenu
-                            iconButtonElement={ 
+                            iconButtonElement={
                               <IconButton iconStyle={{ color: grey600 }}>
                                 <ContentAdd />
                               </IconButton>
@@ -121,12 +121,12 @@ class Header extends Component {
                             listStyle={{ width: 280 }}
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                             targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                        { this.state.tasks.map( task =>
+                        { this.state.tasks.map(task =>
                           <ListItem
                             onClick={ () => { goTo(`/new-listing/${task.id}` ) }} 
                             target="_self"
+                            primaryText={task.categories[0] ? translate(task.categories[0].code) : '?'}
                             secondaryText={task.title}
-                            primaryText={translate(task.categories[0].code)}
                             rightIcon={
                               <span style={{ marginRight: '45px' }}>{translate('Continue')}</span>
                             }

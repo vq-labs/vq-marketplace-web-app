@@ -22,14 +22,13 @@ class MyListings extends Component {
         super(props);
    
         this.state = {
-                    isLoading: false,
-                    description: "",
-                    title: "",
-                    offers: [
-                        
-                    ]
-            };
-            this.getOfferProgress = this.getOfferProgress.bind(this);
+            isLoading: false,
+            description: "",
+            title: "",
+            offers: []
+        };
+
+        this.getOfferProgress = this.getOfferProgress.bind(this);
          
     }
       componentDidMount() {
@@ -94,10 +93,8 @@ class MyListings extends Component {
                                                
                                                { this.state.offers.map( offer => {
                                                     const offerProgress = this.getOfferProgress(offer);
-                                                    return( 
+                                                    return ( 
                                                             <Paper style={style} zDepth={1} >
-                                                                    
-                                                                         
                                                                             <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
                                                                                 <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
                                                                             </div>     

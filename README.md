@@ -1,4 +1,4 @@
-This project is deployed into production at [StudenTask](https://studentask.de/app) - a marketplace connecting startups to freelancer.
+This project is deployed into production at [TalentWand](https://talentwand.de/app) - a marketplace connecting startups to freelancer.
 
 ## Deployment
 AWS credentials can be provided via environment variables, or in the ~/.aws/credentials file. More details here: http://docs.aws.amazon.com/cli/latest/topic/config-vars.html. Please make sure to define a default in your AWS credentials, this will help prevent a Missing Credentials error during deployment.

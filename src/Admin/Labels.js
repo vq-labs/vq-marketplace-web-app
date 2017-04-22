@@ -17,7 +17,6 @@ const defaultLabels =
     "SELLER_SUBHEADER",
     "SELLER_SEARCHBAR",
     "CREATE_NEW_LISTING",
-    "SALES",
     "CATEGORY",
     "CONFIRM_BEFORE_POSTING",
     "ACTIVATE",

@@ -6,9 +6,9 @@ import Paper from 'material-ui/Paper';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CircularProgress from 'material-ui/CircularProgress';
 import Ad from '../Components/Ad';
-
 import apiMessage from '../api/message';
 import { translate } from '../core/i18n';
+import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
 
 const stripHTML = html => {
@@ -37,6 +37,8 @@ export default class Chat extends Component {
       }
   }
   componentDidMount() {
+    !coreAuth.getUserId() && goTo('/login');
+
     apiMessage.getItems({
         group_by: 'requestId'
     })
@@ -71,7 +73,6 @@ export default class Chat extends Component {
                                                     const lastMsgLastName = message.lastMsgProfile.lastName;
                                                     const name = `${lastMsgFirstName} ${lastMsgLastName}`;
 
-                                                    
                                                     return <ListItem
                                                             key={index}
                                                             onClick={ () => { goTo('/chat/' + requestId ) }}

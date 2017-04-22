@@ -51,7 +51,9 @@ export default class TaskEdit extends Component {
          
             updatedTask[field] = transform ? transform(value) : value;
             
-            this.setState( { updatedTask } );
+            this.setState({
+                updatedTask
+            });
         }
   }
 

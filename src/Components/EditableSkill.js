@@ -31,7 +31,6 @@ export default class Skill extends Component {
             options: props.options
         };
     }
-
     componentWillReceiveProps (nextProps) {
         const skill = nextProps.skill;
 
@@ -45,7 +44,7 @@ export default class Skill extends Component {
         }
 
         this.setState(newState);
-    } 
+    }
     getEditMenu () {
         if (this.state.allowChange) {
             return <IconMenu

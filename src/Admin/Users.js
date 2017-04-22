@@ -12,8 +12,11 @@ export default class SectionUsers extends React.Component {
         this.state = { users: [] };
     }
     componentDidMount() {
-        apiAdmin.users.getItems().then(users => {
-            this.setState({ users });
+        apiAdmin.users.getItems()
+        .then(users => {
+            this.setState({ 
+                users
+            });
         });
     }
     render() {

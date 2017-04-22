@@ -54,7 +54,8 @@ export default class SectionBasics extends React.Component {
     }
 
     componentDidMount() {
-        apiConfig.appConfig.getItems().then(meta => {
+        apiConfig.appConfig.getItems()
+        .then(meta => {
             return this.setState({ meta });
         });
     }

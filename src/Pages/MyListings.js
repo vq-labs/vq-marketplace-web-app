@@ -10,8 +10,6 @@ import LinearProgress from 'material-ui/LinearProgress';
 
 
 const style = {
-    height: 335,
-    width: 400,
     margin: 20,
     textAlign: 'center',
     display: 'block',
@@ -119,7 +117,7 @@ class MyListings extends Component {
         return (<div>
                     <div className="container" >
                             <div className="row">
-                                    <div className="col-xs-12 col-sm-4" style={{'paddingLeft':'20px'}} >
+                                    <div className="col-xs-12 col-sm-4" style={{'paddingLeft':'30px', 'marginTop':'70px', 'marginBottom':'10px' }} >
                                                 <RaisedButton   label="Add new Insertion" primary={true}  onClick={ () => coreNavigation.goTo(`/new-listing`)} />
                                         </div>
                                         <div className="col-xs-12 col-sm-8">
@@ -129,63 +127,81 @@ class MyListings extends Component {
                                                               data-route="activate"
                                                               onActive={this.handleActive}
                                                               >
-                                                                <div>
-                                                                     { this.state.offers.map( offer => {
-                                                                     const offerProgress = this.getOfferProgress(offer);
-                                                                     return(
-                                                                            <Paper style={style} zDepth={1} >
-                                                                                    <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
-                                                                                         <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
-                                                                                    </div>     
-                                                                                
-                                                                                    <div className="col-xs-12 col-sm-12"  >
-                                                                                         <h3>{offer.title}</h3>
-                                                                                    </div>
-                                                                                
-                                                                                
-                                                                                    <div className="col-xs-12 col-sm-6"  style={{ 'marginTop':'10px' }} >
-                                                                                         <LinearProgress mode="determinate" value={offerProgress}  />
-                                                                                         <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
-                                                                                    </div>
-                                                                                    <div className="col-xs-12 col-sm-6" style={{ 'color':'style.color' }} >
-                                                                                         <Toggle
-                                                                                                labelStyle={{color:'#546e7a'}}
-                                                                                                label="Deactivate"
-                                                                                                defaultToggled={true}
-                                                                                         //       style={styles.toggle}
-                                                                                         />
-                                                                                    </div>
-                                                                             </Paper>
-                                                                            )    
-                                                                        }) 
-                                                                    }
-                                                                                        
-                                                                    </div>
+                                                                <div className="col-xs-12 col-sm-12">
+                                                                        { this.state.offers.map( offer => {
+                                                                            const offerProgress = this.getOfferProgress(offer);
+                                                                                return(
+                                                                                        <Paper style={style} zDepth={1} >
+                                                                                            
+                                                                                                <div className="row">  
+                                                                                                    <div className="col-xs-12 col-sm-8"  >
+                                                                                                            <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
+                                                                                                    </div>
+                                                                                                    <div className="col-xs-12 col-sm-4"  >
+                                                                                                        
+                                                                                                            <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px', 'marginBottom':'5px'   }}>
+                                                                                                                    <LinearProgress mode="determinate" value={offerProgress}  />
+                                                                                                                    <span style={{'color':'#546e7a'}} >{offerProgress}%</span>  
+                                                                                                            </div>
+                                                                                                        
+                                                                                                            <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'15px' }}>
+                                                                                                                    <h5>{offer.title}</h5> 
+                                                                                                            </div>
+                                                                                                        
+                                                                                                            <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'15px', 'marginBottom':'10px'  }} >
+                                                                                                                <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                            </div>
+                                                                                                        
+
+                                                                                                    </div>  
+                                                                                                </div> 
+                                                                                                
+                                                                                        </Paper>
+                                                                                        )    
+                                                                                    }) 
+                                                                                    }
+                                                                            </div>
                                                                           </Tab>
-                                                                                <Tab label="In Progress" 
+                                                                                <Tab label="Draft" 
                                                                                      data-route="inEdit"
                                                                                      onActive={this.handleActive}
                                                                                      >
-                                                                                      <div>
+                                                                                      <div className="col-xs-12 col-sm-12">
                                                                                             { this.state.offers.map( offer => {
                                                                                             const offerProgress = this.getOfferProgress(offer);
                                                                                             return(
                                                                                                     <Paper style={style} zDepth={1} >
-                                                                                                           <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
-                                                                                                                <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
-                                                                                                           </div>     
-                                                                    
-                                                                                                           <div className="col-xs-12 col-sm-12"  >
-                                                                                                                <h3>{offer.title}</h3>
-                                                                                                           </div>
-                                                                                                    
-                                                                                                           <div className="col-xs-12 col-sm-6"  style={{ 'marginTop':'10px' }}>
-                                                                                                                <LinearProgress mode="determinate" value={offerProgress}  />
-                                                                                                                <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
-                                                                                                           </div>
-                                                                                                           <div className="col-xs-12 col-sm-6">
-                                                                                                                <RaisedButton label="Edit" primary={true} onClick={ () => coreNavigation.goTo(`/task/8/edit`)} />
-                                                                                                           </div>
+                                                                                                        
+                                                                                                           <div className="row">  
+                                                                                                                <div className="col-xs-12 col-sm-8"  >
+                                                                                                                        <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
+                                                                                                                </div>
+                                                                                                                <div className="col-xs-12 col-sm-4"  >
+                                                                                                                    
+                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px', 'marginBottom':'5px'   }}>
+                                                                                                                              <LinearProgress mode="determinate" value={offerProgress}  />
+                                                                                                                              <span style={{'color':'#546e7a'}} >{offerProgress}%</span>  
+                                                                                                                        </div>
+                                                                                                                    
+                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px' }}>
+                                                                                                                                <h5>{  offer.categories[0].label  || offer.title || <h5>Title/Task In Progress</h5> }</h5>
+                                                                                                                        </div>
+                                                                                                                   
+                                                                                                                   
+                                                                                                                        <div className="col-xs-12 col-sm-12"  style={{ 'marginTop':'5px', 'marginBottom':'5px'  }}>
+                                                                                                                              <RaisedButton label="Edit" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                              
+                                                                                                                        </div>
+                                                                                                                    
+                                                                                                                    
+                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px', 'marginBottom':'5px'  }} >
+                                                                                                                            <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                        </div>
+                                                                                                                    
+
+                                                                                                                </div>  
+                                                                                                           </div> 
+                                                                                                          
                                                                                                    </Paper>
                                                                                                   )    
                                                                                                 }) 
@@ -197,43 +213,41 @@ class MyListings extends Component {
                                                                                                       data-route="deActivate"
                                                                                                       onActive={this.handleActive}
                                                                                                       >
-                                                                                                      <div>
-                                                                                                             { this.state.offers.map( offer => {
-                                                                                                             const offerProgress = this.getOfferProgress(offer);
-                                                                                                            return(
-                                                                                                                    <Paper style={style} zDepth={1} >
-                                                                                                                          <div className="col-xs-12 col-sm-12" style={{ 'padding':'0 0 0 0' }}>
-                                                                                                                               <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
-                                                                                                                          </div>     
-                                                                                                                            
-                                                                                                                          <div className="col-xs-12 col-sm-12"  >
-                                                                                                                               <h3>{offer.title}</h3>
-                                                                                                                          </div>
-                                                                                                                                <div className="col-xs-12 col-sm-6"  style={{ 'marginTop':'10px' }}>
-                                                                                                                                     <LinearProgress mode="determinate" value={offerProgress}  />
-                                                                                                                                     <span style={{'color':'#546e7a'}} >{offerProgress}%</span>
-                                                                                                                                </div>
-                                                                                                                                <div className="col-xs-12 col-sm-6">
-                                                                                                                                     <Toggle
-                                                                                                                                            labelStyle={{color:'#546e7a'}}
-                                                                                                                                            label="Activate"
-                                                                                                                                           // defaultToggled={true}
-                                                                                                                                            style={styles.toggle}
-                                                                                                                                     />
-                                                                                                                                {/*     <Toggle
-                                                                                                                                            label="Delete"
-                                                                                                                                            thumbStyle={styles.thumbOff}
-                                                                                                                                            trackStyle={styles.trackOff}
-                                                                                                                                            thumbSwitchedStyle={styles.thumbSwitched}
-                                                                                                                                            trackSwitchedStyle={styles.trackSwitched}
-                                                                                                                                            labelStyle={styles.labelStyle}
-                                                                                                                                     />*/}
-                                                                                                                                </div>
-                                                                                                                    </Paper>
-                                                                                                                )    
-                                                                                                            }) 
-                                                                                                        }
-                                                                                                  </div>
+                                                                                                       <div className="col-xs-12 col-sm-12">
+                                                                                            { this.state.offers.map( offer => {
+                                                                                            const offerProgress = this.getOfferProgress(offer);
+                                                                                            return(
+                                                                                                    <Paper style={style} zDepth={1} >
+                                                                                                        
+                                                                                                           <div className="row">  
+                                                                                                                <div className="col-xs-12 col-sm-8"  >
+                                                                                                                        <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
+                                                                                                                </div>
+                                                                                                                <div className="col-xs-12 col-sm-4"  >
+                                                                                                                    
+                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px', 'marginBottom':'5px'   }}>
+                                                                                                                              <LinearProgress mode="determinate" value={offerProgress}  />
+                                                                                                                              <span style={{'color':'#546e7a'}} >{offerProgress}%</span>  
+                                                                                                                        </div>
+                                                                                                                    
+                                                                                                                        <div className="col-xs-12 col-sm-12" >
+                                                                                                                                <h5>{offer.title}</h5>  
+                                                                                                                        </div>
+                                                                                                                   
+                                                                                                                   
+                                                                                                                        <div className="col-xs-12 col-sm-12"  style={{ 'marginTop':'15px', 'marginBottom':'10px'  }}>
+                                                                                                                              <RaisedButton label="Activate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                        </div>
+                                                                                                                    
+
+                                                                                                                </div>  
+                                                                                                           </div> 
+                                                                                                          
+                                                                                                   </Paper>
+                                                                                                  )    
+                                                                                                }) 
+                                                                                               }
+                                                                                        </div>
                                                                                             </Tab> 
                                                                                     </Tabs>
                                                                             </div>

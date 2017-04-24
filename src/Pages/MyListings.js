@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import apiTask from '../api/task';
 import Paper from 'material-ui/Paper';
-import coreAuth from '../core/auth';
+import * as coreAuth from '../core/auth';
 import Toggle from 'material-ui/Toggle';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -42,30 +42,43 @@ class MyListings extends Component {
         super(props);
    
         this.state = {
-                    isLoading: false,
-                    description: "",
-                    title: "",
-                    offers: [
-                        
-                    ]
-            };
-            this.getOfferProgress = this.getOfferProgress.bind(this);
-            this.handleActive = this.handleActive.bind(this);
-         
+            activeTab: 0,
+            isLoading: false,
+            offers: []
+        };
+
+        this.getOfferProgress = this.getOfferProgress.bind(this);
+        this.handleActive = this.handleActive.bind(this);
+        this.getOfferHeadline = this.getOfferHeadline.bind(this);
     }
-      componentDidMount() {
+    
+    componentDidMount() {
         this.loadTasks();
     }
     
-     loadTasks(query) {
+     deactivateTask(taskId) {
+        this.changeStatus(taskId, 103);
+    }
+
+    activateTask(taskId) {
+        this.changeStatus(taskId, 0);
+    }
+
+    changeStatus(taskId, status) {
+        apiTask
+            .updateItem(taskId, { status })
+            .then(task => {});
+    }
+
+     loadTasks(listingStatus) {
          this.setState({
             isLoading: true
         });
       
         apiTask.getItems({
             taskType: 1,
-            status: window.localStorage.getItem('listStatus'),
-           // owner_user_id: coreAuth.getUserId()
+            status: listingStatus,
+            //ownerUserId: coreAuth.getUserId()
         })
         .then(offers => {
             this.setState({
@@ -77,21 +90,32 @@ class MyListings extends Component {
     }
 
      handleActive(tab) {
-         
-       var tabType= tab.props["data-route"];
-         if ( tabType == "activate") {
-             window.localStorage.setItem('listStatus', 0)
-             window.localStorage.setItem('key', 'k')
-         }
-         else if  ( tabType == "inEdit") {
-             window.localStorage.setItem('listStatus', 10)
-         }
-         else if ( tabType == "deActivate") {
-             window.localStorage.setItem('listStatus', 103)
-         }
-          this.loadTasks();
-}
+        let tabType = tab.props.value;
+        let listingStatus = 0;
 
+        if ( tabType == 0) {
+            listingStatus = 0
+        }
+
+        if  ( tabType == 10) {
+            listingStatus = 10
+        }
+
+        if ( tabType == 103) {
+            listingStatus = 103
+        }
+        this.setState({ activeTab: listingStatus });
+        this.loadTasks(listingStatus);
+    }
+
+    getOfferHeadline(offer) {
+        if (offer.categories && offer.categories[0]) {
+            return offer.categories[0].code;
+        }
+
+        return offer.title || 'Title/Task In Progress';
+    }
+                                                                        
     getOfferProgress(offer) {
         var offerProgress = 0;
         
@@ -119,11 +143,12 @@ class MyListings extends Component {
                             <div className="row">
                                     <div className="col-xs-12 col-sm-4" style={{'paddingLeft':'30px', 'marginTop':'70px', 'marginBottom':'10px' }} >
                                                 <RaisedButton   label="Add new Insertion" primary={true}  onClick={ () => coreNavigation.goTo(`/new-listing`)} />
-                                        </div>
-                                        <div className="col-xs-12 col-sm-8">
-                                             <div className="col-xs-12 col-sm-12">
-                                                  <Tabs>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-8">
+                                        <div className="col-xs-12 col-sm-12">
+                                                  <Tabs value={this.state.activeTab}>
                                                          <Tab label="Activated" 
+                                                              value={0}
                                                               data-route="activate"
                                                               onActive={this.handleActive}
                                                               >
@@ -149,7 +174,7 @@ class MyListings extends Component {
                                                                                                             </div>
                                                                                                         
                                                                                                             <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'15px', 'marginBottom':'10px'  }} >
-                                                                                                                <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                <RaisedButton label="Deactivate" primary={true} fullWidth={true}   /> 
                                                                                                             </div>
                                                                                                         
 
@@ -163,6 +188,7 @@ class MyListings extends Component {
                                                                             </div>
                                                                           </Tab>
                                                                                 <Tab label="Draft" 
+                                                                                     value={10}
                                                                                      data-route="inEdit"
                                                                                      onActive={this.handleActive}
                                                                                      >
@@ -182,9 +208,8 @@ class MyListings extends Component {
                                                                                                                               <LinearProgress mode="determinate" value={offerProgress}  />
                                                                                                                               <span style={{'color':'#546e7a'}} >{offerProgress}%</span>  
                                                                                                                         </div>
-                                                                                                                    
-                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px' }}>
-                                                                                                                                <h5>{  offer.categories[0].label  || offer.title || <h5>Title/Task In Progress</h5> }</h5>
+                                                                                                                                                                        <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px' }}>
+                                                                                                                                <h5>{ this.getOfferHeadline(offer) }</h5>
                                                                                                                         </div>
                                                                                                                    
                                                                                                                    
@@ -195,7 +220,7 @@ class MyListings extends Component {
                                                                                                                     
                                                                                                                     
                                                                                                                         <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'5px', 'marginBottom':'5px'  }} >
-                                                                                                                            <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                            <RaisedButton label="Deactivate" primary={true} fullWidth={true}   /> 
                                                                                                                         </div>
                                                                                                                     
 
@@ -210,6 +235,7 @@ class MyListings extends Component {
                                                                                               </Tab>
                                                                                                     <Tab
                                                                                                       label="Deactived"
+                                                                                                      value={103}
                                                                                                       data-route="deActivate"
                                                                                                       onActive={this.handleActive}
                                                                                                       >
@@ -236,7 +262,7 @@ class MyListings extends Component {
                                                                                                                    
                                                                                                                    
                                                                                                                         <div className="col-xs-12 col-sm-12"  style={{ 'marginTop':'15px', 'marginBottom':'10px'  }}>
-                                                                                                                              <RaisedButton label="Activate" primary={true} fullWidth={true}  onClick={ () => coreNavigation.goTo(`/task/8/edit`)} /> 
+                                                                                                                              <RaisedButton label="Activate" primary={true} fullWidth={true}  /> 
                                                                                                                         </div>
                                                                                                                     
 

@@ -42,6 +42,7 @@ class MyListings extends Component {
         super(props);
    
         this.state = {
+
             activeTab: 0,
             isLoading: false,
             offers: []
@@ -52,10 +53,13 @@ class MyListings extends Component {
         this.getOfferHeadline = this.getOfferHeadline.bind(this);
     }
     
+
+
     componentDidMount() {
         this.loadTasks();
     }
     
+
      deactivateTask(taskId) {
         this.changeStatus(taskId, 103);
     }
@@ -71,6 +75,7 @@ class MyListings extends Component {
     }
 
      loadTasks(listingStatus) {
+
          this.setState({
             isLoading: true
         });
@@ -143,10 +148,12 @@ class MyListings extends Component {
                             <div className="row">
                                     <div className="col-xs-12 col-sm-4" style={{'paddingLeft':'30px', 'marginTop':'70px', 'marginBottom':'10px' }} >
                                                 <RaisedButton   label="Add new Insertion" primary={true}  onClick={ () => coreNavigation.goTo(`/new-listing`)} />
+
                                     </div>
                                     <div className="col-xs-12 col-sm-8">
                                         <div className="col-xs-12 col-sm-12">
                                                   <Tabs value={this.state.activeTab}>
+
                                                          <Tab label="Activated" 
                                                               value={0}
                                                               data-route="activate"
@@ -276,6 +283,7 @@ class MyListings extends Component {
                                                                                         </div>
                                                                                             </Tab> 
                                                                                     </Tabs>
+
                                                                             </div>
                                                                      </div> {/* sm-8 close */}
                                                               </div> {/* 1st row closed  */}

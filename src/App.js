@@ -14,7 +14,7 @@ import Profile from './Pages/Profile';
 import ProfileEdit from './Pages/ProfileEdit';
 import MyListings from './Pages/MyListings';
 import Offers from './Pages/Offers';
-import NewTask from './Pages/NewListing';
+import NewTask from './NewListing/NewListing';
 import Chat from './Pages/Chat';
 import ChatRoom from './Pages/ChatRoom';
 import PremiumPage from './Pages/PremiumPage';

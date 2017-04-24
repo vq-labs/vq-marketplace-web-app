@@ -41,8 +41,8 @@ export const setUserId = id => {
         return;
     }
 
-    localStorage.setItem('ST_AUTH_USERID', id);
-    userId = id;
+    localStorage.setItem('ST_AUTH_USERID', id ? id : '');
+    userId = id || '';
 };
 
 export const setToken = tk => {
@@ -50,17 +50,17 @@ export const setToken = tk => {
         return;
     }
 
-    localStorage.setItem('ST_AUTH_TOKEN', tk);
-    token = tk;
+    localStorage.setItem('ST_AUTH_TOKEN', tk ? tk : '');
+    token = tk || '';
 
     tk && emitChange('login');
 };
 
 export const isAdmin = () => user && user.isAdmin;
 
-export const getUserId = () => userId;
+export const getUserId = () => userId === 'null' ? null : userId;
 
-export const getToken = () => token;
+export const getToken = () => token === 'null' ? null : token;
 
 export const destroy = () => {
     setToken(null);

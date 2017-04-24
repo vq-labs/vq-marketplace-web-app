@@ -86,7 +86,9 @@ class Task extends Component {
           });
 
           apiUser.getItem(rTask.ownerUserId)
-          .then(taskOwner => this.setState({ taskOwner }));
+          .then(taskOwner => this.setState({ 
+              taskOwner 
+           }));
       });
     }
     render() {
@@ -108,21 +110,23 @@ class Task extends Component {
                                     <div className="row" style={{'marginBottom': '15px'}}>
                                         <TaskCategories categories={this.state.task.categories}/>
                                     </div>
+
+
                                     <div className="row">
                                         <div className="col-xs-1">
-                                            {this.state.taskOwner.id &&
+                                            { this.state.taskOwner._id &&
                                                 <a href={ '/app/profile/' + this.state.taskOwner.id }>
                                                     <Avatar src={this.state.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
                                                 </a>
                                             }
                                         </div>
                                         <div className="col-xs-11">
-                                            {this.state.taskOwner.id &&     
-                                            <strong>
-                                                <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                    {this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}
-                                                </a>
-                                            </strong>
+                                            {this.state.taskOwner._id &&     
+                                                <strong>
+                                                    <a href={ '/app/profile/' + this.state.task.ownerUserId }>
+                                                        {this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}
+                                                    </a>
+                                                </strong>
                                             }
                                             <p className="text-muted">
                                                 am <Moment format="DD.MM.YYYY">{this.state.task.createdAt}</Moment>
@@ -147,8 +151,8 @@ class Task extends Component {
                                             <RaisedButton
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
-                                                style={{width:  '100%'}}
-                                                label={this.state.task.taskType === 1 ?"Anfrage senden" : "Bewerbung senden" } 
+                                                style={{width: '100%'}}
+                                                label={translate("SEND_REQUEST")} 
                                                 onClick={ () => this.setState({ applicationInProgress: true }) 
                                             }/> 
                                        } 
@@ -172,7 +176,7 @@ class Task extends Component {
                                                     <div className="col-xs-12" style={{ marginTop: 10 }}>
                                                         <Card style={{width: '100%', marginBottom: '20px'}}>
                                                             <CardText>
-                                                                <h3 className="text-left">Über dieses Inserat</h3>
+                                                                <h3 className="text-left">About the offer</h3>
                                                                 <p className="text-muted">
                                                                     { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
                                                                 </p>
@@ -186,7 +190,7 @@ class Task extends Component {
                                                         {this.state.taskOwner._id &&
                                                             <Card style={{width: '100%', 'marginBottom': '20px'}}>
                                                                 <CardText>
-                                                                    <h3 className="text-left">Über {this.state.taskOwner.profile.firstName}</h3>
+                                                                    <h3 className="text-left">About {this.state.taskOwner.profile.firstName}</h3>
                                                                     <div className="row">
                                                                         <div className="col-xs-1">
                                                                             <a href={ '/app/profile/' + this.state.task.ownerUserId }>

@@ -8,7 +8,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import * as coreNavigation from '../core/navigation';
 import LinearProgress from 'material-ui/LinearProgress';
 
-
 const style = {
     margin: 20,
     textAlign: 'center',
@@ -16,6 +15,7 @@ const style = {
     color: '#546e7a',
     overlfow: 'scroll'
 };
+
 const styles = {
   block: {
     maxWidth: 250

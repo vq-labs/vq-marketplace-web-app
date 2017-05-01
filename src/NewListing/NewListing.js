@@ -174,8 +174,10 @@ export default class NewListing extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4>{translate("DESCRIPTION")}</h4>
-                                <HtmlTextField onChange={this.handleDescChange} value={this.state.task.description}/>
-                                <hr />
+                                <HtmlTextField 
+                                    onChange={this.handleDescChange}
+                                    value={this.state.task.description} 
+                                />
                             </div>    
                         </div>
 
@@ -213,7 +215,7 @@ export default class NewListing extends Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>Step 4. {translate("CONFIRM_BEFORE_POSTING")}</h1>
+                            <h1>{translate("STEP")} 4. {translate("CONFIRM_BEFORE_POSTING")}</h1>
                         </div>
                     </div>
                 
@@ -350,7 +352,7 @@ export default class NewListing extends Component {
                             { this.state.step !== 5 && <hr /> }
                             
                             <div className="row" style={ { marginTop: 20 } }>
-                                { this.state.step !== 6 &&  this.state.step !== 1 &&    
+                                { this.state.step !== 7 &&  this.state.step !== 1 &&    
                                     <FlatButton
                                         style={ { float: 'left' } }
                                         label={translate("BACK")}

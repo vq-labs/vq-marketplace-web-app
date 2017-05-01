@@ -38,7 +38,7 @@ export default class ProfileImage extends Component {
     }
     render() {
         return (
-            <Dropzone onDrop={this.props.onDrop} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
+            <Dropzone onDrop={this.props.onDrop} style={{ cursor: 'pointer' }} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
                     { this.state.isLoading &&
                         <div className="text-center" style={{ marginTop: 20 }}>
                             <CircularProgress />
@@ -51,7 +51,7 @@ export default class ProfileImage extends Component {
                         }}>
                             <img alt="profile" style={ { position: 'absolute', height: '150px', width: '150px', borderRadius: '100%' } } src={ this.state.image } />
                             { this.state.allowChange && this.state.hover &&  
-                                <div style={{ width: '150px', position: 'absolute', height: '30px', bottom: '2px', textAlign: "center" }}>
+                                <div style={{ position: 'absolute', width: '150px', height: '30px', top: '170px', bottom: '2px', textAlign: "center" }}>
                                     { translate('CHANGE_PROFILE_PICTURE') }
                                 </div>
                             }

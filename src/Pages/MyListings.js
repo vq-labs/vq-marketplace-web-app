@@ -191,7 +191,6 @@ class MyListings extends Component {
                                                                             const taskId = offer.id;
                                                                                 return( 
                                                                                      <Paper style={style} zDepth={1} >
-                                                                                            
                                                                                                 <div className="row">  
                                                                                                     <div className="col-xs-12 col-sm-8"  >
                                                                                                             <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />

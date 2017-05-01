@@ -288,7 +288,6 @@ export default class NewListing extends Component {
 
               const addImages =
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
-                       
                         <div className="row">
                             <div className="col-xs-12">
                                 <h1>{translate("STEP")} 4. {translate("ADD_PICTURE_HEADER")}</h1>
@@ -308,7 +307,9 @@ export default class NewListing extends Component {
 
                                     task.images = images;
                        
-                                    this.setState({ task });
+                                    this.setState({
+                                        task
+                                    });
                              }} />
                         </div>
                 </div>;

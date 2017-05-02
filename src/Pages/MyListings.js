@@ -46,7 +46,7 @@ class MyListings extends Component {
             
             activeTab: 0,
             isLoading: false,
-            offers: [],
+            offers: []
             
         };
 
@@ -63,7 +63,7 @@ class MyListings extends Component {
 
         this.loadTasks(listingStatus);
     }
-    
+
     deactivateTask(taskId) {
         this.changeStatus(taskId, 103);
     }
@@ -73,21 +73,14 @@ class MyListings extends Component {
     }
 
     changeStatus(taskId, status) { 
+        let offers = this.state.offers;
+
         apiTask
             .updateItem(taskId, { status })
-            .then(task => { 
-            console.log(task)
-            {/**     find offer
-                offer = offers.find((item) => item.id === taskId)
+            .then(task => {
+              let  offer = offers.find((item) => item.id === taskId);
                 offer.status = status;
-                setState({ offers: this.state.offers })
-
-                edit it in the Array
-
-                overwrite state
-                 this.setState({
-                    offers: task
-                 });*/}
+                this.setState({ offers: offer })
             });
     }
 
@@ -297,9 +290,9 @@ class MyListings extends Component {
                                                                                     </Tab> 
                                                                              </Tabs>
                                                                          </div>
-                                                                     </div> {/* sm-8 close */}
-                                                                </div> {/* 1st row closed  */}
-                                                         </div> {/* container closed  */}
+                                                                     </div> 
+                                                                </div> 
+                                                         </div> 
                                                     </div>)
                                                     }
                                                 }

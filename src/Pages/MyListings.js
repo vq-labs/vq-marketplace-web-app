@@ -9,13 +9,33 @@ import * as coreNavigation from '../core/navigation';
 import LinearProgress from 'material-ui/LinearProgress';
 import CircularProgress from 'material-ui/CircularProgress';
 
-
 const style = {
     margin: 20,
     textAlign: 'center',
     display: 'block',
     color: '#546e7a',
     overlfow: 'scroll'
+};
+
+const styles = {
+  block: {
+    maxWidth: 250
+  },
+  thumbOff: {
+    backgroundColor: '#ffcccc',
+  },
+  trackOff: {
+    backgroundColor: '#ff9d9d',
+  },
+  thumbSwitched: {
+    backgroundColor: 'red',
+  },
+  trackSwitched: {
+    backgroundColor: '#ff9d9d',
+  },
+  labelStyle: {
+    color: 'red',
+  },
 };
 
 class MyListings extends Component {
@@ -36,17 +56,15 @@ class MyListings extends Component {
         this.changeStatus = this.changeStatus.bind(this);
         this.deactivateTask = this.deactivateTask.bind(this);   
         this.getTaskId = this.getTaskId.bind(this);
-       
     }
-    
 
     componentDidMount() {
         let listingStatus = 0;
+
         this.loadTasks(listingStatus);
     }
-    
 
-     deactivateTask(taskId) {
+    deactivateTask(taskId) {
         this.changeStatus(taskId, 103);
     }
 
@@ -56,7 +74,7 @@ class MyListings extends Component {
 
     changeStatus(taskId, status) { 
         let offers = this.state.offers;
-      
+
         apiTask
             .updateItem(taskId, { status })
             .then(task => {
@@ -68,7 +86,6 @@ class MyListings extends Component {
 
 
      loadTasks(listingStatus) {
-
          this.setState({
             isLoading: true
         });
@@ -85,23 +102,25 @@ class MyListings extends Component {
             });
         });
     }
-
-     handleActive(tab) {
+    handleActive(tab) {
         let tabType = tab.props.value;
         let listingStatus = 0;
 
-        if ( tabType == 0) {
+        if (tabType === 0) {
             listingStatus = 0
         }
 
-        if  ( tabType == 10) {
+        if (tabType === 10) {
             listingStatus = 10
         }
 
-        if ( tabType == 103) {
+        if (tabType === 103) {
             listingStatus = 103
         }
-        this.setState({ activeTab: listingStatus });
+
+        this.setState({ 
+            activeTab: listingStatus
+        });
         this.loadTasks(listingStatus);
     }
 
@@ -116,32 +135,31 @@ class MyListings extends Component {
     getOfferProgress(offer) {
         var offerProgress = 0;
         
-        if ( offer.title ) {
+        if (offer.title ) {
              offerProgress++
         }
-        if ( offer.price ) {
+
+        if (offer.price ) {
              offerProgress++
         }
-        if ( offer.description ) {
+
+        if (offer.description ) {
              offerProgress++
         }
-        if ( offer.images) {
+
+        if (offer.images) {
              offerProgress++
         }
+        
         return offerProgress * 25 ;
         
     }
-
     getTaskId(offer){
         let taskId= offer.id;
+
         return taskId;   
     }
-    
-    
-
-
     render() {
-       
         return (<div>
                     <div className="container" >
                             <div className="row">
@@ -166,7 +184,6 @@ class MyListings extends Component {
                                                                             const taskId = offer.id;
                                                                                 return( 
                                                                                      <Paper style={style} zDepth={1} >
-                                                                                            
                                                                                                 <div className="row">  
                                                                                                     <div className="col-xs-12 col-sm-8"  >
                                                                                                             <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
@@ -279,5 +296,4 @@ class MyListings extends Component {
                                                     </div>)
                                                     }
                                                 }
-
 export default MyListings;

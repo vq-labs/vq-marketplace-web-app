@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import CircularProgress from 'material-ui/CircularProgress';
 import Dropzone from 'react-dropzone';
 import { translate } from '../core/i18n';
 
@@ -9,6 +10,7 @@ export default class ProfileImage extends Component {
         super();
 
         this.state = {
+            isLoading: Boolean(props.isLoading),
             hover: false,
             image: props.imageUrl || '',
             allowChange: props.allowChange || false
@@ -18,27 +20,44 @@ export default class ProfileImage extends Component {
         this.mouseOut = this.mouseOut.bind(this);
     }
     mouseOver() {
-        this.setState({ hover: true });
+        this.setState({
+            hover: true
+        });
     }
     mouseOut() {
-        this.setState({ hover: false });
+        this.setState({ 
+            hover: false
+        });
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ image: nextProps.image, allowChange: nextProps.allowChange });
-    } 
+        this.setState({
+            isLoading: Boolean(nextProps.isLoading), 
+            image: nextProps.image,
+            allowChange: nextProps.allowChange
+        });
+    }
     render() {
         return (
-
-                <Dropzone onDrop={this.props.onDrop} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
-                        <div style={ { width: '150px', height: '150px' } }>
+            <Dropzone onDrop={this.props.onDrop} style={{ cursor: 'pointer' }} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
+                    { this.state.isLoading &&
+                        <div className="text-center" style={{ marginTop: 20 }}>
+                            <CircularProgress />
+                        </div>
+                    }
+                    { !this.state.isLoading &&
+                        <div style={{ 
+                            width: '150px',
+                            height: '150px' 
+                        }}>
                             <img alt="profile" style={ { position: 'absolute', height: '150px', width: '150px', borderRadius: '100%' } } src={ this.state.image } />
                             { this.state.allowChange && this.state.hover &&  
-                                <div style={{ width: '150px', position: 'absolute', height: '30px', bottom: '2px', textAlign: "center" }}>
+                                <div style={{ position: 'absolute', width: '150px', height: '30px', top: '170px', bottom: '2px', textAlign: "center" }}>
                                     { translate('CHANGE_PROFILE_PICTURE') }
                                 </div>
                             }
-                        </div> 
-                </Dropzone>
+                        </div>
+                    }
+            </Dropzone>
         );
     }
 }  

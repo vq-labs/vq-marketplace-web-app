@@ -229,7 +229,7 @@ class Offers extends Component {
                                         this.state.offersChunksXS.map((offerRow, index) =>
                                             <div className="row" key={index}>
                                                 { this.state.offersChunksXS[index].map(offer =>
-                                                    <div className="col-xs-12 col-sm-6" style={ { marginBottom: 10} }>
+                                                    <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10} }>
                                                         <TaskCard task={offer} displayPrice={true} key={offer.id}  />
                                                     </div>
                                                 )}

@@ -199,9 +199,9 @@ class Profile extends React.Component {
 
                     <Divider />
                     
-                    <div className="col-xs-12" style={ { marginTop: '20px' } }>                
+                    <div className="col-xs-12" style={ { marginTop: '20px' }}>                
                         { this.state.offers && this.state.offers.filter( offer => this.state.isMyProfile ? true : offer.status===0).map((offer, _id) =>
-                                <div key={offer._id} className="col-xs-12 col-sm-6 text-left" style={{ 'marginBottom': '40px' }}>
+                                <div key={offer._id} className="col-xs-12 col-sm-6 col-md-4 text-left" style={{ marginBottom: '40px' }}>
                                     <TaskCard task={offer} displayManagement={this.state.isMyProfile} displayPrice={false} />
                                 </div>
                             )

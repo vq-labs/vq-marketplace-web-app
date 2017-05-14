@@ -33,14 +33,14 @@ class Profile extends React.Component {
             skills: [],
             offers: [],
             profile: {
-                talents: [],
-                profile : {}
+                talents: []
             }
         };
 
         this.getUserTalent = this.getUserTalent.bind(this);
         this.onDrop = this.onDrop.bind(this);
     }
+
     getUserTalent(skill) {
         const styles = {
             chip: {
@@ -96,40 +96,57 @@ class Profile extends React.Component {
             getProfileTasks();
         });
     }
-    onDrop(files) {
-        this.setState({ 
-            isProfileImgLoaded: true
-        });
-
-        apiMedia.upload(files[0], {
-            width: 150,
-            height: 150 
-        })
-        .then(result => {
-            const imageUrl = result.url;
-            const profile = this.state.profile;
-
-            profile.profile.imageUrl = imageUrl;  
-
-            this.setState({
-                profile,
-                isProfileImgLoaded: false
+        onDrop(files) {
+            this.setState({ 
+                isProfileImgLoaded: true
             });
 
-            apiUser
-            .updateItem(this.state.userId, {
-                profile: {
-                    imageUrl
-                }
-            });
-        })
-    }
+            apiMedia.upload(files[0], {
+                width: 150,
+                height: 150 
+            })
+            .then(result => {
+                const imageUrl = result.url;
+                const profile = this.state.profile;
+
+                profile.profile.imageUrl = imageUrl;  
+
+                this.setState({
+                    profile,
+                    isProfileImgLoaded: false
+                });
+
+                apiUser
+                .updateItem(this.state.userId, {
+                    profile: {
+                        imageUrl
+                    }
+                });
+            })
+        }
+        showProfileName() {
+            if (!this.state.profile) {
+                return '';
+            }
+
+            if (!this.state.profile.profile) {
+                return '';
+            }
+
+            if (!this.state.profile.profile.firstName && this.state.profile.profile.lastName) {
+                return '';
+            }
+
+            const profileName = `${this.state.profile.profile.firstName} ${this.state.profile.profile.lastName}`;
+
+            return profileName;
+        }
         render() {
             const profileImageUrl = this.state.profile.profile && this.state.profile.profile.imageUrl || 'https://talentwand.de/images/avatar.png';
 
             const ProfileHeader =
                 <div className="row" style={{ 'marginTop': 30}} >
-                    <div className="col-xs-12 col-sm-3 col-md-2" style={{ 'paddingTop': 20}}>
+                    <div className="col-xs-12 col-sm-12 col-md-2" style={{ 'paddingTop': 20}}>
                         <ProfileImage
                             isLoading={this.state.isProfileImgLoaded}
                             allowChange={this.state.isMyProfile}
@@ -137,12 +154,12 @@ class Profile extends React.Component {
                             image={profileImageUrl} 
                         />
                     </div>
-                    <div className="col-xs-12 col-sm-9 col-md-10">
+                    <div className="col-xs-12 col-sm-12 col-md-10">
                         <div className="row">  
-                            <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
+                            <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                                 { this.state.profile.profile && 
                                     <h1>
-                                        { this.state.profile.profile.firstName + ' ' + this.state.profile.profile.lastName }
+                                        { this.showProfileName() }
                                     </h1>
                                 }
                             </div>
@@ -159,7 +176,7 @@ class Profile extends React.Component {
                             </div>
                             </div>
                             <div className="row">
-                            <div className="col-xs-12 col-sm-8 col-md-7 col-lg-7">
+                            <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                                 { this.state.profile.profile && 
                                     <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website}</a>
                                 }
@@ -201,7 +218,7 @@ class Profile extends React.Component {
                     
                     <div className="col-xs-12" style={ { marginTop: '20px' }}>                
                         { this.state.offers && this.state.offers.filter( offer => this.state.isMyProfile ? true : offer.status===0).map((offer, _id) =>
-                                <div key={offer._id} className="col-xs-12 col-sm-6 col-md-4 text-left" style={{ marginBottom: '40px' }}>
+                                <div key={offer._id} className="col-xs-12 col-sm-12 col-md-4 text-left" style={{ marginBottom: '40px' }}>
                                     <TaskCard task={offer} displayManagement={this.state.isMyProfile} displayPrice={false} />
                                 </div>
                             )
@@ -299,10 +316,10 @@ class Profile extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-xs-12 col-sm-6 col-md-4">
+                        <div className="col-xs-12 col-sm-12 col-md-4">
                             {SkillSection}   
                         </div>
-                        <div className="col-xs-12 col-sm-6 col-md-8">
+                        <div className="col-xs-12 col-sm-12 col-md-8">
                             {OfferSection}     
 
                             { this.state.isMyProfile && this.state.offers && !this.state.offers.length && NoOfferSection }

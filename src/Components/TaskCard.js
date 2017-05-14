@@ -123,13 +123,13 @@ export default class TaskCard extends Component {
                 { this.props.displayManagement &&
                   <CardText style={{'marginBottom': '20px'}}>
                     <div class="row">
-                      <div className="col-xs-10 col-sm-9 col-md-9 col-lg-10 text-muted">
+                      <div className="col-xs-10 col-sm-11 col-md-9 col-lg-10 text-muted">
                         <p style={{ marginTop: '16px', marginLeft: '-17px'} }>
                           { task.status !== 0 && <span>{translate('INACTIVE')}</span> }
                           { task.status === 0 && <span>{translate('ACTIVE')}</span> }
                         </p>
                       </div>
-                      <div className="col-xs-1 col-sm-2 col-md-2 col-lg-1"> 
+                      <div className="col-xs-1 col-sm-1 col-md-2 col-lg-1 text-right"> 
                             <IconMenu
                               iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                               anchorOrigin={{horizontal: 'right', vertical: 'top'}}

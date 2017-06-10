@@ -12,6 +12,7 @@ import * as apiSkills from '../api/skills';
 import * as coreAuth from '../core/auth';
 import * as coreNavigation from '../core/navigation';
 import * as apiMedia from '../api/media';
+import * as apiUserProperty from '../api/user-property.js';
 
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
@@ -32,9 +33,8 @@ class Profile extends React.Component {
             isMyTask: false,
             skills: [],
             offers: [],
-            profile: {
-                talents: []
-            }
+            talents: [],
+            profile: {}
         };
 
         this.getUserTalent = this.getUserTalent.bind(this);
@@ -68,11 +68,22 @@ class Profile extends React.Component {
             this.setState({ offers: offers });
         });
 
-        apiSkills.getItems().then(skills => {
-            this.setState({ skills: skills });
-        });
+        apiSkills.getItems()
+            .then(skills => {
+                this.setState({
+                    skills: skills
+                });
+            });
 
         getProfileTasks();
+
+         apiUserProperty
+            .getItems(userId, 'talent')
+            .then(talents => {
+                this.setState({
+                    talents
+                });
+            });
 
         apiUser
         .getItem(userId)
@@ -84,6 +95,9 @@ class Profile extends React.Component {
                 profile: result,
                 section: section,
             });
+
+           
+
 
             return resolve();
         }));
@@ -109,7 +123,7 @@ class Profile extends React.Component {
                 const imageUrl = result.url;
                 const profile = this.state.profile;
 
-                profile.profile.imageUrl = imageUrl;  
+                profile.imageUrl = imageUrl;  
 
                 this.setState({
                     profile,
@@ -129,20 +143,16 @@ class Profile extends React.Component {
                 return '';
             }
 
-            if (!this.state.profile.profile) {
+            if (!this.state.profile.firstName && !this.state.profile.lastName) {
                 return '';
             }
 
-            if (!this.state.profile.profile.firstName && this.state.profile.profile.lastName) {
-                return '';
-            }
-
-            const profileName = `${this.state.profile.profile.firstName} ${this.state.profile.profile.lastName}`;
+            const profileName = `${this.state.profile.firstName} ${this.state.profile.lastName}`;
 
             return profileName;
         }
         render() {
-            const profileImageUrl = this.state.profile.profile && this.state.profile.profile.imageUrl || 'https://talentwand.de/images/avatar.png';
+            const profileImageUrl = this.state.profile && this.state.profile.imageUrl || 'https://talentwand.de/images/avatar.png';
 
             const ProfileHeader =
                 <div className="row" style={{ 'marginTop': 30}} >
@@ -151,13 +161,13 @@ class Profile extends React.Component {
                             isLoading={this.state.isProfileImgLoaded}
                             allowChange={this.state.isMyProfile}
                             onDrop={this.onDrop}
-                            image={profileImageUrl} 
+                            image={profileImageUrl}
                         />
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-10">
                         <div className="row">  
                             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                                { this.state.profile.profile && 
+                                { this.state.profile && 
                                     <h1>
                                         { this.showProfileName() }
                                     </h1>
@@ -170,22 +180,24 @@ class Profile extends React.Component {
                             </div>
                             <div className="col-xs-1"><FormatQuote /></div>
                             <div className="col-xs-11 text-muted" style={{ padding: 10 }} >
-                                    { this.state.profile.profile && 
-                                    <p>{ this.state.profile.profile.bio }</p>
+                                    { this.state.profile && 
+                                        <p>{ this.state.profile.bio }</p>
                                     }
                             </div>
                             </div>
                             <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                                { this.state.profile.profile && 
-                                    <a target="_blank" href={this.state.profile.profile.website}> {this.state.profile.profile.website}</a>
+                                { this.state.profile && 
+                                    <a target="_blank" href={this.state.profile.website}> {this.state.profile.website}</a>
                                 }
                             </div>
                         </div>
                         { this.state.isMyProfile &&
                             <div className="row">
                                 <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                    <RaisedButton label={ translate('EDIT_PROFILE') } onTouchTap={ () => coreNavigation.goTo(`/profile/${this.state.profile._id}/edit`)} />
+                                    <RaisedButton label={ translate('EDIT_PROFILE') } onTouchTap={
+                                        () => coreNavigation.goTo(`/profile/${this.state.profile.id}/edit`)
+                                    } />
                                 </div>
                             </div>
                         }
@@ -236,16 +248,18 @@ class Profile extends React.Component {
                                             { this.state.isMyProfile && 
                                                 <div style={ { float: 'right', padding: '5px' }}>
                                                     <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 
-                                                        onClick={ () => {
-                                                            const profile = this.state.profile;
+                                                        onClick={() => {
+                                                            const talents = this.state.talents;
                                                             
-                                                            profile.talents.unshift({
+                                                            talents.unshift({
                                                                 level: 0, 
                                                                 name: '', 
                                                                 editMode: true 
                                                             });
                                                             
-                                                            this.setState({ profile });
+                                                            this.setState({ 
+                                                                talents
+                                                            });
                                                         }} >
                                                         <ContentAdd />
                                                     </FloatingActionButton>
@@ -254,14 +268,14 @@ class Profile extends React.Component {
                                         </h2>
                                     </div>
                                 </div>
-                                    { this.state.profile.talents.length === 0 &&
+                                    { this.state.talents.length === 0 &&
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginLeft: 10, paddingBottom: 10 }}>
                                             { translate('NO_TALENTS') }
                                         </div>    
                                     </div>    
                                     }
-                                { this.state.profile.talents.map((talent, index) =>
+                                { this.state.talents.map((talent, index) =>
                                 <div className="row" key={`talent-${index}-${talent.editMode}`} >
                                     <EditableSkill
                                         skillId={talent._id}
@@ -271,36 +285,47 @@ class Profile extends React.Component {
                                         onCancel={
                                             skill => {
                                                 if (!skill._id) {
-                                                    const profile = this.state.profile;
+                                                    const talents = this.state.talents;
 
-                                                    profile.talents.splice(index, 1);
+                                                    talents.splice(index, 1);
 
-                                                    this.setState( { profile });
+                                                    this.setState({
+                                                        talents
+                                                    });
                                                 }
                                             }
                                         }
                                         onConfirm={ skill => {
                                             if (skill.skillId) {
                                                 // @todo differentiate between create and update
-                                                apiSkills.createItem({ skill });
+                                                apiSkills.createItem({
+                                                    skill
+                                                });
                                             } else {
-                                                apiSkills.createItem({ skill }).then(talent => {
-                                                    const profile = this.state.profile;
+                                                apiSkills.createItem({
+                                                    skill
+                                                })
+                                                .then(talent => {
+                                                    const talents = this.state.talents;
 
-                                                    profile.talents[index] = talent;
+                                                    talents[index] = talent;
 
-                                                    this.setState({ profile });
+                                                    this.setState({
+                                                        talents
+                                                    });
                                                 });
                                             }
                                         }}
-                                        onDelete={ () => {
-                                            apiSkills.deleteItem(this.state.userId, talent._id);
+                                        onDelete={() => {
+                                            apiSkills.deleteItem(this.state.userId, talent.id);
                                             
-                                            const index = this.state.profile.talents.indexOf(talent);
+                                            const index = this.state.talents.indexOf(talent);
                                             
-                                            this.state.profile.talents.splice(index, 1);
+                                            this.state.talents.splice(index, 1);
                                             
-                                            this.setState( { profile: this.state.profile });
+                                            this.setState({
+                                                talents: this.state.talents
+                                            });
                                         }}
                                     />
                                 </div>        

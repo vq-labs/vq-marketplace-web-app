@@ -25,15 +25,18 @@ class Signup extends Component {
         }
       };
 
-      apiAuth.signup(data).then(result => {
-        coreAuth.setToken(result.token);
-        coreAuth.setUserId(result.user._id);
-        coreAuth.setUser(result.user);
-        
-        this.props.onSuccess(result.user);
-      }).catch(err => {
-        alert('Error');
-      });
+      apiAuth
+        .signup(data)
+        .then(result => {
+          coreAuth.setToken(result.token);
+          coreAuth.setUserId(result.user.id);
+          coreAuth.setUser(result.user);
+          
+          this.props.onSuccess(result.user);
+        })
+        .catch(err => {
+            alert(err.err.code);
+        });
   }
   render() {
     return (
@@ -73,7 +76,7 @@ class Signup extends Component {
            <div class="row">
                 <div className="col-xs-12">
                     <p className="text-center text-muted">
-                        Indem ich mich registriere, erkläre ich mich mit StudenTask <a href="https://studentask.de/terms" target="_blank">Nutzungsbedingungen</a> und <a href="https://studentask.de/privacy" target="_blank">Datenschutzerklärung</a>  einverstanden.
+                        Indem ich mich registriere, erkläre ich mich mit TalentWand <a href="https://talentwand.de/terms" target="_blank">Nutzungsbedingungen</a> und <a href="https://talentwand.de/privacy" target="_blank">Datenschutzerklärung</a>  einverstanden.
                     </p>
                 </div>
             </div>

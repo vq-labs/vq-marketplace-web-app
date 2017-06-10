@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 // Custom components
+import ChangePasswordPage from './Pages/ChangePasswordPage';  
 import Header from './Partials/Header';
 import Task from './Pages/Task';
 import TaskEdit from './Pages/TaskEdit';
@@ -19,7 +20,8 @@ import Chat from './Pages/Chat';
 import ChatRoom from './Pages/ChatRoom';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
-    
+
+
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
@@ -32,7 +34,6 @@ import './App.css';
 
 coreNavigation.setBase('app');
 
-// dummy language init
 corei18n.addLang('en', {});
 corei18n.addLang('de', {});
 corei18n.addLang('tr', {});
@@ -54,7 +55,7 @@ class App extends Component {
     coreAuth.addListener('login', () => {
       apiAuth.me()
         .then(myUserData => {
-          coreAuth.setUserId(myUserData._id);  
+          coreAuth.setUserId(myUserData.id);  
           coreAuth.setUser(myUserData);
 
           this.setState({
@@ -68,7 +69,9 @@ class App extends Component {
     });
 
     coreAuth.addListener('logout', () => {
-      this.setState({ user: null });
+      this.setState({
+        user: null
+      });
     });
     
     if (params.token) {
@@ -77,17 +80,29 @@ class App extends Component {
       coreAuth.loadFromLocalStorage();
     }
 
-    apiConfig.appConfig.getItems({}, { cache: true })
-        .then(config => {
-          return this.setState({ metaReady: true, meta: config })
-        });
-
-    apiConfig.appLabel.getItems({ lang: 'en' }, { cache: true })
-      .then(labels => {
-        corei18n.addLang('en', labels);
-
-        this.setState({ labelsReady: true })
+    apiConfig.appConfig
+      .getItems({}, {
+        cache: true
+      })
+      .then(config => {
+        return this.setState({
+          metaReady: true,
+          meta: config
+        })
       });
+
+    apiConfig.appLabel.getItems({
+      lang: 'en'
+    }, {
+      cache: true
+    })
+    .then(labels => {
+      corei18n.addLang('en', labels);
+
+      this.setState({
+        labelsReady: true
+      })
+    });
   }
 
   render() {
@@ -98,6 +113,7 @@ class App extends Component {
             <Router history={browserHistory} onUpdate={coreTracking.pageView}>
               <Route path="/app">
                 <IndexRoute component={Offers}/>
+                <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>

@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import * as apiAuth from '../api/auth';
 import * as coreAuth from '../core/auth';
+import { translate } from '../core/i18n';
 
 export default class Login extends Component {
   constructor(props) {
@@ -18,19 +19,34 @@ export default class Login extends Component {
       event.preventDefault()
        
       const data = {
-        password: this.refs.password.getValue(),
         email: this.refs.email.getValue()
       };
 
-      apiAuth.login(data).then(result => {
-        coreAuth.setToken(result.token);
-        coreAuth.setUserId(result.user._id);
-        coreAuth.setUser(result.user);
+      if (this.state.authMode === 'password_reset') {
+        return apiAuth.resetPassword(data)
+          .then(result => {
+            alert('OK');
+          })
+          .catch(err => {
+            alert('NOT OK');
+          })
+      }
 
-        this.props.onLoginSuccess(result.user);
-      }).catch(err => {
-        alert('Wrong password');
-      })
+      data.password = this.refs.password.getValue();
+
+      apiAuth.login(data)
+        .then(result => {
+          if (result.user && result.token) {
+            coreAuth.setToken(result.token);
+            coreAuth.setUserId(result.user.id);
+            coreAuth.setUser(result.user);
+
+            this.props.onLoginSuccess(result.user);
+          }
+        })
+        .catch(err => {
+          alert(err.err ? err.err.code : err);
+        })
   }
   render() {
     return (
@@ -41,18 +57,19 @@ export default class Login extends Component {
                 <TextField
                   style={{width: '100%'}}
                   ref="email"
-                  floatingLabelText="Email"
+                  floatingLabelText={translate('EMAIL')}
                   type="email"/>
                 <br/>
-                <TextField
+                { this.state.authMode !== 'password_reset' && <TextField
                   style={{width: '100%'}}
                   ref="password"
-                  floatingLabelText="Passwort"
+                  floatingLabelText={translate('PASSWORD')}
                   type="password"/>
+                }  
                   <br />
                   <RaisedButton 
                     type="submit" 
-                    label={this.state.authMode === 'login' ? 'Anmelden' : 'Signup'} 
+                    label={translate('SUBMIT')}
                     fullWidth={true} 
                   />
               </form>
@@ -62,7 +79,16 @@ export default class Login extends Component {
            <div className="row">
                 <div className="col-xs-12">
                     <p className="text-center text-muted">
-                        <a href="https://studentask.de/pw-recovery" target="_blank">Password vergessen?</a>
+                        { this.state.authMode === 'login' && <a onClick={() => this.setState({
+                            authMode: 'password_reset'
+                          })
+                        } target="_blank">{translate('RESET_PASSWORD')}</a>
+                        }
+                        { this.state.authMode === 'password_reset' && <a onClick={() => this.setState({
+                            authMode: 'login'
+                          })
+                        } target="_blank">{translate('LOGIN')}</a>
+                        }
                     </p>
                 </div>
             </div>

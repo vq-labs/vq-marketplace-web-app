@@ -33,26 +33,34 @@ class Header extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
-       this.setState({
+      debugger;
+
+      this.setState({
         homeLabel: nextProps.homeLabel,
-        userId: nextProps.user._id,
+        userId: nextProps.user.id,
         user: nextProps.user,
         logged: Boolean(nextProps.user)
       });
 
       apiTask.getItems({
-          ownerUserId: nextProps.user._id,
+          ownerUserId: nextProps.user.id,
           taskType: 1,
           status: 10,
-      })
-      .then(tasks => {
-        this.setState({ tasks });
+      }).then(tasks => {
+        this.setState({
+          tasks
+        });
       });
 
     } else {
-      this.setState({ homeLabel: nextProps.homeLabel, logged: false, userId: undefined, user: undefined });
+      debugger;
+      this.setState({
+        homeLabel: nextProps.homeLabel,
+        logged: false,
+        userId: undefined,
+        user: undefined
+      });
     }
-   
   } 
 
   goToOffers(e) {
@@ -62,12 +70,12 @@ class Header extends Component {
 
   goToProfile(e) {
     e.preventDefault();
-    browserHistory.push('/profile/' + this.state.user._id);
+    browserHistory.push('/profile/' + this.state.user.id);
   }
 
   handleLogout(e) {
     e.preventDefault();
-
+    debugger;
     coreAuth.destroy();
 
     this.setState({ 
@@ -85,81 +93,81 @@ class Header extends Component {
             <a href="/" target="_self">
               <img className='imgCenter hidden-xs' src={this.props.logo} role="presentation" style={{ 'marginTop': '6px','marginBottom': '8px', maxHeight: '45px' }}/>
             </a>  
-                <ToolbarGroup>
-                          { this.state.homeLabel && 
-                            <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
-                              () => { goTo('/');
-                            }
-                            } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
+              <ToolbarGroup>
+                        { this.state.homeLabel && 
+                          <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
+                            () => { goTo('/');
                           }
-                          { !this.state.logged &&
-                          <FlatButton label={translate("SIGNUP")} onClick={ 
-                            () => { goTo('/signup'); 
-                          }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
-                          }
-                          { !this.state.logged &&
-                          <FlatButton label={translate("LOGIN")} onClick={ 
-                            () => { goTo('/login'); 
-                          }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
-                          }
-                    <ToolbarSeparator />     
-
-                   { !Boolean(this.state.tasks.length) &&
-                    <a onClick={ () => { goTo('/new-listing') }} target="_self">
-                      <IconButton iconStyle={{ color: grey600 }}>
-                        <ContentAdd />
-                      </IconButton>
-                    </a> 
-                   }
-                   { Boolean(this.state.tasks.length) &&
-                      <IconMenu
-                            iconButtonElement={
-                              <IconButton iconStyle={{ color: grey600 }}>
-                                <ContentAdd />
-                              </IconButton>
-                            }
-                            listStyle={{ width: 280 }}
-                            anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                        { this.state.tasks.map(task =>
-                          <ListItem
-                            onClick={ () => { goTo(`/new-listing/${task.id}` ) }} 
-                            target="_self"
-                            primaryText={task.categories[0] ? translate(task.categories[0].code) : '?'}
-                            secondaryText={task.title}
-                            rightIcon={
-                              <span style={{ marginRight: '45px' }}>{translate('Continue')}</span>
-                            }
-                          />
-                        )}
-                        <ListItem onClick={ () => { goTo('/new-listing') }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
-                    </IconMenu>
-                   }
-                  { this.state.logged && 
-                    <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
-                      <CommunicationChatBubble />
-                    </IconButton>
-                  }
-
-                    { this.state.logged &&
-                      <IconMenu
-                            iconButtonElement={ <Avatar src={this.state.user.profile.imageUrl || 'https://studentask.de/images/avatar.png'} size={40} />}
-                            anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                              targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                        <MenuItem onClick={ () => { goTo('/profile/' + this.state.user._id ) }} primaryText={translate("PROFILE")} />                 
-                        
-                        
-                        { coreAuth.isAdmin() && 
-                          <MenuItem onClick={
-                            () => goTo('/admin/overview')
-                          } primaryText="Admin dashboard" /> 
+                          } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                         }
+                        { !this.state.logged &&
+                        <FlatButton label={translate("SIGNUP")} onClick={ 
+                          () => { goTo('/signup'); 
+                        }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                        }
+                        { !this.state.logged &&
+                        <FlatButton label={translate("LOGIN")} onClick={ 
+                          () => { goTo('/login'); 
+                        }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                        }
+                  <ToolbarSeparator />     
 
-                        { false && 'Satya, for now it is disabled until the page works, you need to access it directly with url' && <MenuItem onClick={ () => goTo('/my-listings') } primaryText={translate("MY_LISTING")} /> }
-                        <MenuItem onClick={this.handleLogout} primaryText="Logout" />
-                      </IconMenu>
-                    }
-                </ToolbarGroup>
+                  { !Boolean(this.state.tasks.length) &&
+                  <a onClick={ () => { goTo('/new-listing') }} target="_self">
+                    <IconButton iconStyle={{ color: grey600 }}>
+                      <ContentAdd />
+                    </IconButton>
+                  </a> 
+                  }
+                  { Boolean(this.state.tasks.length) &&
+                    <IconMenu
+                          iconButtonElement={
+                            <IconButton iconStyle={{ color: grey600 }}>
+                              <ContentAdd />
+                            </IconButton>
+                          }
+                          listStyle={{ width: 280 }}
+                          anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                          targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
+                      { this.state.tasks.map(task =>
+                        <ListItem
+                          onClick={ () => { goTo(`/new-listing/${task.id}` ) }} 
+                          target="_self"
+                          primaryText={task.categories[0] ? translate(task.categories[0].code) : '?'}
+                          secondaryText={task.title}
+                          rightIcon={
+                            <span style={{ marginRight: '45px' }}>{translate('Continue')}</span>
+                          }
+                        />
+                      )}
+                      <ListItem onClick={ () => { goTo('/new-listing') }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
+                  </IconMenu>
+                  }
+                { this.state.logged && 
+                  <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
+                    <CommunicationChatBubble />
+                  </IconButton>
+                }
+
+                  { this.state.logged &&
+                    <IconMenu
+                          iconButtonElement={ <Avatar src={this.state.user.imageUrl || 'https://studentask.de/images/avatar.png'} size={40} />}
+                          anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
+                      <MenuItem onClick={() => goTo(`/profile/${this.state.user.id}`)} primaryText={translate("PROFILE")} />                 
+                      
+                      <MenuItem onClick={ () => goTo('/change-password' )} primaryText={translate("CHANGE_PASSWORD")} />                 
+                      
+                      { coreAuth.isAdmin() &&
+                        <MenuItem onClick={
+                          () => goTo('/admin/overview')
+                        } primaryText="Admin dashboard" /> 
+                      }
+                      <MenuItem onClick={this.handleLogout} primaryText="Logout" />
+                    </IconMenu>
+                    
+                  }
+              </ToolbarGroup>
             </Toolbar>
         </div>
       );

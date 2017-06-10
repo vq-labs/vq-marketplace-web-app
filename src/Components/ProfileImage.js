@@ -3,7 +3,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Dropzone from 'react-dropzone';
 import { translate } from '../core/i18n';
 
-import '../App.css'
+import '../App.css';
 
 export default class ProfileImage extends Component {
     constructor(props) {
@@ -38,7 +38,7 @@ export default class ProfileImage extends Component {
     }
     render() {
         return (
-            <Dropzone onDrop={this.props.onDrop} style={{ cursor: 'pointer' }} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
+            <Dropzone disableClick={!this.state.allowChange} onDrop={this.props.onDrop} style={{ cursor: this.state.allowChange ? 'pointer' : '' }} className="st-profile-dropzone" onMouseOver={this.mouseOver} onMouseOut={this.mouseOut}>
                     { this.state.isLoading &&
                         <div className="text-center" style={{ marginTop: 20 }}>
                             <CircularProgress />

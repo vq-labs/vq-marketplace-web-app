@@ -18,7 +18,10 @@ export const doGet = (url, queryObject) => {
             'Content-Type': 'application/json',
             'X-Auth-Token': getToken()
         }
-    }).then(parseJSON);
+    })
+    .then(response => { 
+        return parseJSON(response);
+    });
 };
 
 export const doPost = (url, body) => fetch(API_URL + url, {
@@ -28,7 +31,10 @@ export const doPost = (url, body) => fetch(API_URL + url, {
         'X-Auth-Token': getToken()
     },
     body: JSON.stringify(body)
-}).then(parseJSON);
+})
+.then(response => { 
+        return parseJSON(response);
+});
 
 export const doPut = (url, body) => fetch(API_URL + url, {
     method: 'PUT',
@@ -37,7 +43,10 @@ export const doPut = (url, body) => fetch(API_URL + url, {
         'X-Auth-Token': getToken()
     },
     body: JSON.stringify(body)
-}).then(parseJSON);
+})
+.then(response => { 
+        return parseJSON(response);
+});
 
 export const doDelete = (url, body) => fetch(API_URL + url, {
     method: 'DELETE',
@@ -46,4 +55,7 @@ export const doDelete = (url, body) => fetch(API_URL + url, {
         'X-Auth-Token': getToken()
     },
     body: JSON.stringify(body)
-}).then(parseJSON);
+})
+.then(response => { 
+        return parseJSON(response);
+});

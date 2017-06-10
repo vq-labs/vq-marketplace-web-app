@@ -1,6 +1,7 @@
-export const parseJSON = response => {
+export const parseJSON = response => new Promise((resolve, reject) => {
   if (response.status !== 200) {
-      throw new Error(response.json());
+      return response.json()
+      .then(reject)
   }
   
   let jsonResponse;
@@ -10,9 +11,9 @@ export const parseJSON = response => {
   } catch (err) {
       console.warn("jsonResponse could not be parsed")
   }
-  
-  return jsonResponse;
-};
+  return jsonResponse
+    .then(resolve);
+});
 
 export const serializeQueryObj = (obj, prefix) => {
   let str = [], p;

@@ -33,8 +33,6 @@ class Header extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
-      debugger;
-
       this.setState({
         homeLabel: nextProps.homeLabel,
         userId: nextProps.user.id,
@@ -43,7 +41,7 @@ class Header extends Component {
       });
 
       apiTask.getItems({
-          ownerUserId: nextProps.user.id,
+          userId: nextProps.user.id,
           taskType: 1,
           status: 10,
       }).then(tasks => {
@@ -53,7 +51,6 @@ class Header extends Component {
       });
 
     } else {
-      debugger;
       this.setState({
         homeLabel: nextProps.homeLabel,
         logged: false,
@@ -75,7 +72,7 @@ class Header extends Component {
 
   handleLogout(e) {
     e.preventDefault();
-    debugger;
+
     coreAuth.destroy();
 
     this.setState({ 

@@ -61,7 +61,7 @@ class Profile extends React.Component {
 
         const getProfileTasks = () => apiTask.getItems({
             status: isMyProfile ? undefined : 0,
-            ownerUserId: userId,
+            userId: userId,
             taskType: 1
         })
         .then(offers => {
@@ -95,9 +95,6 @@ class Profile extends React.Component {
                 profile: result,
                 section: section,
             });
-
-           
-
 
             return resolve();
         }));
@@ -244,7 +241,7 @@ class Profile extends React.Component {
                                 <div className="row">
                                     <div className="col-xs-12">
                                         <h2 style={{ padding: 2, marginLeft: 10 }}>
-                                            <span>{ translate('TALENTS') }</span>
+                                            <span>{ translate('INFO') }</span>
                                             { this.state.isMyProfile && 
                                                 <div style={ { float: 'right', padding: '5px' }}>
                                                     <FloatingActionButton mini={true} backgroundColor={"#546e7a"} 

@@ -4,6 +4,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import FlatButton from 'material-ui/FlatButton';
 import EditableText from '../Components/EditableText';
 import * as apiConfig from '../api/config';
+import { translate } from '../core/i18n';
 import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 
 export default class SectionCategories extends React.Component {
@@ -28,7 +29,7 @@ export default class SectionCategories extends React.Component {
                 style={{  'marginTop': '20px'  }}
                 autoEditMode={typeof index !== 'undefined'}
                 values={ values } 
-                placeholder={ 'Neue Kategorie' }
+                placeholder={ 'New Category' }
                 onCancel={() => {
                     if (typeof index !== 'undefined') {
                         const categories = this.state.categories;
@@ -39,7 +40,9 @@ export default class SectionCategories extends React.Component {
                     }
 
                     if (this.state.isAddingNewCategory) {
-                        this.setState({isAddingNewCategory : false})
+                        this.setState({
+                            isAddingNewCategory : false
+                        });
                         this.state.categories.pop();
                     }
 
@@ -50,20 +53,28 @@ export default class SectionCategories extends React.Component {
                 }}
                 onChange={newCategory => {
                     const categories = this.state.categories;
-                        newCategory.editMode = false;
 
-                        categories[index] = newCategory;
-                        if (this.state.isAddingNewCategory) {
-                            apiConfig.categories.createItem(newCategory).then(rNewCategoryDoc => {});
-                        } else {
-                            apiConfig.categories.updateItem(newCategory._id, newCategory).then(rNewCategoryDoc => {});
-                        }
+                    newCategory.editMode = false;
 
-                        this.setState({
-                            isAddingNewCategory: false,
-                            newCategory: {},
-                            categories
+                    categories[index] = newCategory;
+
+                    if (this.state.isAddingNewCategory) {
+                        apiConfig.categories
+                        .createItem(newCategory)
+                        .then(rNewCategoryDoc => {
+                            categories[index] = rNewCategoryDoc;
                         });
+                    } else {
+                        apiConfig.categories
+                        .updateItem(newCategory.id, newCategory)
+                        .then(rNewCategoryDoc => {});
+                    }
+
+                    this.setState({
+                        isAddingNewCategory: false,
+                        newCategory: {},
+                        categories
+                    });
             }}/>
             </div>;
 
@@ -91,7 +102,8 @@ export default class SectionCategories extends React.Component {
                         { !category.editMode && 
                             <CardActions>
                                 <FlatButton label="Edit" onTouchTap={ () => {
-                                    this.state.categories.map((category, currentIndex) => {
+                                    this.state.categories
+                                    .map((category, currentIndex) => {
                                         category.editMode = currentIndex === index;
 
                                         return category;
@@ -104,8 +116,12 @@ export default class SectionCategories extends React.Component {
                                 <FlatButton label="Delete" onTouchTap={ () => {
                                     this.state.categories.splice(index, 1)
 
-                                    apiConfig.categories.deleteItem(category._id).then(categories => {
-                                        this.setState({ categories: this.state.categories });
+                                    apiConfig.categories
+                                    .deleteItem(category.id)
+                                    .then(() => {
+                                        this.setState({ 
+                                            categories: this.state.categories
+                                        });
                                     });
                                 }} />
                             </CardActions>

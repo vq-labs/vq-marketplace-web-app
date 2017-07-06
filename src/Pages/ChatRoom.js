@@ -100,7 +100,6 @@ export default class ChatRoom extends React.Component {
                                     }
                                     { this.state.messages
                                         .map(message => {
-                                            debugger;
                                             const firstName = this.state.users[message.fromUserId].profile.firstName;
                                             const lastName = this.state.users[message.fromUserId].profile.lastName;
                                             const profileImageUrl = this.state.users[message.fromUserId].profile.imageUrl || defaultProfileImageUrl;

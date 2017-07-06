@@ -32,15 +32,9 @@ class Task extends Component {
             isMyTask: false,
             taskOwner: {},
             task: {
-                images: [ ],
-                categories: [ ],
-                location:  { },        
-                meta: {
-                    taskOwner: {
-                        stats: {},
-                        profile: {}
-                    }
-                }
+                images: [],
+                categories: [],
+                location: {}      
             }  
         };
     }
@@ -54,7 +48,7 @@ class Task extends Component {
     }
     handleRequestClose = () => {
         this.setState({
-        open: false,
+            open: false
         });
     }
     displayLocation (task) {
@@ -75,25 +69,26 @@ class Task extends Component {
     componentDidMount() {
       let taskId = this.props.params.taskId;
 
-      pricingModelProvider.get().then(pricingModels => this.setState({ pricingModels }));
+      pricingModelProvider.get()
+      .then(pricingModels => this.setState({ pricingModels }));
 
       apiTask.getItem(taskId)
-      .then(rTask => {
+      .then(task => {
           this.setState({
             isLoading: false,
-            task: rTask,
-            isMyTask: rTask.ownerUserId === coreAuth.getUserId()
+            task,
+            isMyTask: task.userId === coreAuth.getUserId()
           });
 
-          apiUser.getItem(rTask.ownerUserId)
-          .then(taskOwner => this.setState({ 
-              taskOwner 
-           }));
+          apiUser.getItem(task.userId)
+            .then(taskOwner => this.setState({ 
+                taskOwner 
+            }));
       });
     }
     render() {
         return (
-            <div >
+            <div>
               { this.state.isLoading && 
                 <div className="text-center" style={{ 'marginTop': '40px' }}>
                     <CircularProgress size={80} thickness={5} />
@@ -114,17 +109,17 @@ class Task extends Component {
 
                                     <div className="row">
                                         <div className="col-xs-1">
-                                            { this.state.taskOwner._id &&
+                                            { this.state.taskOwner.id &&
                                                 <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                    <Avatar src={this.state.taskOwner.profile.imageUrl || 'https://studentask.de/images/avatar.png' }/>
+                                                    <Avatar src={this.state.taskOwner.imageUrl || 'https://studentask.de/images/avatar.png' }/>
                                                 </a>
                                             }
                                         </div>
                                         <div className="col-xs-11">
-                                            {this.state.taskOwner._id &&     
+                                            {this.state.taskOwner.id &&     
                                                 <strong>
-                                                    <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                        {this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}
+                                                    <a href={ '/app/profile/' + this.state.taskOwner.id }>
+                                                        {this.state.taskOwner.firstName} {this.state.taskOwner.lastName}
                                                     </a>
                                                 </strong>
                                             }
@@ -187,21 +182,21 @@ class Task extends Component {
                                                         </Card>
                                                     </div>
                                                     <div className="col-xs-12">
-                                                        {this.state.taskOwner._id &&
+                                                        {this.state.taskOwner.id &&
                                                             <Card style={{width: '100%', 'marginBottom': '20px'}}>
                                                                 <CardText>
-                                                                    <h3 className="text-left">About {this.state.taskOwner.profile.firstName}</h3>
+                                                                    <h3 className="text-left">About {this.state.taskOwner.firstName}</h3>
                                                                     <div className="row">
                                                                         <div className="col-xs-1">
-                                                                            <a href={ '/app/profile/' + this.state.task.ownerUserId }>
-                                                                                <Avatar src={this.state.taskOwner.profile.imageUrl || 'https://talentwand.de/images/avatar.png' }/>
+                                                                            <a href={ '/app/profile/' + this.state.task.userId }>
+                                                                                <Avatar src={this.state.taskOwnerimageUrl || 'https://talentwand.de/images/avatar.png' }/>
                                                                             </a>
                                                                         </div>
                                                                         <div className="col-xs-11">     
-                                                                            <strong><a href={ '/app/profile/' + this.state.taskOwner._id }>{this.state.taskOwner.profile.firstName} {this.state.taskOwner.profile.lastName}</a></strong>
+                                                                            <strong><a href={`/app/profile/${this.state.taskOwner.id}`}>{this.state.taskOwner.firstName} {this.state.taskOwner.lastName}</a></strong>
                                                                             
                                                                             <p className="text-muted">
-                                                                                {this.state.taskOwner.profile.bio}
+                                                                                {this.state.taskOwner.bio}
                                                                             </p>
                                                                         </div>  
 
@@ -212,7 +207,6 @@ class Task extends Component {
                                                                                 display: 'flex',
                                                                                 flexWrap: 'wrap',
                                                                             }}>
-                                                                            {this.state.taskOwner.talents.map( (talent, i) => <Chip style={ { margin: 3} } key={i} >{talent.name}</Chip>)}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -252,7 +246,7 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog toUserId={this.state.task.ownerUserId} taskId={this.state.task.id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog toUserId={this.state.task.userId} taskId={this.state.task.id} open={this.state.applicationInProgress} />
             </div>
         );
     }

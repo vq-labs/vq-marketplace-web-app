@@ -93,7 +93,7 @@ class MyListings extends Component {
         apiTask.getItems({
             taskType: 1,
             status: listingStatus,
-            ownerUserId: coreAuth.getUserId()
+            userId: coreAuth.getUserId()
         })
         .then(offers => {
             this.setState({

@@ -25,7 +25,13 @@ export default class ChangePasswordPage extends Component {
         return alert('Passwords do not match');
     }
      
-    return apiAuth.changePassword(data);
+    return apiAuth.changePassword(data)
+      .then(() => { alert('Password changed') })
+      .catch(err => {
+        console.error(err);
+        
+        alert(err.err.code)
+      });
   }
   render() {
     return (

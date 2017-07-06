@@ -139,7 +139,7 @@ export default class NewListing extends Component {
 
         if (task.id) {
             apiTaskCategory
-            .createItem(task.id, categories);
+                .createItem(task.id, categories);
         }
 
         return this.setState({

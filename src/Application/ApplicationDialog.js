@@ -4,7 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
-import GoogleAd from 'react-google-ad'
 import LoginSignup from '../Components/LoginSignup';
 import * as apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
@@ -156,8 +155,6 @@ export default class ApplicationDialog extends React.Component {
                         floatingLabelText="Nachricht"
                     />
                 </div>
-            
-            <GoogleAd client="ca-pub-2487354108758644" slot="4660780818" format="auto" />
         </div>;
 
     const ApplicationConfirmation = 

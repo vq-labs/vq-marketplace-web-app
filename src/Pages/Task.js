@@ -5,7 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
 import TaskCategories from '../Partials/TaskCategories';
-import GoogleAd from 'react-google-ad'
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
@@ -240,7 +239,6 @@ class Task extends Component {
                                      
                                 </div>
                                 <div className="col-sm-3">
-                                    <GoogleAd client="ca-pub-2487354108758644" slot="4660780818" format="auto" />
                                 </div>
                             </div>
                         </div>

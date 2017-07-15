@@ -91,6 +91,11 @@ class Header extends Component {
               <img className='imgCenter hidden-xs' src={this.props.logo} role="presentation" style={{ 'marginTop': '6px','marginBottom': '8px', maxHeight: '45px' }}/>
             </a>  
               <ToolbarGroup>
+                        { this.state.logged &&
+                          <FlatButton label={translate("DASHBOARD")} onClick={ 
+                            () => { goTo('/dashboard'); 
+                          }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                        }
                         { this.state.homeLabel && 
                           <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
                             () => { goTo('/');

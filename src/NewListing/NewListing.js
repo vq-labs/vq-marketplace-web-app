@@ -10,6 +10,7 @@ import LoginSignup from '../Components/LoginSignup';
 import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
+import * as apiCategory from '../api/category';
 import * as apiTaskImage from '../api/task-image';
 import * as apiTaskLocation from '../api/task-location';
 import * as apiTaskCategory from '../api/task-category';
@@ -18,8 +19,10 @@ import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
 import Snackbar from 'material-ui/Snackbar';
 
+import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
 import NewListingPricing from './NewListingPricing';
+import NewListingDate from './NewListingDate';
 
 const _chunk = require('lodash.chunk');
 
@@ -27,6 +30,11 @@ const PRICING_MODELS = {
     TOTAL: 0,
     HOURLY: 1,
     REQUEST_QUOTE: 2
+};
+
+const TASK_TYPES = {
+    OFFERING: 1,
+    SEARCHING: 2
 };
 
 export default class NewListing extends Component {
@@ -37,11 +45,18 @@ export default class NewListing extends Component {
             value: 'signup',
             auth: coreAuth.getUserId(),
             step: 1,
+            minPrice: 0,
             openSnackbar: false,
             insertedTask: {},
+            listingCategories: [],
             task: {
-                taskType: 1,
+                title: '',
+                description: '',
+                location: {},
+                priceType: 1,
+                taskType: TASK_TYPES.OFFERING,
                 categories: [],
+                dueDate: [],
                 images: [],
                 utm: {
                     source: 'web-app',
@@ -49,6 +64,15 @@ export default class NewListing extends Component {
                 }
             }
         };
+ 
+        if (props.location.query.category) {
+            const category = props.location.query.category;
+
+            this.state.task.categories.push(category);
+            this.state.step = 2;
+
+            return;
+        }
 
         if (props.params.taskId) {
             apiTask
@@ -77,12 +101,23 @@ export default class NewListing extends Component {
                     this.setState({ task, step })
                 });
         }
-
-        this.handleDescChange = this.handleDescChange.bind(this);
-        this.handleTitleChange = this.handleTitleChange.bind(this);
     }
     componentDidMount() {
-        /* */
+        apiCategory
+        .getItems()
+        .then(listingCategories => {
+            const task = this.state.task;
+            const category = listingCategories.filter(_ => _.code === this.props.location.query.category)[0];
+            const minPrice = category.minPriceHour || 0;
+            
+            task.price = minPrice;
+
+            this.setState({
+                listingCategories,
+                minPrice,
+                task
+            });
+        });
     }
 
     handlePricingChange (priceType, priceInCents) {
@@ -91,23 +126,15 @@ export default class NewListing extends Component {
         task.priceType = Number(priceType);
         task.price = Number(priceInCents);
 
-        this.setState({ 
+        this.setState({
             task 
         });
     }
 
-    handleTitleChange (event) {
+    handleDescChange (event, description) {
       const task = this.state.task;
       
-      task.title = event.target.value;
-
-      this.setState({ task });
-    }
-
-    handleDescChange (event, value) {
-      const task = this.state.task;
-      
-      task.description = value || event.target.value;
+      task.description = description;
 
       this.setState({ task });
     }
@@ -118,7 +145,12 @@ export default class NewListing extends Component {
 
         task.categories = categories;    
 
-        if (!task.id && coreAuth.getUserId()) {
+        this.setState({ 
+            step: 2, 
+            task
+        });
+
+        if (false && !task.id && coreAuth.getUserId()) {
             return apiTask
                 .createItem({})
                 .then(rTask => {
@@ -147,70 +179,14 @@ export default class NewListing extends Component {
             task 
         });
     }
+    handleListingFieldChange(fieldName, fieldValue) {
+        const task = this.state.task;
 
+        task[fieldName] = fieldValue;
+
+        this.setState({ task });
+    }
     render() {
-            const step3 = 
-                <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h1>{translate("STEP")} 3. {translate("DESCRIBE_YOUR_LISTING")}</h1>
-                        </div>
-                    </div>
-                    <hr />
-                    <div className="row"> 
-                        <div className="col-xs-12">
-                            <div className="row">
-                            <div className="col-xs-12">
-                                <h4>{translate("TITLE")}</h4>
-                                <TextField
-                                    name="title"
-                                    onChange={this.handleTitleChange}
-                                    style={{width: '100%'}}
-                                    inputStyle={{width: '100%'}}
-                                    value={this.state.task.title}
-                                />
-                            </div>  
-                        </div>  
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <h4>{translate("DESCRIPTION")}</h4>
-                                <HtmlTextField 
-                                    onChange={this.handleDescChange}
-                                    value={this.state.task.description} 
-                                />
-                            </div>    
-                        </div>
-
-                        <div className="row">
-                           <div className="col-xs-12">
-                                    <h4>{translate("LOCATION")} ({translate("OPTIONAL")})</h4>
-                                    {this.state.task.location && this.state.task.location.formattedAddress}
-                                    <TextField name="location" style={{width: '100%'}}>
-                                        <Autocomplete
-                                            style={{width: '100%'}}
-                                            onPlaceSelected={place => {
-                                                const task = this.state.task;
-                                                
-                                                task.virtual = false;
-                                                task.location = formatGeoResults([ place ])[0];
-
-                                                task.id &&
-                                                coreAuth.getUserId() &&
-                                                apiTaskLocation
-                                                .createItem(task.id, task.location);
-
-                                                this.setState({ task });
-                                            }}
-                                            types={['(regions)']}
-                                        />
-                                    </TextField>
-                               </div>   
-                            </div>
-                        </div>   
-                    </div>
-                </div>;
-
-
               const confirmBeforePosting = 
                 <div className="col-xs-12">
                     <div className="row">
@@ -298,19 +274,8 @@ export default class NewListing extends Component {
                         <div className="row">
                             <ImageUploader 
                                 images={this.state.task.images} 
-                                onChange={images => {
-                                    const task = this.state.task;
-
-                                    coreAuth.getUserId() && task.id &&
-                                    apiTaskImage
-                                    .createItem(task.id, images);
-
-                                    task.images = images;
-                       
-                                    this.setState({
-                                        task
-                                    });
-                             }} />
+                                onChange={_ => this.handleListingFieldChange('images', _)}
+                            />
                         </div>
                 </div>;
 
@@ -335,8 +300,9 @@ export default class NewListing extends Component {
                         }
                           { this.state.step > 1 &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
-                            { this.state.step===2 && 
+                            { this.state.step === 2 && 
                                 <NewListingPricing
+                                    minPrice={this.state.minPrice}
                                     price={this.state.task.price}
                                     priceType={this.state.task.priceType}
                                     onPricingChange={
@@ -344,11 +310,32 @@ export default class NewListing extends Component {
                                     } 
                                 /> 
                             }
-                            { this.state.step===3 && step3 }
+                            { this.state.step===3 && 
+                                <NewListingBasics
+                                    title={this.state.task.title}
+                                    description={this.state.task.description}
+                                    location={this.state.task.location}
+                                    onTitleChange={_ => this.handleListingFieldChange('title', _)}
+                                    onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
+                                    onLocationChange={_ => this.handleListingFieldChange('location', _)}
+                                />
+                            }
                             { this.state.step===4 && createAccountSection }
                             { this.state.step===5 && addImages }
-                            { this.state.step===6 && confirmBeforePosting }
-                            { this.state.step===7 && success }
+                            { this.state.step === 6 && 
+                                <NewListingDate 
+                                    selected={this.state.task.dueDate[0]}
+                                    onSelect={selectedDate => {
+                                        const task = this.state.task;
+                                        
+                                        task.dueDate = [ selectedDate ];
+
+                                        this.setState({ task });
+                                    }}
+                                /> 
+                            }
+                            { this.state.step===7 && confirmBeforePosting }
+                            { this.state.step===8 && success }
 
                             { this.state.step !== 5 && <hr /> }
                             
@@ -378,8 +365,8 @@ export default class NewListing extends Component {
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label={translate("CONTINUE")}
-                                        primary={ true }
-                                        disabled={ false }
+                                        primary={true}
+                                        disabled={false}
                                         onTouchTap={() => {
                                             const currentStep = this.state.step;
                                             let nextStep = currentStep + 1;
@@ -387,11 +374,12 @@ export default class NewListing extends Component {
 
                                             updatedTask.price *= 100;
                                             
-                                            this.state.task.id &&
+                                            false & this.state.task.id &&
                                             coreAuth.getUserId() &&
                                             apiTask.updateItem(this.state.task.id, updatedTask);
 
                                             if (currentStep === 2) {
+                                                debugger;
                                                 if (typeof this.state.task.priceType === 'undefined') {
                                                     return this.setState({
                                                         openSnackbar: true,
@@ -432,7 +420,7 @@ export default class NewListing extends Component {
                                         } }
                                     />
                                 }
-                                { this.state.step === 6 && this.state.auth &&
+                                { this.state.step === 7 && this.state.auth &&
                                     <RaisedButton
                                         style={{ float: 'right' }}
                                         label={translate("CONFIRM_AND_POST")}

@@ -13,6 +13,7 @@ export default class ImageUploader extends React.Component {
         super();
 
         this.state = {
+            singleImageMode: props.singleImageMode,
             newImageIsUploaded: false,
             images: props.images || []
         };
@@ -22,6 +23,7 @@ export default class ImageUploader extends React.Component {
         return (
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
                         <div className="row">
+                           { !this.state.singleImageMode || this.state.singleImageMode && !this.state.images.length &&
                             <Dropzone onDrop={files => {
                                 this.setState({
                                     newImageIsUploaded: true
@@ -53,6 +55,7 @@ export default class ImageUploader extends React.Component {
                                         </div>
                                     </div>
                             </Dropzone>
+                            }
                         </div>
                         <div className="row" style={{ marginTop: 20 }}>
                             { this.state.newImageIsUploaded &&
@@ -63,12 +66,12 @@ export default class ImageUploader extends React.Component {
                             <hr />
                             { this.state.images
                                 .map((img, index) =>
-                                <div className="col-xs-12 col-sm-4 col-md-4 text-center">
+                                <div key={index} className="col-xs-12 col-sm-4 col-md-4 text-center">
                                     <img className="img-responsive" role="presentation" src={img.imageUrl}/>
                                     <FlatButton 
                                         onTouchTap={() => {
                                             const images = this.state.images;
-
+                                            debugger;
                                             images.splice(index, 1);
                                             
                                             this.setState({

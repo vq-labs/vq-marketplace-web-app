@@ -6,6 +6,7 @@ import SectionCategories from './Categories';
 import SectionBasics from './Basics';
 import SectionUsers from './Users';
 import SectionLabels from './Labels';
+import SectionPricing from './Pricing';
 import * as coreNavigation from '../core/navigation';
 
 export default class AdminPage extends React.Component {
@@ -53,11 +54,11 @@ export default class AdminPage extends React.Component {
                             <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                             <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                             <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
-                            <MenuItem onClick={ () => this.goToSection('basics') }>Pricing models</MenuItem>
+                            <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
                     </div>
                 </Drawer>
 
-                <div className="row" style={{ paddingLeft: '256px' }}>
+                <div className="row" style={{ marginBottom: 100, paddingLeft: '256px' }}>
                         <div className="col-xs-12">
                                 <div className="row">
                                     <div className="col-xs-12">
@@ -66,6 +67,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'labels' && <SectionLabels /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
+                                        { this.state.section === 'pricing' && <SectionPricing /> }
                                     </div> 
                                 </div> 
                         </div>    

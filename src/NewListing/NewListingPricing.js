@@ -3,6 +3,8 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { translate } from '../core/i18n';
+import * as apiConfig from '../api/config';
+import Slider from 'material-ui/Slider';
 
 const PRICING_MODELS = {
     TOTAL: 0,
@@ -10,55 +12,99 @@ const PRICING_MODELS = {
     REQUEST_QUOTE: 2
 };
 
+const PRICE_ENTRY_TYPES = {
+    TEXT_BOX: 1,
+    SLIDER: 2
+};
+
 export default class NewListingPricing extends React.Component {
     constructor(props) {
         super();
 
         this.state = {
-            price: props.price,
-            priceType: props.priceType
+            currency: 'EUR',
+            priceEntryType: PRICE_ENTRY_TYPES.SLIDER,
+            price: props.price || 0,
+            priceType: props.priceType || 1,
+            minPrice: props.minPrice || 0,
+            pricingConfig: {
+                hourly: true,
+                request: false,
+                contract: false
+            }
         };
-
-        this.handlePriceTypeChange = this.handlePriceTypeChange.bind(this);
-        this.handlePriceChange = this.handlePriceChange.bind(this);
     }
+
     componentDidMount() {
-        /* */
+        apiConfig.appConfig.getItems()
+        .then(meta => {
+            let priceType = 0;
+            const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
+            const pricingConfig = {
+                hourly: Boolean(Number(meta.PRICING_HOURLY)),
+                contract: Boolean(Number(meta.PRICING_CONTRACT)),
+                request: Boolean(Number(meta.PRICING_REQUEST))
+            };
+
+            if (pricingConfig.hourly) {
+                priceType = PRICING_MODELS.HOURLY;
+            }
+
+            if (pricingConfig.contract) {
+                priceType = PRICING_MODELS.TOTAL;
+            }
+
+            if (pricingConfig.request) {
+                priceType = PRICING_MODELS.REQUEST_QUOTE;
+            }
+
+            return this.setState({
+                priceType,
+                pricingConfig,
+                currency
+            });
+        });
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.minPrice !== this.state.minPrice)
+            this.setState({
+                minPrice: nextProps.minPrice,
+                price: nextProps.minPrice * 2
+            });
+    } 
+
+    getCurrencySign() {
+        const CURRENCY_SIGNS = {
+            EUR: '€',
+            USD: 'USD',
+            PLN: 'PLN',
+            HUF: 'Ft.'
+        };
+        
+        return CURRENCY_SIGNS[this.state.currency] || 'Unknown';
     }
 
     setPrice (price) {
-      price = Number(price);
+        price = Number(price);
 
-      this.setState({ price });
-
-      this.props.onPricingChange({
-        price, 
-        priceType: this.state.priceType, 
-      });
-    }
-
-    handlePriceTypeChange (event) {
-        const priceType = Number(event.target.value);
-
-        this.setState({ priceType });
-
-        this.props.onPricingChange({
-            price: this.state.price, 
-            priceType
+        this.setState({
+            price
         });
-    }
-
-    handlePriceChange (event) {
-        const price = Number(event.target.value);
-
-        this.setState({ price });
 
         this.props.onPricingChange({
             price, 
-            priceType: this.state.priceType 
+            priceType: this.state.priceType
         });
     }
 
+    handlePriceChange (price, priceType) {
+        this.setState({ price, priceType });
+        this.props.onPricingChange && this.props.onPricingChange({
+            price,
+            priceType 
+        });
+    }
     render() {
         return <div className="col-xs-12">
                 <div className="row">
@@ -69,49 +115,71 @@ export default class NewListingPricing extends React.Component {
                 <hr />
                 <div className="row">
                     <div className="col-xs-12">
-                        <RadioButtonGroup 
+                        <RadioButtonGroup
                             name="priceTypeButtons" 
-                            onChange={this.handlePriceTypeChange} 
+                            onChange={(ev, priceType) => {
+                                this.handlePriceChange(this.state.price, priceType);
+                            }} 
                             ref="priceType"
                             style={{width: '100%'}}
                             inputStyle={{width: '100%'}}
-                            defaultSelected={this.state.priceType}>
-                                    <RadioButton
-                                        value={PRICING_MODELS.HOURLY}
-                                        label={
-                                            translate("PRICING_MODEL_HOURLY")
-                                        }
-                                    />
-                                    <RadioButton
-                                        value={PRICING_MODELS.TOTAL}
-                                        label={
-                                            translate("PRICING_MODEL_TOTAL")
-                                        }
-                                    />
-                                    <RadioButton
-                                        value={PRICING_MODELS.REQUEST_QUOTE}
-                                        label={
-                                            translate("PRICING_MODEL_REQUEST_QUOTE")
-                                        }
-                                    />
+                            defaultSelected={this.state.priceType}
+                        >
+                                <RadioButton
+                                    className={!this.state.pricingConfig.hourly && 'hidden'}
+                                    value={PRICING_MODELS.HOURLY}
+                                    label={translate("PRICING_MODEL_HOURLY")}
+                                />
+                           
+                                <RadioButton
+                                    className={!this.state.pricingConfig.contract && 'hidden'}
+                                    value={PRICING_MODELS.TOTAL}
+                                    label={translate("PRICING_MODEL_TOTAL")}
+                                />
+                            
+                                <RadioButton
+                                    className={!this.state.pricingConfig.request && 'hidden'}
+                                    value={PRICING_MODELS.REQUEST_QUOTE}
+                                    label={translate("PRICING_MODEL_REQUEST_QUOTE")}
+                                />
                         </RadioButtonGroup>
                     </div>
                 </div>
                 { this.state.priceType !== 2 &&
                     <div className="row">
+                        <div className={"col-xs-12"}>
+                            <h2 className="text-center">{this.state.price} {this.getCurrencySign()}</h2>
+                            <Slider
+                                min={this.state.minPrice}
+                                max={this.state.minPrice * 10}
+                                step={500}
+                                value={this.state.price}
+                                onChange={(ev, price) => {
+                                    this.handlePriceChange(price, this.state.priceType);
+                                }}
+                            />
+                        </div>
+                        { this.state.priceEntryType === PRICE_ENTRY_TYPES.TEXT_BOX &&
                         <div className="col-xs-12">
                             <TextField
-                                onChange={this.handlePriceChange}
+                                type="number"
+                                step={500}
+                                min={this.state.minPrice}
+                                max={this.state.minPrice * 10}
+                                onChange={(ev, price) => {
+                                    this.handlePriceChange(price, this.state.priceType);
+                                }}
                                 value={this.state.price}
                                 style={{width: '100%'}}
                                 inputStyle={{width: '100%'}}
-                                floatingLabelText={translate("PRICE")}
+                                floatingLabelText={`${translate("PRICE")} (${this.getCurrencySign()})`}
                             />
                         </div>
+                        }
                     </div>
                 } 
                 {   this.state.priceType !== undefined &&
-                    this.state.priceType !== 2 &&
+                    this.state.priceType !== 2 && this.state.quickChoice &&
                     <div className="row">
                         <div className="col-xs-12">
                             <em>{translate("QUICK_CHOICE")}:</em>

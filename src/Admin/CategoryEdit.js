@@ -6,7 +6,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
 import TaskCategories from '../Partials/TaskCategories';
 import Paper from 'material-ui/Paper';
-import GoogleAd from 'react-google-ad'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Avatar from 'material-ui/Avatar';
@@ -90,6 +89,17 @@ export default class CategoryEdit extends Component {
                                     />
                                 </div>
                                 
+                                <div className="col-xs-12">
+                                    <TextField
+                                        ref="minPriceHour"
+                                        onChange={ this.handleFieldChange('minPriceHour') }
+                                        value={this.state.obj.minPriceHour}
+                                        style={{width: '100%'}}
+                                        inputStyle={{width: '100%'}}
+                                        floatingLabelText="Minimum price per hour (optional)"
+                                    />
+                                </div>
+
                                 <div className="col-xs-12">
                                     <FlatButton
                                         style={ { float: 'left' } }

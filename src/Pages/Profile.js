@@ -85,28 +85,28 @@ class Profile extends React.Component {
                 });
             });
 
-        apiUser
-        .getItem(userId)
-        .then(result => new Promise(resolve => {
-            this.setState({
-                isProfileImgLoaded: false,
-                isMyProfile: coreAuth.getUserId() === userId,
-                userId: userId,
-                profile: result,
-                section: section,
+            apiUser
+            .getItem(userId)
+            .then(result => new Promise(resolve => {
+                this.setState({
+                    isProfileImgLoaded: false,
+                    isMyProfile: coreAuth.getUserId() === userId,
+                    userId: userId,
+                    profile: result,
+                    section: section,
+                });
+
+                return resolve();
+            }));
+
+            coreAuth.addListener('login', () => {
+                this.setState({
+                    isMyProfile: coreAuth.getUserId() === userId,
+                });
+
+                getProfileTasks();
             });
-
-            return resolve();
-        }));
-
-        coreAuth.addListener('login', () => {
-            this.setState({
-                isMyProfile: coreAuth.getUserId() === userId,
-            });
-
-            getProfileTasks();
-        });
-    }
+        }
         onDrop(files) {
             this.setState({ 
                 isProfileImgLoaded: true

@@ -1,15 +1,11 @@
 import * as RestResourceFactory from '../core/rest-resource-factory';
 
 export const appLabel = RestResourceFactory.create('app_label', {
-    getItems: data => {
-        const dataObj = {};
+    getItems: (data, returnRaw) => data
+});
 
-        data.map(item => {
-            dataObj[item.labelKey] = item.labelValue;
-        })
-
-        return dataObj;
-    }
+export const appUserProperty = RestResourceFactory.create('app_user_property', {
+    getItems: (data, returnRaw) => data
 });
 
 export const categories = RestResourceFactory.create('app_task_categories');

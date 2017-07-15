@@ -8,6 +8,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ChangePasswordPage from './Pages/ChangePasswordPage';  
 import Header from './Partials/Header';
 import Task from './Pages/Task';
+import Dashboard from './Pages/Dashboard';
 import TaskEdit from './Pages/TaskEdit';
 import LoginPage from './Pages/LoginPage';
 import SignupPage from './Pages/SignupPage';
@@ -91,13 +92,21 @@ class App extends Component {
         })
       });
 
+    const defaultLang = 'en';
+
     apiConfig.appLabel.getItems({
-      lang: 'en'
+      lang: defaultLang
     }, {
       cache: true
     })
     .then(labels => {
-      corei18n.addLang('en', labels);
+      const labelTranslations = {};
+
+      labels.forEach(item => {
+          labelTranslations[item.labelKey] = item.labelValue;
+      });
+
+      corei18n.addLang(defaultLang, labelTranslations);
 
       this.setState({
         labelsReady: true
@@ -113,6 +122,7 @@ class App extends Component {
             <Router history={browserHistory} onUpdate={coreTracking.pageView}>
               <Route path="/app">
                 <IndexRoute component={Offers}/>
+                <Route path="dashboard" component={Dashboard}></Route>
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>

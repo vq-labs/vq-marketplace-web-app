@@ -1,29 +1,52 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
+import { appUserProperty } from '../api/config';
 import * as apiAuth from '../api/auth';
 import * as coreAuth from '../core/auth';
+import { getAppPath } from '../core/navigation';
+
+import { translate } from '../core/i18n';
+
+const USER_TYPES = {
+  BUYER: 1,
+  SELLER: 2
+};
 
 class Signup extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    
+    this.state = {
+      userType: USER_TYPES.BUYER,
+      userProperties: []
+    };
+
     this.handleLogin = this.handleLogin.bind(this);
   }
-   handleLogin(event) {
-      event.preventDefault()
-       
-      const data = {
-        password: this.refs.password.getValue(),
-        email: this.refs.email.getValue(),
-        firstName: this.refs.firstName.getValue(),
-        lastName: this.refs.lastName.getValue(),
-        utm: {
-            medium: 'web',
-            source: 'web-app-v1'
-        }
-      };
+
+  componentDidMount() {
+    appUserProperty
+      .getItems()
+      .then(userProperties => this.setState({
+        userProperties
+      }));
+  }
+
+  handleLogin(event) {
+      event.preventDefault();
+
+      const refs = this.refs;
+      const data = {};
+
+      Object.keys(refs)
+        .forEach(refKey => {
+          data[refKey] = refs[refKey].getValue();
+        });
+
+      data.userType = this.state.userType;
 
       apiAuth
         .signup(data)
@@ -38,48 +61,126 @@ class Signup extends Component {
             alert(err.err.code);
         });
   }
+
   render() {
     return (
       <div className="col-xs-12">
+      <h1>{translate('SIGNUP_PAGE_TITLE')}</h1>
+      <p>{translate('SIGNUP_PAGE_DESC')}</p>
+      
         <div className="row">
           <div className="col-xs-12">
               <form onSubmit={this.handleLogin}>   
                 <TextField
+                    required={true}
                     style={{width: '100%'}}
                     ref="firstName"
-                    floatingLabelText="Vorname"
+                    floatingLabelText={`${translate('FIRST_NAME')} *`}
                     type="text"/>
                   <br />
                 <TextField
+                    required={true}
                     style={{width: '100%'}}
                     ref="lastName"
-                    floatingLabelText="Nachname"
+                    floatingLabelText={`${translate('LAST_NAME')} *` }
                     type="text"/>
                   <br />
                   <TextField
+                    required={true}
                     style={{width: '100%'}}
                     ref="email"
-                    floatingLabelText="E-Mail-Addresse"
+                    floatingLabelText={`${translate('EMAIL_ADDRESS')} *`}
                     type="email"/>
                   <br/>
                   <TextField
+                    required={true}
                     style={{width: '100%'}}
                     ref="password"
-                    floatingLabelText="Passwort erstellen"
+                    floatingLabelText={`${translate('PASSWORD')} *`}
                     type="password"/>
                   <br />
-                  <RaisedButton type="submit" label="Registrieren" fullWidth={true} />
+                  { this.state.userProperties
+                    .map(userProperty =>
+                      <TextField
+                        required={userProperty.required}
+                        key={userProperty.propKey}
+                        ref={userProperty.propKey}
+                        style={{width: '100%'}}
+                        floatingLabelText={`${translate(userProperty.labelKey)} ${userProperty.required ? '*' : ''}`}
+                        type="text"/>
+                    )
+                  }
+                  <div className="row">
+                    <h4>{translate('FIND_OR_POST_TASKS')}</h4>
+                    <div class="col-xs-12">
+                        <div className="col-xs-6">
+                          { this.state.userType === USER_TYPES.BUYER &&
+                            <FlatButton
+                              className="btn-block"
+                              onClick={() => this.setState({ userType: USER_TYPES.SELLER })}
+                              label={translate('FIND_TASKS')}
+                              primary={true}
+                              fullWidth={true}
+                            />
+                          }
+                          { this.state.userType === USER_TYPES.SELLER &&
+                            <RaisedButton
+                              label={translate('FIND_TASKS')}
+                              primary={true}
+                              fullWidth={true}
+                            />
+                          }
+                        </div>
+                        <div className="col-xs-6">
+                          { this.state.userType === USER_TYPES.SELLER &&
+                            <FlatButton
+                              className="btn-block"
+                              onClick={() => this.setState({ userType: USER_TYPES.BUYER })}
+                              label={translate('POST_TASKS')}
+                              primary={true}
+                              fullWidth={true}
+                            />
+                          }
+                          { this.state.userType === USER_TYPES.BUYER &&
+                            <RaisedButton
+                              label={translate('POST_TASKS')}
+                              primary={true}
+                              fullWidth={true}
+                            />
+                          }
+                        </div>
+                      </div>
+                  </div>
+
+                  <br />
+                  <RaisedButton type="submit" label={translate('REGISTER')} fullWidth={true} />
               </form>
             </div>
           </div>
           <hr/>
-           <div class="row">
+          <div class="row">
                 <div className="col-xs-12">
                     <p className="text-center text-muted">
-                        Indem ich mich registriere, erkläre ich mich mit TalentWand <a href="https://talentwand.de/terms" target="_blank">Nutzungsbedingungen</a> und <a href="https://talentwand.de/privacy" target="_blank">Datenschutzerklärung</a>  einverstanden.
+                      {translate('TERMS_AND_PRIVACY_AGREEMENT_STATEMENT')}
+                      <ul className="text-left">
+                        <li>
+                          <a href="/terms" target="_blank">{translate('TERMS_OF_SERVICE')}</a>
+                        </li>
+                        <li>
+                          <a href="/privacy" target="_blank">{translate('PRIVACY_POLICY')}</a>
+                        </li>
+                      </ul>
                     </p>
                 </div>
-            </div>
+          </div>
+          <div class="row">
+                <div className="col-xs-12">
+                    <p className="text-center text-muted">
+                      {translate('ALREADY_HAVE_AN_ACCOUNT')}<br />
+                      <a href={getAppPath('/login')}>{translate('LOGIN_TO_CONTINUE')}</a>
+                    </p>
+                </div>
+          </div>
       </div>
     );
   }

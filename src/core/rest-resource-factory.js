@@ -23,7 +23,7 @@ export const create = (resource, transformers) => {
             communication.doGet(`/${resource}`, query).then(data => {
                 const getItemsTransformer = transformers ? transformers.getItems : data => data;
 
-                data = getItemsTransformer(data);
+                data = getItemsTransformer(data, params.returnRaw);
 
                 if (params.cache) {
                    cache[url] = data;

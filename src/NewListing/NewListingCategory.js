@@ -3,7 +3,6 @@ import { Card, CardMedia, CardTitle } from 'material-ui/Card';
 import * as apiCategory from '../api/category';
 import { translate } from '../core/i18n';
 
-
 const _chunk = require('lodash.chunk');
 
 export default class NewListingCategory extends React.Component {
@@ -11,10 +10,9 @@ export default class NewListingCategory extends React.Component {
         super();
 
         this.state = {
-            categories: [],
+            categories: []
         };
     }
-
     componentDidMount() {
         apiCategory
         .getItems()
@@ -24,11 +22,9 @@ export default class NewListingCategory extends React.Component {
             });
         });
     }
-
     onCategoryChosen (tile) {
         this.props.onSelected && this.props.onSelected(tile.code);
     }
-
     render() {
         return <div className="container">
                     <div className="row">

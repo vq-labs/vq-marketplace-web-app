@@ -150,17 +150,34 @@ export default class SectionLabels extends React.Component {
             labelsObj: {}
         };
 
-        this.getLabels = lang => apiConfig.appLabel.getItems({ lang: lang || this.state.lang }).then(labelsObj => {
-            const labels = defaultLabels.map(labelKey => { 
-                return { key: labelKey, label: labelKey }
+        this.getLabels = lang => apiConfig.appLabel
+            .getItems({ lang: lang || this.state.lang }, { returnRaw: true })
+            .then(rLabels => {
+                const labelsObj = {};
+                const labels = rLabels
+                    .map(labelItem => { 
+                        return {
+                            key: labelItem.labelKey,
+                            label: labelItem.labelKey,
+                            group: labelItem.labelGroup
+                        };
+                    });
+
+            rLabels.forEach(labelItem => {
+                labelsObj[labelItem.labelKey] = labelItem.labelValue;
             })
 
-            this.setState({ labels, labelsObj})
+            this.setState({
+                labels,
+                labelsObj
+            });
         });
     }
+
     componentDidMount() {
         this.getLabels(this.state.lang);
     }
+    
     render() {
             return (
              <div className="col-xs-12">
@@ -179,11 +196,13 @@ export default class SectionLabels extends React.Component {
                         <MenuItem value={'en'} primaryText="English" />
                         <MenuItem value={'de'} primaryText="Deutsch" />
                         <MenuItem value={'pl'} primaryText="Polski" />
+                        <MenuItem value={'hu'} primaryText="Magyar" />
                     </DropDownMenu>
                 </div>
 
                  { Boolean(this.state.labels.length) &&
                     <EditableEntity
+                        groupBy="group"
                         showCancelBtn={false}
                         value={this.state.labelsObj}
                         fields={this.state.labels}
@@ -195,7 +214,7 @@ export default class SectionLabels extends React.Component {
                                     mappedItem.lang = this.state.lang;
                                     mappedItem.labelKey = labelKey;
                                     mappedItem.labelValue = updatedEntity[labelKey];
-
+                        
                                     return mappedItem;
                                 });
 

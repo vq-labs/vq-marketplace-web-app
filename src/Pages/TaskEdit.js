@@ -30,7 +30,8 @@ export default class TaskEdit extends Component {
     componentDidMount() {
       let taskId = this.props.params.taskId;
 
-      apiTask.getItem(taskId).then(rTask => {
+      apiTask.getItem(taskId)
+      .then(rTask => {
         this.setState({
             isLoading: false,
             task: rTask,

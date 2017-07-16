@@ -22,12 +22,12 @@ export default class NewListingPricing extends React.Component {
         super();
 
         this.state = {
-            currency: 'EUR',
+            currency: props.currency || 'EUR',
             priceEntryType: PRICE_ENTRY_TYPES.SLIDER,
             price: props.price || 0,
             priceType: props.priceType || 1,
             minPrice: props.minPrice || 0,
-            pricingConfig: {
+            pricingConfig: props.pricingConfig || {
                 hourly: true,
                 request: false,
                 contract: false
@@ -36,34 +36,6 @@ export default class NewListingPricing extends React.Component {
     }
 
     componentDidMount() {
-        apiConfig.appConfig.getItems()
-        .then(meta => {
-            let priceType = 0;
-            const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
-            const pricingConfig = {
-                hourly: Boolean(Number(meta.PRICING_HOURLY)),
-                contract: Boolean(Number(meta.PRICING_CONTRACT)),
-                request: Boolean(Number(meta.PRICING_REQUEST))
-            };
-
-            if (pricingConfig.hourly) {
-                priceType = PRICING_MODELS.HOURLY;
-            }
-
-            if (pricingConfig.contract) {
-                priceType = PRICING_MODELS.TOTAL;
-            }
-
-            if (pricingConfig.request) {
-                priceType = PRICING_MODELS.REQUEST_QUOTE;
-            }
-
-            return this.setState({
-                priceType,
-                pricingConfig,
-                currency
-            });
-        });
     }
 
     componentWillReceiveProps (nextProps) {
@@ -106,10 +78,12 @@ export default class NewListingPricing extends React.Component {
         });
     }
     render() {
-        return <div className="col-xs-12">
+        return <div className="row">
+            <div className="col-xs-12">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1>{translate("STEP")} 2. {translate("DETERMINE_PRICING_MODEL")}</h1>
+                        <h1>{translate("NEW_LISTING_PRICING_HEADER")}</h1>
+                        <p>{translate("NEW_LISTING_PRICING_DESC")}</p>
                     </div>
                 </div>
                 <hr />
@@ -203,5 +177,6 @@ export default class NewListingPricing extends React.Component {
                     </div>
                 }
             </div>
+        </div>
      }
 };

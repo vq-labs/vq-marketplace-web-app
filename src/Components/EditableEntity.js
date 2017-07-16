@@ -3,6 +3,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import ImageUploader from '../Components/ImageUploader';
 import * as coreNavigation from '../core/navigation';
 import '../App.css';
@@ -20,7 +22,7 @@ export default class EditableEntity extends Component {
         const groupedFields = props.groupBy ?
             _.groupBy(props.fields, props.groupBy) :
             { '': props.fields }
-        debugger;
+        
 
         this.state = {
             showCancelBtn: props.showCancelBtn,
@@ -90,6 +92,18 @@ export default class EditableEntity extends Component {
                                                             hintText={field.hint}
                                                             floatingLabelFixed={true}
                                                         />
+                                                    }
+                                                    { (field.type === 'select') &&
+                                                    <SelectField
+                                                        disabled={true}
+                                                        floatingLabelText={field.label}
+                                                        value={Number(this.state.updatedEntity[field.key])}
+                                                        onChange={this.handleFieldChange(field.key)}
+                                                    >
+                                                        <MenuItem key={0} value={0} primaryText={'Disabled'} />
+                                                        <MenuItem key={1} value={1} primaryText={'Optional'} />
+                                                        <MenuItem key={2} value={2} primaryText={'Required'} />
+                                                    </SelectField>
                                                     }
                                                     { field.type === 'bool' &&
                                                         <div className="col-xs-12">

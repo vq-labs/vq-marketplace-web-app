@@ -2,11 +2,12 @@ import * as communication from './communication'
 
 export const create = (resource, transformers) => {
     let cache = localStorage.getItem(`VQ_CACHE_${resource.toUpperCase()}`);
-    
+    var outstandingUpdate;
+
     cache = cache ? JSON.parse(cache) : {};
    
     return {
-        getItem: itemId => communication.doGet(`/${resource}/${itemId}`),
+        getItem: (itemId, byProp) => communication.doGet(`/${resource}/${itemId}${byProp ? '/' + byProp : ''}`),
         getItems: (query, params) => new Promise((resolve, reject) => {
             let resolved = false;
 
@@ -35,7 +36,23 @@ export const create = (resource, transformers) => {
             }, err => reject(err));
         }),
         createItem: data => communication.doPost(`/${resource}`, data),
-        updateItem: (itemId, data) => communication.doPut(`/${resource}/${itemId}`, data),
+        updateItem: (itemId, data, delay) => new Promise((resolve, reject) => {
+            if (delay) {
+                clearTimeout(outstandingUpdate);
+                outstandingUpdate = null;
+
+                outstandingUpdate = setTimeout(() => {
+                    communication.doPut(`/${resource}/${itemId}`, data);
+
+                    return resolve();
+                }, delay);
+
+                return;
+            }
+
+            communication.doPut(`/${resource}/${itemId}`, data)
+            .then(resolve, reject);
+        }),
         deleteItem: (itemId, data) => communication.doDelete(`/${resource}/${itemId}`),
     };
 };

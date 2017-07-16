@@ -7,6 +7,8 @@ import SectionBasics from './Basics';
 import SectionUsers from './Users';
 import SectionLabels from './Labels';
 import SectionPricing from './Pricing';
+import SectionListing from './Listing';
+import SectionPosts from './Posts';
 import * as coreNavigation from '../core/navigation';
 
 export default class AdminPage extends React.Component {
@@ -41,20 +43,27 @@ export default class AdminPage extends React.Component {
                 <Drawer open={true}>
                     <div className="col-xs-12">
                         <h4>Analytics</h4>
-                            <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>
 
                         <h4>Users</h4>
-                            <MenuItem onClick={ () => this.goToSection('users') }>Manage Users</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('users') }>Manage Users</MenuItem>
 
-                    <h4>Transactions</h4>
-                            <MenuItem onClick={ () => this.goToSection('users') }>Transactions</MenuItem>
+                        <h4>Transactions</h4>
+                        <MenuItem onClick={ () => this.goToSection('users') }>Transactions</MenuItem>
                     
                         <h4>Configuration</h4>
-                            <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
-                            <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
-                            <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
-                            <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
-                            <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('listing') }>Listing</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
+                        
+                        <h4>Content</h4>
+                        <MenuItem onClick={ () => this.goToSection('posts') }>Emails</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('posts') }>Privacy policy</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('posts') }>Terms of Service</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('posts') }>Blog</MenuItem>
                     </div>
                 </Drawer>
 
@@ -68,6 +77,9 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
                                         { this.state.section === 'pricing' && <SectionPricing /> }
+                                        { this.state.section === 'listing' && <SectionListing /> }
+                                        { this.state.section === 'posts' && <SectionPosts /> }
+                                        { this.state.section === 'post' && <SectionPostEdit /> }
                                     </div> 
                                 </div> 
                         </div>    

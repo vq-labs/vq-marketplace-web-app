@@ -5,15 +5,16 @@ import HtmlTextField from '../Components/HtmlTextField';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import Autocomplete from 'react-google-autocomplete';
 import LoginSignup from '../Components/LoginSignup';
 import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
+import * as apiConfig from '../api/config';
 import * as apiCategory from '../api/category';
 import * as apiTaskImage from '../api/task-image';
 import * as apiTaskLocation from '../api/task-location';
 import * as apiTaskCategory from '../api/task-category';
+import * as apiTaskTiming from '../api/task-timing';
 import { translate } from '../core/i18n';
 import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
@@ -23,8 +24,23 @@ import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
 import NewListingPricing from './NewListingPricing';
 import NewListingDate from './NewListingDate';
+import NewListingReview from './NewListingReview';
+import NewListingLocation from './NewListingLocation';
 
 const _chunk = require('lodash.chunk');
+
+const LISTING_VIEWS = {
+    START: 1,
+    CATEGORY: 1,
+    PRICING: 2,
+    BASICS: 3,
+    LOCATION: 4,
+    CALENDAR: 5,
+    IMAGES: 6,
+    REVIEW: 7,
+    SUCCESS: 8,
+    LOGIN: 9
+};
 
 const PRICING_MODELS = {
     TOTAL: 0,
@@ -44,7 +60,7 @@ export default class NewListing extends Component {
         this.state = {
             value: 'signup',
             auth: coreAuth.getUserId(),
-            step: 1,
+            step: LISTING_VIEWS.CATEGORY,
             minPrice: 0,
             openSnackbar: false,
             insertedTask: {},
@@ -56,7 +72,7 @@ export default class NewListing extends Component {
                 priceType: 1,
                 taskType: TASK_TYPES.OFFERING,
                 categories: [],
-                dueDate: [],
+                timing: [],
                 images: [],
                 utm: {
                     source: 'web-app',
@@ -69,40 +85,48 @@ export default class NewListing extends Component {
             const category = props.location.query.category;
 
             this.state.task.categories.push(category);
-            this.state.step = 2;
+            this.state.step = LISTING_VIEWS.PRICING;
 
             return;
         }
-
-        if (props.params.taskId) {
-            apiTask
-                .getItem(props.params.taskId)
-                .then(task => {
-                    let step = 1;
-
-                    task.price = task.price / 100;
-
-                    if (task.categories && task.categories.length) {
-                        step = 2;
-                    }
-
-                    if (typeof task.priceType !== 'undefined' && task.priceType !== null) {
-                        step = 3;
-                    }
-
-                    if (task.title && task.description) {
-                        step = 5;
-                    }
-
-                    if (task.images && task.images.length) {
-                        step = 6;
-                    }
-
-                    this.setState({ task, step })
-                });
-        }
     }
     componentDidMount() {
+        apiConfig.appConfig.getItems()
+        .then(meta => {
+            let priceType = 0;
+            const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
+            const pricingConfig = {
+                hourly: Boolean(Number(meta.PRICING_HOURLY)),
+                contract: Boolean(Number(meta.PRICING_CONTRACT)),
+                request: Boolean(Number(meta.PRICING_REQUEST))
+            };
+
+            if (pricingConfig.hourly) {
+                priceType = PRICING_MODELS.HOURLY;
+            }
+
+            if (pricingConfig.contract) {
+                priceType = PRICING_MODELS.TOTAL;
+            }
+
+            if (pricingConfig.request) {
+                priceType = PRICING_MODELS.REQUEST_QUOTE;
+            }
+
+            const task = this.state.task;
+            
+            task.priceType = priceType;
+
+            this.setState({
+                appConfig: meta,
+                ready: true,
+                task,
+                priceType,
+                pricingConfig,
+                currency
+            });
+        });
+
         apiCategory
         .getItems()
         .then(listingCategories => {
@@ -132,11 +156,13 @@ export default class NewListing extends Component {
     }
 
     handleDescChange (event, description) {
-      const task = this.state.task;
-      
-      task.description = description;
+        const task = this.state.task;
+        
+        task.description = description;
 
-      this.setState({ task });
+        this.setState({
+            task
+        });
     }
 
     onCategoryChosen (categoryCode) {
@@ -146,39 +172,11 @@ export default class NewListing extends Component {
         task.categories = categories;    
 
         this.setState({ 
-            step: 2, 
+            step: LISTING_VIEWS.PRICING, 
             task
         });
-
-        if (false && !task.id && coreAuth.getUserId()) {
-            return apiTask
-                .createItem({})
-                .then(rTask => {
-                    apiTaskCategory
-                        .createItem(rTask.id, categories)
-                        .then(data => {
-                            this.setState({ 
-                                step: 2, 
-                                task: rTask 
-                            });
-                        });
-                }, err => {
-                    console.error(err);
-
-                    coreNavigation.goTo('/login');
-                });
-        }
-
-        if (task.id) {
-            apiTaskCategory
-                .createItem(task.id, categories);
-        }
-
-        return this.setState({
-            step: 2,
-            task 
-        });
     }
+
     handleListingFieldChange(fieldName, fieldValue) {
         const task = this.state.task;
 
@@ -186,61 +184,8 @@ export default class NewListing extends Component {
 
         this.setState({ task });
     }
+
     render() {
-              const confirmBeforePosting = 
-                <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h1>{translate("STEP")} 4. {translate("CONFIRM_BEFORE_POSTING")}</h1>
-                        </div>
-                    </div>
-                
-
-                <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4>{translate("CATEGORY")}</h4>
-                            { 
-                                this.state.task.categories &&
-                                this.state.task.categories
-                                .map(category => 
-                                    <span>{category.label}</span>
-                                )
-                            }
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4>{translate("TITLE")}</h4>
-                            {this.state.task.title}
-                        </div>
-                    </div>
-                   
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4>{translate("DESCRIPTION")}</h4>
-                            <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4>{translate("PRICING")}</h4>
-                            { this.state.task.priceType === 1 ? translate("PRICING_MODEL_HOURLY") : this.state.task.priceType === 0 ? translate("PRICING_MODEL_TOTAL") : translate("PRICING_MODEL_REQUEST_QUOTE") }
-                        </div>
-                    </div>
-
-                    { this.state.task.priceType !== 2 && 
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <h4>{translate("PRICE")}</h4>
-                                {this.state.task.price + '€' }
-                            </div>
-                        </div>
-                    }
-                </div>
-              </div>;
-
               const success=<div className="container">
                 <div className="row">
                     <div className="col-xs-12">
@@ -283,64 +228,87 @@ export default class NewListing extends Component {
                 <div className="col-xs-12">
                         <div className="row">
                             <LoginSignup
-                                onSuccess={ () => this.setState({ 
-                                    auth: true,
-                                    step: 5
-                                }) }
+                                onSuccess={() => {
+                                    let step = 6;
+
+                                    if (Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
+                                        step = step + 1;
+                                    }
+                                      
+                                    this.setState({ 
+                                        auth: true,
+                                        step
+                                    })
+                                }}
                             />
                         </div>
                 </div>;
 
             return (
                     <div className="container">
-                        { this.state.step === 1 && 
+                        { this.state.step === LISTING_VIEWS.CATEGORY && 
                             <NewListingCategory onSelected={
                                 categoryCode => this.onCategoryChosen(categoryCode)
                             } /> 
                         }
-                          { this.state.step > 1 &&
+                        { this.state.step > LISTING_VIEWS.CATEGORY &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
-                            { this.state.step === 2 && 
+                            { this.state.ready && this.state.step === LISTING_VIEWS.PRICING &&
                                 <NewListingPricing
+                                    pricingConfig={this.state.pricingConfig}
+                                    currency={this.state.currency}
                                     minPrice={this.state.minPrice}
                                     price={this.state.task.price}
-                                    priceType={this.state.task.priceType}
+                                    priceType={this.state.priceType}
                                     onPricingChange={
                                         pricing => this.handlePricingChange(pricing.priceType, pricing.price)
                                     } 
                                 /> 
                             }
-                            { this.state.step===3 && 
+                            { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics
-                                    title={this.state.task.title}
-                                    description={this.state.task.description}
-                                    location={this.state.task.location}
+                                    title={{ value: this.state.task.title, mode: this.state.appConfig.LISTING_TITLE_MODE }}
+                                    description={{ value: this.state.task.description, mode: this.state.appConfig.LISTING_DESCRIPTION_MODE }}
+                                    location={{ value: this.state.task.location, mode: this.state.appConfig.LISTING_LOCATION_MODE }}
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
                                     onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
                                     onLocationChange={_ => this.handleListingFieldChange('location', _)}
                                 />
                             }
-                            { this.state.step===4 && createAccountSection }
-                            { this.state.step===5 && addImages }
-                            { this.state.step === 6 && 
+
+                            { this.state.ready && this.state.step === LISTING_VIEWS.LOCATION &&
+                                <NewListingLocation
+                                    countryRestriction={this.state.appConfig.COUNTRY_RESTRICTION}
+                                    location={this.state.task.location}
+                                    onLocationChange={_ => this.handleListingFieldChange('location', _)}
+                                />
+                            }
+
+                            { this.state.step === LISTING_VIEWS.LOGIN && createAccountSection }
+                            { this.state.step === LISTING_VIEWS.IMAGES && addImages }
+                            { this.state.step === LISTING_VIEWS.CALENDAR &&
                                 <NewListingDate 
-                                    selected={this.state.task.dueDate[0]}
+                                    selected={this.state.task.timing[0]}
                                     onSelect={selectedDate => {
                                         const task = this.state.task;
                                         
-                                        task.dueDate = [ selectedDate ];
+                                        task.timing = [ selectedDate ];
 
                                         this.setState({ task });
                                     }}
                                 /> 
                             }
-                            { this.state.step===7 && confirmBeforePosting }
-                            { this.state.step===8 && success }
-
-                            { this.state.step !== 5 && <hr /> }
+                            { this.state.step === LISTING_VIEWS.REVIEW &&
+                                <NewListingReview
+                                    listing={this.state.task}
+                                    currency={this.state.currency}
+                                />
+                            }
+                            
+                            { this.state.step === LISTING_VIEWS.SUCCESS && success }
                             
                             <div className="row" style={ { marginTop: 20 } }>
-                                { this.state.step !== 7 &&  this.state.step !== 1 &&    
+                                { this.state.step !== LISTING_VIEWS.SUCCESS && this.state.step !== LISTING_VIEWS.START &&
                                     <FlatButton
                                         style={ { float: 'left' } }
                                         label={translate("BACK")}
@@ -349,8 +317,14 @@ export default class NewListing extends Component {
                                         onTouchTap={() => {
                                             let nextStep = this.state.step - 1;
 
-                                            if (nextStep === 4 && coreAuth.getUserId()) {
+                                            if (nextStep === LISTING_VIEWS.REVIEW && coreAuth.getUserId()) {
                                                 nextStep -= 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.IMAGES) {
+                                                if (Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
+                                                    nextStep -= 1;
+                                                }
                                             }
 
                                             this.setState({ 
@@ -359,34 +333,34 @@ export default class NewListing extends Component {
                                         } }
                                     />
                                 }
-                                {   this.state.step > 1 &&
-                                    this.state.step < 6 &&
-                                    this.state.step !== 4 &&
+                                {   this.state.step > LISTING_VIEWS.START &&
+                                    this.state.step < LISTING_VIEWS.REVIEW &&
+                                    this.state.step !== LISTING_VIEWS.LOGIN &&
                                     <RaisedButton
-                                        style={ { float: 'right' } }
+                                        style={{ float: 'right' }}
                                         label={translate("CONTINUE")}
                                         primary={true}
                                         disabled={false}
                                         onTouchTap={() => {
                                             const currentStep = this.state.step;
                                             let nextStep = currentStep + 1;
+                                            const task = this.state.task;
                                             const updatedTask = JSON.parse(JSON.stringify(this.state.task));
+                    
 
                                             updatedTask.price *= 100;
                                             
-                                            false & this.state.task.id &&
-                                            coreAuth.getUserId() &&
-                                            apiTask.updateItem(this.state.task.id, updatedTask);
+                                            // CHECKS
 
-                                            if (currentStep === 2) {
-                                                debugger;
-                                                if (typeof this.state.task.priceType === 'undefined') {
+                                            if (currentStep === LISTING_VIEWS.PRICING) {
+                                                if (typeof task.priceType === 'undefined') {
                                                     return this.setState({
                                                         openSnackbar: true,
                                                         snackbarMessage: translate("PRICE_TYPE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
-                                                if (!this.state.task.price && this.state.task.priceType !== 2) {
+
+                                                if (!task.price && task.priceType !== 2) {
                                                     return this.setState({
                                                         openSnackbar: true,
                                                         snackbarMessage: translate("PRICE") + " " + translate("IS_REQUIRED")
@@ -394,24 +368,69 @@ export default class NewListing extends Component {
                                                 }
                                             }
 
-                                            if (currentStep === 3) {
-                                                if (coreAuth.getUserId()) {
-                                                    nextStep += 1;
-                                                }
-
-                                                if (!this.state.task.title) {
+                                            if (currentStep === LISTING_VIEWS.LOCATION) {
+                                                if (!task.location.city) {
                                                     return this.setState({
                                                         openSnackbar: true,
-                                                        snackbarMessage: translate("TITLE") + " " + translate("IS_REQUIRED")
+                                                        snackbarMessage: translate("LOCATION_CITY") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+                                                    
+                                                if (!task.location.postalCode) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
-                                                if (!this.state.task.description) {
+                                                if (!task.location.countryCode) {
                                                     return this.setState({
                                                         openSnackbar: true,
-                                                        snackbarMessage: translate("DESCRIPTION") + " " + translate("IS_REQUIRED")
+                                                        snackbarMessage: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
+
+                                                if (!task.location.lat) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+
+                                                if (!task.location.lng) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: 'Location is not exact enough.'
+                                                    });
+                                                }
+                                            }
+
+                                            if (currentStep === LISTING_VIEWS.BASICS) {
+                                                if (Number(this.state.appConfig.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_TITLE") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+
+                                                if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && !this.state.task.description) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+                                                /*
+                                                if (Number(this.state.appConfig.LISTING_LOCATION_MODE) === 1 && !this.state.task.location.formattedAddress) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_LOCATION") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+                                                */
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.IMAGES && Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
+                                                nextStep = nextStep + 1;
                                             }
 
                                             this.setState({
@@ -420,7 +439,7 @@ export default class NewListing extends Component {
                                         } }
                                     />
                                 }
-                                { this.state.step === 7 && this.state.auth &&
+                                { this.state.step === LISTING_VIEWS.REVIEW && this.state.auth &&
                                     <RaisedButton
                                         style={{ float: 'right' }}
                                         label={translate("CONFIRM_AND_POST")}
@@ -447,9 +466,10 @@ export default class NewListing extends Component {
 
                                                 return apiTaskCategory.createItem(task.id, task.categories);
                                             })
+                                            .then(() => apiTask.updateItem(task.id, task))
                                             .then(() => apiTaskLocation.createItem(task.id, task.location))
                                             .then(() => apiTaskImage.createItem(task.id, task.images))
-                                            .then(() => apiTask.updateItem(task.id, task))
+                                            .then(() => apiTaskTiming.createItem(task.id, task.timing))
                                             .then(task => this.setState({
                                                 step: this.state.step + 1
                                             }));

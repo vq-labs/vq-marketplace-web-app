@@ -18,6 +18,7 @@ export default class NewListingDate extends Component {
             maxDate
         };
     }
+    
     componentDidMount() {
        
     }

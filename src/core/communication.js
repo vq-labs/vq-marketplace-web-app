@@ -12,11 +12,13 @@ export const doGet = (url, queryObject) => {
         url += `?${serializeQueryObj(queryObject)}`;
     }
 
+    const xAuthToken = getToken();
+
     return fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-Auth-Token': getToken()
+            'X-Auth-Token': xAuthToken
         }
     })
     .then(response => { 

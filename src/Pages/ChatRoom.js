@@ -80,7 +80,6 @@ export default class ChatRoom extends React.Component {
                     { !this.state.isLoading && 
                         <div className="col-xs-12">
                             <div className="col-xs-12 col-sm-8">
-                                <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
                                     { this.state.task &&
                                         <div className="row">
                                             <div className="col-xs-12" style={ { margin: '10px' } }>
@@ -100,9 +99,11 @@ export default class ChatRoom extends React.Component {
                                     }
                                     { this.state.messages
                                         .map(message => {
-                                            const firstName = this.state.users[message.fromUserId].profile.firstName;
-                                            const lastName = this.state.users[message.fromUserId].profile.lastName;
-                                            const profileImageUrl = this.state.users[message.fromUserId].profile.imageUrl || defaultProfileImageUrl;
+                                            const sender = this.state.users[message.fromUserId];
+
+                                            const firstName = sender.firstName;
+                                            const lastName = sender.lastName;
+                                            const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
                                             return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px'} }>
                                                         <div className="col-xs-12" style={ { marginBottom: '20px'} }>
@@ -128,7 +129,7 @@ export default class ChatRoom extends React.Component {
                                                                         </strong>
                                                                     <br />
                                                                     <p className="text-muted">
-                                                                        <Moment format="DD.MM.YYYY">{message.timestamp}</Moment>
+                                                                        <Moment format="DD.MM.YYYY, HH:mm">{message.createdAt}</Moment>
                                                                     </p>
                                                                 </div>
                                                             </div>   
@@ -142,6 +143,8 @@ export default class ChatRoom extends React.Component {
                                                 </div>;
                                         })
                                     }
+
+                                    <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
                                         <div className="row" style={{
                                             paddingLeft: '20px',
                                             marginTop: '20px',
@@ -161,7 +164,7 @@ export default class ChatRoom extends React.Component {
                                             </form>
                                         </div>
                                     </div>
-                                </Paper>
+                                 </Paper>
                             </div>
 
                             <div className="col-xs-12 col-sm-4">
@@ -172,17 +175,19 @@ export default class ChatRoom extends React.Component {
                                             </div>    
                                         </div>   
                                         <div className="row">
-                                        <div className="col-xs-12" style={ { marginBottom: '10px'} }>
+                                            <div className="col-xs-12" style={ { marginBottom: '10px'} }>
                                                 { Object.keys(this.state.users)
                                                 .map(userId => {
-                                                    const firstName = this.state.users[userId].profile.firstName;
-                                                    const lastName = this.state.users[userId].profile.lastName;
+                                                    const user = this.state.users[userId];
+                                                    debugger;
+                                                    const firstName = user.firstName;
+                                                    const lastName = user.lastName;
+                                                    const profileImageUrl = user.imageUrl || defaultProfileImageUrl;
                                                     const name = `${firstName} ${lastName}`;
-                                                    const profileBio = this.state.users[userId].profile.bio;
-                                                    const profileImageUrl = this.state.users[userId].profile.imageUrl || defaultProfileImageUrl;
+                                                    const profileBio = user.bio;
 
                                                     return <div className="row" style={{ marginBottom: '10px' }}>
-                                                                <a href={ '/app/profile/' + userId }>
+                                                                <a href={`/app/profile/${userId}`}>
                                                                     <div className="col-xs-4 col-sm-3 col-md-2">
                                                                         <img alt={name}
                                                                             style={{ 
@@ -203,14 +208,18 @@ export default class ChatRoom extends React.Component {
                                                                 </a>
                                                             </div>;
                                                 })} 
-                                            </div>   
+                                            </div>
                                         </div>
                                     </Paper>
-                                    <div className="row" style={{ paddingTop: '30px' }}>
-                                        <div className="col-xs-12">
-                                            <Ad />
-                                        </div>    
-                                    </div>
+
+
+                                    <RaisedButton
+                                        backgroundColor={"#546e7a"}
+                                        labelColor={"white"}
+                                        style={{ marginTop: 10, width: '100%'}}
+                                        label={translate("BOOK")} 
+                                        onClick={ () => alert('Booked') }
+                                    />
                             </div>
                         </div>   
                     }

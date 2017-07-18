@@ -116,6 +116,7 @@ export default class NewListing extends Component {
             const task = this.state.task;
             
             task.priceType = priceType;
+            task.currency = currency;
 
             this.setState({
                 appConfig: meta,
@@ -448,16 +449,8 @@ export default class NewListing extends Component {
                                         onTouchTap={() => {
                                             const task = this.state.task;
 
-                                            task.price *= 100;
-
-                                            if (task.id) {
-                                                return apiTask
-                                                    .updateItem(task.id, {
-                                                        status: 0 
-                                                    })
-                                                    .then(task => this.setState({
-                                                        step: this.state.step + 1
-                                                    }));
+                                            if (task.currency === 'EUR') {
+                                                task.price *= 100;
                                             }
 
                                             apiTask.createItem({})
@@ -470,6 +463,9 @@ export default class NewListing extends Component {
                                             .then(() => apiTaskLocation.createItem(task.id, task.location))
                                             .then(() => apiTaskImage.createItem(task.id, task.images))
                                             .then(() => apiTaskTiming.createItem(task.id, task.timing))
+                                            .then(() => apiTask.updateItem(task.id, {
+                                                status: 0
+                                            }))
                                             .then(task => this.setState({
                                                 step: this.state.step + 1
                                             }));

@@ -60,10 +60,7 @@ export default class AdminPage extends React.Component {
                         <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
                         
                         <h4>Content</h4>
-                        <MenuItem onClick={ () => this.goToSection('posts') }>Emails</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('posts') }>Privacy policy</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('posts') }>Terms of Service</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('posts') }>Blog</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('posts') }>Content</MenuItem>
                     </div>
                 </Drawer>
 
@@ -79,7 +76,6 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'pricing' && <SectionPricing /> }
                                         { this.state.section === 'listing' && <SectionListing /> }
                                         { this.state.section === 'posts' && <SectionPosts /> }
-                                        { this.state.section === 'post' && <SectionPostEdit /> }
                                     </div> 
                                 </div> 
                         </div>    

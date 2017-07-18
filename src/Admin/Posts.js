@@ -73,7 +73,7 @@ export default class SectionPosts extends React.Component {
     constructor() {
         super();
         this.state = {
-            type: {},
+            type: 'terms',
             posts: []
         };
     }
@@ -89,7 +89,7 @@ export default class SectionPosts extends React.Component {
     }
 
     componentDidMount() {
-        this.getPosts();
+        this.getPosts('terms');
     }
 
     render() {
@@ -109,7 +109,7 @@ export default class SectionPosts extends React.Component {
                         
                         this.getPosts(value);
                     }}>
-                        <MenuItem value={'emails'} primaryText="Emails" />
+                        <MenuItem value={'email'} primaryText="Emails" />
                         <MenuItem value={'terms'} primaryText="Terms" />
                         <MenuItem value={'blog'} primaryText="Blog" />
                     </DropDownMenu>

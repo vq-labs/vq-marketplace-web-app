@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import { Card, } from 'material-ui/Card';
-// Custom styles
+import { goTo } from '../core/navigation';
 import '../App.css';
 
 class Footer extends Component {
@@ -19,7 +17,20 @@ class Footer extends Component {
                     </a>
                 </div>
                 <div className="col-xs-12 text-center">
-                    Powered by <a target="_blank" href="https://vq-labs.com">VQ-MARKETPLACE</a>
+                    <ul className="list-unstyled list-inline text-center">
+                        <li>
+                            <a onClick={() => goTo('/privacy')}>Privacy policy</a>
+                        </li>
+                        <li>
+                            <a onClick={() => goTo('/terms')}>Terms of Service</a>
+                        </li>
+                        <li>
+                            <a onClick={() => goTo('/imprint')}>Imprint</a>
+                        </li>
+                    </ul>
+                </div>
+                <div className="col-xs-12 text-center">
+                    <small>Powered by <a target="_blank" href="https://vq-labs.com">VQ-MARKETPLACE</a></small>
                 </div>
             </div>
       );

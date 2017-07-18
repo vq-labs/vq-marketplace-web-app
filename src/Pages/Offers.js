@@ -15,16 +15,24 @@ import { translate } from '../core/i18n';
 import * as apiConfig from '../api/config';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 import '../App.css';
 
 const _chunk = require('lodash.chunk');
+
+const VIEW_TYPES = {
+    CARDS: 1,
+    LIST: 2,
+    MAP: 3
+};
 
 class Offers extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            viewType: VIEW_TYPES.CARDS,
             queryCity: null,
             autoCompleteText: '',
             isLoading: false,
@@ -128,6 +136,16 @@ class Offers extends Component {
         this.loadTasks(appliedFilter);
     }
     render() {
+        const GettingStartedGoogleMap = withGoogleMap(props => (
+            <GoogleMap
+                ref={() => {}}
+                defaultZoom={3}
+                defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
+                onClick={() => {}}
+            >
+            </GoogleMap>
+        ));
+
         return (
             <div>
             <div className="st-welcome text-center" style={{ 
@@ -219,35 +237,64 @@ class Offers extends Component {
                         </div>
                         </div>
                         <div className="col-sm-8 col-md-8 custom-xs-style" >
+                                <div className="row">
+                                    <div onClick={() => this.setState({
+                                        viewType: VIEW_TYPES.MAP
+                                    })}>Map</div>
+                                    <div onClick={() => this.setState({
+                                        viewType: VIEW_TYPES.CARDS
+                                    })}>Grid</div>
+                                </div>
                                 { this.state.isLoading && 
                                     <div className="text-center" style={{ 'marginTop': '40px' }}>
                                             <CircularProgress size={80} thickness={5} />
                                     </div>
                                 }
-                                <div className="row visible-xs visible-sm" >
-                                    { !this.state.isLoading && this.state.offersChunksXS && 
-                                        this.state.offersChunksXS.map((offerRow, index) =>
-                                            <div className="row" key={index}>
-                                                { this.state.offersChunksXS[index].map(offer =>
-                                                    <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
-                                                    </div>
-                                                )}
-                                            </div>
-                                    )}
-                                </div>
-                                <div className="row hidden-xs hidden-sm" >
-                                    { !this.state.isLoading && this.state.offersChunksMD && 
-                                        this.state.offersChunksMD.map((offerRow, index) =>
-                                            <div className="row" key={index}>
-                                                { this.state.offersChunksMD[index].map(offer =>
-                                                    <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                        <TaskCard task={offer} displayPrice={true} key={offer.id}  />
-                                                    </div>
-                                                )}
-                                            </div>
-                                    )}
-                                </div>
+                                { this.state.viewType === VIEW_TYPES.MAP &&
+                                    <div className="row">
+                                        <div class="col-xs-12" style={{
+                                                    height: '350px',
+                                                    width: '100%'
+                                        }}>
+                                            <GettingStartedGoogleMap
+                                                containerElement={
+                                                    <div style={{ height: `100%` }} />
+                                                }
+                                                mapElement={
+                                                    <div style={{ height: `100%` }} />
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                }
+                                { this.state.viewType === VIEW_TYPES.CARDS &&
+                                    <div className="row visible-xs visible-sm" >
+                                        { !this.state.isLoading && this.state.offersChunksXS && 
+                                            this.state.offersChunksXS.map((offerRow, index) =>
+                                                <div className="row" key={index}>
+                                                    { this.state.offersChunksXS[index].map(offer =>
+                                                        <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10} }>
+                                                            <TaskCard task={offer} displayPrice={true} key={offer.id}  />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                        )}
+                                    </div>
+                                }
+                                { this.state.viewType === VIEW_TYPES.CARDS &&
+                                    <div className="row hidden-xs hidden-sm" >
+                                        { !this.state.isLoading && this.state.offersChunksMD && 
+                                            this.state.offersChunksMD.map((offerRow, index) =>
+                                                <div className="row" key={index}>
+                                                    { this.state.offersChunksMD[index].map(offer =>
+                                                        <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
+                                                            <TaskCard task={offer} displayPrice={true} key={offer.id}  />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                        )}
+                                    </div>
+                                }
                         </div>
                 </div>
             </div>

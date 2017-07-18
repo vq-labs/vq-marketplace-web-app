@@ -13,6 +13,7 @@ import Chip from 'material-ui/Chip';
 import * as coreAuth from '../core/auth';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import { appConfig } from '../api/config';
 import apiUser from '../api/user';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { translate } from '../core/i18n';
@@ -24,6 +25,7 @@ class Task extends Component {
         super(props);
    
         this.state = {
+            configReady: false,
             tabIndex: 0,
             open: false,
             applicationInProgress: false,
@@ -65,11 +67,34 @@ class Task extends Component {
                 <FileCloud viewBox='-20 -7 50 10'/>);
         }
     }
+
+    displayPrice(task) {
+        const amount = task.price;
+        const currencyCode = task.currency;
+
+        if (currencyCode === 'EUR') {
+            return `${(amount / 100).toFixed(2)} ${currencyCode}`;
+        }
+
+        if (currencyCode === 'HUF') {
+            return `${amount} ${currencyCode}`;
+        }
+    }
+
     componentDidMount() {
       let taskId = this.props.params.taskId;
 
       pricingModelProvider.get()
       .then(pricingModels => this.setState({ pricingModels }));
+
+      appConfig
+        .getItems({}, {
+            cache: true
+        })
+        .then(config => this.setState({
+            configReady: true,
+            config
+        }));
 
       apiTask.getItem(taskId)
       .then(task => {
@@ -132,11 +157,12 @@ class Task extends Component {
                                     <Card style={{'marginTop': 60}}>
                                         { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
                                             <CardText>
-                                                <h2>{(this.state.task.price / 100).toFixed(2) }€</h2>
+                                                <h2>{this.displayPrice(this.state.task)}</h2>
                                                 <p>
                                                     {
                                                         this.state.task.priceType===0 ?
-                                                        'pro Auftrag' : 'pro Stunde'
+                                                        translate("PRICING_MODEL_TOTAL") :
+                                                        translate("PRICING_MODEL_HOURLY")
                                                     }
                                                 </p>
                                             </CardText>

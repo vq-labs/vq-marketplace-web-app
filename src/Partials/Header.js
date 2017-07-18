@@ -96,55 +96,31 @@ class Header extends Component {
                             () => { goTo('/dashboard'); 
                           }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                         }
-                        { this.state.homeLabel && 
-                          <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
-                            () => { goTo('/');
-                          }
-                          } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
-                        }
                         { !this.state.logged &&
                         <FlatButton label={translate("SIGNUP")} onClick={ 
-                          () => { goTo('/signup'); 
-                        }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                          () => goTo('/signup')} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                         }
                         { !this.state.logged &&
                         <FlatButton label={translate("LOGIN")} onClick={ 
                           () => { goTo('/login'); 
                         }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
                         }
-                  <ToolbarSeparator />     
+                  { this.state.logged && <ToolbarSeparator /> }
 
-                  { !Boolean(this.state.tasks.length) &&
-                  <a onClick={ () => { goTo('/new-listing') }} target="_self">
-                    <IconButton iconStyle={{ color: grey600 }}>
-                      <ContentAdd />
-                    </IconButton>
-                  </a> 
+                  { this.state.homeLabel && this.state.logged && Number(this.state.user.userType) === 2 &&
+                    <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
+                      () => goTo('/')
+                    } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                   }
-                  { Boolean(this.state.tasks.length) &&
-                    <IconMenu
-                          iconButtonElement={
-                            <IconButton iconStyle={{ color: grey600 }}>
-                              <ContentAdd />
-                            </IconButton>
-                          }
-                          listStyle={{ width: 280 }}
-                          anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                          targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                      { this.state.tasks.map(task =>
-                        <ListItem
-                          onClick={ () => { goTo(`/new-listing/${task.id}` ) }} 
-                          target="_self"
-                          primaryText={task.categories[0] ? translate(task.categories[0].code) : '?'}
-                          secondaryText={task.title}
-                          rightIcon={
-                            <span style={{ marginRight: '45px' }}>{translate('Continue')}</span>
-                          }
-                        />
-                      )}
-                      <ListItem onClick={ () => { goTo('/new-listing') }} target="_self" primaryText={translate("CREATE_NEW_LISTING")} />
-                  </IconMenu>
+                 
+                  { this.state.logged && Number(this.state.user.userType) === 1 &&
+                    <a onClick={() => goTo('/new-listing')} target="_self">
+                      <IconButton iconStyle={{ color: grey600 }}>
+                        <ContentAdd />
+                      </IconButton>
+                    </a>
                   }
+              
                 { this.state.logged && 
                   <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
                     <CommunicationChatBubble />

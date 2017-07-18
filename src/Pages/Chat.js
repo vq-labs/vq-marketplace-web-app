@@ -5,8 +5,8 @@ import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CircularProgress from 'material-ui/CircularProgress';
-import Ad from '../Components/Ad';
 import apiMessage from '../api/message';
+import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
@@ -25,7 +25,7 @@ export default class Chat extends Component {
 
       this.state = {
         isLoading: true,
-        messages: []
+        requests: []
       };
 
       this.getChatHeader = message => {
@@ -39,12 +39,10 @@ export default class Chat extends Component {
   componentDidMount() {
     !coreAuth.getUserId() && goTo('/login');
 
-    apiMessage.getItems({
-        group_by: 'requestId'
-    })
-    .then(messages => this.setState({
+    apiRequest.getItems({})
+    .then(requests => this.setState({
         isLoading: false,
-        messages
+        requests
     }));
   }
   render() {
@@ -64,21 +62,20 @@ export default class Chat extends Component {
                                     <div className="col-xs-12">
                                         <List>
                                             <Subheader>{ translate('REQUESTS') }</Subheader>
-                                            { this.state.messages && 
-                                                Object.keys(this.state.messages)
-                                                .map((requestId, index) => {
-                                                    const message = this.state.messages[requestId];
-                                                    const lastMsg = message.lastMsg;
-                                                    const lastMsgFirstName = message.lastMsgProfile.firstName;
-                                                    const lastMsgLastName = message.lastMsgProfile.lastName;
+                                            { this.state.requests && 
+                                                this.state.requests
+                                                .map((request, index) => {
+                                                    const lastMsg = request.lastMsg;
+                                                    const lastMsgFirstName = request.with.firstName;
+                                                    const lastMsgLastName = request.with.lastName;
                                                     const name = `${lastMsgFirstName} ${lastMsgLastName}`;
 
                                                     return <ListItem
                                                             key={index}
-                                                            onClick={ () => { goTo('/chat/' + requestId ) }}
-                                                            primaryText={`${message.header}, ${message.otherUser.firstName} ${message.otherUser.lastName}`}
-                                                            secondaryText={ `${name}: ${stripHTML(lastMsg)}` }
-                                                            leftAvatar={<Avatar src={ message.otherUser.imageUrl || '/images/avatar.png' } />}
+                                                            onClick={() => goTo(`/chat/${request.id}`)}
+                                                            primaryText={request.task.title}
+                                                            secondaryText={`${name}: ${stripHTML(lastMsg.message)}`}
+                                                            leftAvatar={<Avatar src={ request.with.imageUrl || '/images/avatar.png' } />}
                                                             rightIcon={<CommunicationChatBubble />}
                                                         />;
                                                 })
@@ -91,7 +88,6 @@ export default class Chat extends Component {
                         <div className="col-xs-12 col-sm-4">
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <Ad />
                                 </div>
                             </div>
                         </div>     

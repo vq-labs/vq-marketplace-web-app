@@ -8,16 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
+import { stripHtml } from '../core/util';
 
-function strip(html) {
-   const tmp = document.createElement("DIV");
-
-   tmp.innerHTML = html;
-
-   const text = tmp.textContent || tmp.innerText || "";
-
-   return text;
-}
 export default class TaskCard extends Component {
   constructor(props) {
     super(props);
@@ -32,8 +24,16 @@ export default class TaskCard extends Component {
         return translate('PRICING_MODEL_REQUEST_QUOTE');
     }
 
-    let priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
-        
+    let priceLabel;
+
+    if (offer.currency === 'EUR') {
+       priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
+    }
+
+    if (offer.currency === 'HUF') {
+       priceLabel = String(offer.price) + 'Ft.';
+    }
+    
     if (offer.priceType === 0) {
         return `${priceLabel} ${translate('PRICING_MODEL_TOTAL')}`;
     }
@@ -78,7 +78,7 @@ export default class TaskCard extends Component {
 
   formatDesc (desc) {
     if (desc) {
-       return strip(desc).substring(0, 75) + '..'
+       return stripHtml(desc).substring(0, 75) + '..'
     }
 
     return 'No description';
@@ -88,13 +88,19 @@ export default class TaskCard extends Component {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
                 <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
-                    height: '65px',
+                    height: '80px',
                     paddingBottom: 0,
-                    lineHeight: '20px', 
+                    lineHeight: '18px', 
                     overflow: 'hidden'
                 }} onClick={() => this.handleGoToTask(task.id) } >    
                       <h4>{ this.formatTitle(task.title) }</h4>
-                </CardText>  
+                      {
+                        task.location &&
+                        <p className="text-muted">
+                          {task.location.street}, {task.location.postalCode} {task.location.city}
+                        </p>
+                      }
+                </CardText>
                 <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
                     height: '75px',
                     paddingTop: 0,
@@ -156,6 +162,6 @@ export default class TaskCard extends Component {
   }
 
   render() {
-        return this.getTaskListItem(this.props.task);
+    return this.getTaskListItem(this.props.task);
   }
 }

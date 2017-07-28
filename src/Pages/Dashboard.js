@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CircularProgress from 'material-ui/CircularProgress';
 import NewListingCategory from '../NewListing/NewListingCategory';
-import apiMessage from '../api/message';
+import Bookings from '../Components/Bookings';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
@@ -19,14 +19,12 @@ export default class Dashboard extends Component {
       super();
 
       this.state = {
-        isLoading: true,
-        messages: []
+        isLoading: false
       };
 
   }
   
   componentDidMount() {
-   
   }
 
   render() {
@@ -45,7 +43,8 @@ export default class Dashboard extends Component {
               <h2>3. Get it Done</h2>
               <p>Your Tasker arrives, completes the job and bills directly in the app</p>
             </div>
-
+            
+            <Bookings />
             <NewListingCategory onSelected={listingCategoryCode => {
               goTo(`/new-listing?category=${listingCategoryCode}`);
             }}/>

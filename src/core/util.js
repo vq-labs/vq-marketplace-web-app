@@ -1,3 +1,17 @@
+export const stripHtml = (html, noOfChars) => {
+   const tmp = document.createElement("DIV");
+
+   tmp.innerHTML = html;
+
+   const text = tmp.textContent || tmp.innerText || "";
+
+   if (noOfChars) {
+       return `${text.substring(0, noOfChars)}...`;
+   }
+   
+   return text;
+};
+
 export const parseJSON = response => new Promise((resolve, reject) => {
   if (response.status !== 200) {
       return response.json()

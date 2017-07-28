@@ -50,24 +50,24 @@ export default class ChatRoom extends React.Component {
         }));
     }
     handleNewMessage (event) {
-            event.preventDefault()
+        event.preventDefault()
+    
+        const data = {
+            taskId: this.state.task.id,
+            toUserId: this.state.toUserId,
+            fromUserId: this.state.fromUserId,
+            requestId: this.state.requestId,
+            message: this.state.newMessage
+        };
+
+        this.state.messages.push(data);
         
-            const data = {
-                taskId: this.state.task.id,
-                toUserId: this.state.toUserId,
-                fromUserId: this.state.fromUserId,
-                requestId: this.state.requestId,
-                message: this.state.newMessage
-            };
+        this.setState({
+            newMessage: '',
+            messages: this.state.messages
+        });
 
-            this.state.messages.push(data);
-            
-            this.setState({
-                newMessage: '',
-                messages: this.state.messages
-            });
-
-            apiRequest.createItemMessage(this.state.requestId, data);
+        apiRequest.createItemMessage(this.state.requestId, data);
     }
     render() {
         return (
@@ -218,7 +218,7 @@ export default class ChatRoom extends React.Component {
                                         labelColor={"white"}
                                         style={{ marginTop: 10, width: '100%'}}
                                         label={translate("BOOK")} 
-                                        onClick={ () => alert('Booked') }
+                                        onClick={ () => goTo(`/request/${this.state.requestId}/book`) }
                                     />
                             </div>
                         </div>   

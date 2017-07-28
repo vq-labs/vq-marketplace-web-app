@@ -109,7 +109,6 @@ export default class CategoryEdit extends Component {
                                         onTouchTap = { () => coreNavigation.goBack() }
                                     />
                                 
-                                
                                     <RaisedButton
                                         style={ { float: 'right' } }
                                         label = 'Übernehmen'

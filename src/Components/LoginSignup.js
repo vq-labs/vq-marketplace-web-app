@@ -20,10 +20,10 @@ export default class LoginSignup extends Component {
               })}
         >
             <Tab label="Login" value="login" >
-                { this.state.value === 'login' && <Login onLoginSuccess={ () => this.props.onSuccess() }/> }
+                { this.state.value === 'login' && <Login onLoginSuccess={() => this.props.onSuccess() }/> }
             </Tab>
             <Tab label="Registieren" value="signup">
-                { this.state.value === 'signup' && <Signup onSuccess={ () => this.props.onSuccess() }/> }
+                { this.state.value === 'signup' && <Signup onSuccess={() => this.props.onSuccess() }/> }
             </Tab>
         </Tabs>
       </div>

@@ -453,6 +453,9 @@ export default class NewListing extends Component {
                                                 task.price *= 100;
                                             }
 
+                                            delete task.location.locationQueryString;
+                                            delete task.location.countryRestriction;
+                                            
                                             apiTask.createItem({})
                                             .then(rTask => {
                                                 task.id = rTask.id;

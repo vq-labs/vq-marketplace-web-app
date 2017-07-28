@@ -29,7 +29,8 @@ export default class NewListingCategory extends React.Component {
         return <div className="container">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1 className="text-left">{translate("STEP")} 1. {translate("CHOOSE_CATEGORY_LISTING")}</h1>
+                            <h1 className="text-left">{translate("NEW_LISTING_CATEGORY_HEADER")}</h1>
+                            <p>{translate("NEW_LISTING_CATEGORY_DESC")}</p>
                         </div>
                     </div>
                     <hr />

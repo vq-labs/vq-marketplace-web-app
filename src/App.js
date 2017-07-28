@@ -20,13 +20,14 @@ import Offers from './Pages/Offers';
 import NewTask from './NewListing/NewListing';
 import Chat from './Pages/Chat';
 import ChatRoom from './Pages/ChatRoom';
+import BookRequest from './Pages/BookRequest';
+import Order from './Pages/Order';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
 import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
-
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
@@ -135,6 +136,8 @@ class App extends Component {
                   <Route path="premium" component={PremiumPage}></Route>
                   <Route path="chat" component={Chat}></Route>
                   <Route path="chat/:chatId" component={ChatRoom}></Route>
+                  <Route path="request/:requestId/book" component={BookRequest}></Route>
+                  <Route path="order/:orderId" component={Order}></Route>
                   <Route path="signup" component={SignupPage}></Route>
                   <Route path="login" component={LoginPage}></Route>
                   <Route path="post/:postId" component={Post}></Route>

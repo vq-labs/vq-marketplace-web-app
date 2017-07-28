@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
 import TaskCategories from '../Partials/TaskCategories';
+import TaskComments from '../Components/TaskComments';
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
@@ -17,6 +18,8 @@ import { appConfig } from '../api/config';
 import apiUser from '../api/user';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { translate } from '../core/i18n';
+import * as coreFormat from '../core/format';
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
 import '../App.css';
 
@@ -52,9 +55,9 @@ class Task extends Component {
             open: false
         });
     }
-    displayLocation (task) {
+    displayLocation (task) { 
         if (task && task.location) {
-            return task.location.formattedAddress || 'Virtuelle Aufgabe';
+            return `${task.location.street}, ${task.location.city}` ;
         } else {
             return 'Online';
         }
@@ -68,18 +71,6 @@ class Task extends Component {
         }
     }
 
-    displayPrice(task) {
-        const amount = task.price;
-        const currencyCode = task.currency;
-
-        if (currencyCode === 'EUR') {
-            return `${(amount / 100).toFixed(2)} ${currencyCode}`;
-        }
-
-        if (currencyCode === 'HUF') {
-            return `${amount} ${currencyCode}`;
-        }
-    }
 
     componentDidMount() {
       let taskId = this.props.params.taskId;
@@ -111,6 +102,24 @@ class Task extends Component {
       });
     }
     render() {
+        const TaskLocationMap = withGoogleMap(props => (
+            <GoogleMap
+                ref={() => {}}
+                defaultZoom={12}
+                defaultCenter={{ lat: props.lat, lng: props.lng }}
+                onClick={() => {}}
+            >
+                <Marker
+                    position={{
+                        lat: props.lat,
+                        lng: props.lng
+                    }}
+                    key={`Task Location`}
+                    defaultAnimation={2}
+                />
+            </GoogleMap>
+        ));
+
         return (
             <div>
               { this.state.isLoading && 
@@ -130,7 +139,6 @@ class Task extends Component {
                                         <TaskCategories categories={this.state.task.categories}/>
                                     </div>
 
-
                                     <div className="row">
                                         <div className="col-xs-1">
                                             { this.state.taskOwner.id &&
@@ -142,7 +150,7 @@ class Task extends Component {
                                         <div className="col-xs-11">
                                             {this.state.taskOwner.id &&     
                                                 <strong>
-                                                    <a href={ '/app/profile/' + this.state.taskOwner.id }>
+                                                    <a href={'/app/profile/' + this.state.taskOwner.id}>
                                                         {this.state.taskOwner.firstName} {this.state.taskOwner.lastName}
                                                     </a>
                                                 </strong>
@@ -157,7 +165,7 @@ class Task extends Component {
                                     <Card style={{'marginTop': 60}}>
                                         { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
                                             <CardText>
-                                                <h2>{this.displayPrice(this.state.task)}</h2>
+                                                <h2>{coreFormat.displayPrice(this.state.task.price, this.state.task.currency)}</h2>
                                                 <p>
                                                     {
                                                         this.state.task.priceType===0 ?
@@ -194,23 +202,38 @@ class Task extends Component {
                                                 { this.state.tabIndex === 0 &&
                                                 <div className="row">
                                                     <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                                        <Card style={{width: '100%', marginBottom: '20px'}}>
-                                                            <CardText>
+                                                        <div style={{width: '100%', marginBottom: '20px'}}>
+                                                            <div>
                                                                 <h3 className="text-left">About the offer</h3>
                                                                 <p className="text-muted">
                                                                     { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
                                                                 </p>
-                                                            </CardText>
-                                                            <CardText>
+                                                            </div>
+                                                            <div>
                                                                 <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
-                                                            </CardText>
-                                                        </Card>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                       
+                                                    <div className="col-xs-12" style={{ marginBottom: 20 }}>
+                                                        <h3 className="text-left">Task Location</h3>
+                                                        <TaskLocationMap
+                                                            lat={this.state.task.location.lat}
+                                                            lng={this.state.task.location.lng}
+                                                            containerElement={
+                                                                <div style={{ height: 300 }} />
+                                                            }
+                                                            mapElement={
+                                                                <div style={{ height: `100%` }} />
+                                                            }
+                                                        />
+                                                    </div>
+                                                    
                                                     <div className="col-xs-12">
                                                         {this.state.taskOwner.id &&
-                                                            <Card style={{width: '100%', 'marginBottom': '20px'}}>
-                                                                <CardText>
-                                                                    <h3 className="text-left">About {this.state.taskOwner.firstName}</h3>
+                                                            <div style={{width: '100%', 'marginBottom': '20px'}}>
+                                                                <div>
+                                                                    <h3 className="text-left">Posted by</h3>
                                                                     <div className="row">
                                                                         <div className="col-xs-1">
                                                                             <a href={ '/app/profile/' + this.state.task.userId }>
@@ -226,8 +249,6 @@ class Task extends Component {
                                                                         </div>  
 
                                                                         <div className="col-xs-12">     
-                                                                            <h4>Skills</h4>
-
                                                                             <div style={{
                                                                                 display: 'flex',
                                                                                 flexWrap: 'wrap',
@@ -235,10 +256,13 @@ class Task extends Component {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </CardText>
-                                                            </Card>
+                                                                </div>
+                                                            </div>
                                                         }
-                                                    </div>   
+                                                    </div>
+                                                    <div className="row">
+                                                        <TaskComments taskId={this.state.taskId} />
+                                                    </div>
                                                 </div>
                                                 }
                                             </Tab>
@@ -259,10 +283,7 @@ class Task extends Component {
                                                 </div>
                                             </Tab>
                                         </Tabs>
-
-                                                                                                        
                                       </div>
-                                     
                                 </div>
                                 <div className="col-sm-3">
                                 </div>

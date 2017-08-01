@@ -36,6 +36,8 @@ export const setUser = _user => {
     user = _user;
 };
 
+export const getUser = () => user;
+
 export const setUserId = id => {
     if (user === 'null') {
         return;

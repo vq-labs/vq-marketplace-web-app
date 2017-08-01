@@ -75,7 +75,7 @@ export default class Chat extends Component {
                                                             onClick={() => goTo(`/chat/${request.id}`)}
                                                             primaryText={request.task.title}
                                                             secondaryText={`${name}: ${stripHTML(lastMsg.message)}`}
-                                                            leftAvatar={<Avatar src={ request.with.imageUrl || '/images/avatar.png' } />}
+                                                            leftAvatar={<Avatar src={request.with.imageUrl || '/images/avatar.png'} />}
                                                             rightIcon={<CommunicationChatBubble />}
                                                         />;
                                                 })

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import apiUser from '../api/user';
 import EditableEntity from '../Components/EditableEntity';
-import * as coreNavigation from '../core/navigation';
-import '../App.css';
+import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
+
+import '../App.css';
 
 export default class ProfileEdit extends Component {
     constructor(props) {
@@ -18,8 +19,11 @@ export default class ProfileEdit extends Component {
     componentDidMount() {
         let userId = this.props.params.profileId;
 
-        apiUser.getItem(userId).then(user => this.setState({
-            user, isLoading: false
+        apiUser
+        .getItem(userId)
+        .then(user => this.setState({
+            user,
+            isLoading: false
         }));
     }
     render() {
@@ -32,30 +36,34 @@ export default class ProfileEdit extends Component {
                             cancelLabel={translate('CANCEL')}
                             saveLabel={translate('SAVE')}
                             showCancelBtn={true}
-                            value={this.state.user && this.state.user.profile} 
+                            value={this.state.user} 
                             fields={[
                                 {
+                                    type: 'string',
                                     key: 'firstName',
                                     label: translate('FIRST_NAME')
                                 },
                                 {
+                                    type: 'string',
                                     key: 'lastName',
                                     label: translate('LAST_NAME') 
                                 },
                                 {
+                                    type: 'string',
                                     key: 'bio',
                                     label: translate('PROFILE_BIO'),
                                     hint: translate('PROFILE_BIO_DESC'),
                                 },
                                 {
+                                    type: 'string',
                                     key: 'website',
                                     label: translate('WEBSITE')
                                 }
                             ]}
                             onConfirm={
                                 updatedEntity => apiUser
-                                    .updateItem(this.state.user._id, { profile: updatedEntity })
-                                    .then(task => coreNavigation.goTo(`/profile/${this.state.user._id}`))
+                                    .updateItem(this.state.user.id, updatedEntity)
+                                    .then(() => goTo(`/profile/${this.state.user.id}`))
                             }
                         />
                     </div>    

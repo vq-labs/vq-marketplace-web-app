@@ -31,8 +31,6 @@ export default class TaskComments extends React.Component {
     }
 
     componentDidMount() {
-        !coreAuth.getUserId() && goTo('/login');
-
         let taskId = this.props.taskId;
 
         apiTaskComment.getItems(taskId)
@@ -45,14 +43,24 @@ export default class TaskComments extends React.Component {
 
     handleNewComment (event) {
         event.preventDefault()
-    
-        const comments = this.state.comments;
-        const newComment = this.state.newComment;
-
-        comments.push({
-            comment: newComment
-        });
         
+        const taskId = this.state.taskId;
+        const comments = this.state.comments;
+        const newCommentBody = this.state.newComment;
+        const userId = coreAuth.getUser().id;
+        const newComment = {
+            userId,
+            comment: newCommentBody
+        };
+
+        comments.push(newComment);
+        
+        apiTaskComment
+        .createItem(taskId, newComment)
+        .then(data => {
+            console.log(data);
+        })
+
         this.setState({
             newComment: '',
             comments

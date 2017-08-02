@@ -45,6 +45,12 @@ export default class Login extends Component {
           }
         })
         .catch(err => {
+          const errorMessage = err.desc;
+
+          if (errorMessage) {
+            return alert(errorMessage);
+          }
+
           alert(err.err ? err.err.code : err);
         })
   }

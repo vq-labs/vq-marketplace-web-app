@@ -128,27 +128,27 @@ export default class Bookings extends Component {
                 </div>
             }
         
-    <div>
-        <Dialog
-          actions={[
-            <FlatButton
-                label={translate('CANCEL')}
-                primary={true}
-                onTouchTap={this.handleClose}
-            />,
-            <FlatButton
-                label={translate('CONFIRM')}
-                primary={true}
-                onTouchTap={this.settleOrder}
-            />,
-          ]}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-          {translate('SETTLE_ORDER')}
-        </Dialog>
-      </div>
+            <div>
+                <Dialog
+                actions={[
+                    <FlatButton
+                        label={translate('CANCEL')}
+                        primary={true}
+                        onTouchTap={this.handleClose}
+                    />,
+                    <FlatButton
+                        label={translate('CONFIRM')}
+                        primary={true}
+                        onTouchTap={this.settleOrder}
+                    />,
+                ]}
+                modal={false}
+                open={this.state.open}
+                onRequestClose={this.handleClose}
+                >
+                {translate('SETTLE_ORDER')}
+                </Dialog>
+            </div>
 
 
         </div>

@@ -8,138 +8,6 @@ import * as coreUtil from '../core/util.js'
 
 const _ = require('underscore');
 
-const defaultLabels = 
-[
-    "BUYER_SLOGAN",
-    "BUYER_SUBHEADER",
-    "BUYER_SEARCHBAR",
-    "SELLER_SLOGAN",
-    "SELLER_SUBHEADER",
-    "SELLER_SEARCHBAR",
-    "CREATE_NEW_LISTING",
-    "CATEGORY",
-    "CONFIRM_BEFORE_POSTING",
-    "ACTIVATE",
-    "DEACTIVATE",
-    "EDIT",
-    "REMOVE",
-    "ADD_PICTURE_HEADER",
-    "ADD_PICTURE_DESC",
-    "ADD_PICTURE_ACTION_HEADER",
-    "ADD_PICTURE_ACTION_DESC",
-    "NO_LISTING_IMAGES",
-    "LISTING_INFO",
-    "LISTING_IMAGES",
-    "MESSAGE",
-    "LOGIN",
-    "SIGNUP",
-    "PROFILE",
-    "OPTIONAL",
-    "BACK",
-    "PRICING",
-    "IS_REQUIRED",
-    "LOCATION",
-    "DESCRIPTION",
-    "TITLE",
-    "DESCRIBE_YOUR_LISTING",
-    "QUICK_CHOICE",
-    "DETERMINE_PRICING_MODEL",
-    "PRICE",
-    "CONTINUE",
-    "CONFIRM_AND_POST",
-    "YOUR_LISTING_HAS_BEEN_SUBMITTED",
-    "CHOOSE_CATEGORY_LISTING",
-    "STEP",
-    "IN_THIS_CHAT",
-    "REQUESTS",
-    "NO_REQUESTS",
-    "CANCEL",
-    "SAVE",
-    "FIRST_NAME",
-    "LAST_NAME",
-    "PROFILE_BIO",
-    "PROFILE_BIO_DESC",
-    "WEBSITE",
-    "TALENTS",
-    "NO_TALENTS",
-    "ACTIVE_LISTINGS_DESC",
-    "ACTIVE_LISTINGS",
-    "NO_ACTIVE_LISTINGS",
-    "POST_NEW_LISTING",
-    "EDIT_PROFILE",
-    "CHANGE_PROFILE_PICTURE",
-    "PRICING_MODEL_HOURLY",
-    "PRICING_MODEL_TOTAL",
-    "PRICING_MODEL_REQUEST_QUOTE",
-    "ABOUT",
-    "ABOUT_OFFER",
-    "SEND_REQUEST",
-    "VIDEO_FILM",
-    "MARKETING",
-    "DESIGN",
-    "WEB_DEVELOPMENT",
-    "CONTENT_WRITING",
-    "MY_TASKS",
-    "NEW_TASK",
-    "BROWSE_TASKS",
-    "ALL_CATEGORIES",
-    "CHAT",
-    "MORE",
-    "LOGIN",
-    "LOGOUT",
-    "PROFILE",
-    "BUTTON_CLIENTS",
-    "BUTTON_FREELANCERS",
-    "HOW_IT_WORKS",
-    "HOW_IT_WORKS_BUYERS_STEP_1",
-    "HOW_IT_WORKS_BUYERS_STEP_1_DESC",
-    "HOW_IT_WORKS_BUYERS_STEP_2",
-    "HOW_IT_WORKS_BUYERS_STEP_2_DESC",
-    "BROWSE_LISTINGS",
-    "HOW_IT_WORKS_SELLERS_STEP_1",
-    "HOW_IT_WORKS_SELLERS_STEP_1_DESC",
-    "HOW_IT_WORKS_SELLERS_STEP_2",
-    "HOW_IT_WORKS_SELLERS_STEP_2_DESC",
-    "OFFER_LISTINGS",
-    "CATEGORIES",
-    "CATEGORY_BENEFITS_BUYERS_HEADER",
-    "CATEGORY_BENEFITS_BUYERS_STEP_1",
-    "CATEGORY_BENEFITS_BUYERS_STEP_2",
-    "CATEGORY_BENEFITS_BUYERS_STEP_3",
-    "CATEGORY_BENEFITS_BUYERS_STEP_4",
-    "CATEGORY_BENEFITS_SELLERS_HEADER",
-    "CATEGORY_BENEFITS_SELLERS_STEP_1",
-    "CATEGORY_BENEFITS_SELLERS_STEP_2",
-    "CATEGORY_BENEFITS_SELLERS_STEP_3",
-    "CATEGORY_BENEFITS_SELLERS_STEP_4",
-    "LEARNMORE",
-    "TALENTWAND",
-    "PRESS",
-    "JOBS",
-    "PRIVACY",
-    "TERMS",
-    "CONTACT",
-    "DISCOVER",
-    "BLOG",
-    "DEVELOPMENT",
-    "DESIGN",
-    "MARKETING",
-    "CONTENT",
-    "SALES",
-    "VIDEO",
-    "COMPANY",
-    "VICIQLOUD",
-    "IMPRESSUM",
-    "WEB_DEVELOPMENT_DESC",
-    "DESIGN_DESC",
-    "MARKETING_DESC",
-    "SALES_DESC",
-    "VIDEO_FILM_DESC",
-    "CONTENT_WRITING_DESC",
-    "PARTNERS"
-];
-
-
 export default class SectionLabels extends React.Component {
     constructor(props) {
         super(props);
@@ -151,27 +19,33 @@ export default class SectionLabels extends React.Component {
         };
 
         this.getLabels = lang => apiConfig.appLabel
-            .getItems({ lang: lang || this.state.lang }, { returnRaw: true })
+            .getItems({
+                lang: lang || this.state.lang
+            }, {
+                returnRaw: false
+            })
             .then(rLabels => {
                 const labelsObj = {};
                 const labels = rLabels
                     .map(labelItem => { 
                         return {
+                            type: 'string',
                             key: labelItem.labelKey,
                             label: labelItem.labelKey,
                             group: labelItem.labelGroup
                         };
                     });
 
-            rLabels.forEach(labelItem => {
-                labelsObj[labelItem.labelKey] = labelItem.labelValue;
-            })
+                rLabels
+                .forEach(labelItem => {
+                    labelsObj[labelItem.labelKey] = labelItem.labelValue;
+                })
 
-            this.setState({
-                labels,
-                labelsObj
+                this.setState({
+                    labels,
+                    labelsObj
+                });
             });
-        });
     }
 
     componentDidMount() {
@@ -189,7 +63,9 @@ export default class SectionLabels extends React.Component {
                             lang: value
                         });
 
-                        coreNavigation.setQueryParams({ lang: value });
+                        coreNavigation.setQueryParams({
+                            lang: value
+                        });
                         
                         this.getLabels(value);
                     }}>
@@ -199,7 +75,6 @@ export default class SectionLabels extends React.Component {
                         <MenuItem value={'hu'} primaryText="Magyar" />
                     </DropDownMenu>
                 </div>
-
                  { Boolean(this.state.labels.length) &&
                     <EditableEntity
                         groupBy="group"
@@ -208,19 +83,22 @@ export default class SectionLabels extends React.Component {
                         fields={this.state.labels}
                         onConfirm={
                             updatedEntity => {
-                                const updatedData = Object.keys(updatedEntity).map(labelKey => {
-                                    const mappedItem = {};
+                                const updatedData = Object.keys(updatedEntity)
+                                    .map(labelKey => {
+                                        const mappedItem = {};
 
-                                    mappedItem.lang = this.state.lang;
-                                    mappedItem.labelKey = labelKey;
-                                    mappedItem.labelValue = updatedEntity[labelKey];
-                        
-                                    return mappedItem;
-                                });
+                                        mappedItem.lang = this.state.lang;
+                                        mappedItem.labelKey = labelKey;
+                                        mappedItem.labelValue = updatedEntity[labelKey];
+                            
+                                        return mappedItem;
+                                    });
 
                                 apiConfig.appLabel.createItem(updatedData);
 
-                                this.setState({ labelsObj: updatedEntity });
+                                this.setState({
+                                    labelsObj: updatedEntity
+                                });
                             }
                         }
                     />

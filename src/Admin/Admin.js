@@ -27,14 +27,16 @@ export default class AdminPage extends React.Component {
         this.goToSection = section => {
             coreNavigation.goTo(`/admin/${section}`);
 
-            this.setState({ section });
+            this.setState({
+                section
+            });
         };
     }
 
     handleToggle() { 
-        return this.setState({ 
+        return this.setState({
             open: !this.state.open 
-        }); 
+        });
     }
   
     render() { 

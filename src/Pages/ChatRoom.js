@@ -40,6 +40,7 @@ export default class ChatRoom extends React.Component {
 
         apiRequest.getItem(requestId)
         .then(chat => this.setState({
+            isUserOwner: coreAuth.getUserId() == chat.task.userId,
             requestId,
             isLoading: false,
             fromUserId: coreAuth.getUserId(),
@@ -211,15 +212,18 @@ export default class ChatRoom extends React.Component {
                                             </div>
                                         </div>
                                     </Paper>
-
-
-                                    <RaisedButton
-                                        backgroundColor={"#546e7a"}
-                                        labelColor={"white"}
-                                        style={{ marginTop: 10, width: '100%'}}
-                                        label={translate("BOOK")} 
-                                        onClick={ () => goTo(`/request/${this.state.requestId}/book`) }
-                                    />
+                                    { this.state.isUserOwner &&
+                                      this.state.chat.request.status == 0 &&
+                                        <RaisedButton
+                                            backgroundColor={"#546e7a"}
+                                            labelColor={"white"}
+                                            style={{ marginTop: 10, width: '100%'}}
+                                            label={translate("BOOK")} 
+                                            onClick={
+                                                () => goTo(`/request/${this.state.requestId}/book`)
+                                            }
+                                        />
+                                    }
                             </div>
                         </div>   
                     }

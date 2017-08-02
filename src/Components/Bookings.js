@@ -12,30 +12,68 @@ import * as coreFormat from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+
 export default class Bookings extends Component {
   constructor() {
       super();
 
       this.state = {
+        open: false,
         isLoading: true,
         orders: []
       };
 
   }
   
+  settleOrder = () => {
+    const orderId = this.state.selectedOrderId;
+    const orders = this.state.orders;
+    const order = this.state.orders
+        .find(_ => _.id === orderId);
+    
+    order.status = 10;
+
+    apiOrder.updateItem(orderId);
+
+    this.setState({
+        orders,
+        open: false
+    });  
+  };
+
+  initSettleOrder = order => {
+    this.setState({
+        selectedOrderId: order.id,
+        open: true
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+        selectedOrderId: null,
+        open: false
+    });
+  };
+
   componentDidMount() {
     apiOrder
-      .getItems()
-      .then(orders => this.setState({
-        orders,
-        isLoading: false
-      }))
+    .getItems()
+    .then(orders => {
+        this.setState({
+            orders,
+            isLoading: false
+        });
+
+        this.props.onReady && this.props.onReady();
+    })
   }
 
   render() {
     return (
         <div className="container">
-            { !this.state.orders.lenght &&
+            { !this.state.orders.length &&
                 <div className="row">
                     <div className="col-xs-12">
                     <h1>{translate('YOUR_BOOKINGS')}</h1>
@@ -47,8 +85,11 @@ export default class Bookings extends Component {
                                      <h3>
                                         {coreFormat.displayPrice(order.task.price, order.task.currency)}
                                     </h3>
-
-                                    
+                                    { order.status === 10 &&
+                                        <p className="text-muted">
+                                            {translate("SETTLED")}
+                                        </p>
+                                    }
                                 </div>
                                 <div className="col-xs-12 col-sm-6 text-right">
                                     <IconButton
@@ -72,10 +113,13 @@ export default class Bookings extends Component {
                                     >
                                         <IconChatBubble />
                                     </IconButton>
-                                    <RaisedButton
-                                        label={translate('CONFIRM_BOOKING')}
-                                        primary={true}
-                                    />
+                                    { order.status !== 10 &&
+                                        <RaisedButton
+                                            label={translate('CONFIRM_BOOKING')}
+                                            primary={true}
+                                            onTouchTap={() => this.initSettleOrder(order)}
+                                        />
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -83,6 +127,30 @@ export default class Bookings extends Component {
                     </div>
                 </div>
             }
+        
+    <div>
+        <Dialog
+          actions={[
+            <FlatButton
+                label={translate('CANCEL')}
+                primary={true}
+                onTouchTap={this.handleClose}
+            />,
+            <FlatButton
+                label={translate('CONFIRM')}
+                primary={true}
+                onTouchTap={this.settleOrder}
+            />,
+          ]}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+          {translate('SETTLE_ORDER')}
+        </Dialog>
+      </div>
+
+
         </div>
       );
    }

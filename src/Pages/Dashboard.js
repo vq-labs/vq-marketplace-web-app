@@ -7,6 +7,7 @@ import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bu
 import CircularProgress from 'material-ui/CircularProgress';
 import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
+import Requests from '../Components/Requests';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
@@ -15,16 +16,20 @@ import { goTo } from '../core/navigation';
  * Dashboard depends on a user type
  */
 export default class Dashboard extends Component {
-  constructor() {
+  constructor(props) {
       super();
+     
+      const userType = Number(props.location.query.userType) || 0;
 
       this.state = {
+        userType,
         isLoading: false
       };
 
   }
   
   componentDidMount() {
+
   }
 
   render() {
@@ -44,10 +49,14 @@ export default class Dashboard extends Component {
               <p>Your Tasker arrives, completes the job and bills directly in the app</p>
             </div>
             
-            <Bookings />
-            <NewListingCategory onSelected={listingCategoryCode => {
-              goTo(`/new-listing?category=${listingCategoryCode}`);
-            }}/>
+            <Bookings onReady={() => {}}/>
+            <Requests />
+            
+            { !this.state.isLoading && this.state.userType !== 2 &&
+              <NewListingCategory onSelected={listingCategoryCode => {
+                goTo(`/new-listing?category=${listingCategoryCode}`);
+              }}/>
+            }
         </div>
       );
    }

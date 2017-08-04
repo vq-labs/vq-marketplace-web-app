@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardMedia, CardTitle } from 'material-ui/Card';
 import * as apiCategory from '../api/category';
 import { translate } from '../core/i18n';
+import { getConfigAsync } from '../core/config';
 
 const _chunk = require('lodash.chunk');
 
@@ -14,12 +15,16 @@ export default class NewListingCategory extends React.Component {
         };
     }
     componentDidMount() {
-        apiCategory
-        .getItems()
-        .then(categories => {
-            this.setState({ 
-                categories: _chunk(categories, 3) 
-            });
+        getConfigAsync(config => {
+            apiCategory
+                .getItems()
+                .then(categories => {
+                    this.setState({
+                        ready: true,
+                        config,
+                        categories: _chunk(categories, 3) 
+                    });
+                });
         });
     }
     onCategoryChosen (tile) {
@@ -27,12 +32,16 @@ export default class NewListingCategory extends React.Component {
     }
     render() {
         return <div className="container">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h1 className="text-left">{translate("NEW_LISTING_CATEGORY_HEADER")}</h1>
-                            <p>{translate("NEW_LISTING_CATEGORY_DESC")}</p>
+                    { this.state.ready &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h1 style={{color: this.state.config.COLOR_PRIMARY}} className="text-left">
+                                    {translate("NEW_LISTING_CATEGORY_HEADER")}
+                                </h1>
+                                <p>{translate("NEW_LISTING_CATEGORY_DESC")}</p>
+                            </div>
                         </div>
-                    </div>
+                    }
                     <hr />
                     <div className="row">
                         <div className="col-xs-12">

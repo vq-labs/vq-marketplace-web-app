@@ -11,9 +11,9 @@ import * as coreAuth from '../core/auth';
 import * as coreFormat from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
-
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import { getConfigAsync } from '../core/config';
 
 export default class Bookings extends Component {
   constructor() {
@@ -40,7 +40,7 @@ export default class Bookings extends Component {
     this.setState({
         orders,
         open: false
-    });  
+    }); 
   };
 
   initSettleOrder = order => {
@@ -58,25 +58,36 @@ export default class Bookings extends Component {
   };
 
   componentDidMount() {
-    apiOrder
-    .getItems()
-    .then(orders => {
-        this.setState({
-            orders,
-            isLoading: false
-        });
+    getConfigAsync(config => {
+        apiOrder
+            .getItems()
+            .then(orders => {
+                this.setState({
+                    ready: true,
+                    config,
+                    orders,
+                    isLoading: false
+                });
 
-        this.props.onReady && this.props.onReady();
-    })
+                this.props.onReady && this.props.onReady();
+            });
+    });
   }
 
   render() {
     return (
         <div className="container">
-            { !this.state.orders.length &&
+            { this.state.ready && !this.state.orders.length &&
                 <div className="row">
                     <div className="col-xs-12">
-                    <h1>{translate('YOUR_BOOKINGS')}</h1>
+                    <h1 style={{color: this.state.config.COLOR_PRIMARY}}>{translate('YOUR_BOOKINGS')}</h1>
+                    { !this.state.isLoading && !this.state.orders.length &&
+                        <div className="col-xs-12">
+                            <div className="row">
+                                <p className="text-muted">{translate("NO_BOOKINGS")}</p>
+                            </div>
+                        </div>
+                    }
                     { !this.state.isLoading && this.state.orders.map(order =>
                         <div className="col-xs-12">
                             <h3>{order.task.title}</h3>

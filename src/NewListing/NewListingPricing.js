@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import { translate } from '../core/i18n';
 import * as apiConfig from '../api/config';
 import Slider from 'material-ui/Slider';
+import { getConfigAsync } from '../core/config';
 
 const PRICING_MODELS = {
     TOTAL: 0,
@@ -36,6 +37,12 @@ export default class NewListingPricing extends React.Component {
     }
 
     componentDidMount() {
+        getConfigAsync(config => {
+            this.setState({
+                config,
+                ready: true
+            });
+        })
     }
 
     componentWillReceiveProps (nextProps) {
@@ -79,10 +86,13 @@ export default class NewListingPricing extends React.Component {
     }
     render() {
         return <div className="row">
+            { this.state.ready &&
             <div className="col-xs-12">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1>{translate("NEW_LISTING_PRICING_HEADER")}</h1>
+                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                            {translate("NEW_LISTING_PRICING_HEADER")}
+                        </h1>
                         <p>{translate("NEW_LISTING_PRICING_DESC")}</p>
                     </div>
                 </div>
@@ -122,7 +132,11 @@ export default class NewListingPricing extends React.Component {
                 { this.state.priceType !== 2 &&
                     <div className="row">
                         <div className={"col-xs-12"}>
-                            <h2 className="text-center">{this.state.price} {this.getCurrencySign()}</h2>
+                            <h2 
+                                style={{color: this.state.config.COLOR_PRIMARY}}
+                                className="text-center">
+                                {this.state.price} {this.getCurrencySign()}
+                            </h2>
                             <Slider
                                 min={this.state.minPrice}
                                 max={this.state.minPrice * 10}
@@ -177,6 +191,7 @@ export default class NewListingPricing extends React.Component {
                     </div>
                 }
             </div>
+            }
         </div>
      }
 };

@@ -9,6 +9,7 @@ import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
+import { getConfigAsync } from '../core/config';
 
 const COUNTRY_CODES = {
     DE: 'Deutschland',
@@ -45,7 +46,10 @@ export default class Address extends Component {
     }
 
     componentDidMount() {
-       
+        getConfigAsync(config => this.setState({
+            config,
+            ready: true
+        }));
     }
     
     getRequiredStar(mode) {
@@ -64,18 +68,20 @@ export default class Address extends Component {
 
             this.setState(location);
 
+            this.props.onLocationChange &&
             this.props.onLocationChange(location);
         };
     }
 
     render() {
      return <div className="row">
+                { this.state.ready &&
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="row">
                                 <div className="col-xs-12">
-                                        <h4>{translate("LOCATION_COUNTRY") + '*'}</h4>
+                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_COUNTRY") + '*'}</h4>
                                         <TextField
                                             name="countryCode"
                                             onChange={this.onAddressFieldChange('countryCode')}
@@ -87,8 +93,8 @@ export default class Address extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <h4>{translate("LOCATION_STREET") + '*'}</h4>
-                                    <TextField id={'listing_location'}  name="location" style={{width: '100%'}}>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_STREET") + '*'}</h4>
+                                    <TextField id={'listing_location'} name="location" style={{width: '100%'}}>
                                         <Autocomplete
                                             value={this.state.locationQueryString}
                                             onChange={(ev, locationQueryString) => this.setState({ locationQueryString, street: locationQueryString })}
@@ -127,7 +133,7 @@ export default class Address extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">
-                                        <h4>{translate("LOCATION_ADDRESS_ADDITION")}</h4>
+                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_ADDRESS_ADDITION")}</h4>
                                         <TextField
                                             name="addressAddition"
                                             onChange={this.onAddressFieldChange('addressAddition')}
@@ -137,7 +143,7 @@ export default class Address extends Component {
                                         />
                                 </div>  
                                 <div className="col-xs-6">
-                                    <h4>{translate("LOCATION_CITY") + '*'}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_CITY") + '*'}</h4>
                                     <TextField
                                         name="city"
                                         onChange={this.onAddressFieldChange('city')}
@@ -147,7 +153,7 @@ export default class Address extends Component {
                                     />
                                 </div>
                                 <div className="col-xs-6">
-                                    <h4>{translate("LOCATION_POSTAL_CODE") + '*'}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_POSTAL_CODE") + '*'}</h4>
                                     <TextField
                                         name="postalCode"
                                         onChange={this.onAddressFieldChange('postalCode')}
@@ -160,6 +166,7 @@ export default class Address extends Component {
                         </div>
                     </div>
                 </div>
+                }
             </div>
     }
 }

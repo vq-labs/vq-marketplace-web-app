@@ -9,6 +9,7 @@ import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
+import { getConfigAsync } from '../core/config';
 
 export default class NewListingBasics extends Component {
     constructor(props) {
@@ -25,7 +26,12 @@ export default class NewListingBasics extends Component {
     }
 
     componentDidMount() {
-       
+        getConfigAsync(config => {
+            this.setState({
+                config,
+                ready: true
+            });
+        });
     }
     
     getRequiredStar(mode) {
@@ -38,21 +44,21 @@ export default class NewListingBasics extends Component {
 
     render() {
      return <div className="row">
+                { this.state.ready &&
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>{translate("NEW_LISTING_BASICS_HEADER")}</h1>
+                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_BASICS_HEADER")}</h1>
                             <p>{translate("NEW_LISTING_BASICS_DESC")}</p>
                         </div>
                     </div>
                     <hr />
                     <div className="row">
-                        
                         <div className="col-xs-12">
                         {this.isEnabled(this.state.title.mode) &&
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <h4>{translate("LISTING_TITLE") + this.getRequiredStar(this.state.title.mode)}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_TITLE") + this.getRequiredStar(this.state.title.mode)}</h4>
                                     <TextField
                                         name="title"
                                         onChange={(ev, titleValue) => {
@@ -74,7 +80,9 @@ export default class NewListingBasics extends Component {
                         {this.isEnabled(this.state.description.mode) &&
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <h4>{translate("DESCRIPTION") + this.getRequiredStar(this.state.description.mode)}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                        {translate("LISTING_DESCRIPTION") + this.getRequiredStar(this.state.description.mode)}
+                                    </h4>
                                     <HtmlTextField 
                                         onChange={(ev, descriptionValue) => {
                                             const description = this.state.description;
@@ -123,6 +131,7 @@ export default class NewListingBasics extends Component {
                         </div>
                     </div>
                 </div>
+                }
             </div>
     }
 }

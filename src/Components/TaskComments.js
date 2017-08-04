@@ -70,7 +70,7 @@ export default class TaskComments extends React.Component {
     render() {
         return (
             <div class="container">
-            <h2>{translate('COMMENTS')}</h2>
+            <h3>{translate('COMMENTS')}</h3>
             <p>{translate('COMMENTS_DESC')}</p>
             { this.state.comments
                 .map(message => {

@@ -32,6 +32,7 @@ import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
 import * as coreUtil from './core/util.js'
+import * as coreConfig from './core/config.js'
 import * as coreNavigation from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
@@ -58,6 +59,12 @@ class App extends Component {
 
     const params = coreUtil.getParams(location.search);
 
+    if (params.token) {
+      coreAuth.setToken(params.token);
+    } else {
+      coreAuth.loadFromLocalStorage();
+    }
+
     coreAuth.addListener('login', () => {
       apiAuth.me()
         .then(myUserData => {
@@ -72,7 +79,7 @@ class App extends Component {
           coreAuth.destroy();
           coreNavigation.goTo('/login');
         });
-    });
+    }, true);
 
     coreAuth.addListener('logout', () => {
       this.setState({
@@ -80,18 +87,14 @@ class App extends Component {
       });
     });
     
-    if (params.token) {
-      coreAuth.setToken(params.token);
-    } else {
-      coreAuth.loadFromLocalStorage();
-    }
-
     apiConfig
       .appConfig
       .getItems({}, {
         cache: true
       })
       .then(config => {
+        coreConfig.set(config);
+
         return this.setState({
           metaReady: true,
           meta: config

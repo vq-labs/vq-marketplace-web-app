@@ -3,6 +3,8 @@ const listeners = {
     login: []
 };
 
+const authCb = [];
+
 let user = null;
 let userId = null;
 let token = null;
@@ -11,11 +13,31 @@ const emitChange = eventName => {
     listeners[eventName].forEach(fn => fn());
 };
 
-export const addListener = (eventName, fn) => {
-    listeners[eventName].push(fn);
+export const getUserAsync = cb => {
+    if (user) {
+        return cb(user);
+    }
+
+    authCb.push(cb);
+};
+
+export const EVENTS = {
+    'login': 'login',
+    'logout': 'logout',
+    'auth': 'auth'
+};
+
+export const addListener = (eventName, fn, tryExecuteNow) => {
+    listeners[eventName]
+    .push(fn);
+
+    if (tryExecuteNow) {
+        fn();
+    }
 };
 
 export const loadFromLocalStorage = () => {
+    user = JSON.parse(localStorage.getItem('VQ_USER'));
     userId = localStorage.getItem('ST_AUTH_USERID');
     token = localStorage.getItem('ST_AUTH_TOKEN');
 
@@ -34,6 +56,11 @@ export const setUser = _user => {
     }
 
     user = _user;
+
+    localStorage.setItem('VQ_USER', JSON.stringify(user));
+
+    authCb
+    .forEach(fn => fn(user));
 };
 
 export const getUser = () => user;

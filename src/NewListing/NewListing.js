@@ -27,6 +27,8 @@ import NewListingDate from './NewListingDate';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
 
+import { getConfigAsync } from '../core/config';
+
 const _chunk = require('lodash.chunk');
 
 const LISTING_VIEWS = {
@@ -91,56 +93,58 @@ export default class NewListing extends Component {
         }
     }
     componentDidMount() {
-        apiConfig.appConfig.getItems()
-        .then(meta => {
-            let priceType = 0;
-            const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
-            const pricingConfig = {
-                hourly: Boolean(Number(meta.PRICING_HOURLY)),
-                contract: Boolean(Number(meta.PRICING_CONTRACT)),
-                request: Boolean(Number(meta.PRICING_REQUEST))
-            };
+        getConfigAsync(meta => {
+            apiCategory
+            .getItems()
+            .then(listingCategories => {
+                let priceType = 0;
+                const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
+                const pricingConfig = {
+                    hourly: Boolean(Number(meta.PRICING_HOURLY)),
+                    contract: Boolean(Number(meta.PRICING_CONTRACT)),
+                    request: Boolean(Number(meta.PRICING_REQUEST))
+                };
 
-            if (pricingConfig.hourly) {
-                priceType = PRICING_MODELS.HOURLY;
-            }
+                if (pricingConfig.hourly) {
+                    priceType = PRICING_MODELS.HOURLY;
+                }
 
-            if (pricingConfig.contract) {
-                priceType = PRICING_MODELS.TOTAL;
-            }
+                if (pricingConfig.contract) {
+                    priceType = PRICING_MODELS.TOTAL;
+                }
 
-            if (pricingConfig.request) {
-                priceType = PRICING_MODELS.REQUEST_QUOTE;
-            }
+                if (pricingConfig.request) {
+                    priceType = PRICING_MODELS.REQUEST_QUOTE;
+                }
 
-            const task = this.state.task;
-            
-            task.priceType = priceType;
-            task.currency = currency;
+                const task = this.state.task;
+                
+                task.priceType = priceType;
+                task.currency = currency;
 
-            this.setState({
-                appConfig: meta,
-                ready: true,
-                task,
-                priceType,
-                pricingConfig,
-                currency
-            });
-        });
+                this.setState({
+                    appConfig: meta,
+                    ready: true,
+                    task,
+                    priceType,
+                    pricingConfig,
+                    currency
+                });
+              
+                const category = listingCategories
+                    .filter(
+                        _ => _.code === task.categories[0] || this.props.location.query.category
+                    )[0];
+                    
+                const minPrice = category ? category.minPriceHour || 0 : 0;
+                
+                task.price = minPrice;
 
-        apiCategory
-        .getItems()
-        .then(listingCategories => {
-            const task = this.state.task;
-            const category = listingCategories.filter(_ => _.code === this.props.location.query.category)[0];
-            const minPrice = category.minPriceHour || 0;
-            
-            task.price = minPrice;
-
-            this.setState({
-                listingCategories,
-                minPrice,
-                task
+                this.setState({
+                    listingCategories,
+                    minPrice,
+                    task
+                });
             });
         });
     }
@@ -168,11 +172,21 @@ export default class NewListing extends Component {
 
     onCategoryChosen (categoryCode) {
         const task = this.state.task;
+        const listingCategories = this.state.listingCategories;
         const categories = [ categoryCode ];
 
         task.categories = categories;    
 
-        this.setState({ 
+        const category = listingCategories
+            .filter(
+                _ => _.code === categoryCode
+            )[0];
+        const minPrice = category.minPriceHour || 0;
+        
+        task.price = minPrice;
+
+        this.setState({
+            minPrice,
             step: LISTING_VIEWS.PRICING, 
             task
         });
@@ -187,18 +201,23 @@ export default class NewListing extends Component {
     }
 
     render() {
-              const success=<div className="container">
+              const success=
+              <div className="container">
                 <div className="row">
-                    <div className="col-xs-12">
-                        <h1>Bravo! {translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
-                    </div>
+                    { this.state.ready &&
+                        <div className="col-xs-12">
+                            <h1 style={{color: this.state.appConfig.COLOR_PRIMARY}}>Bravo! {translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
+                        </div>
+                    }
                 </div>
 
+                { this.state.ready &&
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
                            <RaisedButton
                                 label={'Go to your offer'}
+                                backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                 primary={true}
                                 disabled={false}
                                 onTouchTap={() => coreNavigation.goTo(`/task/${this.state.task.id}`)}
@@ -206,6 +225,7 @@ export default class NewListing extends Component {
                         </div>
                     </div>
                 </div>
+                }
               </div>;
 
               const addImages =
@@ -307,11 +327,14 @@ export default class NewListing extends Component {
                             }
                             
                             { this.state.step === LISTING_VIEWS.SUCCESS && success }
-                            
+                            { this.state.ready &&
                             <div className="row" style={ { marginTop: 20 } }>
                                 { this.state.step !== LISTING_VIEWS.SUCCESS && this.state.step !== LISTING_VIEWS.START &&
                                     <FlatButton
-                                        style={ { float: 'left' } }
+                                        style={{ 
+                                            color: this.state.appConfig.COLOR_PRIMARY,
+                                            float: 'left'
+                                        }}
                                         label={translate("BACK")}
                                         primary={true}
                                         disabled={false}
@@ -338,7 +361,10 @@ export default class NewListing extends Component {
                                     this.state.step < LISTING_VIEWS.REVIEW &&
                                     this.state.step !== LISTING_VIEWS.LOGIN &&
                                     <RaisedButton
-                                        style={{ float: 'right' }}
+                                        style={{
+                                            float: 'right'
+                                        }}
+                                        backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                         label={translate("CONTINUE")}
                                         primary={true}
                                         disabled={false}
@@ -442,7 +468,10 @@ export default class NewListing extends Component {
                                 }
                                 { this.state.step === LISTING_VIEWS.REVIEW && this.state.auth &&
                                     <RaisedButton
-                                        style={{ float: 'right' }}
+                                        style={{
+                                            float: 'right'
+                                        }}
+                                        backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                         label={translate("CONFIRM_AND_POST")}
                                         primary={true}
                                         disabled={false}
@@ -481,6 +510,7 @@ export default class NewListing extends Component {
                                     autoHideDuration={4000}
                                 />
                             </div>
+                            }
                         </div> 
                         }
                     </div>

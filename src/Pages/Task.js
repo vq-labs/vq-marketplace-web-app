@@ -20,6 +20,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 import { translate } from '../core/i18n';
 import * as coreFormat from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+import { getConfigAsync } from '../core/config';
 
 import '../App.css';
 
@@ -73,33 +74,33 @@ class Task extends Component {
 
 
     componentDidMount() {
-      let taskId = this.props.params.taskId;
+        getConfigAsync(config => {
+            let taskId = this.props.params.taskId;
 
-      pricingModelProvider.get()
-      .then(pricingModels => this.setState({ pricingModels }));
+            this.setState({
+                configReady: true,
+                config
+            });
 
-      appConfig
-        .getItems({}, {
-            cache: true
-        })
-        .then(config => this.setState({
-            configReady: true,
-            config
-        }));
-
-      apiTask.getItem(taskId)
-      .then(task => {
-          this.setState({
-            isLoading: false,
-            task,
-            isMyTask: task.userId === coreAuth.getUserId()
-          });
-
-          apiUser.getItem(task.userId)
-            .then(taskOwner => this.setState({ 
-                taskOwner 
+            pricingModelProvider.get()
+            .then(pricingModels => this.setState({
+                pricingModels
             }));
-      });
+
+            apiTask.getItem(taskId)
+            .then(task => {
+                this.setState({
+                    isLoading: false,
+                    task,
+                    isMyTask: task.userId === coreAuth.getUserId()
+                });
+
+                apiUser.getItem(task.userId)
+                    .then(taskOwner => this.setState({ 
+                        taskOwner 
+                    }));
+            });
+        });
     }
     render() {
         const TaskLocationMap = withGoogleMap(props => (
@@ -133,7 +134,9 @@ class Task extends Component {
                             <div className="col-sm-offset-2 col-xs-12 col-sm-8">
                                 <div className="col-xs-12 col-sm-8">
                                     <div className="row">
-                                        <h1>{this.state.task.title}</h1>
+                                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                            {this.state.task.title}
+                                        </h1>
                                     </div>
                                     <div className="row" style={{'marginBottom': '15px'}}>
                                         <TaskCategories categories={this.state.task.categories}/>
@@ -165,7 +168,9 @@ class Task extends Component {
                                     <Card style={{'marginTop': 60}}>
                                         { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
                                             <CardText>
-                                                <h2>{coreFormat.displayPrice(this.state.task.price, this.state.task.currency)}</h2>
+                                                <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                                    {coreFormat.displayPrice(this.state.task.price, this.state.task.currency)}
+                                                </h2>
                                                 <p>
                                                     {
                                                         this.state.task.priceType===0 ?
@@ -193,97 +198,91 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
-                                        <Tabs
-                                            tabItemContainerStyle={{ backgroundColor: 'transparent', color: 'black' }}
-                                            onChange={ tabIndex => this.setState({ tabIndex }) }
-                                            value={this.state.tabIndex}
-                                            >
-                                            <Tab style={{ color: 'black' }} label={translate('LISTING_INFO')} value={0}>
-                                                { this.state.tabIndex === 0 &&
-                                                <div className="row">
-                                                    <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                                        <div style={{width: '100%', marginBottom: '20px'}}>
-                                                            <div>
-                                                                <h3 className="text-left">About the offer</h3>
-                                                                <p className="text-muted">
-                                                                    { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
-                                                                </p>
+                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                            <div style={{width: '100%', marginBottom: '20px'}}>
+                                                <div>
+                                                    <h3 className="text-left">About the offer</h3>
+                                                    <p className="text-muted">
+                                                        { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                        <div className="col-xs-12" style={{ marginBottom: 20 }}>
+                                            <h3 className="text-left">Task Location</h3>
+                                            <TaskLocationMap
+                                                lat={this.state.task.location.lat}
+                                                lng={this.state.task.location.lng}
+                                                containerElement={
+                                                    <div style={{ height: 300 }} />
+                                                }
+                                                mapElement={
+                                                    <div style={{ height: `100%` }} />
+                                                }
+                                            />
+                                        </div>
+                                        
+                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                            <h3 className="text-left">Task Images</h3>
+                                            { this.state.task.images && this.state.task.images.map(img =>
+                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
+                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
+                                                </div>
+                                            )}
+                                            { ( !this.state.task.images || !this.state.task.images.length) &&
+                                                <div className="col-xs-12 text-left">
+                                                    <div className="row">
+                                                        <p className="text-muted">
+                                                            { translate('NO_LISTING_IMAGES') }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div className="col-xs-12">
+                                            {this.state.taskOwner.id &&
+                                                <div style={{width: '100%', 'marginBottom': '20px'}}>
+                                                    <div>
+                                                        <h3 className="text-left">Posted by</h3>
+                                                        <div className="row">
+                                                            <div className="col-xs-1">
+                                                                <a href={ '/app/profile/' + this.state.task.userId }>
+                                                                    <Avatar src={this.state.taskOwnerimageUrl || 'https://talentwand.de/images/avatar.png' }/>
+                                                                </a>
                                                             </div>
-                                                            <div>
-                                                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
+                                                            <div className="col-xs-11">     
+                                                                <strong><a href={`/app/profile/${this.state.taskOwner.id}`}>{this.state.taskOwner.firstName} {this.state.taskOwner.lastName}</a></strong>
+                                                                
+                                                                <p className="text-muted">
+                                                                    {this.state.taskOwner.bio}
+                                                                </p>
+                                                            </div>  
+
+                                                            <div className="col-xs-12">     
+                                                                <div style={{
+                                                                    display: 'flex',
+                                                                    flexWrap: 'wrap',
+                                                                }}>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                       
-                                                    <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                                        <h3 className="text-left">Task Location</h3>
-                                                        <TaskLocationMap
-                                                            lat={this.state.task.location.lat}
-                                                            lng={this.state.task.location.lng}
-                                                            containerElement={
-                                                                <div style={{ height: 300 }} />
-                                                            }
-                                                            mapElement={
-                                                                <div style={{ height: `100%` }} />
-                                                            }
-                                                        />
-                                                    </div>
-                                                    
-                                                    <div className="col-xs-12">
-                                                        {this.state.taskOwner.id &&
-                                                            <div style={{width: '100%', 'marginBottom': '20px'}}>
-                                                                <div>
-                                                                    <h3 className="text-left">Posted by</h3>
-                                                                    <div className="row">
-                                                                        <div className="col-xs-1">
-                                                                            <a href={ '/app/profile/' + this.state.task.userId }>
-                                                                                <Avatar src={this.state.taskOwnerimageUrl || 'https://talentwand.de/images/avatar.png' }/>
-                                                                            </a>
-                                                                        </div>
-                                                                        <div className="col-xs-11">     
-                                                                            <strong><a href={`/app/profile/${this.state.taskOwner.id}`}>{this.state.taskOwner.firstName} {this.state.taskOwner.lastName}</a></strong>
-                                                                            
-                                                                            <p className="text-muted">
-                                                                                {this.state.taskOwner.bio}
-                                                                            </p>
-                                                                        </div>  
-
-                                                                        <div className="col-xs-12">     
-                                                                            <div style={{
-                                                                                display: 'flex',
-                                                                                flexWrap: 'wrap',
-                                                                            }}>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                    <div className="row">
-                                                        <TaskComments taskId={this.state.taskId} />
-                                                    </div>
                                                 </div>
-                                                }
-                                            </Tab>
-                                            <Tab style={{ color: 'black' }} label={translate('LISTING_IMAGES')} value={1} >
-                                                <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                                    <div className="row">
-                                                        { this.state.task.images && this.state.task.images.map(img =>
-                                                            <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
-                                                                <img className="img-responsive" role="presentation" src={img.imageUrl}/>
-                                                            </div>
-                                                        )}
-                                                        { ( !this.state.task.images || !this.state.task.images.length) &&
-                                                            <div className="col-xs-12 text-center">
-                                                                <h4>{ translate('NO_LISTING_IMAGES') }</h4>
-                                                            </div>
-                                                        }
-                                                    </div>
+                                            }
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-xs-12">
+                                                <div className="col-xs-12">
+                                                    <TaskComments taskId={this.state.taskId} />
                                                 </div>
-                                            </Tab>
-                                        </Tabs>
-                                      </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="col-sm-3">
                                 </div>

@@ -10,6 +10,7 @@ import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
+import { getConfigAsync } from '../core/config';
 
 const COUNTRY_CODES = {
     DE: 'Deutschland',
@@ -24,25 +25,34 @@ export default class NewListingAddress extends Component {
         this.state = {};
     }
 
+    componentDidMount() {
+        getConfigAsync(config => this.setState({
+            config,
+            ready: true
+        }));
+    }
+
     render() {
      return <div className="row">
-                <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h1>{translate("NEW_LISTING_ADDRESS_HEADER")}</h1>
-                            <p>{translate("NEW_LISTING_ADDRESS_DESC")}</p>
+                {this.state.ready &&
+                    <div className="col-xs-12">
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h1 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_ADDRESS_HEADER")}</h1>
+                                <p>{translate("NEW_LISTING_ADDRESS_DESC")}</p>
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <Address
+                                    location={this.props.location}
+                                    onLocationChange={this.props.onLocationChange}
+                                />
+                            </div>
                         </div>
                     </div>
-                    <hr />
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <Address
-                                location={this.props.location}
-                                onLocationChange={this.onLocationChange}
-                            />
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
     }
 }

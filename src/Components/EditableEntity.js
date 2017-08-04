@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TwitterPicker } from 'react-color';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -49,12 +50,15 @@ export default class EditableEntity extends Component {
     } 
     
     handleFieldChange (field, transform) {
-            return (event, value) => {
+            return (_, value) => {
                 const updatedEntity = this.state.updatedEntity;
 
                 updatedEntity[field] = transform ? transform(value) : value;
                 
-                this.setState({ updatedEntity, dirty: true });
+                this.setState({
+                    updatedEntity,
+                    dirty: true
+                });
             };
     }
     
@@ -78,8 +82,24 @@ export default class EditableEntity extends Component {
                                     { Object.keys(this.state.groupedFields).map((groupKey) =>
                                         <div className="row">
                                         <h3>{groupKey}</h3>
-                                        {this.state.groupedFields[groupKey].map((field, index) =>
+                                        {this.state.groupedFields[groupKey]
+                                        .map((field, index) =>
                                             <div className="col-xs-12" key={index}>
+                                                    { field.type === 'color' &&
+                                                        <div>
+                                                        <TextField
+                                                            floatingLabelText={field.label}
+                                                            disabled={true}
+                                                            value={this.state.updatedEntity[field.key]}
+                                                        />
+                                                        <TwitterPicker
+                                                            color={this.state.updatedEntity[field.key]}
+                                                            onChange={color => {
+                                                                this.handleFieldChange(field.key)(undefined, color.hex);
+                                                            }}
+                                                        />
+                                                        </div>
+                                                    }
                                                     { (field.type === 'string' || field.type === 'number') &&
                                                         <TextField
                                                             key={index}

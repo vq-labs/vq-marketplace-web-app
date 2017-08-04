@@ -86,7 +86,8 @@ class App extends Component {
       coreAuth.loadFromLocalStorage();
     }
 
-    apiConfig.appConfig
+    apiConfig
+      .appConfig
       .getItems({}, {
         cache: true
       })
@@ -123,7 +124,12 @@ class App extends Component {
       return (
         this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
           <div>
-            <Header logo={this.state.meta.LOGO_URL} homeLabel={'Offer'} user={this.state.user}></Header>
+            <Header
+              appName={this.state.meta.NAME}
+              logo={this.state.meta.LOGO_URL}
+              homeLabel={'Offer'}
+              user={this.state.user}>
+            </Header>
               <Router history={browserHistory} onUpdate={coreTracking.pageView}>
                 <Route path="/app">
                   <IndexRoute component={Offers}/>
@@ -151,7 +157,11 @@ class App extends Component {
                   <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
                 </Route>
               </Router>
-            <Footer logo={this.state.meta.LOGO_URL}></Footer>
+            <Footer
+              logo={this.state.meta.LOGO_URL}
+              appName={this.state.meta.NAME}
+            >
+            </Footer>
           </div>
         </MuiThemeProvider> 
       );

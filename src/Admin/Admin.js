@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import SectionOverview from './Overview';
 import SectionCategories from './Categories';
 import SectionBasics from './Basics';
+import SectionDesign from './Design';
 import SectionUsers from './Users';
 import SectionLabels from './Labels';
 import SectionPricing from './Pricing';
@@ -55,8 +56,8 @@ export default class AdminPage extends React.Component {
                     
                         <h4>Configuration</h4>
                         <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('listing') }>Listing</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
@@ -75,6 +76,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'labels' && <SectionLabels /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
+                                        { this.state.section === 'design' && <SectionDesign /> }
                                         { this.state.section === 'pricing' && <SectionPricing /> }
                                         { this.state.section === 'listing' && <SectionListing /> }
                                         { this.state.section === 'posts' && <SectionPosts /> }

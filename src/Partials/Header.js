@@ -6,6 +6,7 @@ import MenuItem from 'material-ui/MenuItem';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
+import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -87,9 +88,10 @@ class Header extends Component {
       return (
         <div >
           <Toolbar className="st-nav">
-            <a href="/" target="_self">
-              <img className='imgCenter hidden-xs' src={this.props.logo} role="presentation" style={{ 'marginTop': '6px','marginBottom': '8px', maxHeight: '45px' }}/>
-            </a>  
+              <Logo
+                appName={this.props.appName}
+                logo={this.props.logo}
+              />
               <ToolbarGroup>
                         { this.state.logged &&
                           <FlatButton label={translate("DASHBOARD")} onClick={ 

@@ -27,7 +27,6 @@ import '../App.css';
 const _chunk = require('lodash.chunk');
 import VIEW_TYPES from '../Components/VIEW_TYPES';
 
-
 class Offers extends Component {
     constructor(props) {
         super(props);
@@ -197,13 +196,19 @@ class Offers extends Component {
             background: `url(${this.state.meta.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
-            <div className="col-xs-12" style={ { marginTop: 18 } }>
+            <div className="col-xs-12" style={{ marginTop: 18 }}>
                 <div style={{backgroundColor: this.state.meta.teaserBoxColor, padding: 10, maxWidth: '850px', margin: '0 auto' }}>
-                    <h1 style={ { color: "white", fontSize: 25 } }>
-                        {translate('PROMO_BUYER_SLOGAN')}
+                    <h1 style={{
+                        color: "white",
+                        fontSize: 25
+                    }}>
+                        {translate('LISTINGS_PROMO_HEADER')}
                     </h1>
-                    <h2 style={ { color: "white", fontSize: 18 } }>
-                        {translate('PROMO_BUYER_DESC')}
+                    <h2 style={{ 
+                        color: "white",
+                        fontSize: 18
+                    }}>
+                        {translate('LISTINGS_PROMO_DESC')}
                     </h2>
                 </div>
             </div>
@@ -269,7 +274,7 @@ class Offers extends Component {
                             
                             { !this.state.isLoading &&
                             <div className="col-xs-12">
-                                { this.state.viewType === VIEW_TYPES.LIST &&
+                                    { this.state.viewType === VIEW_TYPES.LIST &&
                                             this.state.offers.map(offer =>
                                                 <div 
                                                     className="col-xs-12"

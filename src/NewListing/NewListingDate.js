@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
-import InfiniteCalendar from 'react-infinite-calendar';
+import InfiniteCalendar, {
+  Calendar,
+  defaultMultipleDateInterpolation,
+  withMultipleDates,
+} from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
+
+const MultipleDatesCalendar = withMultipleDates(Calendar);
 
 export default class NewListingDate extends Component {
     constructor(props) {
         super();
 
-        const today = new Date();
-        const minDate = new Date();
+        const today = new Date((new Date()).setHours(0, 0, 0, 0));
+        const minDate = new Date((new Date()).setHours(0, 0, 0, 0));
         const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
 
         this.state = {
-            selected: props.selected || today,
+            selected: props.selected ? props.selected.map(_ => String(_)) : [ String(today) ],
             today,
             minDate,
             maxDate
@@ -41,6 +47,8 @@ export default class NewListingDate extends Component {
                 <div className="row">
                     <div className="col-xs-12">
                         <InfiniteCalendar
+                                Component={MultipleDatesCalendar}
+                                interpolateSelection={defaultMultipleDateInterpolation}
                                 theme={{
                                     accentColor: '#448AFF',
                                     floatingNav: {
@@ -67,9 +75,24 @@ export default class NewListingDate extends Component {
                                 maxDate={this.state.maxDate}
                                 selected={this.state.selected}
                                 onSelect={date => {
-                                    this.setState({ selected: date });
+                                    const selectedDates = this.state.selected;
+                                    const dateIndex = selectedDates
+                                        .map(_ => String(_))
+                                        .indexOf(String(date));
 
-                                    this.props.onSelect(date);
+
+                                    if (dateIndex === -1) {
+                                        selectedDates.push(date);
+                                    } else {
+                                        selectedDates.splice(dateIndex, 1);
+                                    }
+
+                                    
+                                    this.setState({
+                                        selected: selectedDates.map(_ => String(_))
+                                    });
+
+                                    this.props.onSelect(selectedDates);
                                 }}
                         />
                     </div>

@@ -110,7 +110,7 @@ export default class TaskListItem extends Component {
                         }
                   </div>
                   <div onClick={() => this.handleGoToTask(task.id) } style={{
-                      height: '75px',
+                      height: '65px',
                       paddingTop: 0,
                       paddingBottom: 0,
                       lineHeight: '20px',
@@ -120,7 +120,7 @@ export default class TaskListItem extends Component {
                   </div>
                   
                   { this.props.displayManagement &&
-                    <div style={{'marginBottom': '20px'}}>
+                    <div style={{'marginBottom': '10px'}}>
                       <div class="row">
                         <div className="col-xs-10 col-sm-11 col-md-9 col-lg-10 text-muted">
                           <p style={{ marginTop: '16px', marginLeft: '-17px'} }>

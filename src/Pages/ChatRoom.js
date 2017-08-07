@@ -5,13 +5,18 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Moment from 'react-moment';
 import CircularProgress from 'material-ui/CircularProgress';
-import Ad from '../Components/Ad';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as coreAuth from '../core/auth';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
-import { goTo } from '../core/navigation';
+import { goTo, tryGoBack } from '../core/navigation';
 import DOMPurify from 'dompurify'
+import {
+  Step,
+  Stepper,
+  StepLabel,
+  StepContent,
+} from 'material-ui/Stepper';
 import '../Chat.css';
 
 const _ = require('underscore');
@@ -27,7 +32,7 @@ export default class ChatRoom extends React.Component {
             newMessage: '',
             task: {},
             users: {},
-            messages: [] 
+            messages: []
         };
 
         this.handleNewMessage = this.handleNewMessage.bind(this);
@@ -47,7 +52,8 @@ export default class ChatRoom extends React.Component {
             toUserId: chat.messages[0].fromUserId === coreAuth.getUserId() ? chat.messages[0].toUserId : chat.messages[0].fromUserId,
             messages: chat.messages,
             users: chat.users,
-            task: chat.task
+            task: chat.task,
+            request: chat.request
         }));
     }
     handleNewMessage (event) {
@@ -75,7 +81,7 @@ export default class ChatRoom extends React.Component {
                 <div className="container st-chat-view">
                     { this.state.isLoading && 
                         <div className="text-center" style={{ 'marginTop': '40px' }}>
-                                <CircularProgress size={80} thickness={5} />
+                            <CircularProgress size={80} thickness={5} />
                         </div>
                     }
                     { !this.state.isLoading && 
@@ -83,12 +89,18 @@ export default class ChatRoom extends React.Component {
                             <div className="col-xs-12 col-sm-8">
                                     { this.state.task &&
                                         <div className="row">
-                                            <div className="col-xs-12" style={ { margin: '10px' } }>
-                                                <RaisedButton onClick={ () => goTo(`/chat`) } label={translate('BACK')}/>
+                                            <div className="col-xs-12" style={{ margin: '10px' }}>
+                                                <RaisedButton 
+                                                    onClick={() => tryGoBack(`/chat`)}
+                                                    label={translate('BACK')}
+                                                />
                                             </div>    
                                             <div className="col-xs-12" style={ { margin: '10px' } }>
                                                 <h1 className="st-h1">
-                                                    <a onTouchTap={() => goTo(`/task/${this.state.task.id}`)}>
+                                                    <a style={{
+                                                        textDecoration: 'none',
+                                                        cursor: 'pointer'
+                                                    }} onTouchTap={() => goTo(`/task/${this.state.task.id}`)}>
                                                         { this.state.task.title }
                                                     </a>
                                                 </h1>
@@ -110,7 +122,13 @@ export default class ChatRoom extends React.Component {
                                                         <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                                             <div className="row">
                                                                 <div className="col-xs-2 col-sm-1">
-                                                                    <a onClick={ () => goTo(`/profile/${message.fromUserId}`) }>
+                                                                    <a 
+                                                                        style={{
+                                                                            cursor: 'pointer'
+                                                                        }} 
+                                                                        onClick={
+                                                                            () => goTo(`/profile/${message.fromUserId}`)
+                                                                        }>
                                                                         <img
                                                                             alt="profile"
                                                                             style={{ 
@@ -124,8 +142,13 @@ export default class ChatRoom extends React.Component {
                                                                 </div>
                                                                 <div className="col-xs-10 col-sm-11" style={{ marginTop: 6 }}>
                                                                     <strong>
-                                                                        <a onClick={ () => goTo(`/profile/${message.fromUserId}`) }>
-                                                                            {firstName} {lastName}
+                                                                        <a
+                                                                            style={{
+                                                                                textDecoration: 'none',
+                                                                                cursor: 'pointer'
+                                                                            }}
+                                                                            onClick={() => goTo(`/profile/${message.fromUserId}`)}>
+                                                                        {firstName} {lastName}
                                                                         </a>
                                                                         </strong>
                                                                     <br />
@@ -180,7 +203,6 @@ export default class ChatRoom extends React.Component {
                                                 { Object.keys(this.state.users)
                                                 .map(userId => {
                                                     const user = this.state.users[userId];
-                                                    debugger;
                                                     const firstName = user.firstName;
                                                     const lastName = user.lastName;
                                                     const profileImageUrl = user.imageUrl || defaultProfileImageUrl;
@@ -213,17 +235,37 @@ export default class ChatRoom extends React.Component {
                                         </div>
                                     </Paper>
                                     { this.state.isUserOwner &&
-                                      this.state.chat.request.status == 0 &&
+                                      this.state.request.status == 0 &&
                                         <RaisedButton
                                             backgroundColor={"#546e7a"}
                                             labelColor={"white"}
-                                            style={{ marginTop: 10, width: '100%'}}
+                                            style={{
+                                                marginTop: 10,
+                                                width: '100%'
+                                            }}
                                             label={translate("BOOK")} 
                                             onClick={
                                                 () => goTo(`/request/${this.state.requestId}/book`)
                                             }
                                         />
                                     }
+
+                            <Stepper activeStep={
+                                [ '0', '5', '10', '15' ].indexOf(this.state.request.status)
+                            } orientation="vertical">
+                            <Step>
+                                <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
+                            </Step>
+                            <Step>
+                                <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
+                            </Step>
+                            <Step>
+                                <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
+                            </Step>
+                            <Step>
+                                <StepLabel>{translate('REQUEST_SETLLED')}</StepLabel>
+                            </Step>
+                            </Stepper>
                             </div>
                         </div>   
                     }

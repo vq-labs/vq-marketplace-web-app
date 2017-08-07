@@ -1,7 +1,7 @@
 import * as communication from '../core/communication'
 
-export const getItems = () =>
-    communication.doGet('/request');
+export const getItems = queryObj =>
+    communication.doGet('/request', queryObj);
 
 export const getItem = requestId =>
     communication.doGet(`/request/${requestId}`);

@@ -55,19 +55,19 @@ export default class ApplicationDialog extends React.Component {
   showBackBtnLabel (currentMask) {
     switch (currentMask) {
         case 'init':
-            return 'Abbrechen';
+            return translate("CANCEL");
         case 'success':
-            return 'Zurück';
+            return translate("BACK");
         default:
-            return 'Zurück';
+            return translate("BACK");
     }
   }
   showContinueBtnLabel (currentMask) {
       switch (currentMask) {
         case 'success':
-            return 'Weitere Inserate durchsuchen';
+            return translate("OK");
         default:
-            return 'Anfrage senden';
+            return translate("CONFIRM");
     }
   }
   sendRequest() {
@@ -105,8 +105,7 @@ export default class ApplicationDialog extends React.Component {
                 return alert('I do not know what to do');
         }   
   }
-  getDialogTitle = currentMask => 
-  currentMask==='success' ? "Die Nachricht wurde erfolgreich gesendet" : "Ihre Nachricht";
+  getDialogTitle = currentMask => translate('SEND_REQUEST');
   
   render() {
      const backBtn = <FlatButton
@@ -152,7 +151,8 @@ export default class ApplicationDialog extends React.Component {
                         value={this.state.application.message}
                         style={{width: '100%'}}
                         inputStyle={{width: '100%'}}
-                        floatingLabelText="Nachricht"
+                        hintText={translate('REQUEST_MESSAGE_DESC')}
+                        floatingLabelText={translate('REQUEST_MESSAGE_HEADER')}
                     />
                 </div>
         </div>;
@@ -173,7 +173,8 @@ export default class ApplicationDialog extends React.Component {
 
     const Success=<div>
         <div className="col-sm-12 col-xs-12">
-            <h3>Die Nachricht wurde geschickt.</h3>
+            <h3>{translate("REQUEST_SUBMITTED_HEADER")}</h3>
+            <p>{translate("REQUEST_SUBMITTED_DESC")}</p>
         </div>
     </div>;
 

@@ -19,6 +19,12 @@ export default class ImageUploader extends React.Component {
         };
     }
     
+    componentWillReceiveProps (nextProps) {
+        this.setState({
+            images: nextProps.images || []
+        });
+    } 
+
     render() {
         return (
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>

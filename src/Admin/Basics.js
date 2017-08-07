@@ -13,12 +13,12 @@ const defaultConfigsFields = [
         label: 'What is your domain url? (with http or https)'
     },
     {
-        type: 'string',
+        type: 'single-image',
         key: 'LOGO_URL',
         label: 'Marketplace logo'
     },
     {
-        type: 'string',
+        type: 'single-image',
         key: 'PROMO_URL',
         label: 'Marketplace promo'
     },

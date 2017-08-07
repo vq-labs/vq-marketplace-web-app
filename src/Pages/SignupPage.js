@@ -9,7 +9,16 @@ export default class SignupPage extends Component {
             <Signup onSuccess={user => {
               const userId = user.id || user.userId;
 
-              goTo(`/dashboard`);
+              switch (Number(user.userType)) {
+                case 1:
+                  goTo(`/dashboard?userType=${user.userType}`);
+                  break;
+                case 2:
+                  goTo(`/`);
+                  break;
+                default:
+                  goTo(`/`);
+              }
             }} />
          </div>       
     );

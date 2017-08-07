@@ -26,6 +26,7 @@ import NewListingPricing from './NewListingPricing';
 import NewListingDate from './NewListingDate';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
+import NewListingDuration from './NewListingDuration';
 
 import { getConfigAsync } from '../core/config';
 
@@ -38,10 +39,11 @@ const LISTING_VIEWS = {
     BASICS: 3,
     LOCATION: 4,
     CALENDAR: 5,
-    IMAGES: 6,
-    REVIEW: 7,
-    SUCCESS: 8,
-    LOGIN: 9
+    DURATION: 6,
+    IMAGES: 7,
+    REVIEW: 8,
+    SUCCESS: 9,
+    LOGIN: 10
 };
 
 const PRICING_MODELS = {
@@ -71,6 +73,7 @@ export default class NewListing extends Component {
                 title: '',
                 description: '',
                 location: {},
+                duration: 2,
                 priceType: 1,
                 taskType: TASK_TYPES.OFFERING,
                 categories: [],
@@ -309,13 +312,29 @@ export default class NewListing extends Component {
                             { this.state.step === LISTING_VIEWS.IMAGES && addImages }
                             { this.state.step === LISTING_VIEWS.CALENDAR &&
                                 <NewListingDate 
-                                    selected={this.state.task.timing[0]}
+                                    selected={this.state.task.timing}
                                     onSelect={selectedDate => {
                                         const task = this.state.task;
                                         
-                                        task.timing = [ selectedDate ];
+                                        task.timing = selectedDate;
 
-                                        this.setState({ task });
+                                        this.setState({
+                                            task
+                                        });
+                                    }}
+                                /> 
+                            }
+                            { this.state.step === LISTING_VIEWS.DURATION &&
+                                <NewListingDuration 
+                                    duration={this.state.task.duration}
+                                    handleDurationChange={duration => {
+                                        const task = this.state.task;
+                                        
+                                        task.duration = duration;
+
+                                        this.setState({
+                                            task
+                                        });
                                     }}
                                 /> 
                             }
@@ -375,10 +394,7 @@ export default class NewListing extends Component {
                                             const updatedTask = JSON.parse(JSON.stringify(this.state.task));
                     
 
-                                            updatedTask.price *= 100;
-                                            
                                             // CHECKS
-
                                             if (currentStep === LISTING_VIEWS.PRICING) {
                                                 if (typeof task.priceType === 'undefined') {
                                                     return this.setState({
@@ -432,6 +448,16 @@ export default class NewListing extends Component {
                                                 }
                                             }
 
+
+                                            if (currentStep === LISTING_VIEWS.CALENDAR) {
+                                                if (!task.timing.length) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
+                                                    });
+                                                }
+                                            }
+
                                             if (currentStep === LISTING_VIEWS.BASICS) {
                                                 if (Number(this.state.appConfig.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
                                                     return this.setState({
@@ -478,7 +504,7 @@ export default class NewListing extends Component {
                                         onTouchTap={() => {
                                             const task = this.state.task;
 
-                                            if (task.currency === 'EUR') {
+                                            if (task.currency === 'EUR' || task.currency === 'USD' || task.currency === 'PLN') {
                                                 task.price *= 100;
                                             }
 
@@ -494,7 +520,10 @@ export default class NewListing extends Component {
                                             .then(() => apiTask.updateItem(task.id, task))
                                             .then(() => apiTaskLocation.createItem(task.id, task.location))
                                             .then(() => apiTaskImage.createItem(task.id, task.images))
-                                            .then(() => apiTaskTiming.createItem(task.id, task.timing))
+                                            .then(() => apiTaskTiming.createItem(task.id, {
+                                                dates: task.timing,
+                                                duration: task.duration
+                                            }))
                                             .then(() => apiTask.updateItem(task.id, {
                                                 status: 0
                                             }))

@@ -109,8 +109,8 @@ class Header extends Component {
                         }
                   { this.state.logged && <ToolbarSeparator /> }
 
-                  { this.state.homeLabel && this.state.logged && Number(this.state.user.userType) === 2 &&
-                    <FlatButton label={`${this.state.homeLabel}s`}  onClick={ 
+                  { this.state.logged && Number(this.state.user.userType) === 2 &&
+                    <FlatButton label={translate('HEADER_LISTINGS')}  onClick={ 
                       () => goTo('/')
                     } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                   }

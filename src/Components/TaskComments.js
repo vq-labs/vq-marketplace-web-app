@@ -18,27 +18,23 @@ const _ = require('underscore');
 const defaultProfileImageUrl = '/images/avatar.png';
 
 export default class TaskComments extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
 
+        let taskId = props.taskId;
+
         this.state = {
+            taskId,
             isLoading: true,
             newComment: '',
-            comments: [] 
+            comments: props.comments
         };
 
         this.handleNewComment = this.handleNewComment.bind(this);
     }
 
     componentDidMount() {
-        let taskId = this.props.taskId;
 
-        apiTaskComment.getItems(taskId)
-            .then(comments => this.setState({
-                taskId,
-                isLoading: false,
-                comments
-            }));
     }
 
     handleNewComment (event) {
@@ -47,19 +43,22 @@ export default class TaskComments extends React.Component {
         const taskId = this.state.taskId;
         const comments = this.state.comments;
         const newCommentBody = this.state.newComment;
-        const userId = coreAuth.getUser().id;
+        const user = coreAuth.getUser();
+
         const newComment = {
-            userId,
+            userId: user.id,
+            user,
             comment: newCommentBody
         };
 
         comments.push(newComment);
         
         apiTaskComment
-        .createItem(taskId, newComment)
-        .then(data => {
-            console.log(data);
-        })
+            .createItem(taskId, {
+                userId: user.id,
+                comment: newCommentBody
+            });
+          
 
         this.setState({
             newComment: '',
@@ -74,17 +73,18 @@ export default class TaskComments extends React.Component {
             <p>{translate('COMMENTS_DESC')}</p>
             { this.state.comments
                 .map(message => {
-                    const sender = this.state.users[message.userId];
-
+                    const sender = message.user;
                     const firstName = sender.firstName;
                     const lastName = sender.lastName;
                     const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
                     return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px'} }>
-                                <div className="col-xs-12" style={ { marginBottom: '20px'} }>
+                                <div className="col-xs-12" style={{
+                                    marginBottom: '20px'
+                                }}>
                                     <div className="row">
                                         <div className="col-xs-2 col-sm-1">
-                                            <a onClick={ () => goTo(`/profile/${message.fromUserId}`) }>
+                                            <a onClick={ () => goTo(`/profile/${sender.id}`) }>
                                                 <img
                                                     alt="profile"
                                                     style={{ 
@@ -96,9 +96,11 @@ export default class TaskComments extends React.Component {
                                                 />
                                             </a>
                                         </div>
-                                        <div className="col-xs-10 col-sm-11" style={{ marginTop: 6 }}>
+                                        <div className="col-xs-10 col-sm-11" style={{
+                                            marginTop: 6
+                                        }}>
                                             <strong>
-                                                <a onClick={ () => goTo(`/profile/${message.fromUserId}`) }>
+                                                <a onClick={ () => goTo(`/profile/${sender.id}`) }>
                                                     {firstName} {lastName}
                                                 </a>
                                                 </strong>
@@ -111,7 +113,7 @@ export default class TaskComments extends React.Component {
                                 </div>
                                 <div className="col-xs-12">
                                     <div dangerouslySetInnerHTML={{
-                                        __html: DOMPurify.sanitize(message.message)
+                                        __html: DOMPurify.sanitize(message.comment)
                                     }} />
                                     <Divider style={ { marginRight: '10px' } }/>
                                 </div>
@@ -128,10 +130,10 @@ export default class TaskComments extends React.Component {
                             <form onSubmit={this.handleNewComment}>
                                     <h4>{translate("REPLY")}</h4>
                                     <HtmlTextField                                                    
-                                        onChange={(event, newMessage) => this.setState({
-                                            newMessage
+                                        onChange={(event, newComment) => this.setState({
+                                            newComment
                                         })}
-                                        value={this.state.newMessage}
+                                        value={this.state.newComment}
                                     />
                                     
                                     <RaisedButton type="submit" style={{ width: '100%' }} label={translate("SEND")} />

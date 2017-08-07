@@ -68,7 +68,26 @@ export default class NewListingReview extends Component {
                         <div className="col-xs-12">
                             <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DATE")}</h4>
                             <div>
-                                <Moment format="DD.MM.YYYY">{this.state.listing.timing[0]}</Moment>
+                                { this.state.listing.timing
+                                    .map(timing =>
+                                        <div className="row">
+                                            <div className="col-xs-12">
+                                                <Moment format="DD.MM.YYYY">
+                                                    {timing}
+                                                </Moment>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DURATION")}</h4>
+                            <div>
+                                {this.state.listing.duration}h
                             </div>
                         </div>
                     </div>

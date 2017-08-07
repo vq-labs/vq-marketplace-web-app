@@ -130,7 +130,6 @@ class App extends Component {
             <Header
               appName={this.state.meta.NAME}
               logo={this.state.meta.LOGO_URL}
-              homeLabel={'Offer'}
               user={this.state.user}>
             </Header>
               <Router history={browserHistory} onUpdate={coreTracking.pageView}>

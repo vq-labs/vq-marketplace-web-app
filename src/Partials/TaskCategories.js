@@ -16,7 +16,9 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  marginBottom: {
+  categoryStyle: {
+      textDecoration: 'none',
+      cursor: 'pointer',
       marginBottom:'2px',
       marginRight:'2px',
   },
@@ -25,7 +27,7 @@ const styles = {
 export default class TaskCategories extends Component {
     getChip(category) {
         return (
-             <a style={styles.marginBottom}>
+             <a style={styles.categoryStyle}>
                 <Chip key={category.label} style={styles.margin} onClick={() => browserHistory.push('/app?category=' + category.code)} >
                     <div>{translate(category.code)}</div>
                 </Chip> 

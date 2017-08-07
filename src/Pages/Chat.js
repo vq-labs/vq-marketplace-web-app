@@ -62,6 +62,11 @@ export default class Chat extends Component {
                                     <div className="col-xs-12">
                                         <List>
                                             <Subheader>{ translate('REQUESTS') }</Subheader>
+                                            { !this.state.requests.length && 
+                                                <div className="col-xs-12">
+                                                    <p className="text-muted">{translate('NO_REQUESTS')}</p>
+                                                </div>
+                                            }
                                             { this.state.requests && 
                                                 this.state.requests
                                                 .map((request, index) => {

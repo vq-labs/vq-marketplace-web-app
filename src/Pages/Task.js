@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardText } from 'material-ui/Card';
 import DOMPurify from 'dompurify'
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import ApplicationDialog from '../Application/ApplicationDialog';
 import TaskCategories from '../Partials/TaskCategories';
@@ -18,6 +19,7 @@ import { appConfig } from '../api/config';
 import apiUser from '../api/user';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { translate } from '../core/i18n';
+import { goTo } from '../core/navigation';
 import * as coreFormat from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
@@ -39,7 +41,8 @@ class Task extends Component {
             task: {
                 images: [],
                 categories: [],
-                location: {}      
+                location: {},
+                requests: []  
             }  
         };
     }
@@ -64,15 +67,13 @@ class Task extends Component {
         }
     }
     displayIconElement (task) {
-        if (task && task.location && task.location.formattedAddress) {
+        if (task && task.location) {
             return <MapsPlace viewBox='-20 -7 50 10' />;
         } else {
             return (
                 <FileCloud viewBox='-20 -7 50 10'/>);
         }
     }
-
-
     componentDidMount() {
         getConfigAsync(config => {
             let taskId = this.props.params.taskId;
@@ -89,19 +90,23 @@ class Task extends Component {
 
             apiTask.getItem(taskId)
             .then(task => {
+
+                const sentRequest = task.requests
+                    .find(
+                        _ => _.fromUserId === coreAuth.getUserId()
+                    );
+
                 this.setState({
+                    taskOwner: task.user,
+                    sentRequestId: sentRequest ? sentRequest.id : null,
                     isLoading: false,
                     task,
                     isMyTask: task.userId === coreAuth.getUserId()
                 });
-
-                apiUser.getItem(task.userId)
-                    .then(taskOwner => this.setState({ 
-                        taskOwner 
-                    }));
             });
         });
     }
+
     render() {
         const TaskLocationMap = withGoogleMap(props => (
             <GoogleMap
@@ -180,15 +185,27 @@ class Task extends Component {
                                                 </p>
                                             </CardText>
                                         }
-                                        { !this.state.isMyTask && 
+                                        { !this.state.isMyTask && !this.state.sentRequestId && 
                                             <RaisedButton
                                                 backgroundColor={"#546e7a"}
                                                 labelColor={"white"}
                                                 style={{width: '100%'}}
                                                 label={translate("SEND_REQUEST")} 
-                                                onClick={ () => this.setState({ applicationInProgress: true }) 
+                                                onClick={ () => this.setState({
+                                                    applicationInProgress: true
+                                                }) 
                                             }/> 
+                                       }
+                                       { !this.state.isMyTask && this.state.sentRequestId &&
+                                            <FlatButton
+                                                style={{width: '100%'}}
+                                                label={translate("REQUEST_ALREADY_SENT")}
+                                                onTouchTap={() => {
+                                                    goTo(`/chat/${this.state.sentRequestId}`)
+                                                }}
+                                            /> 
                                        } 
+                                
                                     </Card> 
                                 </div> 
                             </div>
@@ -201,9 +218,9 @@ class Task extends Component {
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
-                                                    <h3 className="text-left">About the offer</h3>
+                                                    <h3 className="text-left">About the job</h3>
                                                     <p className="text-muted">
-                                                        { this.displayIconElement(this.state.task) }  { this.displayLocation(this.state.task) }
+                                                        {this.displayIconElement(this.state.task)}  {this.displayLocation(this.state.task)}
                                                     </p>
                                                 </div>
                                                 <div>
@@ -213,7 +230,7 @@ class Task extends Component {
                                         </div>
                             
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                            <h3 className="text-left">Task Location</h3>
+                                            <h3 className="text-left">Job Location</h3>
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
                                                 lng={this.state.task.location.lng}
@@ -226,6 +243,24 @@ class Task extends Component {
                                             />
                                         </div>
                                         
+                                        <div className="col-xs-12" style={{ marginBottom: 20 }}>
+                                            <h3 className="text-left">Job Date</h3>
+                                            {this.state.task.timing.map(timing =>
+                                                <div className="row">
+                                                    <div className="col-xs-12">
+                                                        <Moment format="DD.MM.YYYY">{timing.date}</Moment>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        { this.state.task.timing && this.state.task.timing[0] &&
+                                        <div className="col-xs-12" style={{ marginBottom: 20 }}>
+                                            <h3 className="text-left">Estimated duration</h3>
+                                            {this.state.task.timing[0].duration}h
+                                        </div>
+                                        }
+                                        { false &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <h3 className="text-left">Task Images</h3>
                                             { this.state.task.images && this.state.task.images.map(img =>
@@ -243,42 +278,14 @@ class Task extends Component {
                                                 </div>
                                             }
                                         </div>
-
-                                        <div className="col-xs-12">
-                                            {this.state.taskOwner.id &&
-                                                <div style={{width: '100%', 'marginBottom': '20px'}}>
-                                                    <div>
-                                                        <h3 className="text-left">Posted by</h3>
-                                                        <div className="row">
-                                                            <div className="col-xs-1">
-                                                                <a href={ '/app/profile/' + this.state.task.userId }>
-                                                                    <Avatar src={this.state.taskOwnerimageUrl || 'https://talentwand.de/images/avatar.png' }/>
-                                                                </a>
-                                                            </div>
-                                                            <div className="col-xs-11">     
-                                                                <strong><a href={`/app/profile/${this.state.taskOwner.id}`}>{this.state.taskOwner.firstName} {this.state.taskOwner.lastName}</a></strong>
-                                                                
-                                                                <p className="text-muted">
-                                                                    {this.state.taskOwner.bio}
-                                                                </p>
-                                                            </div>  
-
-                                                            <div className="col-xs-12">     
-                                                                <div style={{
-                                                                    display: 'flex',
-                                                                    flexWrap: 'wrap',
-                                                                }}>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
+                                        }
                                         <div className="row">
                                             <div className="col-xs-12">
                                                 <div className="col-xs-12">
-                                                    <TaskComments taskId={this.state.taskId} />
+                                                    <TaskComments
+                                                        taskId={this.state.task.id}
+                                                        comments={this.state.task.comments}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>

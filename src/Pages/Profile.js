@@ -18,6 +18,7 @@ import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
 import { translate } from '../core/i18n';
+import { getConfigAsync } from '../core/config';
 
 import '../App.css';
 
@@ -58,31 +59,35 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        let userId = this.props.params.profileId;
-        let section = this.props.params.section;
-        let isMyProfile = coreAuth.getUserId() === userId;
+        getConfigAsync(config => {
+            let userId = this.props.params.profileId;
+            let section = this.props.params.section;
+            let isMyProfile = coreAuth.getUserId() === userId;
 
-        const getProfileTasks = () => apiTask.getItems({
-            status: isMyProfile ? undefined : 0,
-            userId: userId,
-            taskType: 1
-        })
-        .then(offers => {
-            this.setState({
-                offers: offers
-            });
-        });
-
-        getProfileTasks();
-
-        apiUser
-            .getItem(userId)
-            .then(result => {
+            const getProfileTasks = () => apiTask.getItems({
+                status: isMyProfile ? undefined : 0,
+                userId: userId,
+                taskType: 1
+            })
+            .then(offers => {
                 this.setState({
-                    isLoading: false,
-                    isProfileImgLoaded: false,
-                    profile: result,
-                    section: section,
+                    offers: offers
+                });
+            });
+
+            getProfileTasks();
+
+            apiUser
+                .getItem(userId)
+                .then(result => {
+                    this.setState({
+                        config,
+                        ready: true,
+                        isLoading: false,
+                        isProfileImgLoaded: false,
+                        profile: result,
+                        section: section,
+                    });
                 });
             });
         }
@@ -142,8 +147,8 @@ class Profile extends React.Component {
                     <div className="col-xs-12 col-sm-12 col-md-10">
                         <div className="row">  
                             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                                { this.state.profile && 
-                                    <h1>
+                                { this.state.ready && this.state.profile && 
+                                    <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                         { this.showProfileName() }
                                     </h1>
                                 }
@@ -217,27 +222,35 @@ class Profile extends React.Component {
             <div className="container" style={{
                 marginBottom: 20
             }}>
-                <div className="col-xs-12"> 
-                    <div className="row">
-                        <div className="col-xs-12">
-                            {ProfileHeader}
+                <div className="col-xs-12">
+                     { this.state.ready &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                {ProfileHeader}
+                            </div>
                         </div>
-                    </div>
+                     }
+                    { false &&
                     <div className="row">
                         <div className="col-xs-12 col-sm-12">
-                            {OfferSection}     
+                            { OfferSection}     
 
                             { this.state.isMyProfile && this.state.offers && !this.state.offers.length && NoOfferSection }
                         </div>
                     </div>
+                    }
+                    { this.state.ready &&
                     <div className="row">
                         <div className="col-xs-12 col-sm-12">
-                            <h1>Reviews</h1>
+                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                Reviews
+                            </h1>
                             <p className="text-muted">
                                 No reviews
                             </p>
                         </div>
                     </div>
+                    }
                 </div>
             </div>
             );

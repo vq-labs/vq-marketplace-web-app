@@ -44,6 +44,7 @@ coreNavigation.setBase('app');
 corei18n.addLang('en', {});
 corei18n.addLang('de', {});
 corei18n.addLang('tr', {});
+corei18n.addLang('hu', {});
 corei18n.addLang('pl', {});
 
 class App extends Component {
@@ -132,33 +133,33 @@ class App extends Component {
               logo={this.state.meta.LOGO_URL}
               user={this.state.user}>
             </Header>
-              <HashRouter hashType="hashbang" history={browserHistory} onUpdate={coreTracking.pageView}>
-                <Route path="/app">
-                  <IndexRoute component={Offers}/>
-                  <Route path="dashboard" component={Dashboard}></Route>
-                  <Route path="change-password" component={ChangePasswordPage}></Route>
-                  <Route path="my-listings" component={MyListings}></Route>
-                  <Route path="admin/:section" component={AdminPage}></Route>
-                  <Route path="new-listing" component={NewTask}></Route>
-                  <Route path="new-listing/:taskId" component={NewTask}></Route>
-                  <Route path="premium" component={PremiumPage}></Route>
-                  <Route path="chat" component={Chat}></Route>
-                  <Route path="chat/:chatId" component={ChatRoom}></Route>
-                  <Route path="request/:requestId/book" component={BookRequest}></Route>
-                  <Route path="order/:orderId" component={Order}></Route>
-                  <Route path="signup" component={SignupPage}></Route>
-                  <Route path="login" component={LoginPage}></Route>
-                  <Route path="post/:postId" component={Post}></Route>
-                  <Route path="terms" component={PostTermsOfService}></Route>
-                  <Route path="privacy" component={PostPrivacyPolicy}></Route>
-                  <Route path="post/:taskId/edit" component={PostEdit}></Route>
-                  <Route path="task/:taskId" component={Task}></Route>
-                  <Route path="task/:taskId/edit" component={TaskEdit}></Route>
-                  <Route path="profile/:profileId" component={Profile}></Route>
-                  <Route path="my-listings" component={MyListings}></Route>
-                  <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
-                </Route>
-              </Router>
+            <Router history={browserHistory} onUpdate={coreTracking.pageView}>
+              <Route path="/app">
+                <IndexRoute component={Offers}/>
+                <Route path="dashboard" component={Dashboard}></Route>
+                <Route path="change-password" component={ChangePasswordPage}></Route>
+                <Route path="my-listings" component={MyListings}></Route>
+                <Route path="admin/:section" component={AdminPage}></Route>
+                <Route path="new-listing" component={NewTask}></Route>
+                <Route path="new-listing/:taskId" component={NewTask}></Route>
+                <Route path="premium" component={PremiumPage}></Route>
+                <Route path="chat" component={Chat}></Route>
+                <Route path="chat/:chatId" component={ChatRoom}></Route>
+                <Route path="request/:requestId/book" component={BookRequest}></Route>
+                <Route path="order/:orderId" component={Order}></Route>
+                <Route path="signup" component={SignupPage}></Route>
+                <Route path="login" component={LoginPage}></Route>
+                <Route path="post/:postId" component={Post}></Route>
+                <Route path="terms" component={PostTermsOfService}></Route>
+                <Route path="privacy" component={PostPrivacyPolicy}></Route>
+                <Route path="post/:taskId/edit" component={PostEdit}></Route>
+                <Route path="task/:taskId" component={Task}></Route>
+                <Route path="task/:taskId/edit" component={TaskEdit}></Route>
+                <Route path="profile/:profileId" component={Profile}></Route>
+                <Route path="my-listings" component={MyListings}></Route>
+                <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
+              </Route>
+            </Router>
             <Footer
               logo={this.state.meta.LOGO_URL}
               appName={this.state.meta.NAME}

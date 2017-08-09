@@ -136,19 +136,19 @@ export default class Bookings extends Component {
                                     
                                     { order.status === ORDER_STATUS.PENDING &&
                                         <p className="text-muted">
-                                            {translate("IN_PROGRESS")}
+                                            {translate("ORDER_IN_PROGRESS")}
                                         </p>
                                     }
 
                                     { order.status === ORDER_STATUS.SETTLED &&
                                         <p className="text-muted">
-                                            {translate("SETTLED")}
+                                            {translate("ORDER_SETTLED")}
                                         </p>
                                     }
 
                                     { order.status === ORDER_STATUS.MARKED_DONE &&
                                         <p className="text-muted">
-                                            {translate("MARKED_DONE")}
+                                            {translate("ORDER_MARKED_DONE")}
                                         </p>
                                     }
                                 </div>
@@ -184,7 +184,7 @@ export default class Bookings extends Component {
                                     }
                                     { order.status !== ORDER_STATUS.SETTLED &&
                                         <RaisedButton
-                                            label={translate('CONFIRM_BOOKING')}
+                                            label={translate('SETTLE_ORDER')}
                                             primary={true}
                                             onTouchTap={() => this.initSettleOrder(order)}
                                         />

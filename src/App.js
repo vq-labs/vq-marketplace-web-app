@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { HashRouter, Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 // Library components
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -132,7 +132,7 @@ class App extends Component {
               logo={this.state.meta.LOGO_URL}
               user={this.state.user}>
             </Header>
-              <Router history={browserHistory} onUpdate={coreTracking.pageView}>
+              <HashRouter hashType="hashbang" history={browserHistory} onUpdate={coreTracking.pageView}>
                 <Route path="/app">
                   <IndexRoute component={Offers}/>
                   <Route path="dashboard" component={Dashboard}></Route>

@@ -1,10 +1,10 @@
 {
-  "name": "st-app-web",
+  "name": "vq-marketplace-web-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/app",
-  "author": "Adrian Barwicki",
-  "licence": "UNLICENCED",
+  "homepage": "/",
+  "author": "VQ-LABS.com",
+  "licence": "MIT",
   "devDependencies": {
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",

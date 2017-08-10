@@ -11,9 +11,11 @@ import { translate } from '../core/i18n';
 import RaisedButton from 'material-ui/RaisedButton';
 
 export default class SectionPostEdit extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
+
         this.state = {
+            postId: post.params.postId,
             ready: false,
             saved: false,
             type: {},
@@ -34,7 +36,7 @@ export default class SectionPostEdit extends React.Component {
     }
 
     componentDidMount() {
-        const postId = this.props.params.postId;
+        const postId = this.state.postId;
 
         this.getPost(postId);
     }

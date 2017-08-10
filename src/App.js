@@ -152,7 +152,7 @@ class App extends Component {
                 <Route path="post/:postId" component={Post}></Route>
                 <Route path="terms" component={PostTermsOfService}></Route>
                 <Route path="privacy" component={PostPrivacyPolicy}></Route>
-                <Route path="post/:taskId/edit" component={PostEdit}></Route>
+                <Route path="post/:postId/edit" component={PostEdit}></Route>
                 <Route path="task/:taskId" component={Task}></Route>
                 <Route path="task/:taskId/edit" component={TaskEdit}></Route>
                 <Route path="profile/:profileId" component={Profile}></Route>

@@ -58,7 +58,7 @@ export default class NewListingCategory extends React.Component {
                                                             <CardTitle title={translate(tile.code)} />
                                                         }
                                                     >
-                                                        <img alt="category" src={tile.imageUrl} />
+                                                        <img alt="category" src={tile.imageUrl || '/images/category-default-img.jpeg'} />
                                                     </CardMedia>
                                                 </Card>
                                             </div>

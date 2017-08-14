@@ -95,7 +95,7 @@ export default class SectionCategories extends React.Component {
                     <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10}}>
                     <Card>
                         <CardMedia>
-                            <img src={category.imageUrl} alt={category.label}/>
+                            <img src={category.imageUrl || '/images/category-default-img.jpeg'} alt={category.label}/>
                         </CardMedia>
                 
                         <CardTitle title={category.label} subtitle={category.desc} />

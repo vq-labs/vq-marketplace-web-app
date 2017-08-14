@@ -28,6 +28,7 @@ import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
+import Imprint from './Pages/Imprint';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
@@ -156,6 +157,7 @@ class App extends Component {
                 <Route path="post/:postId" component={Post}></Route>
                 <Route path="terms" component={PostTermsOfService}></Route>
                 <Route path="privacy" component={PostPrivacyPolicy}></Route>
+                <Route path="imprint" component={Imprint}></Route>
                 <Route path="post/:postId/edit" component={PostEdit}></Route>
                 <Route path="task/:taskId" component={Task}></Route>
                 <Route path="task/:taskId/edit" component={TaskEdit}></Route>

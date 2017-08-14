@@ -235,8 +235,8 @@ export default class NewListing extends Component {
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
                         <div className="row">
                             <div className="col-xs-12">
-                                <h1>{translate("STEP")} 4. {translate("ADD_PICTURE_HEADER")}</h1>
-                                <p className="text-muted">{translate("ADD_PICTURE_DESC")}</p>
+                                <h1>{translate("STEP")} 4. {translate("NEW_LISTING_PHOTO_HEADER")}</h1>
+                                <p className="text-muted">{translate("NEW_LISTING_PHOTO_DESC")}</p>
                             </div>
                         </div>
                         <hr />
@@ -498,7 +498,7 @@ export default class NewListing extends Component {
                                             float: 'right'
                                         }}
                                         backgroundColor={this.state.appConfig.COLOR_PRIMARY}
-                                        label={translate("CONFIRM_AND_POST")}
+                                        label={translate("NEW_LISTING_CONFIRM_AND_POST")}
                                         primary={true}
                                         disabled={false}
                                         onTouchTap={() => {

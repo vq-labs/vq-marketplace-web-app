@@ -58,43 +58,42 @@ class App extends Component {
       meta: {}
     };
 
-    const params = coreUtil.getParams(location.search);
-
-    if (params.token) {
-      coreAuth.setToken(params.token);
-    } else {
-      coreAuth.loadFromLocalStorage();
-    }
-
-    coreAuth.addListener('login', () => {
-      apiAuth.me()
-        .then(myUserData => {
-          coreAuth.setUserId(myUserData.id);  
-          coreAuth.setUser(myUserData);
-
-          this.setState({
-            user: myUserData
-          });
-        })
-        .catch(err => {
-          coreAuth.destroy();
-          coreNavigation.goTo('/login');
-        });
-    }, true);
-
-    coreAuth.addListener('logout', () => {
-      this.setState({
-        user: null
-      });
-    });
-    
     apiConfig
-      .appConfig
-      .getItems({}, {
-        cache: true
-      })
-      .then(config => {
+    .appConfig
+    .getItems({}, {
+      cache: true
+    })
+    .then(config => {
         coreConfig.set(config);
+
+        const params = coreUtil.getParams(location.search);
+
+        if (params.token) {
+          coreAuth.setToken(params.token);
+        } else {
+          coreAuth.loadFromLocalStorage();
+        }
+
+        coreAuth.addListener('login', () => {
+          apiAuth.me()
+            .then(myUserData => {
+              coreAuth.setUserId(myUserData.id);  
+              coreAuth.setUser(myUserData);
+
+              this.setState({
+                user: myUserData
+              });
+            })
+            .catch(err => {
+              coreAuth.destroy();
+            });
+        }, true);
+
+        coreAuth.addListener('logout', () => {
+          this.setState({
+            user: null
+          });
+        });
 
         return this.setState({
           metaReady: true,

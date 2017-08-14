@@ -272,8 +272,22 @@ class Offers extends Component {
                                 </div>
                             }
                             
+
+
                             { !this.state.isLoading &&
                             <div className="col-xs-12">
+                                    {!this.state.offers.length &&
+                                    this.state.viewType !== VIEW_TYPES.MAP &&
+                                        <div 
+                                            className="text-center text-muted col-xs-12"
+                                            style={{ marginBottom: 10} }
+                                        >
+                                                {translate('NO_LISTINGS')}
+                                            <div className="row"><hr /></div>
+                                        </div>
+                                    }
+
+
                                     { this.state.viewType === VIEW_TYPES.LIST &&
                                             this.state.offers.map(offer =>
                                                 <div 

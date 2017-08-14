@@ -15,7 +15,7 @@ export default class SectionPostEdit extends React.Component {
         super();
 
         this.state = {
-            postId: post.params.postId,
+            postId: props.params.postId,
             ready: false,
             saved: false,
             type: {},

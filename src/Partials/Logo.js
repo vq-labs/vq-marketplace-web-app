@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { goTo } from '../core/navigation';
 
 class Logo extends Component {
   constructor(props) {
@@ -8,8 +9,10 @@ class Logo extends Component {
   render() {
       return (
         <div>
-            <a 
-              href="/"
+            <a
+              onClick={ 
+                () => goTo('/')
+              }
               target="_self" 
               style={{ textDecoration: 'none' }}
             >

@@ -33,13 +33,14 @@ import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
 import * as coreUtil from './core/util.js'
 import * as coreConfig from './core/config.js'
-import * as coreNavigation from './core/navigation';
+import { setBase, goTo } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
 
+
 import './App.css';
 
-coreNavigation.setBase('app');
+setBase('app');
 
 corei18n.addLang('en', {});
 corei18n.addLang('de', {});
@@ -57,6 +58,10 @@ class App extends Component {
       user: null,
       meta: {}
     };
+
+    if (location.pathname === '/') {
+      goTo('/');
+    }
 
     apiConfig
     .appConfig

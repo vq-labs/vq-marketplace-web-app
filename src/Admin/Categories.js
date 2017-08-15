@@ -8,6 +8,15 @@ import { translate } from '../core/i18n';
 import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 
+function slugify(text) {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
+  }
+
 export default class SectionCategories extends React.Component {
     constructor() {
         super();
@@ -21,7 +30,7 @@ export default class SectionCategories extends React.Component {
                 <div className="col-xs-12">
                     <EditableEntity
                         fields={[
-                            { key: 'code', type: 'string', label: 'Enter category code' },
+                            { key: 'code', type: 'string', label: 'Enter category code', },
                             { key: 'label', type: 'string', label: 'Enter category label' },
                             { key: 'desc', type: 'string', label: 'Enter category description' },
                             { key: 'minPriceHour', type: 'number', label: 'Enter the minimum price per hour in the supported currency' },

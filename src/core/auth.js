@@ -4,6 +4,7 @@ const listeners = {
 };
 
 const authCb = [];
+const nullableAuthCb = [];
 
 let user = null;
 let userId = null;
@@ -13,12 +14,16 @@ const emitChange = eventName => {
     listeners[eventName].forEach(fn => fn());
 };
 
-export const getUserAsync = cb => {
+export const getUserAsync = (cb, nullable) => {
     if (user) {
         return cb(user);
     }
 
-    authCb.push(cb);
+    if (nullable) {
+        nullableAuthCb.push(cb);
+    } else {
+        authCb.push(cb);
+    }
 };
 
 export const EVENTS = {
@@ -59,8 +64,13 @@ export const setUser = _user => {
 
     localStorage.setItem('VQ_USER', JSON.stringify(user));
 
-    authCb
-    .forEach(fn => fn(user));
+    if (user) {
+        authCb
+        .forEach(fn => fn(user));
+    } else {
+        nullableAuthCb
+        .forEach(fn => fn());
+    }
 };
 
 export const getUser = () => user;
@@ -94,6 +104,7 @@ export const getToken = () => token === 'null' ? null : token;
 export const destroy = () => {
     setToken(null);
     setUserId(null);
+    setUser(null);
 
     emitChange('logout');
 };

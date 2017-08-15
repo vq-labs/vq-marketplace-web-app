@@ -35,6 +35,14 @@ export default class Dashboard extends Component {
   componentDidMount() {
     getConfigAsync(config => {
       getUserAsync(user => {
+        if (!user) {
+          return goTo('/');
+        }
+
+        if (user.status !== '10') {
+            return goTo('/email-not-verified');
+        }
+
 
         apiTask
         .getItems({
@@ -57,7 +65,7 @@ export default class Dashboard extends Component {
           userType: user.userType,
           viewType: Number(user.userType) === 1 ? 'ORDERS_IN_PROGRESS' : 'SENT_REQUESTS_ACCEPTED'
         });
-      });
+      }, true);
     });
   }
 

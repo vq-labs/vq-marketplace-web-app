@@ -32,6 +32,15 @@ import * as coreNavigation from '../core/navigation';
 
 import '../App.css';
 
+function slugify(text) {
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')             // Trim - from start of text
+    .replace(/-+$/, '');            // Trim - from end of text
+}
+
 export default class CategoryEdit extends Component {
     constructor(props) {
         super(props);
@@ -53,9 +62,16 @@ export default class CategoryEdit extends Component {
             return (event, value) => {
                 const obj = this.state.obj;
 
+
                 obj[field] = value;
                 
-                this.setState( { obj } );
+                if (field === 'label') {
+                    obj['code'] = slugify(value);
+                }
+
+                this.setState({
+                    obj
+                });
             }
     } 
 
@@ -70,7 +86,7 @@ export default class CategoryEdit extends Component {
                                 <div className="col-xs-12">
                                     <TextField
                                         ref="code"
-                                        onChange={ this.handleFieldChange('code') }
+                                        disabled={true}
                                         value={this.state.obj.code}
                                         style={{width: '100%'}}
                                         inputStyle={{width: '100%'}}

@@ -8,7 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import apiMessage from '../api/message';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
-import * as coreAuth from '../core/auth';
+import { getUserAsync } from '../core/auth';
 import { goTo } from '../core/navigation';
 
 const stripHTML = html => {
@@ -37,13 +37,21 @@ export default class Chat extends Component {
       }
   }
   componentDidMount() {
-    !coreAuth.getUserId() && goTo('/login');
+    getUserAsync(user => {
+        if (!user) {
+            return goTo('/');
+        }
 
-    apiRequest.getItems({})
-    .then(requests => this.setState({
-        isLoading: false,
-        requests
-    }));
+        if (user.status !== '10') {
+            return goTo('/email-not-verified');
+        }
+        
+        apiRequest.getItems({})
+        .then(requests => this.setState({
+            isLoading: false,
+            requests
+        }));
+    });
   }
   render() {
     return (

@@ -1,5 +1,5 @@
 const TRANSLATIONS = {};
-const defaultLang = 'en';
+const defaultLang = 'hu';
 let LANG = localStorage.getItem('ST_LANG');
 
 if (!LANG) {

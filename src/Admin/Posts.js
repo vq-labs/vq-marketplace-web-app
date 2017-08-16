@@ -127,6 +127,11 @@ export default class SectionPosts extends React.Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody displayRowCheckbox={false} stripedRows={true} >
+                            { !this.state.posts.length &&
+                                <TableRow>
+                                    <TableRowColumn>No articles of type {this.state.type} has been initialised.</TableRowColumn>
+                                </TableRow>
+                            }
                             { this.state.posts
                               .map((post, index) =>
                                 <TableRow key={index} >

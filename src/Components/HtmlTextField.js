@@ -42,9 +42,18 @@ export default class HtmlTextField extends Component {
                     fontSize: '16px',
                     cursor: 'text',
                     minHeight: 80,
-                    padding: 10
+                    padding: 10,
+                    width: '100%',
+                    height: 150,
+                    boxSizing: 'border-box',
+                    border: '2px solid #ccc',
+                    borderRadius: '4px',
+                    backgroundColor: '#f8f8f8',
+                    resize: 'none'
             }}>
-                <Editor 
+                <Editor
+                   style={{
+                    }} 
                     ref="editor" 
                     editorState={this.state.editorState} 
                     onChange={this.onChange}

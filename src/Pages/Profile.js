@@ -5,15 +5,20 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
+import IconButton from 'material-ui/IconButton';
+import Avatar from 'material-ui/Avatar';
+import ReactStars from 'react-stars'
 import FormatQuote from 'material-ui/svg-icons/editor/format-quote';
 import apiTask from '../api/task';
 import apiUser from '../api/user';
+import apiReview from '../api/review';
+import DOMPurify from 'dompurify'
 import * as apiSkills from '../api/skills';
 import * as coreAuth from '../core/auth';
-import * as coreNavigation from '../core/navigation';
+import { goTo } from '../core/navigation';
 import * as apiMedia from '../api/media';
 import * as apiUserProperty from '../api/user-property.js';
-
+import Moment from 'react-moment';
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
@@ -36,6 +41,7 @@ class Profile extends React.Component {
             isMyTask: false,
             skills: [],
             offers: [],
+            reviews: [],
             talents: [],
             profile: {}
         };
@@ -76,6 +82,14 @@ class Profile extends React.Component {
             });
 
             getProfileTasks();
+
+            apiReview
+                .getItems({
+                    toUserId: userId
+                })
+                .then(reviews => this.setState({
+                    reviews
+                }));
 
             apiUser
                 .getItem(userId)
@@ -176,7 +190,7 @@ class Profile extends React.Component {
                             <div className="row">
                                 <div className="col-xs-12" style={{ marginTop: 10 }}>
                                     <RaisedButton label={ translate('EDIT_PROFILE') } onTouchTap={
-                                        () => coreNavigation.goTo(`/profile/${this.state.profile.id}/edit`)
+                                        () => goTo(`/profile/${this.state.profile.id}/edit`)
                                     } />
                                 </div>
                             </div>
@@ -185,7 +199,7 @@ class Profile extends React.Component {
                 </div>;
 
         const newOfferBtn = 
-            <FloatingActionButton onClick={ () => coreNavigation.goTo('/new-listing') } mini={true} backgroundColor={"#546e7a"} >
+            <FloatingActionButton onClick={ () => goTo('/new-listing') } mini={true} backgroundColor={"#546e7a"} >
                 <ContentAdd />
             </FloatingActionButton>
 
@@ -193,7 +207,7 @@ class Profile extends React.Component {
         const NoOfferSection = 
             <div className="text-center">
                 <h4>{ translate('NO_ACTIVE_LISTINGS') }</h4>
-                <RaisedButton onTouchTap={() => coreNavigation.goTo('/new-listing')} label={ translate('POST_NEW_LISTING') } primary={true}  />
+                <RaisedButton onTouchTap={() => goTo('/new-listing')} label={ translate('POST_NEW_LISTING') } primary={true}  />
             </div>;
 
         const OfferSection = 
@@ -245,9 +259,67 @@ class Profile extends React.Component {
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                 Reviews
                             </h1>
-                            <p className="text-muted">
-                                No reviews
-                            </p>
+                            {!this.state.reviews.length &&
+                                <p className="text-muted">
+                                    No reviews
+                                </p>
+                            }
+
+                            {this.state.reviews.map(review =>
+                                <div className="col-xs-12">
+                                    <div className="col-xs-1" onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}>
+                                        <IconButton
+                                            style={{ bottom: 5 }}
+                                            tooltip={
+                                                `${review.fromUser.firstName} ${review.fromUser.lastName}`
+                                            }
+                                        >
+                                            <Avatar src={review.fromUser.imageUrl || '/images/avatar.png'} />
+                                        </IconButton>
+                                        <p className="text-muted text-center">
+                                            {review.fromUser.firstName} {review.fromUser.lastName}
+                                        </p>
+                                    </div>
+                                     <div className="col-xs-8">
+                                        <div className="row">
+                                                <div className="col-xs-12">
+                                                    <div style={{
+                                                        lineHeight: 2
+                                                    }}>
+                                                        <ReactStars
+                                                            edit={false}
+                                                            disable={true}
+                                                            count={5}
+                                                            size={16}
+                                                            half={false}
+                                                            value={review.rate}
+                                                            color2={'#ffd700'}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-xs-12" style={{ padding: 30}}>
+                                                    <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-xs-12 text-muted">
+                                                        <Moment format="MM.YYYY">{review.createdAt}</Moment>
+                                                        <span> </span>
+                                                        <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                            {review.task.title}
+                                                        </a>
+                                                </div>
+                                            </div>
+                                     </div>
+                                     
+                                     <div className="col-xs-12">
+                                        <hr />
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
                     </div>
                     }

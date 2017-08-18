@@ -1,73 +1,19 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
-import apiPost from '../api/post';
-import EditableEntity from '../Components/EditableEntity';
-import * as coreNavigation from '../core/navigation';
-import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import * as coreUtil from '../core/util.js'
 import {
   Table,
   TableBody,
-  TableFooter,
   TableHeader,
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
 
-const defaultConfigsFields = [
-    {
-        type: 'string',
-        key: 'NAME',
-        label: 'Marketplace name'
-    },
-    {
-        type: 'string',
-        key: 'DOMAIN',
-        label: 'What is your domain url? (with http or https)'
-    },
-    {
-        type: 'string',
-        key: 'LOGO_URL',
-        label: 'Marketplace logo'
-    },
-    {
-        type: 'string',
-        key: 'PROMO_URL',
-        label: 'Marketplace promo'
-    },
-    {
-        type: 'string',
-        key: 'SOCIAL_FB_USERNAME',
-        label: 'Facebook username'
-    },
-    {
-        type: 'string',
-        key: 'COMPANY_NAME_SHORT',
-        label: 'Short version of company name (will be included in landing page)'
-    },
-    {
-        type: 'string',
-        key: 'COMPANY_NAME',
-        label: 'What is your company name? (will be included in emails and impressum)'
-    },
-    {
-        type: 'string',
-        key: 'COMPANY_ADDRESS',
-        label: 'What is your company address? (will be included in emails and impressum)'
-    },
-    {
-        type: 'string',
-        key: 'COMPANY_CEO',
-        label: 'Who is the CEO of your company? (will be included in emails and impressum)'
-    },
-    {
-        type: 'string',
-        key: 'COMPANY_URL',
-        label: 'Company website (will be included in landing page, emails and impressum)'
-    }
-];
+import apiPost from '../api/post';
+import { goTo, setQueryParams } from '../core/navigation';
+import DropDownMenu from 'material-ui/DropDownMenu';
+
+
 
 export default class SectionPosts extends React.Component {
     constructor() {
@@ -105,18 +51,21 @@ export default class SectionPosts extends React.Component {
                             type: value
                         });
 
-                        coreNavigation.setQueryParams({ type: value });
+                        setQueryParams({
+                            type: value
+                        });
                         
                         this.getPosts(value);
                     }}>
                         <MenuItem value={'email'} primaryText="Emails" />
                         <MenuItem value={'terms'} primaryText="Terms" />
                         <MenuItem value={'blog'} primaryText="Blog" />
+                        <MenuItem value={'process'} primaryText="Process" />
                     </DropDownMenu>
                 </div>
                 <div className="col-xs-12"> 
                     <Table selectable={true} onRowSelection={index => {
-                        coreNavigation.goTo(`/post/${this.state.posts[index].id}/edit`)   
+                        goTo(`/post/${this.state.posts[index].id}/edit`)   
                     }} >
                         <TableHeader displaySelectAll={false} enableSelectAll={false} adjustForCheckbox={false}>
                             <TableRow>

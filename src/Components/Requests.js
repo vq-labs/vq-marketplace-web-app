@@ -45,7 +45,7 @@ export default class Requests extends Component {
   componentDidMount() {
     getConfigAsync(config => {
         const queryObj = {};
-        debugger;
+
         if (this.state.view) {
             queryObj.view = this.state.view;
         }
@@ -227,6 +227,23 @@ export default class Requests extends Component {
                                             onTouchTap={() => this.markAsDone(request)}
                                         />
                                     }
+
+                                    {!request.review &&
+                                        request.status === REQUEST_STATUS.SETTLED &&
+                                        <div style={{
+                                            display: 'inline-block',
+                                            padding: 10
+                                        }}>
+                                            <RaisedButton
+                                                labelStyle={{color: 'white '}}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                label={translate('LEAVE_REVIEW')}
+                                                onTouchTap={() => {
+                                                    goTo(`/request/${request.id}/review`);
+                                                }}
+                                            />
+                                        </div>
+                                        }
                                 </div>
                             </div>
                             </Paper>

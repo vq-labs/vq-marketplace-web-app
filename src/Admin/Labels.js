@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import EditableEntity from '../Components/EditableEntity';
 import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
-import * as coreUtil from '../core/util.js'
+import { getParams } from '../core/util.js'
 
 const _ = require('underscore');
 
@@ -13,7 +13,7 @@ export default class SectionLabels extends React.Component {
         super(props);
 
         this.state = {
-            lang: coreUtil.getParams(location.search).lang || 'en',
+            lang: getParams(location.search).lang || 'en',
             labels: [],
             labelsObj: {}
         };

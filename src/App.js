@@ -29,6 +29,7 @@ import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
+import PostReviewCompleted from './Pages/PostReviewCompleted';
 import Review from './Pages/Review';
 import Imprint from './Pages/Imprint';
 import * as coreAuth from './core/auth';
@@ -159,6 +160,7 @@ class App extends Component {
                 <Route path="request/:requestId/review" component={Review}></Route>
                 <Route path="order/:orderId" component={Order}></Route>
                 <Route path="order/:orderId/review" component={Review}></Route>
+                <Route path="review-completed" component={PostReviewCompleted}></Route>
                 <Route path="signup" component={SignupPage}></Route>
                 <Route path="login" component={LoginPage}></Route>
                 <Route path="post/:postId" component={Post}></Route>

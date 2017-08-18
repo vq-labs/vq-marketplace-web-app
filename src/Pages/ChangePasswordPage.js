@@ -54,7 +54,7 @@ export default class ChangePasswordPage extends Component {
                 <TextField
                   style={{width: '100%'}}
                   ref="repeatNewPassword"
-                  floatingLabelText={translate('REPEAT_NEW_PASSWORD')}
+                  floatingLabelText={translate('REPEAT_PASSWORD')}
                   type="password"/>
                 <br />
                   <RaisedButton 

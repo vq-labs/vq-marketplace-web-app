@@ -66,6 +66,12 @@ class Signup extends Component {
           this.props.onSuccess(result.user);
         })
         .catch(err => {
+            if (err.desc) {
+              const translated = translate(err.code);
+
+              return alert(translated === err.code ? err.desc : translated);
+            }
+
             alert(err.err.code);
         });
   }
@@ -128,7 +134,7 @@ class Signup extends Component {
                           ref={userProperty.propKey}
                           style={{width: '100%'}}
                           floatingLabelText={`${translate(userProperty.labelKey)} ${userProperty.required ? '*' : ''}`}
-                          type="text"/>
+                          type="number"/>
                       )
                     }
                     <div className="row">

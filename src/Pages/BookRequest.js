@@ -84,7 +84,7 @@ class BookRequest extends Component {
                             <div className="col-xs-12">
                                 <h3>{this.state.requestDetails.task.title}</h3>
                                 <hr />
-                                {coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency)}}
+                                <strong>{coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency)}</strong>
                             </div>
                             <div className="col-xs-12">
                                 <p className="text-muted">Application by:</p>

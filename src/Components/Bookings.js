@@ -153,17 +153,23 @@ export default class Bookings extends Component {
                                     }
                                 </div>
                                 <div className="col-xs-12 col-sm-6 text-right">
-                                    <IconButton
-                                        onClick={() => goTo(`/profile/${order.fromUser.id}`)}
-                                        tooltip={
-                                            `${order.fromUser.firstName} ${order.fromUser.lastName}`
-                                        }
-                                    >
-                                        <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
-                                    </IconButton>
+                                    <div style={{ 
+                                            display: 'inline-block',
+                                            padding: 5
+                                    }}>
+                                        <IconButton
+                                            style={{ bottom: 5 }}
+                                            onClick={() => goTo(`/profile/${order.fromUser.id}`)}
+                                            tooltip={
+                                                `${order.fromUser.firstName} ${order.fromUser.lastName}`
+                                            }
+                                        >
+                                            <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
+                                        </IconButton>
+                                    </div>
                                     { order.status !== ORDER_STATUS.SETTLED && 
                                         <IconButton
-                                            style={{ top: 10 }}
+                                            style={{ top: 5 }}
                                             tooltip={
                                                 order.fromUser.userProperties
                                                 .find(_ => _.propKey === 'phoneNo')
@@ -173,14 +179,19 @@ export default class Bookings extends Component {
                                         </IconButton>
                                     }
                                     { order.status !== ORDER_STATUS.SETTLED && 
-                                        <IconButton
-                                            style={{ top: 10 }}
-                                            tooltip={'Chat'}
-                                            onClick={() => goTo(`/chat/${order.request.id}`)}
-                                        >
-                                        
-                                            <IconChatBubble />
-                                        </IconButton>
+                                        <div style={{ 
+                                            display: 'inline-block',
+                                            padding: 15
+                                        }}>
+                                            <IconButton
+                                                style={{ marginTop: 10 }}
+                                                tooltip={'Chat'}
+                                                onClick={() => goTo(`/chat/${order.request.id}`)}
+                                            >
+                                            
+                                                <IconChatBubble />
+                                            </IconButton>
+                                        </div>
                                     }
                                     { order.status !== ORDER_STATUS.SETTLED &&
                                         <RaisedButton
@@ -188,6 +199,22 @@ export default class Bookings extends Component {
                                             primary={true}
                                             onTouchTap={() => this.initSettleOrder(order)}
                                         />
+                                    }
+                                    { order.status === ORDER_STATUS.SETTLED &&
+                                        !order.review &&
+                                        <div style={{
+                                            display: 'inline-block',
+                                            padding: 10
+                                        }}>
+                                            <RaisedButton
+                                                labelStyle={{color: 'white '}}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                label={translate('LEAVE_REVIEW')}
+                                                onTouchTap={() => {
+                                                    goTo(`/order/${order.id}/review`);
+                                                }}
+                                            />
+                                        </div>
                                     }
                                 </div>
                             </div>
@@ -197,7 +224,6 @@ export default class Bookings extends Component {
                     </div>
                 </div>
             }
-        
             <div>
                 <Dialog
                 actions={[

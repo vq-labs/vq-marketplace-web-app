@@ -5,7 +5,6 @@ import * as apiAdmin from '../api/admin';
 import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import { List, ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
 import IconMenu from 'material-ui/IconMenu';
@@ -48,7 +47,7 @@ export default class SectionUsers extends React.Component {
                                     primaryText={
                                         user
                                         &&
-                                        `${user.firstName} ${user.lastName} (#${user.id}) ${user.status == 20 ? ' (Blocked)' : ''}`
+                                        `${user.firstName} ${user.lastName} (#${user.id}) ${String(user.status) === '20' ? ' (Blocked)' : ''}`
                                     }
                                     rightIcon={
                                         <IconMenu
@@ -70,7 +69,7 @@ export default class SectionUsers extends React.Component {
                                                 primaryText="Go to profile page"
                                                 onClick={() => coreNavigation.goTo(`/profile/${user.id}`)}
                                             />
-                                            { user.status != 20 &&
+                                            { String(user.status) !== '20' &&
                                                 <MenuItem
                                                     onClick={() => this.setState({
                                                         isBlockingUser: true,
@@ -79,7 +78,7 @@ export default class SectionUsers extends React.Component {
                                                     primaryText="Block"
                                                 />
                                             }
-                                            { user.status == 20 &&
+                                            { String(user.status) === '20' &&
                                                 <MenuItem
                                                     onClick={() => this.setState({
                                                         isUnblockingUser: true,

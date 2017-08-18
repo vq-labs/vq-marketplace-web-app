@@ -17,6 +17,8 @@ import {
   StepLabel,
   StepContent,
 } from 'material-ui/Stepper';
+import { getConfigAsync } from '../core/config';
+import { getUserAsync } from '../core/auth';
 import '../Chat.css';
 
 const _ = require('underscore');
@@ -39,22 +41,32 @@ export default class ChatRoom extends React.Component {
     }
 
     componentDidMount() {
-        !coreAuth.getUserId() && goTo('/login');
+        getConfigAsync(config => {
+            getUserAsync(user => {
+                if (!user) {
+                    return goTo('/login');
+                }
 
-        let requestId = this.props.params.chatId;
+                let requestId = this.props.params.chatId;
 
-        apiRequest.getItem(requestId)
-        .then(chat => this.setState({
-            isUserOwner: coreAuth.getUserId() == chat.task.userId,
-            requestId,
-            isLoading: false,
-            fromUserId: coreAuth.getUserId(),
-            toUserId: chat.messages[0].fromUserId === coreAuth.getUserId() ? chat.messages[0].toUserId : chat.messages[0].fromUserId,
-            messages: chat.messages,
-            users: chat.users,
-            task: chat.task,
-            request: chat.request
-        }));
+                apiRequest.getItem(requestId)
+                .then(chat => this.setState({
+                    config,
+                    isUserOwner: user.id == chat.task.userId,
+                    requestId,
+                    isLoading: false,
+                    fromUserId: user.id,
+                    toUserId: chat.messages[0].fromUserId === user.id ?
+                        chat.messages[0].toUserId :
+                        chat.messages[0].fromUserId,
+                    messages: chat.messages,
+                    users: chat.users,
+                    task: chat.task,
+                    request: chat.request
+                }));
+
+            }, false);
+        });
     }
     handleNewMessage (event) {
         event.preventDefault()
@@ -237,8 +249,8 @@ export default class ChatRoom extends React.Component {
                                     { this.state.isUserOwner &&
                                       this.state.request.status == 0 &&
                                         <RaisedButton
-                                            backgroundColor={"#546e7a"}
-                                            labelColor={"white"}
+                                            labelStyle={{color: 'white '}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
                                             style={{
                                                 marginTop: 10,
                                                 width: '100%'

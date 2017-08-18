@@ -10,7 +10,9 @@ import SectionLabels from './Labels';
 import SectionPricing from './Pricing';
 import SectionListing from './Listing';
 import SectionPosts from './Posts';
-import * as coreNavigation from '../core/navigation';
+
+import { goTo } from '../core/navigation';
+import { getUserAsync } from '../core/auth';
 
 export default class AdminPage extends React.Component {
     constructor(props) {
@@ -26,13 +28,24 @@ export default class AdminPage extends React.Component {
         };
 
         this.goToSection = section => {
-            coreNavigation
-            .goTo(`/admin/${section}`);
+            goTo(`/admin/${section}`);
 
             this.setState({
                 section
             });
         };
+    }
+
+    componentDidMount() {
+        getUserAsync(user => {
+            if (!user) {
+                return goTo('/');
+            }
+
+            if (!user.isAdmin) {
+                return goTo('/');
+            }
+        }, true);
     }
 
     handleToggle() { 

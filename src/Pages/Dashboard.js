@@ -14,7 +14,9 @@ import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
-import { goTo } from '../core/navigation';
+import { goTo, setQueryParams } from '../core/navigation';
+import { getParams } from '../core/util.js'
+
 import apiTask from '../api/task';
 
 /**
@@ -25,11 +27,9 @@ export default class Dashboard extends Component {
       super();
   
       this.state = {
-        viewType: 'ORDERS_IN_PROGRESS',
         isLoading: false,
         tasks: []
       };
-
   }
   
   componentDidMount() {
@@ -42,7 +42,6 @@ export default class Dashboard extends Component {
         if (user.status !== '10') {
             return goTo('/email-not-verified');
         }
-
 
         apiTask
         .getItems({
@@ -63,7 +62,9 @@ export default class Dashboard extends Component {
           ready: true,
           config,
           userType: user.userType,
-          viewType: Number(user.userType) === 1 ? 'ORDERS_IN_PROGRESS' : 'SENT_REQUESTS_ACCEPTED'
+          viewType: getParams(location.search).viewType || Number(user.userType) === 1 ?
+            'ORDERS_IN_PROGRESS' :
+            'SENT_REQUESTS_ACCEPTED'
         });
       }, true);
     });
@@ -79,9 +80,12 @@ export default class Dashboard extends Component {
                 userType={Number(this.state.userType)}
                 halign="left"
                 selected={this.state.viewType}
-                onSelect={viewType => this.setState({
-                  viewType
-                })}
+                onSelect={viewType => {
+                  const newState = { viewType };
+
+                  setQueryParams(newState);
+                  this.setState(newState);
+              }}
               />
             </div>
             {this.state.viewType === 'LISTINGS_POSTED' &&
@@ -153,9 +157,6 @@ export default class Dashboard extends Component {
                   showTitle={false}
                 />
               }
-        
-              
-
             </div>
             }
             { !this.state.isLoading && this.state.userType == 1 &&

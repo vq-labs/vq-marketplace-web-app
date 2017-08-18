@@ -86,7 +86,7 @@ class Offers extends Component {
         
         apiTask.getItems({
             taskType: 1,
-            status: 0,
+            status: '0',
             // lat: query.lat,
             // lng: query.lng,
             category: query.category

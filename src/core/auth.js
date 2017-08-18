@@ -9,10 +9,15 @@ const nullableAuthCb = [];
 let user = null;
 let userId = null;
 let token = null;
+let userRequested = false;
 
 const emitChange = eventName => {
     listeners[eventName].forEach(fn => fn());
 };
+
+export const setAsRequested = () => {
+    userRequested = true;
+}
 
 export const getUserAsync = (cb, nullable) => {
     if (user) {
@@ -20,7 +25,11 @@ export const getUserAsync = (cb, nullable) => {
     }
 
     if (nullable) {
-        nullableAuthCb.push(cb);
+        if (userRequested) {
+            cb(user);
+        } else {
+            nullableAuthCb.push(cb);
+        }
     } else {
         authCb.push(cb);
     }

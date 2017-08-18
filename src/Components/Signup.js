@@ -52,6 +52,10 @@ class Signup extends Component {
 
       data.userType = this.state.userType;
 
+      if (data['repeatPassword'] !== data['password']) {
+        return alert('Passwords do not match!');
+      }
+
       apiAuth
         .signup(data)
         .then(result => {
@@ -107,6 +111,13 @@ class Signup extends Component {
                       style={{width: '100%'}}
                       ref="password"
                       floatingLabelText={`${translate('PASSWORD')} *`}
+                      type="password"/>
+                    <br />
+                    <TextField
+                      required={true}
+                      style={{width: '100%'}}
+                      ref="repeatPassword"
+                      floatingLabelText={`${translate('REPEAT_PASSWORD')} *`}
                       type="password"/>
                     <br />
                     { this.state.userProperties

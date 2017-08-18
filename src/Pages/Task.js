@@ -23,6 +23,7 @@ import { goTo } from '../core/navigation';
 import * as coreFormat from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
+import { getUserAsync } from '../core/auth';
 
 import '../App.css';
 
@@ -76,34 +77,40 @@ class Task extends Component {
     }
     componentDidMount() {
         getConfigAsync(config => {
-            let taskId = this.props.params.taskId;
-
-            this.setState({
-                configReady: true,
-                config
-            });
-
-            pricingModelProvider.get()
-            .then(pricingModels => this.setState({
-                pricingModels
-            }));
-
-            apiTask.getItem(taskId)
-            .then(task => {
-
-                const sentRequest = task.requests
-                    .find(
-                        _ => _.fromUserId === coreAuth.getUserId()
-                    );
-
+            getUserAsync(user => {
                 this.setState({
-                    taskOwner: task.user,
-                    sentRequestId: sentRequest ? sentRequest.id : null,
-                    isLoading: false,
-                    task,
-                    isMyTask: task.userId === coreAuth.getUserId()
+                    configReady: true,
+                    config,
+                    user
                 });
-            });
+
+                let taskId = this.props.params.taskId;
+
+                pricingModelProvider.get()
+                .then(pricingModels => this.setState({
+                    pricingModels
+                }));
+
+                apiTask.getItem(taskId)
+                .then(task => {
+                    let sentRequest;
+
+                    if (user) {
+                        sentRequest = task.requests
+                            .find(
+                                _ => _.fromUserId === user.id
+                            );
+                    }
+                    
+                    this.setState({
+                        taskOwner: task.user,
+                        sentRequestId: sentRequest ? sentRequest.id : null,
+                        isLoading: false,
+                        task,
+                        isMyTask: task.userId === coreAuth.getUserId()
+                    });
+                });
+            }, true);
         });
     }
 
@@ -185,9 +192,18 @@ class Task extends Component {
                                                 </p>
                                             </CardText>
                                         }
-                                        { !this.state.isMyTask && !this.state.sentRequestId && 
+                                        { !this.state.user &&
                                             <RaisedButton
-                                                backgroundColor={"#546e7a"}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                labelColor={"white"}
+                                                style={{width: '100%'}}
+                                                label={translate("REGISTER_TO_APPLY")} 
+                                                onClick={ () => goTo('/signup') }
+                                            /> 
+                                       }>
+                                        { this.state.user && !this.state.isMyTask && !this.state.sentRequestId && 
+                                            <RaisedButton
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
                                                 labelColor={"white"}
                                                 style={{width: '100%'}}
                                                 label={translate("SEND_REQUEST")} 

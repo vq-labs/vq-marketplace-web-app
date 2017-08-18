@@ -46,7 +46,7 @@ export default class Dashboard extends Component {
 
         apiTask
         .getItems({
-          status: 0,
+          status: '0',
           userId: user.id,
         })
         .then(tasks => this.setState({
@@ -99,7 +99,9 @@ export default class Dashboard extends Component {
                   .map(task =>
                       <div 
                           className="col-xs-12"
-                          style={{ marginBottom: 10} }
+                          style={{
+                            marginBottom: 10
+                          }}
                       >
                           <TaskListItem
                               key={task.id}

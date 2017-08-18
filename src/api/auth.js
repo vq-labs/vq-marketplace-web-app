@@ -1,6 +1,19 @@
 import * as communication from '../core/communication'
+import * as auth from '../core/auth'
 
-export const me = () => communication.doGet('/me');
+export const me = () => new Promise((resolve, reject) => {
+    communication
+    .doGet('/me')
+    .then(data => {
+        auth.setAsRequested();
+
+        return resolve(data)
+    }, err => {
+        auth.setAsRequested();
+
+        return reject(err)
+    });
+});
 
 export const login = data => communication.doPost('/login', data);
 

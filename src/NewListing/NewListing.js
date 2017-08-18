@@ -58,6 +58,13 @@ const TASK_TYPES = {
     SEARCHING: 2
 };
 
+const TASK_STATUS = {
+    ACTIVE: '0',
+    INACTIVE: '103',
+    CREATION_IN_PROGRESS: '10',
+    BOOKED: '20'
+};
+
 export default class NewListing extends Component {
     constructor(props) {
         super();
@@ -523,6 +530,8 @@ export default class NewListing extends Component {
                                             delete task.location.locationQueryString;
                                             delete task.location.countryRestriction;
                                             
+                                            task.status = TASK_STATUS.ACTIVE;
+
                                             apiTask.createItem({})
                                             .then(rTask => {
                                                 task.id = rTask.id;

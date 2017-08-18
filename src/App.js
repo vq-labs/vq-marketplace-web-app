@@ -29,6 +29,7 @@ import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
+import Review from './Pages/Review';
 import Imprint from './Pages/Imprint';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
@@ -72,6 +73,7 @@ class App extends Component {
     })
     .then(config => {
         coreConfig.set(config);
+        corei18n.setLang('en');
 
         const params = coreUtil.getParams(location.search);
 
@@ -110,7 +112,9 @@ class App extends Component {
 
     const defaultLang = 'en';
 
-    apiConfig.appLabel.getItems({
+    apiConfig
+    .appLabel
+    .getItems({
       lang: defaultLang
     }, {
       cache: true
@@ -152,7 +156,9 @@ class App extends Component {
                 <Route path="chat" component={Chat}></Route>
                 <Route path="chat/:chatId" component={ChatRoom}></Route>
                 <Route path="request/:requestId/book" component={BookRequest}></Route>
+                <Route path="request/:requestId/review" component={Review}></Route>
                 <Route path="order/:orderId" component={Order}></Route>
+                <Route path="order/:orderId/review" component={Review}></Route>
                 <Route path="signup" component={SignupPage}></Route>
                 <Route path="login" component={LoginPage}></Route>
                 <Route path="post/:postId" component={Post}></Route>

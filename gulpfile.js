@@ -5,13 +5,13 @@ const args = require('yargs').argv;
 const concat = require('gulp-concat');
 
 gulp.task('prepare', cb => {
-    const env = args.env || 'production';
-    const settings = require(`./config/setups/${env}.json`);
-    const translationsDE = require(`./config/app/i18n/de.json`);
-    const translationsEN = require(`./config/app/i18n/en.json`);
+    const env = args.env || 'local';
+    const API_URL = process.env.API_URL || 'http://localhost:8080/api';
+    const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS_ID || '';
+
     const style = require(`./config/app/style.json`);
 
-    console.log(settings);
+    console.log(API_URL);
 
     const prepareForBuild = gulp
     .src([ 'code-templates/**.js' ], { base: './code-templates' })
@@ -23,19 +23,11 @@ gulp.task('prepare', cb => {
                 },
                 {
                     match: 'API_URL',
-                    replacement: settings.API_URL
+                    replacement: API_URL
                 },
                 {
                     match: 'GOOGLE_ANALYTICS_ID',
-                    replacement: settings.GOOGLE_ANALYTICS_ID
-                },
-                {
-                    match: 'TRANSLATIONS_DE',
-                    replacement: translationsDE
-                },
-                {
-                    match: 'TRANSLATIONS_EN',
-                    replacement: translationsEN
+                    replacement: GOOGLE_ANALYTICS_ID
                 }
             ]
         }))

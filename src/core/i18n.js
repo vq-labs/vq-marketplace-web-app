@@ -1,10 +1,15 @@
 const TRANSLATIONS = {};
-const defaultLang = 'hu';
+const defaultLang = 'en';
 let LANG = localStorage.getItem('ST_LANG');
 
 if (!LANG) {
     LANG = defaultLang;
+
     localStorage.setItem('ST_LANG', LANG);
+}
+
+export const setLang = langKey => {
+    LANG = langKey || defaultLang;
 }
 
 export const addLang = (langKey, translations) => TRANSLATIONS[langKey] = translations;

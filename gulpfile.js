@@ -53,7 +53,7 @@ gulp.task('build', [ "prepare" ], cb => {
 });
 
 gulp.task('deploy', [ 'build' ], cb => {
-    const args = [ './**', '--region', 'eu-central-1', '--bucket', process.env.BUCKET_NAME ];
+    const args = [ './**', '--region', process.env.REGION || 'eu-central-1', '--bucket', process.env.BUCKET_NAME ];
     const npm = spawn("s3-deploy", args, { cwd: './build' });
 
     npm.stdout.on('data', data => {

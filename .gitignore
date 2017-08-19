@@ -11,7 +11,7 @@ config/setups
 # production
 build
 
-deployments
+deployments/**
 
 # misc
 .DS_Store

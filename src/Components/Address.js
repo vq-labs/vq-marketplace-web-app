@@ -33,7 +33,7 @@ export default class Address extends Component {
         this.state = {
             countryRestriction: props.countryRestriction,
             locationQueryString,
-            countryCode: address.countryCode || 'DE',
+            countryCode: address.countryCode,
             street: address.street,
             streetNumber: address.streetNumber,
             formattedAddress: address.formattedAddress,
@@ -83,6 +83,7 @@ export default class Address extends Component {
                                 <div className="col-xs-12">
                                         <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_COUNTRY") + '*'}</h4>
                                         <TextField
+                                            disabled={true}
                                             name="countryCode"
                                             onChange={this.onAddressFieldChange('countryCode')}
                                             style={{width: '100%'}}
@@ -155,6 +156,7 @@ export default class Address extends Component {
                                 <div className="col-xs-6">
                                     <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_POSTAL_CODE") + '*'}</h4>
                                     <TextField
+                                        type="number"
                                         name="postalCode"
                                         onChange={this.onAddressFieldChange('postalCode')}
                                         style={{width: '100%'}}

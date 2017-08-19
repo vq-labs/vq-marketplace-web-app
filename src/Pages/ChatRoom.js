@@ -43,11 +43,11 @@ export default class ChatRoom extends React.Component {
     componentDidMount() {
         getConfigAsync(config => {
             getUserAsync(user => {
-                if (!user) {
-                    return goTo('/login');
-                }
-
                 let requestId = this.props.params.chatId;
+
+                if (!user) {
+                    return goTo(`/login?redirectTo=/chat/${requestId}`);
+                }
 
                 apiRequest.getItem(requestId)
                 .then(chat => this.setState({
@@ -65,7 +65,7 @@ export default class ChatRoom extends React.Component {
                     request: chat.request
                 }));
 
-            }, false);
+            }, true);
         });
     }
     handleNewMessage (event) {

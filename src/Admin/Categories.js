@@ -4,27 +4,23 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import FlatButton from 'material-ui/FlatButton';
 import EditableEntity from '../Components/EditableEntity';
 import * as apiConfig from '../api/config';
-import { translate } from '../core/i18n';
-import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
-import Paper from 'material-ui/Paper';
-
-function slugify(text) {
-    return text.toString().toLowerCase()
-      .replace(/\s+/g, '-')           // Replace spaces with -
-      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-      .replace(/^-+/, '')             // Trim - from start of text
-      .replace(/-+$/, '');            // Trim - from end of text
-  }
+import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 
 export default class SectionCategories extends React.Component {
     constructor() {
         super();
         this.state = { categories: [] };
     }
+
     componentDidMount() {
-        apiConfig.categories.getItems().then(categories => this.setState({ categories }));
+        apiConfig
+        .categories
+        .getItems()
+        .then(categories => this.setState({
+            categories
+        }));
     }
+
     render() {
         const EditableCategory = (values, index) =>
                 <div className="col-xs-12">

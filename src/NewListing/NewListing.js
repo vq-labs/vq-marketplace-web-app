@@ -445,6 +445,13 @@ export default class NewListing extends Component {
                                                     });
                                                 }
 
+                                                if (String(task.location.postalCode).length < 4) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_NOT_CORRECT")
+                                                    });
+                                                }
+
                                                 if (!task.location.countryCode) {
                                                     return this.setState({
                                                         openSnackbar: true,

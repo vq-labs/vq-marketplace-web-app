@@ -130,7 +130,7 @@ class Review extends Component {
                         </h1>
                         <p>
                             { this.state.reviewType === REVIEW_TYPES.ORDER ?
-                                translate('REVIEW_TEXT_DESC') :
+                                translate('ORDER_REVIEW_TEXT_DESC') :
                                 translate('REQUEST_REVIEW_TEXT_DESC')
                             }
                         </p>

@@ -22,7 +22,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import { stripHtml } from '../core/util';
 import { goTo } from '../core/navigation';
-import '../App.css';
+import { getUserAsync } from '../core/auth';
+import { getConfigAsync } from '../core/config';
 
 const _chunk = require('lodash.chunk');
 import VIEW_TYPES from '../Components/VIEW_TYPES';
@@ -53,22 +54,34 @@ class Offers extends Component {
         this.handleMarkerClose = this.handleMarkerClose.bind(this);
     }
     componentDidMount() {
-        this.setState({
-            isLoading: true
+        getConfigAsync(config => {
+            getUserAsync(user => {
+                if (user && user.status !== '10') {
+                    return goTo('/email-not-verified');
+                }
+
+                this.setState({
+                    isLoading: true
+                });
+
+                apiCategory.getItems()
+                .then(categories => 
+                    this.setState({
+                        categories
+                    })
+                );
+
+                apiConfig.appConfig.getItems({}, { cache: true })
+                    .then(meta => this.setState({ meta }));
+
+
+                const queryCategory = this.props.location.query ? this.props.location.query.category : null;
+
+                setTimeout(() => {
+                    this.updateResults({ category: queryCategory });
+                }, 1100);
+            }, true);
         });
-
-        apiCategory.getItems()
-        .then(categories => this.setState({ categories }));
-
-        apiConfig.appConfig.getItems({}, { cache: true })
-            .then(meta => this.setState({ meta }));
-
-
-        const queryCategory = this.props.location.query ? this.props.location.query.category : null;
-
-        setTimeout(() => {
-            this.updateResults({ category: queryCategory });
-        }, 1100);
     }
     
     displayIconElement (offer) {

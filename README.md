@@ -28,7 +28,12 @@ AWS credentials can be provided via environment variables, or in the ~/.aws/cred
 
 The following command will prepare, build and deploy the app to S3 bucket:
 ```
-REGION=eu-central-1 BUCKET_NAME=xxxx.vq-labs.com API_URL=https://xxxxx-api.vq-labs.com gulp deploy
+AWS_BUCKET_NAME=xxx.vq-labs.com \
+AWS_REGION=eu-central-1 \
+VQ_API_URL=xxx-api.vq-labs.com \
+VQ_LANG=en \
+GOOGLE_ANALYTICS_ID=xxxx \
+gulp deploy
 ```
 
 ## MIT License

@@ -1,1 +1,0 @@
-export default {"LOGO":"https://studentask.de/images/st-logo-small.png"};

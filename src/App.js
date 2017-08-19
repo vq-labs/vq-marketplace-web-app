@@ -40,17 +40,14 @@ import * as coreConfig from './core/config.js'
 import { setBase, goTo } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
-
+import CONFIG from './generated/ConfigProvider.js'
 
 import './App.css';
 
 setBase('app');
 
-corei18n.addLang('en', {});
-corei18n.addLang('de', {});
-corei18n.addLang('tr', {});
-corei18n.addLang('hu', {});
-corei18n.addLang('pl', {});
+corei18n.addLang(CONFIG.LANG, {});
+corei18n.setLang(CONFIG.LANG);
 
 class App extends Component {
   constructor (props) {
@@ -74,8 +71,7 @@ class App extends Component {
     })
     .then(config => {
         coreConfig.set(config);
-        corei18n.setLang('en');
-
+        
         const params = coreUtil.getParams(location.search);
 
         if (params.token) {
@@ -111,7 +107,7 @@ class App extends Component {
         })
       });
 
-    const defaultLang = 'en';
+    const defaultLang = CONFIG.LANG;
 
     apiConfig
     .appLabel

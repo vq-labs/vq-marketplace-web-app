@@ -11,7 +11,9 @@ config/setups
 # production
 build
 
-deployments/**
+# deployments
+deployments/*
+!deployments/test-deployment.sh
 
 # misc
 .DS_Store

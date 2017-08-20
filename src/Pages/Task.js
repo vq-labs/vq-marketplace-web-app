@@ -201,7 +201,7 @@ class Task extends Component {
                                                 onClick={ () => goTo('/signup') }
                                             /> 
                                        }>
-                                        { this.state.user && this.state.user.userType === '2' && !this.state.isMyTask && !this.state.sentRequestId && 
+                                        { this.state.user && String(this.state.user.userType) === '2' && !this.state.isMyTask && !this.state.sentRequestId && 
                                             <RaisedButton
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                                 labelColor={"white"}

@@ -14,7 +14,7 @@ import { ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
-import { goTo } from '../core/navigation';
+import { goTo, goStartPage } from '../core/navigation';
 
 class Header extends Component {
   constructor(props) {
@@ -28,7 +28,6 @@ class Header extends Component {
     };
 
     this.handleLogout = this.handleLogout.bind(this);
-    this.goToOffers = this.goToOffers.bind(this);
     this.goToProfile = this.goToProfile.bind(this);
   }
 
@@ -61,14 +60,9 @@ class Header extends Component {
     }
   } 
 
-  goToOffers(e) {
-    e.preventDefault();
-    browserHistory.push('/app/tasks');
-  }
-
   goToProfile(e) {
     e.preventDefault();
-    browserHistory.push('/profile/' + this.state.user.id);
+    goTo('/profile/' + this.state.user.id);
   }
 
   handleLogout(e) {
@@ -81,7 +75,7 @@ class Header extends Component {
       user: false
     });
     
-    browserHistory.push('/app');
+    goStartPage();
   }
 
   render() {

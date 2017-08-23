@@ -12,6 +12,11 @@ export const goTo = url => {
     browserHistory.push(`${BASE}${url}`);
 };
 
+export const goStartPage = () => {
+    history.push(`/`);
+    browserHistory.push(`/`);
+};
+
 export const getAppPath = url => `${BASE}${url}`;
 
 export const goBack = () => {

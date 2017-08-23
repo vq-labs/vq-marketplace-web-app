@@ -31,6 +31,7 @@ import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
 import PostReviewCompleted from './Pages/PostReviewCompleted';
 import Review from './Pages/Review';
+import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
@@ -60,10 +61,11 @@ class App extends Component {
       meta: {}
     };
 
+    /**
     if (location.pathname === '/') {
       goTo('/');
     }
-
+     */
     apiConfig
     .appConfig
     .getItems({}, {
@@ -141,11 +143,15 @@ class App extends Component {
               user={this.state.user}>
             </Header>
             <Router history={browserHistory} onUpdate={coreTracking.pageView}>
+              <Route path="/">
+                <IndexRoute component={StartPage}/>
+              </Route>
               <Route path="/app">
                 <IndexRoute component={Offers}/>
                 <Route path="dashboard" component={Dashboard}></Route>
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
+                <Route path="listings" component={Offers}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>

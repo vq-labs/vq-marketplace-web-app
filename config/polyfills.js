@@ -13,6 +13,8 @@ require('whatwg-fetch');
 // It will use the native implementation if it's present and isn't buggy.
 Object.assign = require('object-assign');
 
+require('babel-polyfill');
+
 /**
  * Pollyfills for IE11
  * String.prototype.startsWith

@@ -48,17 +48,20 @@ export default class ProfileEdit extends Component {
                                     key: 'lastName',
                                     label: translate('LAST_NAME') 
                                 },
+                                
                                 {
                                     type: 'string',
                                     key: 'bio',
                                     label: translate('PROFILE_BIO'),
                                     hint: translate('PROFILE_BIO_DESC'),
                                 },
+                                /** 
                                 {
                                     type: 'string',
                                     key: 'website',
                                     label: translate('WEBSITE')
                                 }
+                                */
                             ]}
                             onConfirm={
                                 updatedEntity => apiUser

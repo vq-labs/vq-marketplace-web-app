@@ -179,13 +179,13 @@ class Profile extends React.Component {
                                     }
                             </div>
                             </div>
+                        { this.state.profile && this.state.profile.website &&
                             <div className="row">
-                            <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                                { this.state.profile && 
-                                    <a target="_blank" href={this.state.profile.website}> {this.state.profile.website}</a>
-                                }
+                                <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                                        <a target="_blank" href={this.state.profile.website}> {this.state.profile.website}</a>
+                                </div>
                             </div>
-                        </div>
+                        }   
                         { this.state.isMyProfile &&
                             <div className="row">
                                 <div className="col-xs-12" style={{ marginTop: 10 }}>

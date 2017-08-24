@@ -18,6 +18,9 @@ Object.assign = require('object-assign');
  * String.prototype.startsWith
  * String.prototype.repeat
  */
+
+require('es6-symbol/implement');
+
 if (!String.prototype.startsWith) {
   String.prototype.startsWith = function(searchString, position) {
     position = position || 0;

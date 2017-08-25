@@ -3,13 +3,18 @@ import Signup from '../Components/Signup';
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 
+const USER_TYPES = {
+  BUYER: 1,
+  SELLER: 2
+};
+
 const getOutOfHere = user => {
   switch (Number(user.userType)) {
-    case 1:
+    case USER_TYPES.BUYER:
       goTo(`/dashboard?userType=${user.userType}`);
       break;
-    case 2:
-      goTo(`/`);
+    case USER_TYPES.SELLER:
+      goTo(`/user-preferences`);
       break;
     default:
       goTo(`/`);

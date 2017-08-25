@@ -33,6 +33,7 @@ import PostReviewCompleted from './Pages/PostReviewCompleted';
 import Review from './Pages/Review';
 import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
+import UserPreferences from './Pages/UserPreferences';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
@@ -152,6 +153,7 @@ class App extends Component {
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
                 <Route path="listings" component={Offers}></Route>
+                <Route path="user-preferences" component={UserPreferences}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>

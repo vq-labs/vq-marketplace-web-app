@@ -1,6 +1,7 @@
 import React from 'react';
 import Chip from 'material-ui/Chip';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Paper from 'material-ui/Paper';
@@ -17,7 +18,8 @@ import * as apiSkills from '../api/skills';
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
 import * as apiMedia from '../api/media';
-import * as apiUserProperty from '../api/user-property.js';
+import * as apiUserProperty from '../api/user-property';
+import * as apiUserPreference from '../api/user-preference';
 import Moment from 'react-moment';
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
@@ -82,6 +84,12 @@ class Profile extends React.Component {
             });
 
             getProfileTasks();
+
+            apiUserPreference
+                .getItems(userId, 'category')
+                .then(preferences => this.setState({
+                    preferences
+                }));
 
             apiReview
                 .getItems({
@@ -255,6 +263,46 @@ class Profile extends React.Component {
                     }
                     { this.state.ready &&
                     <div className="row">
+                        <div className="col-xs-12 col-sm-12">
+                            <div className="row">
+                                <div className="col-xs-12 col-sm-11">
+                                    <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                        Preferences
+                                    </h1>
+                                    {!this.state.preferences.length &&
+                                        <p className="text-muted">
+                                            No preferences
+                                        </p>
+                                    }
+                                </div>
+                                <div className="col-xs-12 col-sm-1">     
+                                    <FloatingActionButton 
+                                        onClick={() => goTo('/user-preferences')}
+                                        mini={true}
+                                        backgroundColor={"#546e7a"}
+                                    >
+                                        <ModeEdit />
+                                    </FloatingActionButton>
+                                </div>
+                            </div>
+                             <div className="col-xs-12" style={{
+                                 display: 'flex',
+                                 flexWrap: 'wrap'
+                            }}>
+                            {this.state.preferences.map(preference =>
+                                <Chip
+                                    onTouchTap={() => {
+                                        goTo(`/?category=${preference.value}`)
+                                    }}
+                                    style={{
+                                        margin: 5
+                                    }}
+                                >
+                                    {preference.value}
+                                </Chip>
+                            )}
+                            </div>
+                        </div>
                         <div className="col-xs-12 col-sm-12">
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                 Reviews

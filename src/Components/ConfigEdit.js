@@ -11,7 +11,8 @@ export default class ConfigEdit extends React.Component {
     }
 
     componentDidMount() {
-        apiConfig.appConfig.getItems()
+        apiConfig.appConfig
+            .getItems()
             .then(meta => {
                 return this.setState({
                     meta

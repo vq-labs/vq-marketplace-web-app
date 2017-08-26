@@ -26,6 +26,7 @@ export default class EditableEntity extends Component {
         
 
         this.state = {
+            canSave: props.canSave,
             showCancelBtn: props.showCancelBtn,
             groupedFields,
             isLoading: false,
@@ -44,6 +45,7 @@ export default class EditableEntity extends Component {
 
     componentWillReceiveProps (nextProps) {
         this.setState({
+            canSave: nextProps.canSave,
             isLoading: !nextProps.value,
             updatedEntity: nextProps.value || {},
         });
@@ -101,17 +103,26 @@ export default class EditableEntity extends Component {
                                                         </div>
                                                     }
                                                     { (field.type === 'string' || field.type === 'number') &&
-                                                        <TextField
-                                                            key={index}
-                                                            type={field.type}
-                                                            onChange={this.handleFieldChange(field.key)}
-                                                            value={this.state.updatedEntity[field.key]}
-                                                            style={{width: '100%'}}
-                                                            inputStyle={{width: '100%'}}
-                                                            floatingLabelText={field.label}
-                                                            hintText={field.hint}
-                                                            floatingLabelFixed={true}
-                                                        />
+                                                        <div className="row">
+                                                            { field.title &&
+                                                                <div className="col-xs-12">
+                                                                    <h3>{field.title}</h3>
+                                                                </div>
+                                                            }
+                                                            <div className="col-xs-12">
+                                                                <TextField
+                                                                    key={index}
+                                                                    type={field.type}
+                                                                    onChange={this.handleFieldChange(field.key)}
+                                                                    value={this.state.updatedEntity[field.key]}
+                                                                    style={{width: '100%'}}
+                                                                    inputStyle={{width: '100%'}}
+                                                                    floatingLabelText={field.label}
+                                                                    hintText={field.hint}
+                                                                    floatingLabelFixed={true}
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     }
                                                     { (field.type === 'select') &&
                                                     <SelectField
@@ -178,7 +189,7 @@ export default class EditableEntity extends Component {
                                                 />
                                             }
                                             <RaisedButton
-                                                disabled={!this.state.dirty}
+                                                disabled={!this.state.dirty && this.state.canSave}
                                                 style={ { float: 'right' } }
                                                 label={this.props.saveLabel || 'Save'}
                                                 primary={ true }

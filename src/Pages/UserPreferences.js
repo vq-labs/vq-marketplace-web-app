@@ -78,7 +78,7 @@ export default class SectionCategories extends React.Component {
                                         .find(_ => _.value === categoryCode);
                                     const selectedIndex = selected
                                         .indexOf(selectedPreference);
-                                        debugger;
+                        
                                     if (selectedIndex === -1) {
                                         apiUserPreference
                                             .createItem(userId, {

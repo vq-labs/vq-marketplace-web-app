@@ -16,7 +16,7 @@ import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
 import { goTo, setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js'
-
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 
 /**
@@ -26,7 +26,10 @@ export default class Dashboard extends Component {
   constructor(props) {
       super();
   
+      const viewType = getParams(location.search).viewType;
+    
       this.state = {
+        viewType,
         isLoading: false,
         tasks: []
       };
@@ -35,12 +38,8 @@ export default class Dashboard extends Component {
   componentDidMount() {
     getConfigAsync(config => {
       getUserAsync(user => {
-        if (!user) {
-          return goTo('/');
-        }
-
-        if (user.status !== '10') {
-            return goTo('/email-not-verified');
+        if (getMeOutFromHereIfAmNotAuthorized(user)) {
+          return;
         }
 
         apiTask
@@ -54,18 +53,19 @@ export default class Dashboard extends Component {
         }));
 
 
-        if (user.userType) {
-
-        }
-
-        this.setState({
+        const newState =  {
           ready: true,
           config,
-          userType: user.userType,
-          viewType: getParams(location.search).viewType || Number(user.userType) === 1 ?
+          userType: user.userType
+        };
+
+        if (!this.state.viewType) {
+          newState.viewType =  Number(user.userType) === 1 ?
             'ORDERS_IN_PROGRESS' :
-            'SENT_REQUESTS_ACCEPTED'
-        });
+            'SENT_REQUESTS_ACCEPTED';
+        }
+        
+        this.setState(newState);
       }, true);
     });
   }
@@ -93,9 +93,11 @@ export default class Dashboard extends Component {
                   {!this.state.tasks.length &&
                     <div className="col-xs-12">
                         <div className="row">
-                                <p className="text-muted">
-                                    {translate("NO_OPEN_LISTINGS")}
-                                </p>
+                          <div className="col-xs-12">
+                              <p className="text-muted">
+                                  {translate("NO_OPEN_LISTINGS")}
+                              </p>
+                          </div>
                         </div>
                     </div>
                   }
@@ -110,7 +112,9 @@ export default class Dashboard extends Component {
                           <TaskListItem
                               key={task.id}
                               task={task}
+                              showRequests={true}
                               displayPrice={true}
+                              editable={true}
                           />
                         <div className="row"><hr /></div>
                       </div>

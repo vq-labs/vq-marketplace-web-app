@@ -3,6 +3,8 @@ import { Editor, EditorState } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 
+const striptags = require('striptags');
+
 export default class HtmlTextField extends Component {
   constructor(props) {
     super(props);
@@ -13,8 +15,13 @@ export default class HtmlTextField extends Component {
     };
 
     this.onChange = changedEditorState => {
-        const html = stateToHTML(changedEditorState.getCurrentContent());
+        let html = stateToHTML(changedEditorState.getCurrentContent());
         
+        html = striptags(html, [
+            'p',
+            'br'
+        ]);
+
         this.props.onChange(null, html);
 
         this.setState({ 
@@ -39,31 +46,25 @@ export default class HtmlTextField extends Component {
     return (
         <div>
             <div onClick={this.focus} style={{
-                    fontSize: '16px',
+                    fontSize: '15px',
                     cursor: 'text',
-                    minHeight: 80,
+                    minHeight: 100,
                     padding: 10,
                     width: '100%',
-                    height: 150,
                     boxSizing: 'border-box',
-                    border: '2px solid #ccc',
-                    borderRadius: '4px',
+                    border: '1px solid #ccc',
                     backgroundColor: '#f8f8f8',
-                    resize: 'none'
+                    resize: 'vertical'
             }}>
                 <Editor
-                   style={{
-                    }} 
+                    stripPastedStyles={true}
                     ref="editor" 
                     editorState={this.state.editorState} 
                     onChange={this.onChange}
                     placeholder={this.state.placeholder}
                 />
-                
             </div>
-            <hr />
         </div>
-    
     );
   }
 }

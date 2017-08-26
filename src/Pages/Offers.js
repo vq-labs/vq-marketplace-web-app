@@ -9,10 +9,11 @@ import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
+import Loader from "../Components/Loader";
 import Autocomplete from 'react-google-autocomplete';
 import { serializeQueryObj, formatGeoResults } from '../core/util';
 import { translate } from '../core/i18n';
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import * as apiConfig from '../api/config';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
@@ -53,11 +54,12 @@ class Offers extends Component {
         this.handleMarkerClick = this.handleMarkerClick.bind(this);
         this.handleMarkerClose = this.handleMarkerClose.bind(this);
     }
+
     componentDidMount() {
         getConfigAsync(config => {
             getUserAsync(user => {
-                if (user && user.status !== '10') {
-                    return goTo('/email-not-verified');
+                if (getMeOutFromHereIfAmNotAuthorized(user)) {
+                    return;
                 }
 
                 this.setState({
@@ -277,16 +279,8 @@ class Offers extends Component {
                                 />
                             </div>
                             { this.state.isLoading && 
-                                <div className="text-center" style={{
-                                    marginTop: '40px',
-                                    height: 200
-                                }}>
-                                    <CircularProgress size={80} thickness={5} />
-                                </div>
+                                <Loader isLoading={true} />
                             }
-                            
-
-
                             { !this.state.isLoading &&
                             <div className="col-xs-12">
                                     {!this.state.offers.length &&

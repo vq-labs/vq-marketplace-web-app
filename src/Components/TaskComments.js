@@ -78,7 +78,7 @@ export default class TaskComments extends React.Component {
                     const lastName = sender.lastName;
                     const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
-                    return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px'} }>
+                    return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px', marginBottom: '20px'} }>
                                 <div className="col-xs-12" style={{
                                     marginBottom: '20px'
                                 }}>

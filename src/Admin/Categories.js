@@ -55,8 +55,6 @@ export default class SectionCategories extends React.Component {
                             });
                         }}
                         onConfirm={newCategory => {
-                            debugger;
-
                             const categories = this.state.categories;
 
                             categories[index] = newCategory;

@@ -16,7 +16,7 @@ import * as apiTaskLocation from '../api/task-location';
 import * as apiTaskCategory from '../api/task-category';
 import * as apiTaskTiming from '../api/task-timing';
 import { translate } from '../core/i18n';
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
 import { formatGeoResults } from '../core/util';
 import Snackbar from 'material-ui/Snackbar';
 
@@ -30,6 +30,7 @@ import NewListingDuration from './NewListingDuration';
 
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
 const _chunk = require('lodash.chunk');
 
@@ -107,13 +108,12 @@ export default class NewListing extends Component {
         getConfigAsync(meta => {
             getUserAsync(user => {
                 if (!user) {
-                    return goTo('/');
+                    return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
                 }
-        
-                if (user.status !== '10') {
-                    return goTo('/email-not-verified');
+
+                if (getMeOutFromHereIfAmNotAuthorized(user)) {
+                    return;
                 }
-             
 
                 apiCategory
                 .getItems()
@@ -167,7 +167,7 @@ export default class NewListing extends Component {
                         task
                     });
                 });
-            });
+            }, true);
         });
     }
 

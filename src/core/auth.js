@@ -75,11 +75,11 @@ export const setUser = _user => {
 
     if (user) {
         authCb
-        .forEach(fn => fn(user));
-    } else {
-        nullableAuthCb
-        .forEach(fn => fn());
+            .forEach(fn => fn(user));
     }
+
+    nullableAuthCb
+        .forEach(fn => fn());
 };
 
 export const getUser = () => user;

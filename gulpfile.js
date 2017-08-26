@@ -5,7 +5,12 @@ const args = require('yargs').argv;
 const concat = require('gulp-concat');
 
 gulp.task('prepare', cb => {
-    const VQ_API_URL = process.env.VQ_API_URL || 'http://localhost:8080/api';
+    var VQ_API_URL = process.env.VQ_API_URL || 'http://localhost:8080/api';
+
+    if (VQ_API_URL.indexOf('http://') === -1 && VQ_API_URL.indexOf('https://') === -1) {
+        VQ_API_URL = `http://${VQ_API_URL}`;
+    }
+
     const VQ_LANG = process.env.VQ_LANG || 'en';
     const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS_ID || '';
 

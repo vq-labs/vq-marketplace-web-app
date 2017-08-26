@@ -12,8 +12,8 @@ import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 
 const USER_TYPES = {
-  BUYER: 1,
-  SELLER: 2
+  BUYER: 1, // client
+  SELLER: 2 // student
 };
 
 class Signup extends Component {

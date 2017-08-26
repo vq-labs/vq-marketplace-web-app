@@ -41,8 +41,8 @@ export default class LoginPage extends Component {
                     default:
                       goTo(`/`);
                   }
-                }, 1100);
-              }} 
+                }, 1000);
+              }}
               onNotVerified={() => {
                 return goTo('/email-not-verified');
               }}

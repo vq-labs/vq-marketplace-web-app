@@ -39,7 +39,7 @@ export default class TaskEdit extends Component {
                 images: rTask.images,
                 title: rTask.title,
                 description: rTask.description,
-                price: rTask.price / 100,
+                price: rTask.price,
                 priceType: rTask.priceType
             }
       });
@@ -62,11 +62,13 @@ export default class TaskEdit extends Component {
     const taskId = this.state.task.id;
     const updatedTask = this.state.updatedTask;
 
-    updatedTask.price *= 100;
+    // updatedTask.price *= 100;
 
     apiTaskImage.createItem(taskId, updatedTask.images);
 
-    apiTask.updateItem(taskId, updatedTask).then(task => coreNavigation.goTo(`/task/${taskId}`));
+    apiTask
+        .updateItem(taskId, updatedTask)
+        .then(task => coreNavigation.goTo(`/task/${taskId}`));
   }
 
   render() {
@@ -81,23 +83,26 @@ export default class TaskEdit extends Component {
                         <div className="container">
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
-                                    <h4>Titel</h4>
+                                    <h4>{translate("LISTING_TITLE")}</h4>
                                     <TextField
-                                        
+                                        disabled={true}
                                         ref="title"
                                         onChange={ this.handleFieldChange('title') }
                                         value={this.state.updatedTask.title}
                                         style={{width: '100%'}}
                                         inputStyle={{width: '100%'}}
                                     />
-                                </div> 
+                                </div>
                                 <div className="col-xs-12">
-                                    <h4>Beschreibung</h4>
-                                    <HtmlTextField onChange={this.handleFieldChange('description')} value={this.state.updatedTask.description}/>
+                                    <h4>{translate("LISTING_DESCRIPTION")}</h4>
+                                        <HtmlTextField
+                                            onChange={this.handleFieldChange('description')}
+                                            value={this.state.updatedTask.description}
+                                        />
                                     <hr />
                                 </div>
                                 <div className="col-xs-12">
-                                    <h4>Abbrechungsmodel</h4>
+                                    <h4>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
                                     <RadioButtonGroup 
                                         name="priceType" 
                                         onChange={ this.handleFieldChange('priceType', value => Number(value))} 
@@ -109,51 +114,47 @@ export default class TaskEdit extends Component {
                                                 value={1}
                                                 label={translate("PRICING_MODEL_HOURLY")}
                                             />
-                                            <RadioButton
-                                                value={0}
-                                                label={translate("PRICING_MODEL_TOTAL")}
-                                            />
-                                            <RadioButton
-                                                value={2}
-                                                label={translate("PRICING_MODEL_REQUEST_QUOTE")}
-                                            />
                                     </RadioButtonGroup>
                                 </div>
                                 { this.state.task.priceType !== 2 &&
                                     <div className="col-xs-12">
-                                                <TextField
-                                                    onChange={ this.handleFieldChange('price') }
-                                                    ref="price"
-                                                    type="number"
-                                                    value={this.state.updatedTask.price }
-                                                    style={{width: '100%'}}
-                                                    inputStyle={{width: '100%'}}
-                                                    floatingLabelText={translate("PRICE")}
-                                                />
+                                        <TextField
+                                            disabled={true}
+                                            onChange={ this.handleFieldChange('price') }
+                                            ref="price"
+                                            type="number"
+                                            value={this.state.updatedTask.price }
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                            floatingLabelText={translate("PRICE")}
+                                        />
                                     </div>
                                 }
 
-                                <div className="col-xs-12">
-                                    <h4>Photos</h4>
-                                    <ImageUploader images={this.state.updatedTask.images} onChange={images => {
-                                        const updatedTask = this.state.updatedTask;
+                                { false &&
+                                    <div className="col-xs-12">
+                                        <h4>Photos</h4>
+                                        <ImageUploader images={this.state.updatedTask.images} onChange={images => {
+                                            const updatedTask = this.state.updatedTask;
 
-                                        updatedTask.images = images;
+                                            updatedTask.images = images;
 
-                                        this.setState({ updatedTask });
-                                    }} />
-                                </div> 
-                                <div className="col-xs-12">
+                                            this.setState({ updatedTask });
+                                        }} />
+                                    </div>
+                                }
+
+                                <div className="col-xs-12 vq-margin-bottom-xs vq-margin-top-xs">
                                     <FlatButton
-                                        style={ { float: 'left' } }
-                                        label='Abbrechen' 
+                                        style={{ float: 'left' }}
+                                        label={translate('CANCEL')}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => coreNavigation.goBack() }
                                     />
                                     <RaisedButton
                                         style={ { float: 'right' } }
-                                        label='Übernehmen'
+                                        label={translate('CONFIRM')}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ this.handleUpdate }

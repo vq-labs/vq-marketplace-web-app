@@ -34,6 +34,7 @@ import Review from './Pages/Review';
 import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
 import UserPreferences from './Pages/UserPreferences';
+import UserVerifications from './Pages/UserVerifications';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
@@ -56,6 +57,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+      ready: false,
       metaReady: false,
       labelsReady: false,
       user: null,
@@ -92,8 +94,7 @@ class App extends Component {
               this.setState({
                 user: myUserData
               });
-            })
-            .catch(err => {
+            }).catch(err => {
               coreAuth.destroy();
             });
         }, true);
@@ -134,9 +135,19 @@ class App extends Component {
     });
   }
 
+  componentDidMount() {
+    coreConfig.getConfigAsync(config => {
+      coreAuth.getUserAsync(user => {
+          this.setState({
+            ready: true
+          });
+        }, true);
+    });
+  }
+
   render() {
       return (
-        this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
+        this.state.ready && this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
           <div>
             <Header
               appName={this.state.meta.NAME}
@@ -154,12 +165,14 @@ class App extends Component {
                 <Route path="my-listings" component={MyListings}></Route>
                 <Route path="listings" component={Offers}></Route>
                 <Route path="user-preferences" component={UserPreferences}></Route>
+                <Route path="user-verifications" component={UserVerifications}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>
                 <Route path="premium" component={PremiumPage}></Route>
                 <Route path="chat" component={Chat}></Route>
                 <Route path="chat/:chatId" component={ChatRoom}></Route>
+                <Route path="request/:chatId" component={ChatRoom}></Route>
                 <Route path="request/:requestId/book" component={BookRequest}></Route>
                 <Route path="request/:requestId/review" component={Review}></Route>
                 <Route path="order/:orderId" component={Order}></Route>

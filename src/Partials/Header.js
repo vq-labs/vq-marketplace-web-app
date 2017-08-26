@@ -28,7 +28,6 @@ class Header extends Component {
     };
 
     this.handleLogout = this.handleLogout.bind(this);
-    this.goToProfile = this.goToProfile.bind(this);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -59,11 +58,6 @@ class Header extends Component {
       });
     }
   } 
-
-  goToProfile(e) {
-    e.preventDefault();
-    goTo('/profile/' + this.state.user.id);
-  }
 
   handleLogout(e) {
     e.preventDefault();
@@ -109,6 +103,8 @@ class Header extends Component {
                     } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
                   }
                  
+                  
+
                   { this.state.logged && Number(this.state.user.userType) === 1 &&
                     <a onClick={() => goTo('/new-listing')} target="_self">
                       <IconButton iconStyle={{ color: grey600 }}>
@@ -125,11 +121,40 @@ class Header extends Component {
 
                   { this.state.logged &&
                     <IconMenu
-                          iconButtonElement={ <Avatar src={this.state.user.imageUrl || 'https://studentask.de/images/avatar.png'} size={40} />}
+                          iconButtonElement={
+                            <div>
+                              <Avatar src={this.state.user.imageUrl || '/images/avatar.png'} size={40} />
+                            </div>
+                          }
                           anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                             targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
-                      <MenuItem onClick={() => goTo(`/profile/${this.state.user.id}`)} primaryText={translate("PROFILE")} />                 
+                      <MenuItem 
+                        onClick={
+                          () => goTo(`/profile/${this.state.user.id}`, (newPath, oldPath) => {
+                            if (oldPath.indexOf('profile') > -1) {
+                              return true;
+                            }
+
+                            return false;
+                          })
+                        }
+                        primaryText={translate("PROFILE")}
+                      />                 
                       
+                      { Number(this.state.user.userType) === 2 &&
+                        <MenuItem 
+                            onClick={() => goTo(`/user-verifications`)}
+                            primaryText={translate("USER_VERIFICATIONS")}
+                          />     
+                      }
+
+                      { Number(this.state.user.userType) === 2 &&
+                        <MenuItem 
+                            onClick={() => goTo(`/user-preferences`)}
+                            primaryText={translate("USER_PREFERENCES")}
+                          />
+                      }
+
                       <MenuItem onClick={ () => goTo('/change-password' )} primaryText={translate("CHANGE_PASSWORD")} />                 
                       
                       { coreAuth.isAdmin() &&

@@ -77,7 +77,7 @@ export default class ImageUploader extends React.Component {
                                     <FlatButton 
                                         onTouchTap={() => {
                                             const images = this.state.images;
-                                            debugger;
+     
                                             images.splice(index, 1);
                                             
                                             this.setState({

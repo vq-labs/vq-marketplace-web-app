@@ -158,7 +158,7 @@ class Task extends Component {
                                         <div className="col-xs-1">
                                             { this.state.taskOwner.id &&
                                                 <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                    <Avatar src={this.state.taskOwner.imageUrl || 'https://studentask.de/images/avatar.png' }/>
+                                                    <Avatar src={this.state.taskOwner.imageUrl || '/images/avatar.png' }/>
                                                 </a>
                                             }
                                         </div>
@@ -297,12 +297,10 @@ class Task extends Component {
                                         }
                                         <div className="row">
                                             <div className="col-xs-12">
-                                                <div className="col-xs-12">
                                                     <TaskComments
                                                         taskId={this.state.task.id}
                                                         comments={this.state.task.comments}
                                                     />
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

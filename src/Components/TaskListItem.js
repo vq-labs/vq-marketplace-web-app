@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Card, CardActions, CardText } from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
 import IconMenu from 'material-ui/IconMenu';
+import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -9,6 +11,7 @@ import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
+import { goTo } from '../core/navigation';
 
 export default class TaskListItem extends Component {
     constructor(props) {
@@ -118,7 +121,44 @@ export default class TaskListItem extends Component {
                   }}>
                     { this.formatDesc(this.state.task.description) }
                   </div>
-                  
+                  { this.props.editable &&
+                    <div class="row" style={{'marginBottom': '10px'}}>
+                      <a
+                        style={{ padding: 5 }}
+                        onTouchTap={() => goTo(`/task/${task.id}/edit`)}>
+                          <strong>
+                              {translate("EDIT")} 
+                          </strong>
+                      </a>
+
+                      <a
+                        style={{ padding: 5 }} 
+                        onTouchTap={() => alert('Task should be cancelled')}>
+                          <strong>
+                              {translate("CANCEL")} 
+                          </strong>
+                      </a>
+                    </div>
+                  }
+                  { this.props.showRequests &&
+                      <div class="row" style={{'marginBottom': '10px'}}>
+                      <div className="col-xs-12">
+                        <strong>{translate('REQUESTS')}:</strong>
+                      </div>
+                       { this.state.task.requests.map(request => 
+                          <div className="col-xs-4 col-sm-3 col-md-1" onTouchTap={
+                                          () => goTo(`/request/${request.id}`)
+                                      }>
+                                <div className="col-xs-12 text-center">
+                                  <Avatar src={request.fromUser.imageUrl || '/images/avatar.png' }/>
+                                </div>
+                                <div className="col-xs-12 text-center text-muted">
+                                   {request.fromUser.firstName}
+                                </div>
+                          </div>
+                       )}
+                      </div>
+                  }
                   { this.props.displayManagement &&
                     <div style={{'marginBottom': '10px'}}>
                       <div class="row">

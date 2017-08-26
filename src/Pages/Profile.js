@@ -24,6 +24,7 @@ import Moment from 'react-moment';
 import ProfileImage from '../Components/ProfileImage';
 import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
+import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 
@@ -52,6 +53,10 @@ class Profile extends React.Component {
         this.onDrop = this.onDrop.bind(this);
     }
 
+    shouldShowPreferences() {
+        return this.state.profile && this.state.profile.userType === USER_TYPES.SELLER;
+    }
+
     getUserTalent(skill) {
         const styles = {
             chip: {
@@ -66,55 +71,64 @@ class Profile extends React.Component {
         );
     }
 
-    componentDidMount() {
-        getConfigAsync(config => {
-            let userId = this.props.params.profileId;
-            let section = this.props.params.section;
-            let isMyProfile = coreAuth.getUserId() === userId;
+    loadData(config) {
+        let userId = this.props.params.profileId;
+        let isMyProfile = coreAuth.getUserId() === userId;
 
-            const getProfileTasks = () => apiTask.getItems({
-                status: isMyProfile ? undefined : 0,
-                userId: userId,
-                taskType: 1
-            })
-            .then(offers => {
+        this.setState({
+            config,
+            ready: true
+        });
+
+        apiUser
+            .getItem(userId)
+            .then(profile => {
                 this.setState({
-                    offers: offers
+                    ready: true,
+                    isLoading: false,
+                    isProfileImgLoaded: false,
+                    profile
                 });
             });
 
-            getProfileTasks();
+        apiUserPreference
+            .getItems(userId, 'category')
+            .then(preferences => this.setState({
+                preferences
+            }));
 
-            apiUserPreference
-                .getItems(userId, 'category')
-                .then(preferences => this.setState({
-                    preferences
-                }));
+        apiReview
+            .getItems({
+                toUserId: userId
+            })
+            .then(reviews => this.setState({
+                reviews
+            }));
 
-            apiReview
-                .getItems({
-                    toUserId: userId
-                })
-                .then(reviews => this.setState({
-                    reviews
-                }));
-
-            apiUser
-                .getItem(userId)
-                .then(result => {
-                    this.setState({
-                        config,
-                        ready: true,
-                        isLoading: false,
-                        isProfileImgLoaded: false,
-                        profile: result,
-                        section: section,
-                    });
-                });
-            });
-        }
         
-        onDrop(files) {
+    }
+
+    componentDidMount() {
+        this.setState({
+            isLoading: true
+        });
+
+        getConfigAsync(config => {
+            this.loadData(config);
+        });
+    }
+
+    componentWillReceiveProps() {
+        this.setState({
+            isLoading: true
+        });
+
+        getConfigAsync(config => {
+            this.loadData(config);
+        });
+    }
+
+    onDrop(files) {
             this.setState({ 
                 isProfileImgLoaded: true
             });
@@ -263,6 +277,7 @@ class Profile extends React.Component {
                     }
                     { this.state.ready &&
                     <div className="row">
+                        {this.shouldShowPreferences() &&
                         <div className="col-xs-12 col-sm-12">
                             <div className="row">
                                 <div className="col-xs-12 col-sm-11">
@@ -275,15 +290,17 @@ class Profile extends React.Component {
                                         </p>
                                     }
                                 </div>
-                                <div className="col-xs-12 col-sm-1">     
-                                    <FloatingActionButton 
-                                        onClick={() => goTo('/user-preferences')}
-                                        mini={true}
-                                        backgroundColor={"#546e7a"}
-                                    >
-                                        <ModeEdit />
-                                    </FloatingActionButton>
-                                </div>
+                                { this.state.isMyProfile &&
+                                    <div className="col-xs-12 col-sm-1">     
+                                        <FloatingActionButton 
+                                            onClick={() => goTo('/user-preferences')}
+                                            mini={true}
+                                            backgroundColor={"#546e7a"}
+                                        >
+                                            <ModeEdit />
+                                        </FloatingActionButton>
+                                    </div>
+                                }   
                             </div>
                              <div className="col-xs-12" style={{
                                  display: 'flex',
@@ -303,6 +320,7 @@ class Profile extends React.Component {
                             )}
                             </div>
                         </div>
+                        }
                         <div className="col-xs-12 col-sm-12">
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                 Reviews

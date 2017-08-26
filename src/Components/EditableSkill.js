@@ -65,12 +65,11 @@ export default class Skill extends Component {
     }
 
     getStaticSkill(skill) {
-
-                return <ListItem
-                        primaryText={skill.name}
-                        secondaryText={SKILL_LEVELS[skill.level]}
-                        rightIcon={ this.getEditMenu() }
-                />;
+        return <ListItem
+                primaryText={skill.name}
+                secondaryText={SKILL_LEVELS[skill.level]}
+                rightIcon={ this.getEditMenu() }
+        />;
     }
     getDataSource() {
         return this.state.options;

@@ -65,7 +65,7 @@ class StartPage extends Component {
                                                 value: (
                                                     <MenuItem
                                                         onClick={
-                                                            () => goTo(`/listings?category=${_.code}`)
+                                                            () => goTo(`/new-listing?category=${_.code}`)
                                                         }
                                                         primaryText={_.label}
                                                     />

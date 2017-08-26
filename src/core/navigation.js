@@ -7,9 +7,24 @@ const history = [];
 
 export const setBase = base => BASE = `/${base}`;
 
-export const goTo = url => {
+export const goTo = (url, shouldReload) => {
+    const newUrl = `${BASE}${url}`;
+    const oldUrl = location.pathname;
+
     history.push(`${BASE}${url}`);
     browserHistory.push(`${BASE}${url}`);
+
+    if (typeof shouldReload === 'function') {
+        if (shouldReload(newUrl, oldUrl)) {
+            return location.reload();
+        }
+
+        return;
+    }
+
+    if (shouldReload) {
+        return location.reload();
+    }
 };
 
 export const goStartPage = () => {
@@ -18,6 +33,10 @@ export const goStartPage = () => {
 };
 
 export const getAppPath = url => `${BASE}${url}`;
+
+export const convertToAppPath = url => {
+    return url.replace(BASE, ''); 
+};
 
 export const goBack = () => {
     history.pop();

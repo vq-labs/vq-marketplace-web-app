@@ -55,7 +55,7 @@ export default class NewListingCategory extends React.Component {
                                                 }>
                                                     <CardMedia
                                                         overlay={
-                                                            <CardTitle title={translate(tile.code)} />
+                                                            <CardTitle title={tile.label || translate(tile.code)} />
                                                         }
                                                     >
                                                         <img alt="category" src={tile.imageUrl || '/images/category-default-img.jpeg'} />

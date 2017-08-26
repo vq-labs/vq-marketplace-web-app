@@ -78,6 +78,14 @@ export default class EmailNotVerified extends React.Component {
                                     { this.state.sentAgain && 
                                         <p>{translate("VERIFICATION_EMAIL_SENT")}</p>
                                     }
+
+                                    <RaisedButton
+                                        style={{ marginLeft: 10 }}
+                                        onClick={() => {
+                                            location.reload();
+                                        }}
+                                        label={translate("RELOAD")}
+                                    />
                                 </div>
                             </div>
                         </div>

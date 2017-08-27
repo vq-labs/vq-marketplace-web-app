@@ -54,7 +54,7 @@ class StartPage extends Component {
                                     fullWidth={true}
                                     floatingLabelStyle={{color: 'white'}}
                                     textareaStyle={{color: 'white'}}
-                                    floatingLabelText={translate('START_PAGE_AUTCOMPLETE_LABEL')}
+                                    floatingLabelText={translate('START_PAGE_AUTOCOMPLETE_LABEL')}
                                     filter={AutoComplete.noFilter}
                                     openOnFocus={true}
                                     dataSource={

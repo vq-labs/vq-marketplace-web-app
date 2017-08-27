@@ -3,7 +3,7 @@ import { Editor, EditorState } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 
-const striptags = require('striptags');
+// const striptags = require('striptags');
 
 export default class HtmlTextField extends Component {
   constructor(props) {
@@ -17,10 +17,12 @@ export default class HtmlTextField extends Component {
     this.onChange = changedEditorState => {
         let html = stateToHTML(changedEditorState.getCurrentContent());
         
-        html = striptags(html, [
-            'p',
-            'br'
-        ]);
+        /*
+            html = striptags(html, [
+                'p',
+                'br'
+            ]);
+        */
 
         this.props.onChange(null, html);
 

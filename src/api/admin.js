@@ -6,6 +6,14 @@ export const users = {
     unblockUser: userId => communication.doPut(`/admin/user/${userId}/unblock`, {}),
 };
 
+export const request = {
+    getItems: () => communication.doGet('/admin/request'),
+};
+
+export const order = {
+    getItems: () => communication.doGet('/admin/order'),
+};
+
 export const report = {
     overview: () => communication.doGet('/admin/report')
 };

@@ -498,6 +498,14 @@ export default class NewListing extends Component {
                                                         snackbarMessage: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
+
+                                                if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " min. 25 chars"
+                                                    });
+                                                }
+
                                                 /*
                                                 if (Number(this.state.appConfig.LISTING_LOCATION_MODE) === 1 && !this.state.task.location.formattedAddress) {
                                                     return this.setState({

@@ -27,8 +27,9 @@ import TaskCard from '../Components/TaskCard';
 import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
-
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import '../App.css';
+import getUserProperty from '../helpers/get-user-property';
 
 class Profile extends React.Component {
      constructor(props) {
@@ -167,6 +168,21 @@ class Profile extends React.Component {
 
             return profileName;
         }
+
+        calculateRate(reviews) {
+            const reviewLength = reviews.length;
+
+            if (!reviewLength) {
+                return 3;
+            }
+
+            const totalRateSum = reviews.reduce((sum, review) => {
+                return sum + review.rate;
+            }, 0);
+
+            return totalRateSum / reviewLength;
+        }
+
         render() {
             const profileImageUrl = this.state.profile && this.state.profile.imageUrl || '/images/avatar.png';
 
@@ -188,6 +204,8 @@ class Profile extends React.Component {
                                         { this.showProfileName() }
                                     </h1>
                                 }
+
+                               
                             </div>
                         </div>
                         <div className="row">
@@ -200,7 +218,50 @@ class Profile extends React.Component {
                                         <p>{ this.state.profile.bio }</p>
                                     }
                             </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-12">
+                                { this.state.reviews &&
+                                    <ReactStars
+                                        edit={false}
+                                        disable={true}
+                                        count={5}
+                                        size={16}
+                                        half={false}
+                                        value={this.calculateRate(this.state.reviews)}
+                                        color2={'#ffd700'}
+                                    />
+                                }
                             </div>
+                            { this.state.profile && this.state.profile.status === '10' &&
+                                <div className="col-xs-2 text-center" style={{ marginTop: 10 }}>
+                                    <div className="col-xs-12">
+                                        <CheckCircleIcon color={'green'}/>
+                                    </div>
+                                    <div className="col-xs-12">
+                                        <small style={{
+                                                paddingBottom: 20,
+                                                fontSize: 10
+                                        }}>{translate('EMAIL_VERIFIED')}</small>
+                                    </div>
+                                </div>
+                            }
+                            { this.state.profile && Boolean(getUserProperty(this.state.profile, 'studentIdUrl')) &&
+                                <div className="col-xs-2 text-center" style={{ marginTop: 10 }}>
+                                    <div className="col-xs-12">
+                                        <CheckCircleIcon color={'green'}/>
+                                    </div>
+                                    <div className="col-xs-12">
+                                        <small style={{
+                                                paddingBottom: 20,
+                                                fontSize: 10
+                                        }}>{translate('DOCUMENT_UPLOADED')}</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>            
+
                         { this.state.profile && this.state.profile.website &&
                             <div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
@@ -300,7 +361,7 @@ class Profile extends React.Component {
                                             <ModeEdit />
                                         </FloatingActionButton>
                                     </div>
-                                }   
+                                }
                             </div>
                              <div className="col-xs-12" style={{
                                  display: 'flex',

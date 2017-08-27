@@ -27,7 +27,7 @@ export default class UserVerifications extends React.Component {
             {
                 type: 'single-image',
                 key: this.VERIFICATIONS[0],
-                label: translate('USER_VERIFICATION_PERSONAL_ID_TITLE')
+                label: `${translate('USER_VERIFICATION_PERSONAL_ID_TITLE')} *`
             }, {
                 type: 'string',
                 title: translate('USER_VERIFICATION_FACEBOOK_TITLE'),
@@ -105,9 +105,13 @@ export default class UserVerifications extends React.Component {
                                             isSubmitting: true
                                         });
 
+                                        if (!updatedEntity.studentIdUrl) {
+                                            return alert('StudentID photo is required');
+                                        }
+
                                         getUserAsync(user => {
                                             async
-                                            .each(this.VERIFICATIONS, (fieldKey, cb) => {
+                                            .eachSeries(this.VERIFICATIONS, (fieldKey, cb) => {
                                                 apiUserProperty
                                                     .createItem(
                                                         user.id,
@@ -126,7 +130,7 @@ export default class UserVerifications extends React.Component {
                                                     return alert(err);
                                                 }
 
-                                                return goTo('/');
+                                                return setTimeout(() => goTo('/'), 50);
                                             })
                                         });
                                     }

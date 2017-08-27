@@ -6,6 +6,8 @@ import SectionCategories from './Categories';
 import SectionBasics from './Basics';
 import SectionDesign from './Design';
 import SectionUsers from './Users';
+import SectionOrders from './Orders';
+import SectionRequests from './Requests';
 import SectionLabels from './Labels';
 import SectionPricing from './Pricing';
 import SectionListing from './Listing';
@@ -62,11 +64,10 @@ export default class AdminPage extends React.Component {
                         <h4>Analytics</h4>
                         <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>
 
-                        <h4>Users</h4>
-                        <MenuItem onClick={ () => this.goToSection('users') }>Manage Users</MenuItem>
-
-                        <h4>Transactions</h4>
-                        <MenuItem onClick={ () => this.goToSection('users') }>Transactions</MenuItem>
+                        <h4>Entities</h4>
+                        <MenuItem onClick={ () => this.goToSection('users') }>Users</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('orders') }>Orders</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('requests') }>Requests</MenuItem>
                     
                         <h4>Configuration</h4>
                         <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
@@ -86,7 +87,9 @@ export default class AdminPage extends React.Component {
                                 <div className="row">
                                     <div className="col-xs-12">
                                         { this.state.section === 'overview' && <SectionOverview /> } 
-                                        { this.state.section === 'users' && <SectionUsers /> } 
+                                        { this.state.section === 'users' && <SectionUsers /> }
+                                        { this.state.section === 'orders' && <SectionOrders /> }
+                                        { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }

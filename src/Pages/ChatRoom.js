@@ -10,6 +10,8 @@ import * as coreAuth from '../core/auth';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, tryGoBack } from '../core/navigation';
+import displayTaskTiming from '../helpers/display-task-timing';
+import displayTaskLocation from '../helpers/display-task-location';
 import DOMPurify from 'dompurify'
 import {
   Step,
@@ -19,6 +21,7 @@ import {
 } from 'material-ui/Stepper';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { displayPrice } from '../core/format';
 import '../Chat.css';
 
 const _ = require('underscore');
@@ -116,9 +119,26 @@ export default class ChatRoom extends React.Component {
                                                         { this.state.task.title }
                                                     </a>
                                                 </h1>
-                                                <div className="col-xs-12">
-                                                    <Divider />
+                                            </div>
+                                            <div className="col-xs-12">
+                                                <div className="col-xs-12 col-sm-4">
+                                                    <p className="text-muted">
+                                                        {translate('LISTING_DATE')}: {displayTaskTiming(this.state.task.taskTimings)}
+                                                    </p>
                                                 </div>
+                                                <div className="col-xs-12 col-sm-4">
+                                                    <p className="text-muted">
+                                                        {translate('LISTING_LOCATION')}: {displayTaskLocation(this.state.task.taskLocations)}
+                                                    </p>
+                                                </div>
+                                                <div className="col-xs-12 col-sm-4">
+                                                    <p className="text-muted">
+                                                        {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-12">
+                                                    <Divider />
                                             </div>
                                         </div>
                                     }
@@ -180,27 +200,26 @@ export default class ChatRoom extends React.Component {
                                         })
                                     }
 
-                                    <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
                                         <div className="row" style={{
-                                            paddingLeft: '20px',
-                                            marginTop: '20px',
-                                            paddingRight: '20px'
+                                            paddingLeft: 20,
+                                            marginTop: 20,
+                                            marginBottom: 20,
+                                            paddingRight: 20
                                         }}>
                                         <div className="col-xs-12">
                                             <form onSubmit={this.handleNewMessage}>
-                                                    <h4>{translate("REPLY")}</h4>
-                                                    <HtmlTextField                                                    
-                                                        onChange={(event, newMessage) => this.setState({
-                                                            newMessage
-                                                        })}
-                                                        value={this.state.newMessage}
-                                                    />
-                                                    
-                                                    <RaisedButton type="submit" style={{ width: '100%' }} label={translate("SEND")} />
+                                                <HtmlTextField                                                 
+                                                    onChange={(event, newMessage) => this.setState({
+                                                        newMessage
+                                                    })}
+                                                    value={this.state.newMessage}
+                                                />
+                                                
+                                                <RaisedButton type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
                                             </form>
                                         </div>
                                     </div>
-                                 </Paper>
+                        
                             </div>
 
                             <div className="col-xs-12 col-sm-4">
@@ -253,6 +272,7 @@ export default class ChatRoom extends React.Component {
                                             backgroundColor={this.state.config.COLOR_PRIMARY}
                                             style={{
                                                 marginTop: 10,
+                                                marginBottom: 10,
                                                 width: '100%'
                                             }}
                                             label={translate("BOOK")} 
@@ -262,7 +282,7 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
-                            <Stepper activeStep={
+                            <Stepper className="hidden-xs" activeStep={
                                 [ '0', '5', '10', '15' ].indexOf(this.state.request.status)
                             } orientation="vertical">
                             <Step>

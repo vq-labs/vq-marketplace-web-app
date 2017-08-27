@@ -129,6 +129,7 @@ class Signup extends Component {
                     { this.state.userProperties
                       .map(userProperty =>
                         <TextField
+                          maxLength={10}
                           required={userProperty.required}
                           key={userProperty.propKey}
                           ref={userProperty.propKey}

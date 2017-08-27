@@ -13,6 +13,7 @@ import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import Chip from 'material-ui/Chip';
 import * as coreAuth from '../core/auth';
+import displayTaskLocation from '../helpers/display-task-location';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
 import { appConfig } from '../api/config';
@@ -59,13 +60,6 @@ class Task extends Component {
         this.setState({
             open: false
         });
-    }
-    displayLocation (task) { 
-        if (task && task.location) {
-            return `${task.location.street}, ${task.location.city}` ;
-        } else {
-            return 'Online';
-        }
     }
     displayIconElement (task) {
         if (task && task.location) {
@@ -236,7 +230,7 @@ class Task extends Component {
                                                 <div>
                                                     <h3 className="text-left">About the job</h3>
                                                     <p className="text-muted">
-                                                        {this.displayIconElement(this.state.task)}  {this.displayLocation(this.state.task)}
+                                                        <div style={{ display: 'block-inline' }}>{displayTaskLocation([ this.state.task.location ])}</div>
                                                     </p>
                                                 </div>
                                                 <div>

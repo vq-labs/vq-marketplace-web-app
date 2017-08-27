@@ -7,8 +7,10 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
+import Moment from 'react-moment';
 import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
+import displayTaskTiming from '../helpers/display-task-timing';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
 import { goTo } from '../core/navigation';
@@ -120,17 +122,19 @@ export default class TaskListItem extends Component {
                       overflow: 'hidden'
                   }}>
                     { this.formatDesc(this.state.task.description) }
+                    { displayTaskTiming(this.state.task.taskTimings) }
                   </div>
                   { this.props.editable &&
                     <div class="row" style={{'marginBottom': '10px'}}>
-                      <a
-                        style={{ padding: 5 }}
-                        onTouchTap={() => goTo(`/task/${task.id}/edit`)}>
-                          <strong>
-                              {translate("EDIT")} 
-                          </strong>
-                      </a>
-
+                      { !task.requests.length &&
+                        <a
+                          style={{ padding: 5 }}
+                          onTouchTap={() => goTo(`/task/${task.id}/edit`)}>
+                            <strong>
+                                {translate("EDIT")} 
+                            </strong>
+                        </a>
+                      }
                       <a
                         style={{ padding: 5 }} 
                         onTouchTap={() => alert('Task should be cancelled')}>

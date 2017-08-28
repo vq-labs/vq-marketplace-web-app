@@ -15,13 +15,20 @@ export const me = () => new Promise((resolve, reject) => {
     });
 });
 
-export const login = data => communication.doPost('/login', data);
+export const login = data => communication
+    .doPost('/login', data);
 
-export const signup = data => communication.doPost('/signup/email', data);
+export const signup = data => communication
+    .doPost('/signup/email', data);
 
-export const changePassword = data => communication.doPost('/auth/password', data);
+export const changePassword = data => communication
+    .doPost('/auth/password', data);
 
-export const requestEmailLogin = data => communication.doPost('/login/email', data);
+export const resetPassword = data => communication
+    .doPost('/auth/reset-password', data);
 
-export const resendVerificationEmail = data =>
-    communication.doPost('/verify/resend-email', data);
+export const requestPasswordReset = data => communication
+    .doPost('/auth/request-password-reset', data);
+
+export const resendVerificationEmail = data => communication
+    .doPost('/verify/resend-email', data);

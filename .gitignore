@@ -15,6 +15,9 @@ build
 deployments/*
 !deployments/test-deployment.sh
 
+# generated code
+src/generated/*
+
 # misc
 .DS_Store
 .env

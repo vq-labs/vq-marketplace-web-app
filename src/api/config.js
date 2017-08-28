@@ -14,9 +14,10 @@ export const appConfig = RestResourceFactory.create('app_config', {
     getItems: data => {
         const dataObj = {};
 
-        data.map(item => {
+        data
+        .forEach(item => {
             dataObj[item.fieldKey] = item.fieldValue;
-        })
+        });
 
         return dataObj;
     }

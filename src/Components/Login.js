@@ -23,9 +23,9 @@ export default class Login extends Component {
       };
 
       if (this.state.authMode === 'password_reset') {
-        return apiAuth.resetPassword(data)
+        return apiAuth.requestPasswordReset(data)
           .then(result => {
-            alert('OK');
+            alert('E-mail has been sent. Check your inbox');
           })
           .catch(err => {
             alert('NOT OK');
@@ -69,6 +69,20 @@ export default class Login extends Component {
       <div className="col-xs-12">
         <div className="row">
           <div className="col-xs-12">
+            { this.state.authMode === 'login' &&
+              <h1>
+                {translate('LOGIN')}
+              </h1>
+            }
+            { this.state.authMode === 'password_reset' &&
+              <h1>
+                {translate('RESET_PASSWORD')}
+              </h1>
+            }
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xs-12">
               <form onSubmit={this.handleLogin}>   
                 <TextField
                   style={{width: '100%'}}
@@ -95,15 +109,25 @@ export default class Login extends Component {
            <div className="row">
                 <div className="col-xs-12">
                     <p className="text-center text-muted">
-                        { this.state.authMode === 'login' && <a onClick={() => this.setState({
-                            authMode: 'password_reset'
-                          })
-                        } target="_blank">{translate('RESET_PASSWORD')}</a>
+                        { this.state.authMode === 'login' && 
+                        <a 
+                          onClick={() => this.setState({
+                              authMode: 'password_reset'
+                          })}
+                          className="with-pointer"
+                        >
+                          {translate('RESET_PASSWORD')}
+                        </a>
                         }
-                        { this.state.authMode === 'password_reset' && <a onClick={() => this.setState({
-                            authMode: 'login'
-                          })
-                        } target="_blank">{translate('LOGIN')}</a>
+                        { this.state.authMode === 'password_reset' &&
+                          <a 
+                            className="with-pointer"
+                            onClick={() => this.setState({
+                                authMode: 'login'
+                            })}
+                          >
+                            {translate('LOGIN')}
+                          </a>
                         }
                     </p>
                 </div>

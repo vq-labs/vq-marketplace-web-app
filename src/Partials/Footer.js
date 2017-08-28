@@ -17,7 +17,9 @@ class Footer extends Component {
                 width: '100%',
                 minHeight: 50
             }}>
-                <div className="col-xs-12 text-center">
+                <div className="col-xs-12 text-center" style={{
+                       marginTop: 50
+                }}>
                     <Logo
                         appName={this.props.appName}
                         logo={this.props.logo}

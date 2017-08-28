@@ -1,10 +1,7 @@
 import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
 import Moment from 'react-moment';
-import CircularProgress from 'material-ui/CircularProgress';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as coreAuth from '../core/auth';
 import * as apiTaskComment from '../api/task-comment';

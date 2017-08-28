@@ -1,18 +1,12 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
-import * as apiAdmin from '../api/admin';
-import * as coreNavigation from '../core/navigation';
+
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import { List, ListItem } from 'material-ui/List';
-import { translate } from '../core/i18n';
+import { List } from 'material-ui/List';
 import { goTo } from '../core/navigation';
 import displayObject from '../helpers/display-object';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import * as apiAdmin from '../api/admin';
 
 export default class SectionUsers extends React.Component {
     constructor() {

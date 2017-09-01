@@ -1,13 +1,5 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
 import apiPost from '../api/post';
-import EditableEntity from '../Components/EditableEntity';
-import * as coreNavigation from '../core/navigation';
-import HtmlTextField from '../Components/HtmlTextField';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import * as coreUtil from '../core/util.js'
-import { translate } from '../core/i18n';
 import DOMPurify from 'dompurify'
 
 export default class SectionPostEdit extends React.Component {
@@ -62,8 +54,8 @@ export default class SectionPostEdit extends React.Component {
                                     className="content"
                                     dangerouslySetInnerHTML={{
                                         __html: DOMPurify.sanitize(this.state.post.body)
-                                    }}>
-                                </div> 
+                                    }}
+                                />
                             }
                     </div>
                 </div>

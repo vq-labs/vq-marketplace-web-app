@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
-import { Card, CardText } from 'material-ui/Card';
-import DOMPurify from 'dompurify'
 import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import ApplicationDialog from '../Application/ApplicationDialog';
-import TaskCategories from '../Partials/TaskCategories';
-import * as coreAuth from '../core/auth';
 import * as apiRequest from '../api/request';
 import apiOrder from '../api/order';
 import apiBillingAddress from '../api/billing-address';
-import { appConfig } from '../api/config';
-import apiUser from '../api/user';
 import { translate } from '../core/i18n';
-import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import Address from '../Components/Address';
 import { goTo } from '../core/navigation';
 import * as coreFormat from '../core/format';

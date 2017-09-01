@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
-import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import IconCall from 'material-ui/svg-icons/communication/call';
@@ -9,17 +8,11 @@ import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import * as apiRequest from '../api/request';
-import * as coreAuth from '../core/auth';
 import * as coreFormat from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 
 import { getConfigAsync } from '../core/config';
-
-const VIEWS = {
-    IN_PROGRESS: 'in_progress',
-    COMPLETED: 'completed'
-};
 
 const REQUEST_STATUS = {
     PENDING: '0',
@@ -164,22 +157,22 @@ export default class Requests extends Component {
                                         {coreFormat.displayPrice(request.task.price, request.task.currency)}
                                     </h3>
                                     <p className="text-muted">
-                                        { request.status == REQUEST_STATUS.PENDING &&
+                                        { String(request.status) === REQUEST_STATUS.PENDING &&
                                             translate("PENDING")
                                         }
-                                        { request.status == REQUEST_STATUS.ACCEPTED &&
+                                        { String(request.status) === REQUEST_STATUS.ACCEPTED &&
                                             translate("ACCEPTED")
                                         }
-                                        { request.status == REQUEST_STATUS.MARKED_DONE &&
+                                        { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                             translate("MARKED_DONE")
                                         }
-                                        { request.status == REQUEST_STATUS.SETTLED &&
+                                        { String(request.status) === REQUEST_STATUS.SETTLED &&
                                             translate("SETTLED")
                                         }
-                                        { request.status == REQUEST_STATUS.DECLINED &&
+                                        { String(request.status) === REQUEST_STATUS.DECLINED &&
                                             translate("DECLINED")
                                         }
-                                        { request.status == REQUEST_STATUS.CANCELED &&
+                                        { String(request.status) === REQUEST_STATUS.CANCELED &&
                                             translate("CANCELED")
                                         }
                                     </p>
@@ -204,7 +197,7 @@ export default class Requests extends Component {
                                             <IconCall />
                                         </IconButton>
                                     }
-                                    { request.status != REQUEST_STATUS.SETTLED && request.status != REQUEST_STATUS.CANCELED &&
+                                    { String(request.status) !== REQUEST_STATUS.SETTLED && String(request.status) !== REQUEST_STATUS.CANCELED &&
                                         <IconButton
                                             style={{ top: 10 }}
                                             tooltip={'Chat'}

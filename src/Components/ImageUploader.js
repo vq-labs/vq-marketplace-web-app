@@ -25,11 +25,19 @@ export default class ImageUploader extends React.Component {
         });
     } 
 
+    shouldShowDropzone() {
+        if (!this.state.singleImageMode) {
+            return true;
+        }
+
+        return this.state.singleImageMode && !this.state.images.length;
+    }
+
     render() {
         return (
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
                         <div className="row">
-                           { !this.state.singleImageMode || this.state.singleImageMode && !this.state.images.length &&
+                           { this.shouldShowDropzone() &&
                             <Dropzone onDrop={files => {
                                 this.setState({
                                     newImageIsUploaded: true

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 // Library components
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -40,7 +40,7 @@ import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
 import * as coreUtil from './core/util.js'
 import * as coreConfig from './core/config.js'
-import { setBase, goTo } from './core/navigation';
+import { setBase } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
 import CONFIG from './generated/ConfigProvider.js'

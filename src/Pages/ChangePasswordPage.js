@@ -3,7 +3,6 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import * as apiAuth from '../api/auth';
-import * as coreAuth from '../core/auth';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 

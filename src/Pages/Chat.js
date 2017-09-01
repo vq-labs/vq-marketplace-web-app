@@ -5,7 +5,6 @@ import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import CircularProgress from 'material-ui/CircularProgress';
-import apiMessage from '../api/message';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';

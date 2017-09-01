@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import { Card, CardActions, CardText } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import IconMenu from 'material-ui/IconMenu';
-import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import FlatButton from 'material-ui/FlatButton';
-import Moment from 'react-moment';
 import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
@@ -101,12 +97,14 @@ export default class TaskListItem extends Component {
     return (
             <div className="row" key={task.id} style={{ cursor: "pointer" }} >
                 <div className="col-xs-10">
-                  <div onClick={() => this.handleGoToTask(task.id) } style={{
+                  <div onClick={() => this.handleGoToTask(task.id)}
+                    style={{
                       height: '80px',
                       paddingBottom: 0,
                       lineHeight: '18px', 
                       overflow: 'hidden'
-                  }} onClick={() => this.handleGoToTask(task.id) } >    
+                    }} 
+                  >    
                         <h3>{ this.formatTitle(task.title) }</h3>
                         { task.location &&
                           <p className="text-muted">

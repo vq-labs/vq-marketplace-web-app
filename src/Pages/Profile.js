@@ -4,25 +4,20 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import Avatar from 'material-ui/Avatar';
 import ReactStars from 'react-stars'
 import FormatQuote from 'material-ui/svg-icons/editor/format-quote';
-import apiTask from '../api/task';
 import apiUser from '../api/user';
 import apiReview from '../api/review';
 import DOMPurify from 'dompurify'
-import * as apiSkills from '../api/skills';
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
 import * as apiMedia from '../api/media';
-import * as apiUserProperty from '../api/user-property';
 import * as apiUserPreference from '../api/user-preference';
 import Moment from 'react-moment';
 import ProfileImage from '../Components/ProfileImage';
-import EditableSkill from '../Components/EditableSkill';
 import TaskCard from '../Components/TaskCard';
 import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
@@ -74,7 +69,6 @@ class Profile extends React.Component {
 
     loadData(config) {
         let userId = this.props.params.profileId;
-        let isMyProfile = coreAuth.getUserId() === userId;
 
         this.setState({
             config,
@@ -105,8 +99,6 @@ class Profile extends React.Component {
             .then(reviews => this.setState({
                 reviews
             }));
-
-        
     }
 
     componentDidMount() {

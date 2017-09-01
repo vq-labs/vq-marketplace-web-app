@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import DOMPurify from 'dompurify'
-import HtmlTextField from '../Components/HtmlTextField';
 import TextField from 'material-ui/TextField';
 import Autocomplete from 'react-google-autocomplete';
-import * as coreAuth from '../core/auth';
-import apiTask from '../api/task';
 import { translate } from '../core/i18n';
-import * as coreNavigation from '../core/navigation';
 import { formatGeoResults } from '../core/util';
 import { getConfigAsync } from '../core/config';
-
-const COUNTRY_CODES = {
-    DE: 'Deutschland',
-    HU: 'Hungary',
-    PL: 'Poland'
-};
 
 export default class Address extends Component {
     constructor(props) {

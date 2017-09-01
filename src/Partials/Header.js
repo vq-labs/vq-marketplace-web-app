@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import { grey600 } from 'material-ui/styles/colors';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -10,7 +9,6 @@ import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import { ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';

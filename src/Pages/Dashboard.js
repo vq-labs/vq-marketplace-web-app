@@ -1,11 +1,4 @@
 import React, { Component } from 'react';
-import { List, ListItem } from 'material-ui/List';
-import { Tabs, Tab } from 'material-ui/Tabs';
-import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
-import Paper from 'material-ui/Paper';
-import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
-import CircularProgress from 'material-ui/CircularProgress';
 import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
@@ -163,7 +156,7 @@ export default class Dashboard extends Component {
               }
             </div>
             }
-            { !this.state.isLoading && this.state.userType == 1 &&
+            { !this.state.isLoading && Number(this.state.userType) === 1 &&
               <NewListingCategory onSelected={listingCategoryCode => {
                 goTo(`/new-listing?category=${listingCategoryCode}`);
               }}/>

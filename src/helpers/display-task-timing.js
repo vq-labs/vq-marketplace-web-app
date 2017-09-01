@@ -2,7 +2,6 @@ import React from 'react';
 import Moment from 'react-moment';
 
 const momentFormat = "DD.MM.YYYY";
-const displayDate = date => <Moment format={momentFormat}>{date}</Moment>;
 
 const displayTaskTiming = (taskTimings) => {
     const dates = taskTimings

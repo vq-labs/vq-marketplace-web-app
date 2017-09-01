@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import DOMPurify from 'dompurify'
-import HtmlTextField from '../Components/HtmlTextField';
-import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import LoginSignup from '../Components/LoginSignup';
 import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
-import * as apiConfig from '../api/config';
 import * as apiCategory from '../api/category';
 import * as apiTaskImage from '../api/task-image';
 import * as apiTaskLocation from '../api/task-location';
@@ -17,7 +12,6 @@ import * as apiTaskCategory from '../api/task-category';
 import * as apiTaskTiming from '../api/task-timing';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
-import { formatGeoResults } from '../core/util';
 import Snackbar from 'material-ui/Snackbar';
 
 import NewListingBasics from './NewListingBasics';
@@ -97,9 +91,15 @@ export default class NewListing extends Component {
  
         if (props.location.query.category) {
             const category = props.location.query.category;
+            const task = this.state.task;
+            const step = LISTING_VIEWS.PRICING;
 
-            this.state.task.categories.push(category);
-            this.state.step = LISTING_VIEWS.PRICING;
+            task.categories.push(category);
+
+            this.setState({
+                task,
+                step
+            });
 
             return;
         }
@@ -410,8 +410,6 @@ export default class NewListing extends Component {
                                             const currentStep = this.state.step;
                                             let nextStep = currentStep + 1;
                                             const task = this.state.task;
-                                            const updatedTask = JSON.parse(JSON.stringify(this.state.task));
-                    
 
                                             // CHECKS
                                             if (currentStep === LISTING_VIEWS.PRICING) {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import apiTask from '../api/task';
 import Paper from 'material-ui/Paper';
 import * as coreAuth from '../core/auth';
-import Toggle from 'material-ui/Toggle';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as coreNavigation from '../core/navigation';
@@ -15,27 +14,6 @@ const style = {
     display: 'block',
     color: '#546e7a',
     overlfow: 'scroll'
-};
-
-const styles = {
-  block: {
-    maxWidth: 250
-  },
-  thumbOff: {
-    backgroundColor: '#ffcccc',
-  },
-  trackOff: {
-    backgroundColor: '#ff9d9d',
-  },
-  thumbSwitched: {
-    backgroundColor: 'red',
-  },
-  trackSwitched: {
-    backgroundColor: '#ff9d9d',
-  },
-  labelStyle: {
-    color: 'red',
-  },
 };
 
 class MyListings extends Component {
@@ -200,7 +178,7 @@ class MyListings extends Component {
                                                                                                             </div>
                                                                                                         
                                                                                                             <div className="col-xs-12 col-sm-12" style={{ 'marginTop':'15px', 'marginBottom':'10px'  }} >
-                                                                                                                 <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick= { () => this.deactivateTask(taskId) } /> 
+                                                                                                                 <RaisedButton label="Deactivate" primary={true} fullWidth={true}  onClick={() => this.deactivateTask(taskId)} /> 
                                                                                                             </div>
                                                                                                         </div>  
                                                                                                 </div>
@@ -222,7 +200,7 @@ class MyListings extends Component {
                                                                                 { this.state.offers.map( offer => {
                                                                                    const offerProgress = this.getOfferProgress(offer);
                                                                                      return(
-                                                                                        <Paper style={style} zDepth={1} >
+                                                                                        <Paper style={style} zDepth={1}>
                                                                                             <div className="row">  
                                                                                                 <div className="col-xs-12 col-sm-8"  >
                                                                                                         <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />

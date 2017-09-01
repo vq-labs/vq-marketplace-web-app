@@ -1,33 +1,31 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import Loader from "../Components/Loader";
 import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import TextField from 'material-ui/TextField';
-import Loader from "../Components/Loader";
-import Autocomplete from 'react-google-autocomplete';
-import { serializeQueryObj, formatGeoResults } from '../core/util';
-import { translate } from '../core/i18n';
-import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
+import VIEW_TYPES from '../Components/VIEW_TYPES';
+
 import * as apiConfig from '../api/config';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
 import TaskMap from "../Components/TaskMap";
 import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+
 import { stripHtml } from '../core/util';
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
+import { serializeQueryObj } from '../core/util';
+import { translate } from '../core/i18n';
+
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
 const _chunk = require('lodash.chunk');
-import VIEW_TYPES from '../Components/VIEW_TYPES';
+
 
 class Offers extends Component {
     constructor(props) {

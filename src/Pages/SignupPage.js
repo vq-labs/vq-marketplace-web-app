@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Signup from '../Components/Signup';
-import USER_TYPES from '../Components/USER_TYPES';
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { getParams } from '../core/util.js'

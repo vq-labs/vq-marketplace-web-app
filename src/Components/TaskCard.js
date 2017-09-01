@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Card, CardActions, CardText } from 'material-ui/Card';
+import { Card, CardText } from 'material-ui/Card';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import FlatButton from 'material-ui/FlatButton';
 import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
@@ -87,12 +86,15 @@ export default class TaskCard extends Component {
   getTaskListItem(task) {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
-                <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
+                <CardText 
+                  onClick={() => this.handleGoToTask(task.id)}
+                  style={{
                     height: '80px',
                     paddingBottom: 0,
                     lineHeight: '18px', 
                     overflow: 'hidden'
-                }} onClick={() => this.handleGoToTask(task.id) } >    
+                  }}
+                >    
                       <h4>{ this.formatTitle(task.title) }</h4>
                       {
                         task.location &&

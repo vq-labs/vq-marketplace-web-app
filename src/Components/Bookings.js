@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
-import CircularProgress from 'material-ui/CircularProgress';
 import apiOrder from '../api/order';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import IconCall from 'material-ui/svg-icons/communication/call';
 import IconChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Avatar from 'material-ui/Avatar';
-import * as coreAuth from '../core/auth';
 import * as coreFormat from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
@@ -15,11 +13,6 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
 import { getConfigAsync } from '../core/config';
-
-const VIEWS = {
-    IN_PROGRESS: 'in_progress',
-    COMPLETED: 'completed'
-};
 
 const ORDER_STATUS = {
     PENDING: '0',

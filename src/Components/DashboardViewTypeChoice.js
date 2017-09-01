@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import ViewTypeChoice from '../Components/ViewTypeChoice';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import { translate } from '../core/i18n';
 
 export default class DashboardViewTypeChoice extends Component {
     constructor(props) {

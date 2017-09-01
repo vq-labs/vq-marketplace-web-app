@@ -153,7 +153,6 @@ class Review extends Component {
                     labelStyle={{color: 'white '}}
                     backgroundColor={this.state.config.COLOR_PRIMARY}
                     label={translate("SUBMIT")}
-                    disabled={false}
                     onTouchTap={() => {
                         const reviewType = this.state.reviewType;
                         const order = this.state.order;

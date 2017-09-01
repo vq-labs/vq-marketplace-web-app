@@ -1,12 +1,10 @@
 import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Moment from 'react-moment';
 import CircularProgress from 'material-ui/CircularProgress';
 import HtmlTextField from '../Components/HtmlTextField';
-import * as coreAuth from '../core/auth';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, tryGoBack } from '../core/navigation';
@@ -17,7 +15,6 @@ import {
   Step,
   Stepper,
   StepLabel,
-  StepContent,
 } from 'material-ui/Stepper';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
@@ -55,7 +52,7 @@ export default class ChatRoom extends React.Component {
                 apiRequest.getItem(requestId)
                 .then(chat => this.setState({
                     config,
-                    isUserOwner: user.id == chat.task.userId,
+                    isUserOwner: user.id === chat.task.userId,
                     requestId,
                     isLoading: false,
                     fromUserId: user.id,
@@ -266,7 +263,7 @@ export default class ChatRoom extends React.Component {
                                         </div>
                                     </Paper>
                                     { this.state.isUserOwner &&
-                                      this.state.request.status == 0 &&
+                                      String(this.state.request.status) === 0 &&
                                         <RaisedButton
                                             labelStyle={{color: 'white '}}
                                             backgroundColor={this.state.config.COLOR_PRIMARY}

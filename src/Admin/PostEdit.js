@@ -1,12 +1,7 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
 import apiPost from '../api/post';
-import EditableEntity from '../Components/EditableEntity';
 import * as coreNavigation from '../core/navigation';
 import HtmlTextField from '../Components/HtmlTextField';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import * as coreUtil from '../core/util.js'
 import { translate } from '../core/i18n';
 import RaisedButton from 'material-ui/RaisedButton';
 

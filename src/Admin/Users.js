@@ -240,11 +240,12 @@ export default class SectionUsers extends React.Component {
                                         <div className="container">
                                             <div className="col-xs-12">
                                                     { this.state.showProperty &&
-                                                            <img
-                                                                width={400}
-                                                                height={400}
-                                                                src={getProperty(this.state.selectedUser, 'studentIdUrl')}
-                                                            />
+                                                        <img
+                                                            alt="presentation"
+                                                            width={400}
+                                                            height={400}
+                                                            src={getProperty(this.state.selectedUser, 'studentIdUrl')}
+                                                        />
                                                     }
                                             </div>
                                             <div className="col-xs-12">

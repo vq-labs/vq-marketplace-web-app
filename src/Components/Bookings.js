@@ -13,6 +13,7 @@ import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Moment from 'react-moment';
 import { getConfigAsync } from '../core/config';
 
 const VIEWS = {
@@ -148,7 +149,7 @@ export default class Bookings extends Component {
 
                                     { order.status === ORDER_STATUS.MARKED_DONE &&
                                         <p className="text-muted">
-                                            {translate("ORDER_MARKED_DONE")}
+                                            {translate("ORDER_MARKED_DONE")} (Will be automatically paid on <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)
                                         </p>
                                     }
                                 </div>

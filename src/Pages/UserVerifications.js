@@ -20,6 +20,7 @@ export default class UserVerifications extends React.Component {
 
         this.VERIFICATIONS = [
             'studentIdUrl',
+            'studentIdBackUrl',
             'facebookProfileUrl'
         ];
         
@@ -29,9 +30,13 @@ export default class UserVerifications extends React.Component {
                 key: this.VERIFICATIONS[0],
                 label: `${translate('USER_VERIFICATION_PERSONAL_ID_TITLE')} *`
             }, {
+                type: 'single-image',
+                key: this.VERIFICATIONS[1],
+                label: `${translate('USER_VERIFICATION_PERSONAL_ID_BACKSITE_TITLE')} *`
+            }, {
                 type: 'string',
                 title: translate('USER_VERIFICATION_FACEBOOK_TITLE'),
-                key: this.VERIFICATIONS[1],
+                key: this.VERIFICATIONS[2],
                 label: translate('USER_VERIFICATION_FACEBOOK_LABEL'),
             }
         ];
@@ -60,14 +65,15 @@ export default class UserVerifications extends React.Component {
                             verifications: {}
                         };
 
-                        this.VERIFICATIONS.forEach(propKey => {
-                            const property = properties
-                            .find(_ => _.propKey === propKey);
+                        this.VERIFICATIONS
+                            .forEach(propKey => {
+                                const property = properties
+                                .find(_ => _.propKey === propKey);
 
-                            newState.verifications[propKey] = property ?
-                                property.propValue :
-                                null
-                        })
+                                newState.verifications[propKey] = property ?
+                                    property.propValue :
+                                    null
+                            });
 
                         this.setState(newState);
                     });
@@ -106,20 +112,42 @@ export default class UserVerifications extends React.Component {
                                         });
 
                                         if (!updatedEntity.studentIdUrl) {
-                                            return alert('StudentID photo is required');
+                                            return alert('StudentID photo is required.');
+                                        }
+
+                                        if (!updatedEntity.studentIdBackUrl) {
+                                            return alert('StudentID photo is required (backside).');
                                         }
 
                                         getUserAsync(user => {
                                             async
-                                            .eachSeries(this.VERIFICATIONS, (fieldKey, cb) => {
+                                            .eachSeries(this.VERIFICATIONS, (propKey, cb) => {
+                                                const propValue = updatedEntity[propKey];
+                                                
                                                 apiUserProperty
                                                     .createItem(
                                                         user.id,
-                                                        fieldKey,
-                                                        updatedEntity[fieldKey]
+                                                        propKey,
+                                                        propValue
                                                     )
                                                     .then(() => {
-                                                        cb();
+                                                        getUserAsync(user => {
+                                                            const property = user
+                                                                .userProperties
+                                                                .find(_ => _.propKey === propKey);
+
+                                                            if (!property) {
+                                                                user.userProperties
+                                                                .push({
+                                                                    propKey,
+                                                                    propValue
+                                                                });
+                                                            } else {
+                                                                property.propValue = propValue;
+                                                            }
+
+                                                            return cb();
+                                                        });
                                                     }, cb)
                                             }, err => {
                                                 if (err) {
@@ -130,7 +158,7 @@ export default class UserVerifications extends React.Component {
                                                     return alert(err);
                                                 }
 
-                                                return setTimeout(() => goTo('/'), 50);
+                                                return goTo('/');
                                             })
                                         });
                                     }

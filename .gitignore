@@ -16,7 +16,7 @@ deployments/*
 !deployments/test-deployment.sh
 
 # generated code
-src/generated/*
+src/generated/**
 
 # misc
 .DS_Store

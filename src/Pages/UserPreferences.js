@@ -59,16 +59,18 @@ export default class SectionCategories extends React.Component {
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
-                            <h1>Specify your preferences</h1>
+                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                {translate('USER_PREFERENCE_HEADER')}
+                            </h1>
                             <p className="text-muted">
-                                bla bla bla
+                                {translate('USER_PREFERENCE_DESC')}
                             </p>
                         </div>
                     </div>
                     <div className="row">
                         { this.state.categories && this.state.categories
                             .map((category, index) =>
-                            <div className="col-xs-12 col-sm-4 col-md-3" style={{ marginBottom: 10}}>
+                            <div className="col-xs-12 col-sm-4 col-md-3" style={{ marginBottom: 10 }}>
                             <Card onTouchTap={
                                 () => {
                                     const userId = this.state.user.id;
@@ -91,7 +93,13 @@ export default class SectionCategories extends React.Component {
                                                 this.setState({
                                                     selected
                                                 });
-                                            }, _ => _);
+
+                                                getUserAsync(user => {
+                                                    user
+                                                    .userPreferences
+                                                    .push(_);
+                                                });
+                                        });
                                     } else {
                                         apiUserPreference
                                             .deleteItem(userId, selectedPreference.id)
@@ -101,6 +109,18 @@ export default class SectionCategories extends React.Component {
 
                                                 this.setState({
                                                     selected
+                                                });
+
+                                                getUserAsync(user => {
+                                                    const preference = user
+                                                    .userPreferences
+                                                    .find(_ => _.id === selectedPreference.id);
+
+                                                    const indexToDelete = user
+                                                    .userPreferences.indexOf(preference);
+
+                                                    user.userPreferences
+                                                    .splice(indexToDelete, 1);
                                                 });
                                             }, _ => _);
                                     }
@@ -146,12 +166,19 @@ export default class SectionCategories extends React.Component {
                                 style={{
                                     float: 'right'
                                 }}
+                                labelStyle={{color: 'white '}}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 label={translate("CONTINUE")}
-                                primary={true}
                                 disabled={false}
                                 onTouchTap={() => {
-                                    goTo('/');
+                                    getUserAsync(user => {
+                                        if (!user.userPreferences.length) {
+                                            return alert("Select at least one preference");
+                                        }
+
+                                        return goTo('/');
+                                    });
+                                   
                                 }}
                             />
                         </div>

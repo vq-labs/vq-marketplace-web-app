@@ -27,9 +27,16 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
         return false;
     }
 
-    // studentId has not been submitted
+    // users of type sellers are required to upload a document
     if (!user.userProperties.find(_ => _.propKey === 'studentIdUrl')) {
         goTo('/user-verifications');
+
+        return true;
+    }
+
+    // user has not preferences
+    if (!user.userPreferences.length) {
+        goTo('/user-preferences');
 
         return true;
     }

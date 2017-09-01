@@ -16,8 +16,19 @@ import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import Address from '../Components/Address';
 import { goTo } from '../core/navigation';
 import * as coreFormat from '../core/format';
+import Loader from "../Components/Loader";
+import { getConfigAsync } from '../core/config';
 
 import '../App.css';
+
+const REQUEST_STATUS = {
+    PENDING: '0',
+    ACCEPTED: '5',
+    MARKED_DONE: '10',
+    SETTLED: '15',
+    DECLINED: '20',
+    CANCELED: '25'
+};
 
 class BookRequest extends Component {
     constructor(props) {
@@ -32,47 +43,60 @@ class BookRequest extends Component {
             isLoading: true
         };
     }
-   
+
     componentDidMount() {
-      let requestId = this.props.params.requestId;
-
-      apiBillingAddress
-      .getItems()
-      .then(billingAddresses => {
-            const billingAddress = billingAddresses[0] || {};
-
+        getConfigAsync(config => {
+            let requestId = this.props.params.requestId;
+            
             this.setState({
-                billingAddressReady: true,
-                isLoading: false,
-                billingAddress
+                config
             });
-        });
 
-      apiRequest
-      .getItem(requestId)
-      .then(requestDetails => {
-            const order = this.state.order;
+            apiRequest
+            .getItem(requestId)
+            .then(requestDetails => {
+                const request = requestDetails.request;
 
-            order.amount = requestDetails.task.price;
-            order.currency = requestDetails.task.currency;
-            order.taskId = requestDetails.task.id;
-            order.requestId = requestDetails.request.id;
+                if (request.status !== REQUEST_STATUS.PENDING) {
+                    // booked is just hotfix - it requires different solution
+                    return goTo(`/order/booked`);
+                }
 
-            this.setState({
-                order,
-                requestReady: true,
-                isLoading: false,
-                requestDetails
+                const order = this.state.order;
+    
+                order.amount = requestDetails.task.price;
+                order.currency = requestDetails.task.currency;
+                order.taskId = requestDetails.task.id;
+                order.requestId = requestDetails.request.id;
+    
+                this.setState({
+                    order,
+                    requestReady: true,
+                    isLoading: false,
+                    requestDetails
+                });
+
+                apiBillingAddress
+                .getItems()
+                .then(billingAddresses => {
+                    const billingAddress = billingAddresses[0] || {};
+        
+                    this.setState({
+                        billingAddressReady: true,
+                        billingAddress
+                    });
+                });
             });
         });
     }
+
     render() {
         return (
             <div className="container">
                 { this.state.isLoading && 
-                    <div className="text-center" style={{ 'marginTop': '40px' }}>
-                        <CircularProgress size={80} thickness={5} />
-                    </div>
+                    <Loader
+                        isLoading={true}
+                    />
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
@@ -104,7 +128,7 @@ class BookRequest extends Component {
                             />
                         </div>    
 
-                        <div className="col-xs-12" style={{ marginTop: 50       }}>
+                        <div className="col-xs-12" style={{ marginTop: 50 }}>
                             <RaisedButton
                                 backgroundColor={"#546e7a"}
                                 labelColor={"white"}
@@ -112,6 +136,36 @@ class BookRequest extends Component {
                                 onClick={() => {
                                     const billingAddress = this.state.billingAddress;
                                     const order = this.state.order;
+                                    
+                                    const REQUIRED_FIELDS = {
+                                        countryCode: "LOCATION_COUNTRY_CODE",
+                                        street: "LOCATION_STREET",
+                                        // streetNumber: "LOCATION_STREET_NO",
+                                        city: "LOCATION_CITY",
+                                        postalCode: "LOCATION_POSTAL_CODE"
+                                    };
+
+                                    let isInvalid = false;
+                                    
+                                    Object
+                                        .keys(REQUIRED_FIELDS)
+                                        .forEach(fieldKey => {
+                                            if (isInvalid) {
+                                                return;
+                                            }
+
+                                            if (!billingAddress[fieldKey]) {
+                                                isInvalid = true;
+
+                                                return alert(
+                                                    translate(`${REQUIRED_FIELDS[fieldKey]}`) + ' ' + translate('IS_REQUIRED')
+                                                );
+                                            }
+                                        });
+
+                                    if (isInvalid) {
+                                        return;
+                                    }
 
                                     const createOrder = order => {
                                         apiOrder

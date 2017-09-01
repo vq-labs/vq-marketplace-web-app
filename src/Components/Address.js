@@ -94,11 +94,18 @@ export default class Address extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LOCATION_STREET") + '*'}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                        {translate("LOCATION_STREET") + '*'}
+                                    </h4>
                                     <TextField id={'listing_location'} name="location" style={{width: '100%'}}>
                                         <Autocomplete
-                                            value={this.state.locationQueryString}
-                                            onChange={(ev, locationQueryString) => this.setState({ locationQueryString, street: locationQueryString })}
+                                            value={this.state.street}
+                                            onChange={(ev, locationQueryString) => {
+                                                this.setState({
+                                                    locationQueryString,
+                                                    street: locationQueryString
+                                                });
+                                            }}
                                             style={{width: '100%'}}
                                             componentRestrictions={{country: this.state.countryRestriction}}
                                             onPlaceSelected={place => {
@@ -116,7 +123,9 @@ export default class Address extends Component {
                                                     postalCode: locationValue.postalCode,
                                                     countryCode: locationValue.countryCode,
                                                     city: locationValue.city,
-                                                    addressAddition: this.state.addressAddition,
+                                                    addressAddition:
+                                                        locationValue.streetNumber ||
+                                                        this.state.addressAddition,
                                                     street: locationValue.route,
                                                     streetNumber: locationValue.streetNumber,
                                                     lat: locationValue.lat,

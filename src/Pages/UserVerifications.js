@@ -64,7 +64,7 @@ export default class UserVerifications extends React.Component {
                             isLoading: false,
                             verifications: {}
                         };
-
+                      
                         this.VERIFICATIONS
                             .forEach(propKey => {
                                 const property = properties
@@ -136,6 +136,7 @@ export default class UserVerifications extends React.Component {
                                                                 .userProperties
                                                                 .find(_ => _.propKey === propKey);
 
+                                                            debugger;
                                                             if (!property) {
                                                                 user.userProperties
                                                                 .push({

@@ -30,6 +30,8 @@ export const goTo = (url, shouldReload) => {
 export const goStartPage = () => {
     history.push(`/`);
     browserHistory.push(`/`);
+
+    location.reload();
 };
 
 export const getAppPath = url => `${BASE}${url}`;

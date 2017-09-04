@@ -71,7 +71,11 @@ export default class TaskListItem extends Component {
 
   formatTitle (title) {
     if (title) {
-       return title.substring(0, 55) + '..';
+      if (title.length > 55) {
+        return title.substring(0, 55) + '...';
+      }
+
+      return title;
     }
 
     return 'No title';

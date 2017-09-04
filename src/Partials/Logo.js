@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { goTo } from '../core/navigation';
+import { goTo, goStartPage } from '../core/navigation';
+import { getUserAsync } from '../core/auth';
 
 class Logo extends Component {
   constructor(props) {
@@ -8,10 +9,18 @@ class Logo extends Component {
 
   render() {
       return (
-        <div>
+        <div style={{ cursor: 'marker' }}>
             <a
               onClick={ 
-                () => goTo('/')
+                () => {
+                  getUserAsync(user => {
+                    if (user) {
+                      return goTo('/');
+                    }
+
+                    return goStartPage();
+                  }, true);
+                }
               }
               target="_self" 
               style={{ textDecoration: 'none' }}

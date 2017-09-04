@@ -25,6 +25,24 @@ const _ = require('underscore');
 
 const defaultProfileImageUrl = '/images/avatar.png';
 
+const REQUEST_STATUS = {
+    PENDING: '0',
+    ACCEPTED: '5',
+    MARKED_DONE: '10',
+    SETTLED: '15',
+    DECLINED: '20',
+    CANCELED: '25'
+};
+
+const REQUEST_ORDER = [
+    REQUEST_STATUS.PENDING,
+    REQUEST_STATUS.ACCEPTED,
+    REQUEST_STATUS.MARKED_DONE,
+    REQUEST_STATUS.SETTLED,
+    REQUEST_STATUS.DECLINED,
+    REQUEST_STATUS.CANCELED
+];
+
 export default class ChatRoom extends React.Component {
     constructor() {
         super();
@@ -280,7 +298,7 @@ export default class ChatRoom extends React.Component {
                                     }
 
                             <Stepper className="hidden-xs" activeStep={
-                                [ '0', '5', '10', '15' ].indexOf(this.state.request.status)
+                                REQUEST_ORDER.indexOf(this.state.request.status)
                             } orientation="vertical">
                             <Step>
                                 <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>

@@ -64,45 +64,44 @@ export default class NewListing extends Component {
     constructor(props) {
         super();
 
+        let step = LISTING_VIEWS.CATEGORY;
+
+        const task = {
+            title: '',
+            description: '',
+            location: {},
+            duration: 2,
+            priceType: 1,
+            taskType: TASK_TYPES.OFFERING,
+            categories: [],
+            timing: [],
+            images: [],
+            utm: {
+                source: 'web-app',
+                medium: 'web'
+            }
+        };
+
+        if (props.location.query.category) {
+            const category = props.location.query.category;
+
+            step = LISTING_VIEWS.PRICING;
+
+            task
+                .categories
+                .push(category);
+        }
+
         this.state = {
             value: 'signup',
             auth: coreAuth.getUserId(),
-            step: LISTING_VIEWS.CATEGORY,
             minPrice: 0,
             openSnackbar: false,
             insertedTask: {},
             listingCategories: [],
-            task: {
-                title: '',
-                description: '',
-                location: {},
-                duration: 2,
-                priceType: 1,
-                taskType: TASK_TYPES.OFFERING,
-                categories: [],
-                timing: [],
-                images: [],
-                utm: {
-                    source: 'web-app',
-                    medium: 'web'
-                }
-            }
+            step,
+            task
         };
- 
-        if (props.location.query.category) {
-            const category = props.location.query.category;
-            const task = this.state.task;
-            const step = LISTING_VIEWS.PRICING;
-
-            task.categories.push(category);
-
-            this.setState({
-                task,
-                step
-            });
-
-            return;
-        }
     }
     componentDidMount() {
         getConfigAsync(meta => {

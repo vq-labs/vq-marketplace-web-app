@@ -2,6 +2,7 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import Loader from "../Components/Loader";
 import Moment from 'react-moment';
 import CircularProgress from 'material-ui/CircularProgress';
 import HtmlTextField from '../Components/HtmlTextField';
@@ -66,22 +67,26 @@ export default class ChatRoom extends React.Component {
                 if (!user) {
                     return goTo(`/login?redirectTo=/chat/${requestId}`);
                 }
-
+                
                 apiRequest.getItem(requestId)
-                .then(chat => this.setState({
-                    config,
-                    isUserOwner: user.id === chat.task.userId,
-                    requestId,
-                    isLoading: false,
-                    fromUserId: user.id,
-                    toUserId: chat.messages[0].fromUserId === user.id ?
-                        chat.messages[0].toUserId :
-                        chat.messages[0].fromUserId,
-                    messages: chat.messages,
-                    users: chat.users,
-                    task: chat.task,
-                    request: chat.request
-                }));
+                .then(chat => {
+                    debugger;
+                
+                    this.setState({
+                        config,
+                        isUserOwner: user.id === chat.task.userId,
+                        requestId,
+                        isLoading: false,
+                        fromUserId: user.id,
+                        toUserId: chat.messages[0].fromUserId === user.id ?
+                            chat.messages[0].toUserId :
+                            chat.messages[0].fromUserId,
+                        messages: chat.messages,
+                        users: chat.users,
+                        task: chat.task,
+                        request: chat.request
+                    });
+                });
 
             }, true);
         });
@@ -165,7 +170,7 @@ export default class ChatRoom extends React.Component {
                                             const lastName = sender.lastName;
                                             const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
-                                            return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px'} }>
+                                            return <div className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
                                                         <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                                             <div className="row">
                                                                 <div className="col-xs-2 col-sm-1">
@@ -214,27 +219,27 @@ export default class ChatRoom extends React.Component {
                                                 </div>;
                                         })
                                     }
-
+                                    { this.state.users[this.state.fromUserId] &&
                                         <div className="row" style={{
                                             paddingLeft: 20,
                                             marginTop: 20,
                                             marginBottom: 20,
                                             paddingRight: 20
                                         }}>
-                                        <div className="col-xs-12">
-                                            <form onSubmit={this.handleNewMessage}>
-                                                <HtmlTextField                                                 
-                                                    onChange={(event, newMessage) => this.setState({
-                                                        newMessage
-                                                    })}
-                                                    value={this.state.newMessage}
-                                                />
-                                                
-                                                <RaisedButton type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
-                                            </form>
+                                            <div className="col-xs-12">
+                                                <form onSubmit={this.handleNewMessage}>
+                                                    <HtmlTextField                                                 
+                                                        onChange={(event, newMessage) => this.setState({
+                                                            newMessage
+                                                        })}
+                                                        value={this.state.newMessage}
+                                                    />
+                                                    
+                                                    <RaisedButton type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
+                                                </form>
+                                            </div>
                                         </div>
-                                    </div>
-                        
+                                    }                
                             </div>
 
                             <div className="col-xs-12 col-sm-4">
@@ -281,7 +286,7 @@ export default class ChatRoom extends React.Component {
                                         </div>
                                     </Paper>
                                     { this.state.isUserOwner &&
-                                      String(this.state.request.status) === 0 &&
+                                      String(this.state.request.status) === '0' &&
                                         <RaisedButton
                                             labelStyle={{color: 'white '}}
                                             backgroundColor={this.state.config.COLOR_PRIMARY}

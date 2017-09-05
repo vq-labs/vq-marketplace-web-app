@@ -40,6 +40,7 @@ class BookRequest extends Component {
             let requestId = this.props.params.requestId;
             
             this.setState({
+                ready: true,
                 config
             });
 
@@ -84,6 +85,16 @@ class BookRequest extends Component {
     render() {
         return (
             <div className="container">
+                { this.state.ready && 
+                <div className="row">
+                    <div className="col-xs-12">
+                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                            {translate('CONFIRM_BOOKING_HEADER')}
+                        </h1>
+                        <p>{translate('CONFIRM_BOOKING_DESC')}</p>
+                    </div>
+                </div>
+                }
                 { this.state.isLoading && 
                     <Loader
                         isLoading={true}
@@ -91,10 +102,6 @@ class BookRequest extends Component {
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
-                        <div className="col-xs-12">
-                            <h1>{translate('CONFIRM_BOOKING_HEADER')}</h1>
-                            <p>{translate('CONFIRM_BOOKING_DESC')}</p>
-                        </div>
                         <div className="col-xs-12 col-sm-6 pull-right">
                             <div className="col-xs-12">
                                 <h3>{this.state.requestDetails.task.title}</h3>
@@ -112,6 +119,7 @@ class BookRequest extends Component {
                             <Address
                                 location={this.state.billingAddress}
                                 onLocationChange={billingAddress => {
+                                    debugger;
                                     this.setState({
                                         billingAddress
                                     });
@@ -121,7 +129,7 @@ class BookRequest extends Component {
 
                         <div className="col-xs-12" style={{ marginTop: 50 }}>
                             <RaisedButton
-                                backgroundColor={"#546e7a"}
+                                backgroundColor={this.state.config.COLOR_PRIMARY}
                                 labelColor={"white"}
                                 label={translate("CONFIRM_BOOKING")} 
                                 onClick={() => {

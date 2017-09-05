@@ -89,6 +89,20 @@ export default class Bookings extends Component {
     });
   }
 
+  getUserPhoneFromOrder(order) {
+    const user = order.fromUser;
+    const userProperty = user.userProperties
+        .find(_ => _.propKey === 'phoneNo');
+
+    if (userProperty) {
+        return user.userProperties
+            .find(_ => _.propKey === 'phoneNo')
+            .propValue;
+    }
+
+    return '?';
+  }
+
   render() {
     return (
         <div className="container">
@@ -122,7 +136,14 @@ export default class Bookings extends Component {
                             style={{ marginTop: 10 }}
                         >
                             <Paper style={{ padding: 10 }}>
-                            <h3>{order.task.title}</h3>
+                            <h3>
+                                <a  href="#"
+                                    className="vq-link"
+                                    onTouchTap={() => goTo(`/task/${order.task.id}`)}
+                                >
+                                    {order.task.title}
+                                </a>
+                            </h3>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 text-left"> 
                                      <h3>
@@ -165,21 +186,16 @@ export default class Bookings extends Component {
                                     { order.status !== ORDER_STATUS.SETTLED && 
                                         <IconButton
                                             style={{ top: 5 }}
-                                            tooltip={
-                                                order.fromUser.userProperties
-                                                .find(_ => _.propKey === 'phoneNo')
-                                                .propValue
-                                            }>
+                                            tooltip={this.getUserPhoneFromOrder(order)}>
                                             <IconCall />
                                         </IconButton>
                                     }
                                     { order.status !== ORDER_STATUS.SETTLED && 
                                         <div style={{ 
                                             display: 'inline-block',
-                                            padding: 15
                                         }}>
                                             <IconButton
-                                                style={{ marginTop: 10 }}
+                                                style={{ top: 5 }}
                                                 tooltip={'Chat'}
                                                 onClick={() => goTo(`/chat/${order.request.id}`)}
                                             >

@@ -1,12 +1,20 @@
 const CENT_CURRENCIES = [ 'PLN', 'EUR', 'USD' ];
 const NOCENT_CURRENCIES = [ 'HUF' ];
 
-export const displayPrice = (amount, currencyCode) => {
+const CURRENCY_LABELS = {
+    PLN: 'PLN',
+    EUR: 'EUR',
+    USD: 'USD',
+    HUF: 'Ft',
+};
+
+
+export const displayPrice = (amount, currencyCode, pricingModel) => {
     if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
         return `${(amount / 100).toFixed(2)} ${currencyCode}`;
     }
 
     if (NOCENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-        return `${amount} ${currencyCode}`;
+        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
     }
 };

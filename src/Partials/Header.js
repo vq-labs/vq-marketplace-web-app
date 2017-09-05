@@ -19,7 +19,6 @@ class Header extends Component {
     super();
 
     this.state = {
-      tasks: [],
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
@@ -30,31 +29,20 @@ class Header extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
-      this.setState({
+      return this.setState({
         homeLabel: nextProps.homeLabel,
         userId: nextProps.user.id,
         user: nextProps.user,
         logged: Boolean(nextProps.user)
       });
-
-      apiTask.getItems({
-          userId: nextProps.user.id,
-          taskType: 1,
-          status: 10,
-      }).then(tasks => {
-        this.setState({
-          tasks
-        });
-      });
-
-    } else {
-      this.setState({
-        homeLabel: nextProps.homeLabel,
-        logged: false,
-        userId: undefined,
-        user: undefined
-      });
     }
+
+    this.setState({
+      homeLabel: nextProps.homeLabel,
+      logged: false,
+      userId: undefined,
+      user: undefined
+    });
   } 
 
   handleLogout(e) {

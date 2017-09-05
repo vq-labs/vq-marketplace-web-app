@@ -82,12 +82,18 @@ export default class TaskListItem extends Component {
   getTaskListItem(task) {
     return (
             <div className="row" key={task.id} style={{ cursor: "pointer" }} >
-                <div className="col-xs-10">
+                <div className="hidden-xs col-sm-3">
+                    <img
+                      style={{ marginTop: 20, marginBottom: 20 }}
+                      className="img-responsive"
+                      src={task.categories[0].imageUrl || '/images/category-default-img.jpeg'}
+                    />
+                </div>
+                <div className="col-xs-10 col-sm-6">
                   <div onClick={() => this.handleGoToTask(task.id)}
                     style={{
                       height: '80px',
                       paddingBottom: 0,
-                      lineHeight: '18px', 
                       overflow: 'hidden'
                     }} 
                   >    
@@ -130,7 +136,15 @@ export default class TaskListItem extends Component {
                                 status: '103'
                               })
                               .then(_ => {
-                                alert('TASK_DEACTIVATED');
+                                task.status = '103';
+
+                                this.setState({
+                                  task
+                                });
+                                
+                                if (this.props.onCancel) {
+                                  this.props.onCancel(task);
+                                }
                               }, err => {
                                 console.error(err);
                               })
@@ -147,15 +161,20 @@ export default class TaskListItem extends Component {
                       <div className="col-xs-12">
                         <strong>{translate('REQUESTS')}:</strong>
                       </div>
-                       { this.state.task.requests.map(request => 
-                          <div className="col-xs-4 col-sm-3 col-md-1" onTouchTap={
+                      { !this.state.task.requests.length && 
+                        <div className="col-xs-12 text-muted">
+                          <p>{translate('NO_REQUESTS')}</p>
+                        </div>
+                      }
+                      { this.state.task.requests.map(request => 
+                          <div className="col-xs-4 col-sm-4 col-md-3" onTouchTap={
                                           () => goTo(`/request/${request.id}`)
                                       }>
                                 <div className="col-xs-12 text-center">
                                   <Avatar src={request.fromUser.imageUrl || '/images/avatar.png' }/>
                                 </div>
                                 <div className="col-xs-12 text-center text-muted">
-                                   {request.fromUser.firstName}
+                                   {request.fromUser.firstName} {request.fromUser.lastName}
                                 </div>
                           </div>
                        )}

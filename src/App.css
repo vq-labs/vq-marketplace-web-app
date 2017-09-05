@@ -31,6 +31,10 @@ body {
   text-transform: uppercase; 
 }
 
+.vq-link {
+  text-decoration: none;
+}
+
 .display-on-hover:hover {
   display: block !important;
 }
@@ -106,31 +110,26 @@ body {
     color: #546e7a;
 }
 
- .st-h1 {
-    font-size: 24px;
- }
-
  h1 {
-        color: #546e7a;
         font-size: 24px;
         font-weight: 400px;
  }
 
  h2 {
-        color: #546e7a;
-        fontSize: 23px;
+        font-size: 23px;
         font-weight: 400;
-  }
- h3 {
-        fontSize: 22px;
-        font-weight: 400;
-    }
+}
+
+h3 {
+      font-size: 20px;
+      font-weight: 400;
+}
     
 h4 {
-    color: #546e7a;
-    fontSize: 21px;
+    font-size: 19px;
     font-weight: 400;
 }
+
 .buttonColor {
   background-color : #26a69a !important;
 }

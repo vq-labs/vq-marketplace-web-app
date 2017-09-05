@@ -11,6 +11,7 @@ import { goTo, setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js'
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
+import Loader from "../Components/Loader";
 
 /**
  * Dashboard depends on a user type
@@ -35,18 +36,8 @@ export default class Dashboard extends Component {
           return;
         }
 
-        apiTask
-        .getItems({
-          status: '0',
-          userId: user.id,
-        })
-        .then(tasks => this.setState({
-          tasks,
-          isLoading: false
-        }));
-
-
         const newState =  {
+          isLoading: true,
           ready: true,
           config,
           userType: user.userType
@@ -57,8 +48,18 @@ export default class Dashboard extends Component {
             'ORDERS_IN_PROGRESS' :
             'SENT_REQUESTS_ACCEPTED';
         }
-        
+
         this.setState(newState);
+
+        apiTask
+        .getItems({
+          status: '0',
+          userId: user.id,
+        })
+        .then(tasks => this.setState({
+          tasks,
+          isLoading: false
+        }));
       }, true);
     });
   }
@@ -83,7 +84,10 @@ export default class Dashboard extends Component {
             </div>
             {this.state.viewType === 'LISTINGS_POSTED' &&
                 <div className="row">
-                  {!this.state.tasks.length &&
+                  { this.state.isLoading &&
+                    <Loader isLoading={true} />
+                  }
+                  { !this.state.isLoading && !this.state.tasks.length &&
                     <div className="col-xs-12">
                         <div className="row">
                           <div className="col-xs-12">
@@ -94,8 +98,8 @@ export default class Dashboard extends Component {
                         </div>
                     </div>
                   }
-                  {this.state.tasks
-                  .map(task =>
+                  { !this.state.isLoading && this.state.tasks
+                  .map((task, index) =>
                       <div 
                           className="col-xs-12"
                           style={{
@@ -108,6 +112,15 @@ export default class Dashboard extends Component {
                               showRequests={true}
                               displayPrice={true}
                               editable={true}
+                              onCancel={() => {
+                                const tasks = this.state.tasks;
+
+                                tasks.splice(index, 1);
+
+                                this.setState({
+                                  tasks
+                                });
+                              }}
                           />
                         <div className="row"><hr /></div>
                       </div>
@@ -156,7 +169,7 @@ export default class Dashboard extends Component {
               }
             </div>
             }
-            { !this.state.isLoading && Number(this.state.userType) === 1 &&
+            { false && !this.state.isLoading && Number(this.state.userType) === 1 &&
               <NewListingCategory onSelected={listingCategoryCode => {
                 goTo(`/new-listing?category=${listingCategoryCode}`);
               }}/>

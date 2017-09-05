@@ -17,13 +17,15 @@ export const Component = class ConfirmDialog extends React.Component {
         super();
         this.state = {
             isOpen: false,
-            headerLabel: props.headerLabel
         };
     }
     componentDidMount() {
         onOpen = data => {
             this.setState({
                 headerLabel: data.headerLabel,
+                confirmationLabel: data.confirmationLabel,
+                okLabel: data.okLabel,
+                cancelLabel: data.cancelLabel,
                 isOpen: true
             });
         }
@@ -34,7 +36,7 @@ export const Component = class ConfirmDialog extends React.Component {
                         <Dialog
                             actions={[
                                 <FlatButton
-                                    label={translate('CANCEL')}
+                                    label={this.state.cancelLabel || translate('CANCEL')}
                                     primary={true}
                                     onTouchTap={() => {
                                         this.setState({
@@ -45,7 +47,7 @@ export const Component = class ConfirmDialog extends React.Component {
                                     }}
                                 />,
                                 <FlatButton
-                                    label={translate('CONFIRM')}
+                                    label={this.state.confirmLabel ||translate('CONFIRM')}
                                     primary={true}
                                     onTouchTap={() => {
                                         pendingCb && pendingCb();
@@ -62,7 +64,7 @@ export const Component = class ConfirmDialog extends React.Component {
                             open={this.state.isOpen}
                             >
                                 <h1>{this.state.headerLabel}</h1>
-                                {translate('ARE_YOUR_SURE')}
+                                {this.state.confirmationLabel || translate('ARE_YOUR_SURE')}
                             </Dialog>
                      </div>
             );

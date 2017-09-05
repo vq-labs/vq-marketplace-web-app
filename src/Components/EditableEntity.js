@@ -57,6 +57,16 @@ export default class EditableEntity extends Component {
 
                 updatedEntity[field] = transform ? transform(value) : value;
                 
+
+                this.state.fields
+                .filter(_ => _.deriveValue)
+                .forEach(_ => {
+                    if (_.key !== field) {
+                        updatedEntity[_.key] = _.deriveValue(updatedEntity);
+                    }
+                });
+                
+
                 this.setState({
                     updatedEntity,
                     dirty: true
@@ -72,14 +82,14 @@ export default class EditableEntity extends Component {
     
     render() {
             return (
-                <div>
+                <div className="col-xs-12">
                 { this.state.isLoading &&
                     <div className="text-center" style={{ 'marginTop': '40px' }}>
                         <CircularProgress size={80} thickness={5} />
                     </div>
                 }
                 { !this.state.isLoading &&
-                            <div className="container">
+                            <div className="col-xs-12">
                                 <div className="col-xs-12 col-sm-8">
                                     { Object.keys(this.state.groupedFields).map((groupKey) =>
                                         <div className="row">
@@ -113,6 +123,7 @@ export default class EditableEntity extends Component {
                                                                 <TextField
                                                                     key={index}
                                                                     type={field.type}
+                                                                    disabled={field.deriveValue}
                                                                     onChange={this.handleFieldChange(field.key)}
                                                                     value={this.state.updatedEntity[field.key]}
                                                                     style={{width: '100%'}}

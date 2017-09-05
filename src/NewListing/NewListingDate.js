@@ -73,6 +73,8 @@ export default class NewListingDate extends Component {
                                 style={{width: '100%'}}
                                 minDate={this.state.minDate}
                                 maxDate={this.state.maxDate}
+                                min={this.state.minDate}
+                                max={this.state.maxDate}
                                 selected={this.state.selected}
                                 onSelect={date => {
                                     const selectedDates = this.state.selected;

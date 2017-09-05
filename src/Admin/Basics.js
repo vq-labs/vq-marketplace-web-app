@@ -20,7 +20,12 @@ const defaultConfigsFields = [
     {
         type: 'single-image',
         key: 'PROMO_URL',
-        label: 'Marketplace promo'
+        label: 'Marketplace promo for buyers/clients'
+    },
+    {
+        type: 'single-image',
+        key: 'PROMO_URL_SELLERS',
+        label: 'Marketplace promo for sellers/taskers'
     },
     {
         type: 'string',

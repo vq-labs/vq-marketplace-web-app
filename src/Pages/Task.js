@@ -132,6 +132,22 @@ class Task extends Component {
               }
               { !this.state.isLoading &&           
                     <div className="container-fluid" >
+                        { this.state.task && this.state.task.status === '103' &&
+                            <div className="row">
+                                <div className="text-center" style={{ 'marginTop': '40px' }}>
+                                    <h1>{translate('CANCELLED')}</h1>
+                                </div>
+                            </div>
+                        }
+
+                        { this.state.task && this.state.task.status === '20' &&
+                            <div className="row">
+                                <div className="text-center" style={{ 'marginTop': '40px' }}>
+                                    <h1>{translate('BOOKED')}</h1>
+                                </div>
+                            </div>
+                        }
+
                         <div className="row">
                             <div className="col-sm-offset-2 col-xs-12 col-sm-8">
                                 <div className="col-xs-12 col-sm-8">

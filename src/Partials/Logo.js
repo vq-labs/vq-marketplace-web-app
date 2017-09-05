@@ -15,8 +15,14 @@ class Logo extends Component {
                 () => {
                   getUserAsync(user => {
                     if (user) {
+                      if (Number(user.userType) === 1) {
+                        return goStartPage();
+                      }
+                      
                       return goTo('/');
                     }
+
+
 
                     return goStartPage();
                   }, true);

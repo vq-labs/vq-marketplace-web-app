@@ -4,12 +4,13 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
 import { goTo } from '../core/navigation';
+import apiTask from '../api/task';
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 
 export default class TaskListItem extends Component {
     constructor(props) {
@@ -48,25 +49,6 @@ export default class TaskListItem extends Component {
 
   handleGoToTask (taskId) {
     coreNavigation.goTo(`/task/${taskId}`)
-  }
-
-  changeStatus (taskId, statusCode) {
-    const updatedTask = this.state.task;
-
-    if (statusCode === 0) {
-      StActions.activateTask(taskId, () => {} );
-      updatedTask.status = 0;
-
-      this.setState({ task: updatedTask });
-    }
-
-    if (statusCode === 103) {
-      StActions.deactivateTask(taskId, () => {} );
-
-      updatedTask.status = 103;
-
-      this.setState({ task: updatedTask });
-    }
   }
 
   formatTitle (title) {
@@ -139,7 +121,21 @@ export default class TaskListItem extends Component {
                       }
                       <a
                         style={{ padding: 5 }} 
-                        onTouchTap={() => alert('Task should be cancelled')}>
+                        onTouchTap={() => {
+                          openConfirmDialog({
+                            headerLabel: translate("CANCEL")
+                          }, () => {
+                            apiTask
+                              .updateItem(task.id, {
+                                status: '103'
+                              })
+                              .then(_ => {
+                                alert('TASK_DEACTIVATED');
+                              }, err => {
+                                console.error(err);
+                              })
+                          });
+                        }}>
                           <strong>
                               {translate("CANCEL")} 
                           </strong>
@@ -187,9 +183,6 @@ export default class TaskListItem extends Component {
 
                                     return coreNavigation.goTo(`/task/${task.id}/edit`);
                                   }} />
-                                  { task.status !== 0 && <MenuItem primaryText={translate('ACTIVATE')} onTouchTap={ () => this.changeStatus(task.id, 0) } /> }
-                                  { task.status === 0 && <MenuItem primaryText={translate('DEACTIVATE')} onTouchTap={ () => this.changeStatus(task.id, 103) } /> }
-                                  
                               </IconMenu>
                         </div>
                       </div> 

@@ -13,6 +13,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
 import { getConfigAsync } from '../core/config';
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 
 const ORDER_STATUS = {
     PENDING: '0',
@@ -191,7 +192,13 @@ export default class Bookings extends Component {
                                         <RaisedButton
                                             label={translate('SETTLE_ORDER')}
                                             primary={true}
-                                            onTouchTap={() => this.initSettleOrder(order)}
+                                            onTouchTap={() => {
+                                                openConfirmDialog({
+                                                    headerLabel: translate('SETTLE_ORDER')
+                                                },() => {
+                                                    this.settleOrder(order);
+                                                });
+                                            }}
                                         />
                                     }
                                     { order.status === ORDER_STATUS.SETTLED &&
@@ -236,7 +243,7 @@ export default class Bookings extends Component {
                 open={this.state.open}
                 onRequestClose={this.handleClose}
                 >
-                {translate('SETTLE_ORDER')}
+                    {translate('SETTLE_ORDER')}
                 </Dialog>
             </div>
 

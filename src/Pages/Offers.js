@@ -60,6 +60,13 @@ class Offers extends Component {
                     return;
                 }
 
+                /**
+                 * Only sellers can access this page
+                 */
+                if (String(user.userType) !== '2') {
+                    return goTo('/dashboard');
+                }
+
                 this.setState({
                     isLoading: true
                 });
@@ -250,7 +257,7 @@ class Offers extends Component {
                     () => {
                         this.updateResults({ category: category.code }); 
                     }
-                    }>{translate(category.code)}
+                    }>{translate(category.code) === category.code ? category.label : translate(category.code)}
                     </span>
                 </div>    
             )

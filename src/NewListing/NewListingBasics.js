@@ -84,7 +84,9 @@ export default class NewListingBasics extends Component {
 
                                             description.value = descriptionValue;
 
-                                            this.setState({ description });
+                                            this.setState({
+                                                description
+                                            });
 
                                             this.props.onDescriptionChange(descriptionValue);
                                         }}

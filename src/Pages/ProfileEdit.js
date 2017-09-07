@@ -23,6 +23,7 @@ export default class ProfileEdit extends Component {
         .getItem(userId)
         .then(user => this.setState({
             user,
+            ready: true,
             isLoading: false
         }));
     }
@@ -31,44 +32,45 @@ export default class ProfileEdit extends Component {
                 <div className="container">
                     <div className="col-xs-12">
                         <h1>{ translate('EDIT_PROFILE') }</h1>
-
-                        <EditableEntity
-                            cancelLabel={translate('CANCEL')}
-                            saveLabel={translate('SAVE')}
-                            showCancelBtn={true}
-                            value={this.state.user} 
-                            fields={[
-                                {
-                                    type: 'string',
-                                    key: 'firstName',
-                                    label: translate('FIRST_NAME')
-                                },
-                                {
-                                    type: 'string',
-                                    key: 'lastName',
-                                    label: translate('LAST_NAME') 
-                                },
-                                
-                                {
-                                    type: 'string',
-                                    key: 'bio',
-                                    label: translate('PROFILE_BIO'),
-                                    hint: translate('PROFILE_BIO_DESC'),
-                                },
-                                /** 
-                                {
-                                    type: 'string',
-                                    key: 'website',
-                                    label: translate('WEBSITE')
+                        { !this.state.isLoading &&
+                            <EditableEntity
+                                cancelLabel={translate('CANCEL')}
+                                saveLabel={translate('SAVE')}
+                                showCancelBtn={true}
+                                value={this.state.user} 
+                                fields={[
+                                    {
+                                        type: 'string',
+                                        key: 'firstName',
+                                        label: translate('FIRST_NAME')
+                                    },
+                                    {
+                                        type: 'string',
+                                        key: 'lastName',
+                                        label: translate('LAST_NAME') 
+                                    },
+                                    
+                                    {
+                                        type: 'html',
+                                        key: 'bio',
+                                        label: translate('PROFILE_BIO'),
+                                        hint: translate('PROFILE_BIO_DESC'),
+                                    },
+                                    /** 
+                                    {
+                                        type: 'string',
+                                        key: 'website',
+                                        label: translate('WEBSITE')
+                                    }
+                                    */
+                                ]}
+                                onConfirm={
+                                    updatedEntity => apiUser
+                                        .updateItem(this.state.user.id, updatedEntity)
+                                        .then(() => goTo(`/profile/${this.state.user.id}`))
                                 }
-                                */
-                            ]}
-                            onConfirm={
-                                updatedEntity => apiUser
-                                    .updateItem(this.state.user.id, updatedEntity)
-                                    .then(() => goTo(`/profile/${this.state.user.id}`))
-                            }
-                        />
+                            />
+                        }
                     </div>    
                 </div>
             );

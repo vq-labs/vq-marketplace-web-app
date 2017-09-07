@@ -8,8 +8,17 @@ const CURRENCY_LABELS = {
     HUF: 'Ft',
 };
 
-
 export const displayPrice = (amount, currencyCode, pricingModel) => {
+    if (pricingModel === 1) {
+        if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
+            return `${(amount / 100).toFixed(2)} ${currencyCode}/h`;
+        }
+    
+        if (NOCENT_CURRENCIES.indexOf(currencyCode) !== -1) {
+            return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
+        }
+    }
+
     if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
         return `${(amount / 100).toFixed(2)} ${currencyCode}`;
     }

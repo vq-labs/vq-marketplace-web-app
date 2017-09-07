@@ -23,8 +23,9 @@ import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
-import '../App.css';
 import getUserProperty from '../helpers/get-user-property';
+import Loader from "../Components/Loader";
+
 
 class Profile extends React.Component {
      constructor(props) {
@@ -207,7 +208,7 @@ class Profile extends React.Component {
                             <div className="col-xs-1"><FormatQuote /></div>
                             <div className="col-xs-11 text-muted" style={{ padding: 10 }} >
                                     { this.state.profile && 
-                                        <p>{ this.state.profile.bio }</p>
+                                        <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.profile.bio)}}></div>
                                     }
                             </div>
                         </div>
@@ -311,14 +312,19 @@ class Profile extends React.Component {
             <div className="container" style={{
                 marginBottom: 20
             }}>
+                { this.state.isLoading &&
+                    <Loader isLoading={true} />
+                }
+
+                { !this.state.isLoading &&
                 <div className="col-xs-12">
-                     { this.state.ready &&
-                        <div className="row">
-                            <div className="col-xs-12">
-                                {ProfileHeader}
-                            </div>
+                    { this.state.ready &&
+                    <div className="row">
+                        <div className="col-xs-12">
+                            {ProfileHeader}
                         </div>
-                     }
+                    </div>
+                    }
                     { false &&
                     <div className="row">
                         <div className="col-xs-12 col-sm-12">
@@ -443,6 +449,7 @@ class Profile extends React.Component {
                     </div>
                     }
                 </div>
+                }
             </div>
             );
     }

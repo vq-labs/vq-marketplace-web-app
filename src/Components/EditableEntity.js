@@ -6,7 +6,9 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import ImageUploader from '../Components/ImageUploader';
+import HtmlTextField from './HtmlTextField';
+import ImageUploader from './ImageUploader';
+
 import * as coreNavigation from '../core/navigation';
 import '../App.css';
 
@@ -18,7 +20,9 @@ export default class EditableEntity extends Component {
 
         const updatedEntity = {};
 
-        props.fields.map(field => updatedEntity[field.key] = '');
+        props.fields.map(field => {
+            updatedEntity[field.key] = '';
+        });
 
         const groupedFields = props.groupBy ?
             _.groupBy(props.fields, props.groupBy) :
@@ -147,6 +151,24 @@ export default class EditableEntity extends Component {
                                                         <MenuItem key={2} value={2} primaryText={'Required'} />
                                                     </SelectField>
                                                     }
+
+                                                    { (field.type === 'html') &&
+                                                        <div className="row">
+                                                            { field.label &&
+                                                                <div className="col-xs-12">
+                                                                    <h3>{field.label}</h3>
+                                                                </div>
+                                                            }
+                                                            <div className="col-xs-12">
+                                                                <HtmlTextField
+                                                                    value={this.state.updatedEntity[field.key]}
+                                                                    onChange={this.handleFieldChange(field.key)}
+                                                                >
+                                                                </HtmlTextField>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    
                                                     { field.type === 'bool' &&
                                                         <div className="col-xs-12">
                                                             <div className="push-left">

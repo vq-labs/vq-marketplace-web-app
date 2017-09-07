@@ -17,10 +17,11 @@ import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
-import * as coreFormat from '../core/format';
+import { displayPrice } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
+
 
 import '../App.css';
 
@@ -187,15 +188,8 @@ class Task extends Component {
                                         { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
                                             <CardText>
                                                 <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
-                                                    {coreFormat.displayPrice(this.state.task.price, this.state.task.currency)}
+                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
                                                 </h2>
-                                                <p>
-                                                    {
-                                                        this.state.task.priceType===0 ?
-                                                        translate("PRICING_MODEL_TOTAL") :
-                                                        translate("PRICING_MODEL_HOURLY")
-                                                    }
-                                                </p>
                                             </CardText>
                                         }
                                         { !this.state.user &&

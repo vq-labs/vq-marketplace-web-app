@@ -103,6 +103,7 @@ export default class NewListing extends Component {
             task
         };
     }
+
     componentDidMount() {
         getConfigAsync(meta => {
             getUserAsync(user => {
@@ -112,6 +113,13 @@ export default class NewListing extends Component {
 
                 if (getMeOutFromHereIfAmNotAuthorized(user)) {
                     return;
+                }
+
+                /**
+                 * Only buyers can access this page
+                 */
+                if (String(user.userType) !== '1') {
+                    return goTo('/');
                 }
 
                 apiCategory
@@ -410,6 +418,10 @@ export default class NewListing extends Component {
                                             let nextStep = currentStep + 1;
                                             const task = this.state.task;
 
+                                            this.setState({
+                                                openSnackbar: false
+                                            });
+
                                             // CHECKS
                                             if (currentStep === LISTING_VIEWS.PRICING) {
                                                 if (typeof task.priceType === 'undefined') {
@@ -499,7 +511,7 @@ export default class NewListing extends Component {
                                                 if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
                                                     return this.setState({
                                                         openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " min. 25 chars"
+                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " min. 50 chars"
                                                     });
                                                 }
 

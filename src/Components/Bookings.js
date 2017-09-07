@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
+import ORDER_STATUS from '../constants/ORDER_STATUS';
 import apiOrder from '../api/order';
+import * as apiOrderActions from '../api/orderActions';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import IconCall from 'material-ui/svg-icons/communication/call';
@@ -14,13 +16,6 @@ import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
 import { getConfigAsync } from '../core/config';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-
-const ORDER_STATUS = {
-    PENDING: '0',
-    MARKED_DONE: '10',
-    SETTLED: '15',
-    CANCELED: '25'
-};
 
 export default class Bookings extends Component {
   constructor(props) {
@@ -43,13 +38,14 @@ export default class Bookings extends Component {
     
     orderRef.status = ORDER_STATUS.SETTLED;
 
-    apiOrder
-    .updateItem(orderId);
+    apiOrderActions
+    .settleOrder(orderId)
+    .then(_ => _, _ => _);
 
     this.setState({
         orders,
         open: false
-    }); 
+    });
   };
 
   initSettleOrder = order => {

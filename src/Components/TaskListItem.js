@@ -8,43 +8,19 @@ import * as coreNavigation from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
+import { displayPrice } from '../core/format';
+import { getCategoriesAsync } from '../core/categories';
 import { goTo } from '../core/navigation';
-import apiTask from '../api/task';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import apiTask from '../api/task';
 
 export default class TaskListItem extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+      super(props);
 
-        this.state = {
-            task: props.task
-        };
-    }
-
-  displayPrice (offer) {
-    if (offer.priceType === 2) {
-        return translate('PRICING_MODEL_REQUEST_QUOTE');
-    }
-
-    let priceLabel;
-
-    if (offer.currency === 'EUR') {
-       priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
-    }
-
-    if (offer.currency === 'HUF') {
-       priceLabel = String(offer.price) + 'Ft.';
-    }
-    
-    if (offer.priceType === 0) {
-        return `${priceLabel} ${translate('PRICING_MODEL_TOTAL')}`;
-    }
-
-    if (offer.priceType === 1) {
-        return `${priceLabel} ${translate('PRICING_MODEL_HOURLY')}`;
-    }
-
-    throw new Error(`Unknown price model ${offer.priceType}`);
+      this.state = {
+          task: props.task
+      };
   }
 
   handleGoToTask (taskId) {
@@ -216,7 +192,7 @@ export default class TaskListItem extends Component {
                             marginTop: 20,
                             width: '100%' 
                           }} primary={true}>
-                            { this.displayPrice(this.state.task) }
+                            { displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType) }
                           </h4>
                     </div>
                   </div>

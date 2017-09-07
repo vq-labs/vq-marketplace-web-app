@@ -39,8 +39,9 @@ import UserVerifications from './Pages/UserVerifications';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
 import * as corei18n from './core/i18n.js';
-import * as coreUtil from './core/util.js'
-import * as coreConfig from './core/config.js'
+import * as coreUtil from './core/util.js';
+import * as coreConfig from './core/config.js';
+import * as coreCategories from './core/categories.js'
 import { Component as ConfirmDialog } from './helpers/confirm-before-action.js'
 import { setBase } from './core/navigation';
 import * as apiAuth from './api/auth';
@@ -71,6 +72,16 @@ class App extends Component {
       goTo('/');
     }
      */
+
+    apiConfig
+    .categories
+    .getItems({}, {
+      cache: true
+    })
+    .then(categories => {
+      coreCategories.set(categories);
+    });
+
     apiConfig
     .appConfig
     .getItems({}, {

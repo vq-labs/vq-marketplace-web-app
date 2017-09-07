@@ -24,11 +24,11 @@ export default class SectionCategories extends React.Component {
 
     componentDidMount() {
         apiConfig
-        .categories
-        .getItems()
-        .then(categories => this.setState({
-            categories
-        }));
+            .categories
+            .getItems()
+            .then(categories => this.setState({
+                categories
+            }));
     }
 
     render() {

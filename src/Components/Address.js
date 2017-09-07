@@ -164,18 +164,20 @@ export default class Address extends Component {
                                         />
                                 </div>
                             </div>
-                            <div className="row">
-                                <div className="col-xs-12">
-                                        <h4>{translate("BILLING_TAX_NUMBER")}</h4>
-                                        <TextField
-                                            name="taxNumber"
-                                            onChange={this.onAddressFieldChange('taxNumber')}
-                                            style={{width: '100%'}}
-                                            inputStyle={{width: '100%'}}
-                                            value={this.state.taxNumber}
-                                        />
-                                </div>  
-                            </div>
+                            { this.props.withTaxNumber &&
+                                <div className="row">
+                                    <div className="col-xs-12">
+                                            <h4>{translate("BILLING_TAX_NUMBER")}</h4>
+                                            <TextField
+                                                name="taxNumber"
+                                                onChange={this.onAddressFieldChange('taxNumber')}
+                                                style={{width: '100%'}}
+                                                inputStyle={{width: '100%'}}
+                                                value={this.state.taxNumber}
+                                            />
+                                    </div>  
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

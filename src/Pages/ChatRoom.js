@@ -7,6 +7,7 @@ import Moment from 'react-moment';
 import CircularProgress from 'material-ui/CircularProgress';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
+import * as apiOrderActions from '../api/orderActions';
 import { translate } from '../core/i18n';
 import { goTo, tryGoBack } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
@@ -18,22 +19,17 @@ import {
   StepLabel,
 } from 'material-ui/Stepper';
 import { getConfigAsync } from '../core/config';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import ORDER_STATUS from '../constants/ORDER_STATUS';
 import { getUserAsync } from '../core/auth';
 import { displayPrice } from '../core/format';
+import { stripHtml } from '../core/util';
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import '../Chat.css';
 
 const _ = require('underscore');
 
 const defaultProfileImageUrl = '/images/avatar.png';
-
-const REQUEST_STATUS = {
-    PENDING: '0',
-    ACCEPTED: '5',
-    MARKED_DONE: '10',
-    SETTLED: '15',
-    DECLINED: '20',
-    CANCELED: '25'
-};
 
 const REQUEST_ORDER = [
     REQUEST_STATUS.PENDING,
@@ -43,6 +39,12 @@ const REQUEST_ORDER = [
     REQUEST_STATUS.DECLINED,
     REQUEST_STATUS.CANCELED
 ];
+
+const actionBtnStyle = {
+    marginTop: 10,
+    marginBottom: 10,
+    width: '100%'
+};
 
 export default class ChatRoom extends React.Component {
     constructor() {
@@ -69,28 +71,26 @@ export default class ChatRoom extends React.Component {
                 }
                 
                 apiRequest.getItem(requestId)
-                .then(chat => {
-                    debugger;
-                
-                    this.setState({
-                        config,
-                        isUserOwner: user.id === chat.task.userId,
-                        requestId,
-                        isLoading: false,
-                        fromUserId: user.id,
-                        toUserId: chat.messages[0].fromUserId === user.id ?
-                            chat.messages[0].toUserId :
-                            chat.messages[0].fromUserId,
-                        messages: chat.messages,
-                        users: chat.users,
-                        task: chat.task,
-                        request: chat.request
+                    .then(chat => {
+                        this.setState({
+                            config,
+                            isUserOwner: user.id === chat.task.userId,
+                            requestId,
+                            isLoading: false,
+                            fromUserId: user.id,
+                            toUserId: chat.messages[0].fromUserId === user.id ?
+                                chat.messages[0].toUserId :
+                                chat.messages[0].fromUserId,
+                            messages: chat.messages,
+                            users: chat.users,
+                            task: chat.task,
+                            request: chat.request
+                        });
                     });
-                });
-
             }, true);
         });
     }
+
     handleNewMessage (event) {
         event.preventDefault()
     
@@ -250,7 +250,9 @@ export default class ChatRoom extends React.Component {
                                             </div>    
                                         </div>   
                                         <div className="row">
-                                            <div className="col-xs-12" style={ { marginBottom: '10px'} }>
+                                            <div className="col-xs-12" style={{
+                                                marginBottom: '10px'
+                                            }}>
                                                 { Object.keys(this.state.users)
                                                 .map(userId => {
                                                     const user = this.state.users[userId];
@@ -258,7 +260,7 @@ export default class ChatRoom extends React.Component {
                                                     const lastName = user.lastName;
                                                     const profileImageUrl = user.imageUrl || defaultProfileImageUrl;
                                                     const name = `${firstName} ${lastName}`;
-                                                    const profileBio = user.bio;
+                                                    const profileBio = stripHtml(user.bio, 50);
 
                                                     return <div className="row" style={{ marginBottom: '10px' }}>
                                                                 <a href={`/app/profile/${userId}`}>
@@ -288,13 +290,9 @@ export default class ChatRoom extends React.Component {
                                     { this.state.isUserOwner &&
                                       String(this.state.request.status) === '0' &&
                                         <RaisedButton
-                                            labelStyle={{color: 'white '}}
+                                            labelStyle={{color: 'white'}}
                                             backgroundColor={this.state.config.COLOR_PRIMARY}
-                                            style={{
-                                                marginTop: 10,
-                                                marginBottom: 10,
-                                                width: '100%'
-                                            }}
+                                            style={actionBtnStyle}
                                             label={translate("BOOK")} 
                                             onClick={
                                                 () => goTo(`/request/${this.state.requestId}/book`)
@@ -302,22 +300,68 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
-                            <Stepper className="hidden-xs" activeStep={
-                                REQUEST_ORDER.indexOf(this.state.request.status)
-                            } orientation="vertical">
-                            <Step>
-                                <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
-                            </Step>
-                            <Step>
-                                <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
-                            </Step>
-                            <Step>
-                                <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
-                            </Step>
-                            <Step>
-                                <StepLabel>{translate('REQUEST_SETLLED')}</StepLabel>
-                            </Step>
-                            </Stepper>
+                                    { this.state.request.status === REQUEST_STATUS.SETTLED &&
+                                        !this.state.request.order.review &&
+                                            <RaisedButton
+                                                labelStyle={{color: 'white '}}
+                                                style={actionBtnStyle}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                label={translate('LEAVE_REVIEW')}
+                                                onTouchTap={() => {
+                                                    goTo(`/order/${this.state.request.order.id}/review`);
+                                                }}
+                                            >
+                                            </RaisedButton>
+                                    }
+
+                                    { this.state.isUserOwner &&
+                                      (
+                                          String(this.state.request.order.status) === ORDER_STATUS.PENDING ||
+                                          String(this.state.request.order.status) === ORDER_STATUS.MARKED_DONE
+                                      ) &&
+                                        <RaisedButton
+                                            label={translate('SETTLE_ORDER')}
+                                            labelStyle={{color: 'white'}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            style={actionBtnStyle}
+                                            onTouchTap={() => {
+                                                const request = this.state.request;
+
+                                                openConfirmDialog({
+                                                    headerLabel: translate('SETTLE_ORDER')
+                                                }, () => {
+                                                    apiOrderActions
+                                                        .settleOrder(request.order.id)
+                                                        .then(_ => {
+                                                            request.status = REQUEST_STATUS.SETTLED;
+                                                            request.order.status = ORDER_STATUS.SETTLED;
+
+                                                            this.setState({
+                                                                request
+                                                            });
+                                                        });
+                                                });
+                                            }}
+                                        />
+                                    }
+
+
+                                    <Stepper className="hidden-xs" activeStep={
+                                        REQUEST_ORDER.indexOf(this.state.request.status)
+                                    } orientation="vertical">
+                                        <Step>
+                                            <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
+                                        </Step>
+                                        <Step>
+                                            <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
+                                        </Step>
+                                        <Step>
+                                            <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
+                                        </Step>
+                                        <Step>
+                                            <StepLabel>{translate('REQUEST_SETLLED')}</StepLabel>
+                                        </Step>
+                                    </Stepper>
                             </div>
                         </div>   
                     }

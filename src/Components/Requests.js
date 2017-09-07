@@ -8,7 +8,7 @@ import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import * as apiRequest from '../api/request';
-import * as coreFormat from '../core/format';
+import { displayPrice } from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 
@@ -150,11 +150,18 @@ export default class Requests extends Component {
                             style={{ marginTop: 10 }}
                         >
                             <Paper style={{ padding: 10 }}>
-                            <h3>{request.task.title}</h3>
+                            <h3>
+                                <a  href="#"
+                                    className="vq-link"
+                                    onTouchTap={() => goTo(`/task/${request.task.id}`)}
+                                >
+                                    {request.task.title}
+                                </a>
+                            </h3>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 text-left"> 
                                     <h3>
-                                        {coreFormat.displayPrice(request.task.price, request.task.currency)}
+                                        {displayPrice(request.task.price, request.task.currency, request.task.priceType)}
                                     </h3>
                                     <p className="text-muted">
                                         { String(request.status) === REQUEST_STATUS.PENDING &&

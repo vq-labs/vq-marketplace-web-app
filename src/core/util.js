@@ -5,7 +5,7 @@ export const stripHtml = (html, noOfChars) => {
 
    const text = tmp.textContent || tmp.innerText || "";
 
-   if (noOfChars) {
+   if (noOfChars && text.length > noOfChars) {
        return `${text.substring(0, noOfChars)}...`;
    }
    
@@ -146,3 +146,20 @@ export const formatGeoResults = locations => {
 
 		return results;
 };
+
+export const sortDates = (array, order) => {
+    order = order || 1;
+
+    return array.sort((a, b) => {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        if (order === 1) {
+            return new Date(b) - new Date(a);
+        }
+
+        if (order === -1) {
+            return new Date(a) - new Date(b);
+        }
+    });
+};
+

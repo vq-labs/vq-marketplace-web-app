@@ -32,7 +32,7 @@ export const doPost = (url, body) => fetch(API_URL + url, {
         'Content-Type': 'application/json',
         'X-Auth-Token': getToken()
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body || {})
 })
 .then(response => { 
         return parseJSON(response);
@@ -44,7 +44,7 @@ export const doPut = (url, body) => fetch(API_URL + url, {
         'Content-Type': 'application/json',
         'X-Auth-Token': getToken()
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body || {})
 })
 .then(response => { 
         return parseJSON(response);
@@ -56,7 +56,7 @@ export const doDelete = (url, body) => fetch(API_URL + url, {
         'Content-Type': 'application/json',
         'X-Auth-Token': getToken()
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body || {})
 })
 .then(response => { 
         return parseJSON(response);

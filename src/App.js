@@ -17,6 +17,7 @@ import Profile from './Pages/Profile';
 import ProfileEdit from './Pages/ProfileEdit';
 import MyListings from './Pages/MyListings';
 import Offers from './Pages/Offers';
+import Account from './Pages/Account';
 import NewTask from './NewListing/NewListing';
 import Chat from './Pages/Chat';
 import EmailNotVerified from './Pages/EmailNotVerified';
@@ -161,6 +162,7 @@ class App extends Component {
               </Route>
               <Route path="/app">
                 <IndexRoute component={Offers}/>
+                <Route path="account" component={Account}></Route>
                 <Route path="dashboard" component={Dashboard}></Route>
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>

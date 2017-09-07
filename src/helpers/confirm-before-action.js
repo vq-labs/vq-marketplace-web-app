@@ -47,7 +47,7 @@ export const Component = class ConfirmDialog extends React.Component {
                                     }}
                                 />,
                                 <FlatButton
-                                    label={this.state.confirmLabel ||translate('CONFIRM')}
+                                    label={this.state.confirmLabel || translate('CONFIRM')}
                                     primary={true}
                                     onTouchTap={() => {
                                         pendingCb && pendingCb();

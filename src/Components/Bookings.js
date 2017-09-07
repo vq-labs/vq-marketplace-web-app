@@ -35,13 +35,13 @@ export default class Bookings extends Component {
     };
   }
   
-  settleOrder = () => {
-    const orderId = this.state.selectedOrderId;
+  settleOrder = order => {
+    const orderId = order.id;
     const orders = this.state.orders;
-    const order = this.state.orders
+    const orderRef = this.state.orders
         .find(_ => _.id === orderId);
     
-    order.status = ORDER_STATUS.SETTLED;
+    orderRef.status = ORDER_STATUS.SETTLED;
 
     apiOrder
     .updateItem(orderId);
@@ -207,7 +207,8 @@ export default class Bookings extends Component {
                                     { order.status !== ORDER_STATUS.SETTLED &&
                                         <RaisedButton
                                             label={translate('SETTLE_ORDER')}
-                                            primary={true}
+                                            labelStyle={{color: 'white '}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
                                             onTouchTap={() => {
                                                 openConfirmDialog({
                                                     headerLabel: translate('SETTLE_ORDER')

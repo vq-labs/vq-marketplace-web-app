@@ -127,6 +127,13 @@ class Header extends Component {
                         primaryText={translate("PROFILE")}
                       />                 
                       
+                     
+                      <MenuItem 
+                          onClick={() => goTo(`/account`)}
+                          primaryText={translate("ACCOUNT_SETTINGS")}
+                      />     
+                   
+
                       { Number(this.state.user.userType) === 2 &&
                         <MenuItem 
                             onClick={() => goTo(`/user-verifications`)}

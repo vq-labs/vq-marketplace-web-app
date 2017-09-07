@@ -69,19 +69,6 @@ export default class Address extends Component {
                         <div className="col-xs-12">
                             <div className="row">
                                 <div className="col-xs-12">
-                                        <h4 >{translate("LOCATION_COUNTRY") + '*'}</h4>
-                                        <TextField
-                                            disabled={true}
-                                            name="countryCode"
-                                            onChange={this.onAddressFieldChange('countryCode')}
-                                            style={{width: '100%'}}
-                                            inputStyle={{width: '100%'}}
-                                            value={this.state.countryCode}
-                                        />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-xs-12">
                                     <h4 >
                                         {translate("LOCATION_STREET") + '*'}
                                     </h4>
@@ -162,6 +149,19 @@ export default class Address extends Component {
                                         inputStyle={{width: '100%'}}
                                         value={this.state.postalCode}
                                     />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-xs-12">
+                                        <h4 >{translate("LOCATION_COUNTRY") + '*'}</h4>
+                                        <TextField
+                                            disabled={true}
+                                            name="countryCode"
+                                            onChange={this.onAddressFieldChange('countryCode')}
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                            value={this.state.countryCode}
+                                        />
                                 </div>
                             </div>
                             <div className="row">

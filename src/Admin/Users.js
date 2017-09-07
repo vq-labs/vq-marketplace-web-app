@@ -81,7 +81,7 @@ export default class SectionUsers extends React.Component {
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{user.createdAt}</Moment> * Status: {INVERSE_USER_STATUS[String(user.status)]} * {INVERSE_USER_TYPES[String(user.userType)]}
+                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{user.createdAt}</Moment> * {INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'} * {INVERSE_USER_TYPES[String(user.userType)]} {user.deletedAt ? '* DELETED' : ''}
                                         </p>
                                     }
                                     rightIcon={
@@ -100,6 +100,19 @@ export default class SectionUsers extends React.Component {
                                                 vertical: 'top'
                                             }}
                                             >
+                                            <MenuItem
+                                                primaryText="Show Email"
+                                                onClick={() => {
+                                                    apiAdmin.users
+                                                        .getUserEmail(user.id)
+                                                        .then(userEmails => {
+                                                            this.setState({
+                                                                showDetails: true,
+                                                                selectedUser: userEmails
+                                                            })
+                                                        });
+                                                }}
+                                            />
                                             <MenuItem
                                                 primaryText="Show full information"
                                                 onClick={() => {
@@ -193,9 +206,8 @@ export default class SectionUsers extends React.Component {
                             modal={false}
                             open={this.state.isBlockingUser || this.state.isUnblockingUser}
                             >
-                                Delete user #{this.state.selectedUserId}
+                                Block user #{this.state.selectedUserId}
                             </Dialog>
-
 
                             <div>
                                 <Dialog

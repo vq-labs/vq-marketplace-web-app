@@ -11,6 +11,28 @@ const CURRENCY_LABELS = {
     HUF: 'Ft',
 };
 
+const TASK_STATUS = {
+    ACTIVE: '0',
+    INACTIVE: '103',
+    CREATION_IN_PROGRESS: '10',
+    BOOKED: '20',
+    SPAM: '99'
+};
+
+const INVERSE_TASK_STATUS = {};
+Object
+    .keys(TASK_STATUS)
+    .forEach(statusName => {
+        INVERSE_TASK_STATUS[TASK_STATUS[statusName]] = statusName;
+    });
+ 
+
+export const displayTaskStatus = taskStatus => {
+    return INVERSE_TASK_STATUS[taskStatus] ?
+        INVERSE_TASK_STATUS[taskStatus] :
+        'Unknown status';
+};
+
 export const displayListingDesc = desc => {
     if (desc) {
         return stripHtml(desc)

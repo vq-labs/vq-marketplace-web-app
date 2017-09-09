@@ -12,14 +12,10 @@ import Moment from 'react-moment';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-
-const USER_STATUS = {
-    UNVERIFIED: '0',
-    VERIFIED: '10',
-    DISABLED: '15',
-    BLOCKED: '20'
-};
+import DropDownMenu from 'material-ui/DropDownMenu';
+import USER_STATUS from '../constants/USER_STATUS';
 
 const USER_TYPES = {
     CLIENT: 1, // client
@@ -67,21 +63,61 @@ export default class SectionUsers extends React.Component {
                             <h1>Users</h1>
                     </div>
                     <div className="col-xs-12">
+                    <div className="col-xs-3 col-sm-3">
+                            <DropDownMenu
+                                style={{
+                                    width: '100%'
+                                }}
+                                value={this.state.statusFilter}
+                                onChange={(_, _2, statusFilter) => {
+                                this.setState({
+                                    statusFilter
+                                })
+                            }}>
+                                <MenuItem value={undefined} primaryText="No filter" />
+                                {
+                                    Object.keys(USER_STATUS)
+                                    .map(status => 
+                                        <MenuItem
+                                            value={USER_STATUS[status]}
+                                            primaryText={status}
+                                        />
+                                    )
+                                }
+                            </DropDownMenu>
+                        </div>
+                        <div className="col-xs-3 col-sm-2">
+                            <RaisedButton style={{
+                                marginTop: 12
+                            }} onClick={() => {
+                                alert("Contact support for exporting data.");
+                            }} label="Export" />
+                        </div>
+                    </div>
+                    <div className="col-xs-12">
                         <List>
                             { this.state.users
+                            .filter(task => {
+                                if (!this.state.statusFilter) {
+                                    return true;
+                                }
+
+                                return this.state.statusFilter === task.status;
+                            })
                             .map(user => 
                                 <ListItem
                                     leftAvatar={
                                         <Avatar src={ user ? user.imageUrl : '' } />
                                     } 
                                     primaryText={
-                                        user
-                                        &&
-                                        `${user.firstName} ${user.lastName} (#${user.id}) ${String(user.status) === '20' ? ' (Blocked)' : ''}`
+                                        <p>
+                                            {user.firstName} {user.lastName} (#{user.id})}<br />
+                                            Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong>
+                                        </p>
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{user.createdAt}</Moment> * {INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'} * {INVERSE_USER_TYPES[String(user.userType)]} {user.deletedAt ? '* DELETED' : ''}
+                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
                                         </p>
                                     }
                                     rightIcon={

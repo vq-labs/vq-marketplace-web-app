@@ -1,11 +1,11 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
 import * as apiAdmin from '../api/admin';
 import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { List, ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
+import { displayTaskStatus } from '../core/format';
 import displayObject from '../helpers/display-object';
 import getProperty from '../helpers/get-user-property';
 import Moment from 'react-moment';
@@ -14,32 +14,9 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-
-const USER_STATUS = {
-    UNVERIFIED: '0',
-    VERIFIED: '10',
-    DISABLED: '15',
-    BLOCKED: '20'
-};
-
-const USER_TYPES = {
-    CLIENT: 1, // client
-    STUDENT: 2 // student
-};
-
-const INVERSE_USER_STATUS = {};
-const INVERSE_USER_TYPES = {};
-Object
-    .keys(USER_STATUS)
-    .forEach(statusName => {
-        INVERSE_USER_STATUS[USER_STATUS[statusName]] = statusName;
-    });
-
-Object
-.keys(USER_TYPES)
-.forEach(statusName => {
-    INVERSE_USER_TYPES[USER_TYPES[statusName]] = statusName;
-});
+import DropDownMenu from 'material-ui/DropDownMenu';
+import TASK_STATUS from '../constants/TASK_STATUS';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export default class SectionUsers extends React.Component {
     constructor() {
@@ -68,16 +45,58 @@ export default class SectionUsers extends React.Component {
                             <h1>Listings</h1>
                     </div>
                     <div className="col-xs-12">
+                        <div className="col-xs-3 col-sm-3">
+                            <DropDownMenu
+                                style={{
+                                    width: '100%'
+                                }}
+                                value={this.state.statusFilter} onChange={(_, _2, statusFilter) => {
+                                this.setState({
+                                    statusFilter
+                                })
+                            }}>
+                                <MenuItem value={undefined} primaryText="No filter" />
+                                {
+                                    Object.keys(TASK_STATUS)
+                                    .map(status => 
+                                        <MenuItem
+                                            value={TASK_STATUS[status]}
+                                            primaryText={status}
+                                        />
+                                    )
+                                }
+                            </DropDownMenu>
+                        </div>
+                        <div className="col-xs-3 col-sm-2">
+                            <RaisedButton style={{
+                                marginTop: 12
+                            }} onClick={() => {
+                                alert("Contact support for exporting data.");
+                            }} label="Export" />
+                        </div>
+                    </div>
+                    <div className="col-xs-12">
                         <List>
                             { this.state.tasks
+                            .filter(task => {
+                                if (!this.state.statusFilter) {
+                                    return true;
+                                }
+
+                                return this.state.statusFilter === task.status;
+                            })
                             .map(task => 
                                 <ListItem
                                     primaryText={
-                                        task.title
+                                        <p>
+                                            Title{task.title}<br/>
+                                            Status: <strong>{displayTaskStatus(task.status)}</strong>
+                                            <br/>
+                                        </p>
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{task.createdAt}</Moment>}
+                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{task.createdAt}</Moment>
                                         </p>
                                     }
                                     rightIcon={
@@ -105,7 +124,7 @@ export default class SectionUsers extends React.Component {
                                                             this.setState({
                                                                 showDetails: true,
                                                                 selectedUser: userEmails
-                                                            })
+                                                            });
                                                         });
                                                 }}
                                             />
@@ -123,7 +142,7 @@ export default class SectionUsers extends React.Component {
                                                 primaryText="Go to listing page"
                                                 onClick={() => coreNavigation.goTo(`/task/${task.id}`)}
                                             />
-                                            { String(task.status) !== '20' &&
+                                            { String(task.status) !== '99' &&
                                                 <MenuItem
                                                     onClick={() => {
                                                         openConfirmDialog({
@@ -133,6 +152,17 @@ export default class SectionUsers extends React.Component {
                                                             apiAdmin.task
                                                             .markAsSpam(task.id)
                                                             .then(_ => {
+                                                                const tasks = this.state.tasks;
+
+                                                                const taskRef = tasks
+                                                                    .find(_ => _.id === task.id);
+
+                                                                taskRef.status = '99';
+
+                                                                this.setState({
+                                                                    tasks
+                                                                });
+
                                                                 alert('OK! Task has been marked as spam.');
                                                             }, err => {
                                                                 return alert(err);

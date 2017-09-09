@@ -69,8 +69,17 @@ export default class ChatRoom extends React.Component {
                     return goTo(`/login?redirectTo=/chat/${requestId}`);
                 }
                 
-                apiRequest.getItem(requestId)
+                apiRequest.
+                    getItem(requestId)
                     .then(chat => {
+                        const task = chat.task;
+
+                        if (task.status === '99') {
+                            goTo('/');
+
+                            return alert('You cannot access this page. The listing has been marked as spam.');
+                        }
+
                         this.setState({
                             config,
                             isUserOwner: user.id === chat.task.userId,
@@ -82,7 +91,7 @@ export default class ChatRoom extends React.Component {
                                 chat.messages[0].fromUserId,
                             messages: chat.messages,
                             users: chat.users,
-                            task: chat.task,
+                            task,
                             request: chat.request
                         });
                     });

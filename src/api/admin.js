@@ -7,6 +7,11 @@ export const users = {
     unblockUser: userId => communication.doPut(`/admin/user/${userId}/unblock`, {}),
 };
 
+export const task = {
+    getItems: () => communication.doGet('/admin/task'),
+    markAsSpam: taskId => communication.doPut(`/admin/task/${taskId}/spam`)
+};
+
 export const request = {
     getItems: () => communication.doGet('/admin/request'),
 };

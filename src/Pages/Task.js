@@ -158,7 +158,9 @@ class Task extends Component {
                                         </h1>
                                     </div>
                                     <div className="row" style={{'marginBottom': '15px'}}>
-                                        <TaskCategories categories={this.state.task.categories}/>
+                                        <TaskCategories 
+                                            categories={this.state.task.categories}
+                                        />
                                     </div>
 
                                     <div className="row">

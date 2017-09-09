@@ -3,7 +3,7 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import Slider from 'material-ui/Slider';
-
+import { displayPrice } from '../core/format';
 import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
 
@@ -134,12 +134,13 @@ export default class NewListingPricing extends React.Component {
                         <div className={"col-xs-12"}>
                             <h2 
                                 style={{color: this.state.config.COLOR_PRIMARY}}
-                                className="text-center">
-                                {this.state.price} {this.getCurrencySign()}
+                                className="text-center"
+                            >
+                                {displayPrice(this.state.price, this.state.currency, this.state.priceType)}
                             </h2>
                             <Slider
                                 min={this.state.minPrice}
-                                max={this.state.minPrice * 10}
+                                max={10000}
                                 step={500}
                                 value={this.state.price}
                                 onChange={(ev, price) => {

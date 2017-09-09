@@ -84,6 +84,7 @@ export default class SectionUsers extends React.Component {
                                                 </strong>
                                             </a>
                                             <a
+                                                className="hidden"
                                                 style={{ marginLeft: 10 }} 
                                                 onTouchTap={() => alert('@TODO')}>
                                                 <strong>

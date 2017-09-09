@@ -8,14 +8,16 @@ import IconButton from 'material-ui/IconButton';
 import IconCall from 'material-ui/svg-icons/communication/call';
 import IconChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Avatar from 'material-ui/Avatar';
-import * as coreFormat from '../core/format';
-import { goTo } from '../core/navigation';
-import { translate } from '../core/i18n';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
+import ListingHeader from '../Components/ListingHeader';
+import { displayPrice, displayLocation, displayListingDesc }  from '../core/format';
+import { goTo } from '../core/navigation';
+import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import displayTaskTiming from '../helpers/display-task-timing';
 
 export default class Bookings extends Component {
   constructor(props) {
@@ -132,106 +134,101 @@ export default class Bookings extends Component {
                             style={{ marginTop: 10 }}
                         >
                             <Paper style={{ padding: 10 }}>
-                            <h3>
-                                <a  href="#"
-                                    className="vq-link"
-                                    onTouchTap={() => goTo(`/task/${order.task.id}`)}
-                                >
-                                    {order.task.title}
-                                </a>
-                            </h3>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 text-left"> 
-                                     <h3>
-                                        {coreFormat.displayPrice(order.task.price, order.task.currency)}
-                                    </h3>
-                                    
-                                    { order.status === ORDER_STATUS.PENDING &&
-                                        <p className="text-muted">
-                                            {translate("ORDER_IN_PROGRESS")}
-                                        </p>
-                                    }
-
-                                    { order.status === ORDER_STATUS.SETTLED &&
-                                        <p className="text-muted">
-                                            {translate("ORDER_SETTLED")}
-                                        </p>
-                                    }
-
-                                    { order.status === ORDER_STATUS.MARKED_DONE &&
-                                        <p className="text-muted">
-                                            {translate("ORDER_MARKED_DONE")} (Will be automatically paid on <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)
-                                        </p>
-                                    }
-                                </div>
-                                <div className="col-xs-12 col-sm-6 text-right">
-                                    <div style={{ 
-                                            display: 'inline-block',
-                                            padding: 5
-                                    }}>
-                                        <IconButton
-                                            style={{ bottom: 5 }}
-                                            onClick={() => goTo(`/profile/${order.fromUser.id}`)}
-                                            tooltip={
-                                                `${order.fromUser.firstName} ${order.fromUser.lastName}`
+                                <ListingHeader
+                                    config={this.state.config}
+                                    task={order.task}
+                                />
+                        
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6 text-left">
+                                        <div style={{ marginTop: 18 }}>
+                                            { order.status === ORDER_STATUS.PENDING &&
+                                                <p className="text-muted">
+                                                    <strong>{translate("ORDER_IN_PROGRESS")}</strong>
+                                                </p>
                                             }
-                                        >
-                                            <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
-                                        </IconButton>
+
+                                            { order.status === ORDER_STATUS.SETTLED &&
+                                                <p className="text-muted">
+                                                    <strong>{translate("ORDER_SETTLED")}</strong>
+                                                </p>
+                                            }
+
+                                            { order.status === ORDER_STATUS.MARKED_DONE &&
+                                                <p className="text-muted">
+                                                    <strong>{translate("ORDER_MARKED_DONE")} (Will be automatically paid on <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)</strong>
+                                                </p>
+                                            }
+                                        </div>
                                     </div>
-                                    { order.status !== ORDER_STATUS.SETTLED && 
-                                        <IconButton
-                                            style={{ top: 5 }}
-                                            tooltip={this.getUserPhoneFromOrder(order)}>
-                                            <IconCall />
-                                        </IconButton>
-                                    }
-                                    { order.status !== ORDER_STATUS.SETTLED && 
+                                    <div className="col-xs-12 col-sm-6 text-right">
                                         <div style={{ 
-                                            display: 'inline-block',
+                                                display: 'inline-block',
+                                                padding: 5
                                         }}>
                                             <IconButton
-                                                style={{ top: 5 }}
-                                                tooltip={'Chat'}
-                                                onClick={() => goTo(`/chat/${order.request.id}`)}
+                                                style={{ bottom: 5 }}
+                                                onClick={() => goTo(`/profile/${order.fromUser.id}`)}
+                                                tooltip={
+                                                    `${order.fromUser.firstName} ${order.fromUser.lastName}`
+                                                }
                                             >
-                                            
-                                                <IconChatBubble />
+                                                <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
                                             </IconButton>
                                         </div>
-                                    }
-                                    { order.status !== ORDER_STATUS.SETTLED &&
-                                        <RaisedButton
-                                            label={translate('SETTLE_ORDER')}
-                                            labelStyle={{color: 'white '}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
-                                            onTouchTap={() => {
-                                                openConfirmDialog({
-                                                    headerLabel: translate('SETTLE_ORDER')
-                                                },() => {
-                                                    this.settleOrder(order);
-                                                });
-                                            }}
-                                        />
-                                    }
-                                    { order.status === ORDER_STATUS.SETTLED &&
-                                        !order.review &&
-                                        <div style={{
-                                            display: 'inline-block',
-                                            padding: 10
-                                        }}>
+                                        { order.status !== ORDER_STATUS.SETTLED && 
+                                            <IconButton
+                                                style={{ top: 5 }}
+                                                tooltip={this.getUserPhoneFromOrder(order)}>
+                                                <IconCall />
+                                            </IconButton>
+                                        }
+                                        { order.status !== ORDER_STATUS.SETTLED && 
+                                            <div style={{ 
+                                                display: 'inline-block',
+                                            }}>
+                                                <IconButton
+                                                    style={{ top: 5 }}
+                                                    tooltip={'Chat'}
+                                                    onClick={() => goTo(`/chat/${order.request.id}`)}
+                                                >
+                                                
+                                                    <IconChatBubble />
+                                                </IconButton>
+                                            </div>
+                                        }
+                                        { order.status !== ORDER_STATUS.SETTLED &&
                                             <RaisedButton
+                                                label={translate('SETTLE_ORDER')}
                                                 labelStyle={{color: 'white '}}
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                label={translate('LEAVE_REVIEW')}
                                                 onTouchTap={() => {
-                                                    goTo(`/order/${order.id}/review`);
+                                                    openConfirmDialog({
+                                                        headerLabel: translate('SETTLE_ORDER')
+                                                    },() => {
+                                                        this.settleOrder(order);
+                                                    });
                                                 }}
                                             />
-                                        </div>
-                                    }
+                                        }
+                                        { order.status === ORDER_STATUS.SETTLED &&
+                                            !order.review &&
+                                            <div style={{
+                                                display: 'inline-block',
+                                                padding: 10
+                                            }}>
+                                                <RaisedButton
+                                                    labelStyle={{color: 'white '}}
+                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    label={translate('LEAVE_REVIEW')}
+                                                    onTouchTap={() => {
+                                                        goTo(`/order/${order.id}/review`);
+                                                    }}
+                                                />
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
                             </Paper>
                         </div>
                     )}

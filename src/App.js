@@ -24,6 +24,7 @@ import EmailNotVerified from './Pages/EmailNotVerified';
 import ChatRoom from './Pages/ChatRoom';
 import BookRequest from './Pages/BookRequest';
 import Order from './Pages/Order';
+import NotFound from './Pages/NotFound';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
 import PostEdit from './Admin/PostEdit';
@@ -205,6 +206,7 @@ class App extends Component {
                 <Route path="profile/:profileId" component={Profile}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
                 <Route path="profile/:profileId/edit" component={ProfileEdit}></Route>
+                <Route path="*" component={NotFound}></Route>
               </Route>
             </Router>
             <Footer

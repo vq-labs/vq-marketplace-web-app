@@ -110,6 +110,7 @@ export default class Dashboard extends Component {
                               key={task.id}
                               task={task}
                               showRequests={true}
+                              displayManagement={true}
                               displayPrice={true}
                               editable={true}
                               onCancel={() => {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import { translate } from '../core/i18n';
+import { goTo } from '../core/navigation';
 
 import Chip from 'material-ui/Chip';
 
@@ -28,7 +28,14 @@ export default class TaskCategories extends Component {
     getChip(category) {
         return (
              <a style={styles.categoryStyle}>
-                <Chip key={category.label} style={styles.margin} onClick={() => browserHistory.push('/app?category=' + category.code)} >
+                <Chip 
+                    key={category.label}
+                    style={styles.margin}
+                    onClick={() => {
+                        if (this.props.clickable) {
+                            goTo(`/?category=${category.code}`);
+                        }
+                }}>
                     <div>{translate(category.code)}</div>
                 </Chip> 
              </a>

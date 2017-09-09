@@ -21,9 +21,9 @@ export const parseJSON = response => new Promise((resolve, reject) => {
   let jsonResponse;
 
   try {
-      jsonResponse = response.json();
+    jsonResponse = response.json();
   } catch (err) {
-      console.warn("jsonResponse could not be parsed")
+    console.warn("jsonResponse could not be parsed")
   }
   return jsonResponse
     .then(resolve);
@@ -97,54 +97,54 @@ export const getParams = query => {
 };
 
 export const formatGeoResults = locations => {
-		const results = locations.map(item => {
-			const address = {};
+    const results = locations.map(item => {
+        const address = {};
+        
+        for (var i = 0; i < item.address_components.length; i++) {
+            address.seq_id = i;
             
-			for (var i = 0; i < item.address_components.length; i++) {
-				address.seq_id = i;
-                
-				var addr = item.address_components[i];
+            var addr = item.address_components[i];
 
-				if (addr.types[0] === 'country')
-					address.countryCode = addr.short_name;
-				else if (addr.types[0] === "sublocality")
-					address.sublocality = addr.long_name;
-				else if (addr.types[0] === 'route')
-					address.route = addr.long_name;
-				else if (addr.types[0] === 'street_number')
-					address.streetNumber = addr.long_name;
-				else if (addr.types[0] === 'administrative_area_level_1')
-					address.region = addr.long_name;
-				else if (addr.types[0] === 'locality')
-					address.city = addr.long_name;
-				else if (addr.types[0] === 'location')
-					address.location = addr.location;
-				else if (addr.types[0] === 'postal_code')
-					address.postalCode = addr.long_name;
-			}
+            if (addr.types[0] === 'country')
+                address.countryCode = addr.short_name;
+            else if (addr.types[0] === "sublocality")
+                address.sublocality = addr.long_name;
+            else if (addr.types[0] === 'route')
+                address.route = addr.long_name;
+            else if (addr.types[0] === 'street_number')
+                address.streetNumber = addr.long_name;
+            else if (addr.types[0] === 'administrative_area_level_1')
+                address.region = addr.long_name;
+            else if (addr.types[0] === 'locality')
+                address.city = addr.long_name;
+            else if (addr.types[0] === 'location')
+                address.location = addr.location;
+            else if (addr.types[0] === 'postal_code')
+                address.postalCode = addr.long_name;
+        }
 
-			address.formattedAddress = "";
-			
-            if (address.route) {
-				address.formattedAddress = address.route;
-				address.formattedAddress += ", ";
-			}
+        address.formattedAddress = "";
+        
+        if (address.route) {
+            address.formattedAddress = address.route;
+            address.formattedAddress += ", ";
+        }
 
-			if (address.postalCode) {
-				address.formattedAddress = address.postalCode;
-				address.formattedAddress += " ";
-			}
+        if (address.postalCode) {
+            address.formattedAddress = address.postalCode;
+            address.formattedAddress += " ";
+        }
 
-			address.formattedAddress += address.city;
-			address.lat = item.geometry.location.lat();
-			address.lng = item.geometry.location.lng();
+        address.formattedAddress += address.city;
+        address.lat = item.geometry.location.lat();
+        address.lng = item.geometry.location.lng();
 
-			return address;
-		}).filter(item => {
-			return item;
-		});
+        return address;
+    }).filter(item => {
+        return item;
+    });
 
-		return results;
+    return results;
 };
 
 export const sortDates = (array, order) => {

@@ -2,9 +2,7 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import Loader from "../Components/Loader";
 import Moment from 'react-moment';
-import CircularProgress from 'material-ui/CircularProgress';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
 import * as apiOrderActions from '../api/orderActions';
@@ -13,6 +11,7 @@ import { goTo, tryGoBack } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import displayTaskLocation from '../helpers/display-task-location';
 import DOMPurify from 'dompurify'
+import Loader from "../Components/Loader";
 import {
   Step,
   Stepper,
@@ -115,9 +114,7 @@ export default class ChatRoom extends React.Component {
         return (
                 <div className="container st-chat-view">
                     { this.state.isLoading && 
-                        <div className="text-center" style={{ 'marginTop': '40px' }}>
-                            <CircularProgress size={80} thickness={5} />
-                        </div>
+                        <Loader isLoading={true} />
                     }
                     { !this.state.isLoading && 
                         <div className="col-xs-12">
@@ -303,7 +300,7 @@ export default class ChatRoom extends React.Component {
                                     { this.state.request.status === REQUEST_STATUS.SETTLED &&
                                         !this.state.request.order.review &&
                                             <RaisedButton
-                                                labelStyle={{color: 'white '}}
+                                                labelStyle={{color: 'white'}}
                                                 style={actionBtnStyle}
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                                 label={translate('LEAVE_REVIEW')}
@@ -314,7 +311,7 @@ export default class ChatRoom extends React.Component {
                                             </RaisedButton>
                                     }
 
-                                    { this.state.isUserOwner &&
+                                    { this.state.isUserOwner && this.state.request.order &&
                                       (
                                           String(this.state.request.order.status) === ORDER_STATUS.PENDING ||
                                           String(this.state.request.order.status) === ORDER_STATUS.MARKED_DONE

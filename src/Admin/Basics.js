@@ -63,6 +63,8 @@ export default class SectionBasics extends React.Component {
     render() {
         return (
             <ConfigEdit
+                header={'Marketplace Basics'}
+                desc={'Configure the basics of your marketplace.'}
                 fields={defaultConfigsFields}
             />
         );

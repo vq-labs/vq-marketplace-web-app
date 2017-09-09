@@ -14,6 +14,13 @@ import * as coreAuth from '../core/auth';
 import apiTask from '../api/task';
 import { goTo, goStartPage } from '../core/navigation';
 
+const headerBtnStyle = {
+  'marginRight': '0px',
+  'marginLeft': '0px',
+  'fontSize': '1',
+  'borderRadius': '25px'
+};
+
 class Header extends Component {
   constructor(props) {
     super();
@@ -68,34 +75,49 @@ class Header extends Component {
               />
               <ToolbarGroup>
                         { this.state.logged &&
-                          <FlatButton label={translate("DASHBOARD")} onClick={ 
-                            () => { goTo('/dashboard'); 
-                          }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                          <FlatButton 
+                            label={translate("DASHBOARD")}
+                            onClick={ 
+                              () => { goTo('/dashboard'); 
+                            }}
+                            style={headerBtnStyle}
+                          />
                         }
                         { !this.state.logged &&
                         <FlatButton label={translate("SIGNUP")} onClick={ 
-                          () => goTo('/signup')} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                          () => goTo('/signup')}
+                          style={headerBtnStyle} />
                         }
                         { !this.state.logged &&
                         <FlatButton label={translate("LOGIN")} onClick={ 
                           () => { goTo('/login'); 
-                        }} style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }} />
+                        }} style={headerBtnStyle} />
                         }
                   { this.state.logged && <ToolbarSeparator /> }
 
                   { this.state.logged && Number(this.state.user.userType) === 2 &&
                     <FlatButton label={translate('HEADER_LISTINGS')}  onClick={ 
                       () => goTo('/')
-                    } style={{ 'marginRight': '0px', 'marginLeft': '0px' ,'fontSize': '1', 'borderRadius': '25px' }}/>
+                    } style={headerBtnStyle}/>
                   }
                  
                   
 
                   { this.state.logged && Number(this.state.user.userType) === 1 &&
                     <a onClick={() => goTo('/new-listing')} target="_self">
-                      <IconButton iconStyle={{ color: grey600 }}>
-                        <ContentAdd />
-                      </IconButton>
+                      {
+                        translate('HEADER_ADD_LISTING') === 'HEADER_ADD_LISTING' ?
+                        <IconButton iconStyle={{ color: grey600 }}>
+                          <ContentAdd />
+                        </IconButton> :
+                        <FlatButton 
+                            label={translate('HEADER_ADD_LISTING')}
+                            onClick={ 
+                              () => { goTo('/dashboard'); 
+                            }}
+                            style={headerBtnStyle}
+                        />
+                      }
                     </a>
                   }
               

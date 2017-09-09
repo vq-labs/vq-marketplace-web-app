@@ -4,8 +4,10 @@ import MenuItem from 'material-ui/MenuItem';
 import SectionOverview from './Overview';
 import SectionCategories from './Categories';
 import SectionBasics from './Basics';
+import SectionCustomPages from './CustomPages';
 import SectionDesign from './Design';
 import SectionUsers from './Users';
+import SectionListings from './Listings';
 import SectionOrders from './Orders';
 import SectionRequests from './Requests';
 import SectionLabels from './Labels';
@@ -60,18 +62,20 @@ export default class AdminPage extends React.Component {
         return (
             <div className="container">
                 <Drawer open={true}>
-                    <div className="col-xs-12">
-                        <h4>Analytics</h4>
+                    <div className="col-xs-12" style={{ marginBottom: 10 }}>
+                        <h4>General</h4>
                         <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>
 
                         <h4>Entities</h4>
                         <MenuItem onClick={ () => this.goToSection('users') }>Users</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('orders') }>Orders</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('listings') }>Listings</MenuItem>
+                        <MenuItem className="hidden" onClick={ () => this.goToSection('orders') }>Orders</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('requests') }>Requests</MenuItem>
                     
                         <h4>Configuration</h4>
                         <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('custom-pages') }>Custom pages</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('listing') }>Listing</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
@@ -79,6 +83,36 @@ export default class AdminPage extends React.Component {
                         
                         <h4>Content</h4>
                         <MenuItem onClick={ () => this.goToSection('posts') }>Content</MenuItem>
+
+                        <h4>Support</h4>
+                        <a className="vq-link" href="https://vqlabs.freshdesk.com/support/tickets/new" target="_blank">
+                            <MenuItem>
+                                Submit ticket
+                            </MenuItem>
+                        </a>
+                        <a className="vq-link" href="https://vqlabs.freshdesk.com/support/solutions" target="_blank">
+                            <MenuItem>
+                                Knowledge solutions
+                            </MenuItem>
+                        </a>
+                        <a className="vq-link" href="https://vq-labs.com" target="_blank">
+                            <MenuItem>
+                                VQ LABS - Company
+                            </MenuItem>
+                        </a>
+
+                        <hr />
+
+                        <a target="_self" href="https://vq-labs.com">
+                            <img
+                                style={{
+                                    display: 'block',
+                                    margin: '0 auto',
+                                    width: 50
+                                }}
+                                src={"https://vq-labs.com/vq-labs-logo-xs-2.png"}
+                            />
+                        </a>
                     </div>
                 </Drawer>
 
@@ -88,9 +122,11 @@ export default class AdminPage extends React.Component {
                                     <div className="col-xs-12">
                                         { this.state.section === 'overview' && <SectionOverview /> } 
                                         { this.state.section === 'users' && <SectionUsers /> }
+                                        { this.state.section === 'listings' && <SectionListings /> }
                                         { this.state.section === 'orders' && <SectionOrders /> }
                                         { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }
+                                        { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
                                         { this.state.section === 'design' && <SectionDesign /> }

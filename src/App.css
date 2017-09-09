@@ -32,7 +32,13 @@ body {
 }
 
 .vq-link {
+  cursor: pointer !important;
   text-decoration: none !important;
+}
+
+.vq-link-secondary {
+  color: 'black' !important;
+  cursor: pointer !important;
 }
 
 .display-on-hover:hover {

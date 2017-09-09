@@ -1,3 +1,6 @@
+
+import { stripHtml } from './util';
+
 const CENT_CURRENCIES = [ 'PLN', 'EUR', 'USD' ];
 const NOCENT_CURRENCIES = [ 'HUF' ];
 
@@ -6,6 +9,23 @@ const CURRENCY_LABELS = {
     EUR: 'EUR',
     USD: 'USD',
     HUF: 'Ft',
+};
+
+export const displayListingDesc = desc => {
+    if (desc) {
+        return stripHtml(desc)
+            .substring(0, 75) + '..';
+    }
+
+    return 'No description';
+};
+
+export const displayLocation = location => {
+    if (location) {
+        return `${location.street}, ${location.postalCode} ${location.city}`
+    }
+
+    return '';
 };
 
 export const displayPrice = (amount, currencyCode, pricingModel) => {

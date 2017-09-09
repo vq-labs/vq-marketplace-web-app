@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import HtmlTextField from './HtmlTextField';
 import ImageUploader from './ImageUploader';
+import DOMPurify from 'dompurify'
 
 import * as coreNavigation from '../core/navigation';
 import '../App.css';
@@ -70,14 +71,13 @@ export default class EditableEntity extends Component {
                     }
                 });
                 
-
                 this.setState({
                     updatedEntity,
                     dirty: true
                 });
             };
     }
-    
+
     handleUpdate () {
         this.setState({ dirty: false });
 
@@ -137,6 +137,17 @@ export default class EditableEntity extends Component {
                                                                     floatingLabelFixed={true}
                                                                 />
                                                             </div>
+                                                            { field.explanation &&
+                                                                <div className="col-xs-12">
+                                                                    <p
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: DOMPurify.sanitize(field.explanation)
+                                                                        }}
+                                                                    >
+                                                                    </p>
+                                                                </div>
+                                                            }
+                                                            
                                                         </div>
                                                     }
                                                     { (field.type === 'select') &&
@@ -222,7 +233,7 @@ export default class EditableEntity extends Component {
                                                 />
                                             }
                                             <RaisedButton
-                                                disabled={!this.state.dirty && this.state.canSave}
+                                                disabled={!this.state.dirty}
                                                 style={ { float: 'right' } }
                                                 label={this.props.saveLabel || 'Save'}
                                                 primary={ true }

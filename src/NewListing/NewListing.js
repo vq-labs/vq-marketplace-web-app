@@ -122,6 +122,35 @@ export default class NewListing extends Component {
                     return goTo('/');
                 }
 
+                apiTaskLocation
+                .getLast()
+                .then(lastLocation => {
+                    const task = this.state.task;
+
+                    const mutableProps = [
+                        "locationQueryString",
+                        "countryCode",
+                        "street",
+                        "streetNumber",
+                        "addressAddition",
+                        "city",
+                        "postalCode",
+                        "lat",
+                        "lng"
+                    ];
+
+                    task.location = task.location || {};
+
+                    mutableProps
+                    .forEach(mutalblePropKey => {
+                        task.location[mutalblePropKey] = lastLocation[mutalblePropKey];
+                    });
+                    
+                    this.setState({
+                        task
+                    });
+                });
+
                 apiCategory
                 .getItems()
                 .then(listingCategories => {
@@ -319,7 +348,10 @@ export default class NewListing extends Component {
                                 <NewListingBasics
                                     title={{ value: this.state.task.title, mode: this.state.appConfig.LISTING_TITLE_MODE }}
                                     description={{ value: this.state.task.description, mode: this.state.appConfig.LISTING_DESCRIPTION_MODE }}
-                                    location={{ value: this.state.task.location, mode: this.state.appConfig.LISTING_LOCATION_MODE }}
+                                    location={{
+                                        value: this.state.task.location,
+                                        mode: this.state.appConfig.LISTING_LOCATION_MODE
+                                    }}
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
                                     onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
                                     onLocationChange={_ => this.handleListingFieldChange('location', _)}

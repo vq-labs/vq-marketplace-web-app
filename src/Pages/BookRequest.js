@@ -85,7 +85,7 @@ class BookRequest extends Component {
     render() {
         return (
             <div className="container">
-                { this.state.ready && 
+                { this.state.ready &&
                 <div className="row">
                     <div className="col-xs-12">
                         <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
@@ -107,9 +107,9 @@ class BookRequest extends Component {
                             <div className="col-xs-12" style={{
                                 marginTop: 10,
                                 marginBottom: 10
-                            }}>   
+                            }}>
                                 <strong>
-                                    <a 
+                                    <a
                                         style={{
                                             cursor: 'pointer'
                                         }}

@@ -3,6 +3,7 @@ import Moment from 'react-moment';
 import DOMPurify from 'dompurify'
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
+import { displayPrice } from '../core/format';
 
 export default class NewListingReview extends Component {
     constructor(props) {
@@ -103,7 +104,7 @@ export default class NewListingReview extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("PRICE")}</h4>
-                                {this.state.listing.price + this.state.currency }
+                                {displayPrice(this.state.listing.price, this.state.currency, this.state.listing.priceType)}
                             </div>
                         </div>
                     }

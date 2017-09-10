@@ -15,6 +15,7 @@ import DOMPurify from 'dompurify'
 import * as coreAuth from '../core/auth';
 import { goTo } from '../core/navigation';
 import * as apiMedia from '../api/media';
+import * as requestOrder from '../api/requestOrder';
 import * as apiUserPreference from '../api/user-preference';
 import Moment from 'react-moment';
 import ProfileImage from '../Components/ProfileImage';
@@ -395,82 +396,109 @@ class Profile extends React.Component {
                                 return true;
                             })
                             .map(review =>
-                                <div className="col-xs-12">
-                                    <div
-                                        className="col-xs-1"
-                                        onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
-                                    >
-                                        <IconButton
-                                            style={{ bottom: 5 }}
-                                            tooltip={
-                                                `${review.fromUser.firstName} ${review.fromUser.lastName}`
-                                            }
-                                        >
-                                            <Avatar src={review.fromUser.imageUrl || '/images/avatar.png'} />
-                                        </IconButton>
-                                        <p className="text-muted text-center">
-                                            {review.fromUser.firstName} {review.fromUser.lastName}
-                                        </p>
-                                    </div>
-                                     <div className="col-xs-8">
-                                     { !review.rate &&
-                                        <div className="row" style={{ padding: 15 }}>
-                                                <div className="col-xs-12">
-                                                    {translate("YOU_MUST_LEAVE_REVIEW")}
-                                                </div>
-                                                <div className="col-xs-12" style={{ marginTop: 5 }}>
-                                                    <RaisedButton
-                                                        labelStyle={{color: 'white '}}
-                                                        backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                        label={translate('LEAVE_REVIEW')}
-                                                        onTouchTap={() => {
-                                                            goTo(`/order/${review.orderId}/review`);
-                                                        }}
-                                                    />
-                                                </div>
-                                        </div>
-                                     }
-                                    { review.rate &&
-                                    <div className="row">
-                                            <div className="col-xs-12">
-                                                <div style={{
-                                                    lineHeight: 2
-                                                }}>
-                                                    <ReactStars
-                                                        edit={false}
-                                                        disable={true}
-                                                        count={5}
-                                                        size={16}
-                                                        half={false}
-                                                        value={review.rate}
-                                                        color2={'#ffd700'}
-                                                    />
-                                                </div>
-                                            </div>
-                                    </div>
-                                    }
-                                    { review.rate &&
-                                    <div className="row">
-                                        <div className="col-xs-12" style={{ padding: 30}}>
-                                            <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
-                                        </div>
-                                    </div>
-                                    }
-                                    { review.rate &&
-                                    <div className="row">
-                                        <div className="col-xs-12 text-muted">
-                                                <Moment format="MM.YYYY">{review.createdAt}</Moment>
-                                                <span> </span>
-                                                <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
-                                                    {review.task.title}
-                                                </a>
-                                        </div>
-                                    </div>
-                                    }
-                                    </div>
-                                    
+                                <div className="row">
                                     <div className="col-xs-12">
-                                    <hr />
+                                        <div
+                                            style={{ marginTop: 4, paddingLeft: 0, paddingRight: 0}}
+                                            className="col-xs-12 col-sm-3 col-md-2"
+                                            onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
+                                        >   
+                                                <div className="row">
+                                                    <div className="col-xs-4 col-sm-12 text-center" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                        <IconButton
+                                                            style={{ bottom: 5 }}
+                                                            tooltip={
+                                                                `${review.fromUser.firstName} ${review.fromUser.lastName}`
+                                                            }
+                                                        >
+                                                            <Avatar src={review.fromUser.imageUrl || '/images/avatar.png'} />
+                                                        </IconButton>
+                                                    </div>
+                                                    <div className="col-xs-8 col-sm-12" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                        <p className="text-muted text-center hidden-xs">
+                                                            {review.fromUser.firstName}<span className="hidden-xs"> {review.fromUser.lastName}</span>
+                                                        </p>
+                                                        <p className="text-muted visible-xs text-left" style={{ paddingTop: 17 }}>
+                                                            {review.fromUser.firstName}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                     
+                                        <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                        { !review.rate &&
+                                            <div className="row" style={{ marginTop: 15 }}>
+                                                    <div className="col-xs-12">
+                                                        {translate("YOU_MUST_LEAVE_REVIEW")}
+                                                    </div>
+                                                    <div className="col-xs-12" style={{ marginTop: 5 }}>
+                                                        <RaisedButton
+                                                            labelStyle={{color: 'white '}}
+                                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                            label={translate('LEAVE_REVIEW')}
+                                                            onTouchTap={() => {
+                                                                if (review.orderId) {
+                                                                    requestOrder
+                                                                    .getCorrespondingRequestForOrder(review.orderId)
+                                                                    .then(request => {
+                                                                        return goTo(`/request/${request.id}/review`);
+                                                                    })
+                                                                }
+
+                                                                if (review.requestId) {
+                                                                    requestOrder
+                                                                    .getCorrespondingOrderForRequest(review.requestId)
+                                                                    .then(order => {
+                                                                        return goTo(`/order/${order.id}/review`);
+                                                                    })
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                            </div>
+                                        }
+                                        { review.rate &&
+                                        <div className="row">
+                                                <div className="col-xs-12">
+                                                    <div style={{
+                                                        lineHeight: 2
+                                                    }}>
+                                                        <ReactStars
+                                                            edit={false}
+                                                            disable={true}
+                                                            count={5}
+                                                            size={16}
+                                                            half={false}
+                                                            value={review.rate}
+                                                            color2={'#ffd700'}
+                                                        />
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        }
+                                        { review.rate &&
+                                        <div className="row">
+                                            <div className="col-xs-12" style={{ padding: 30}}>
+                                                <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                            </div>
+                                        </div>
+                                        }
+                                        { review.rate &&
+                                        <div className="row">
+                                            <div className="col-xs-12 text-muted">
+                                                    <Moment format="MM.YYYY">{review.createdAt}</Moment>
+                                                    <span> </span>
+                                                    <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                        {review.task.title}
+                                                    </a>
+                                            </div>
+                                        </div>
+                                        }
+                                        </div>
+                                        
+                                        <div className="col-xs-12">
+                                        <hr />
+                                    </div>
                                 </div>
                             </div>
                             )}

@@ -77,7 +77,7 @@ export default class AdminPage extends React.Component {
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('custom-pages') }>Custom pages</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
-                        <MenuItem onClick={ () => this.goToSection('listing') }>Listing</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('listing') }>Listing fields</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('categories') }>Listing categories</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('pricing') }>Pricing</MenuItem>
                         

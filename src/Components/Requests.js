@@ -8,7 +8,7 @@ import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import ListingHeader from '../Components/ListingHeader';
-
+import Moment from 'react-moment';
 import * as apiRequest from '../api/request';
 import { displayPrice, displayLocation } from '../core/format';
 import { goTo } from '../core/navigation';
@@ -62,7 +62,10 @@ export default class Requests extends Component {
   }
 
   markAsDone = request => {
-    openConfirmDialog({}, () => {
+    openConfirmDialog({
+        headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
+        confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
+    }, () => {
         const requests = this.state.requests;
 
         apiRequest
@@ -165,7 +168,9 @@ export default class Requests extends Component {
                                                         translate("REQUEST_STATUS_ACCEPTED")
                                                     }
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
-                                                        translate("REQUEST_STATUS_MARKED_DONE")
+                                                        <span>
+                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(request.order.autoSettlementStartedAt).addHours(8))}</Moment>)
+                                                        </span>
                                                     }
                                                     { String(request.status) === REQUEST_STATUS.SETTLED &&
                                                         translate("REQUEST_STATUS_SETTLED")
@@ -220,7 +225,7 @@ export default class Requests extends Component {
                                                 <RaisedButton
                                                     labelStyle={{color: 'white '}}
                                                     backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                    label={translate('MARK_DONE')}
+                                                    label={translate('REQUEST_ACTION_MARK_DONE')}
                                                     onTouchTap={() => this.markAsDone(request)}
                                                 />
                                             }

@@ -81,7 +81,10 @@ export default class TaskComments extends React.Component {
                                 }}>
                                     <div className="row">
                                         <div className="col-xs-2 col-sm-1">
-                                            <a onClick={ () => goTo(`/profile/${sender.id}`) }>
+                                            <a
+                                                href="#"
+                                                onClick={() => goTo(`/profile/${sender.id}`)}
+                                            >
                                                 <img
                                                     alt="profile"
                                                     style={{ 
@@ -97,7 +100,7 @@ export default class TaskComments extends React.Component {
                                             marginTop: 6
                                         }}>
                                             <strong>
-                                                <a onClick={ () => goTo(`/profile/${sender.id}`) }>
+                                                <a href="#" onClick={ () => goTo(`/profile/${sender.id}`) }>
                                                     {firstName} {lastName}
                                                 </a>
                                                 </strong>

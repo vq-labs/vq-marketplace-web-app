@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
-import Dialog from 'material-ui/Dialog';
 import { List, ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import ReactStars from 'react-stars';
 import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
@@ -78,60 +76,6 @@ export default class Dashboard extends Component {
   render() {
     return (
         <div className="container">
-          <div>
-                        <Dialog
-                            onRequestClose={() => {
-                              this.setState({
-                                isShowingRequests: false
-                              });
-                            }} 
-                            autoScrollBodyContent={true}
-                            modal={false}
-                            open={this.state.isShowingRequests}
-                            >
-                                <h1>{translate('REQUESTS')}</h1>
-                                {!this.state.selectedTask.requests
-                                  .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                  .length &&
-                                  <p className="text-muted">
-                                    {translate('NO_REQUESTS')}
-                                  </p>
-                                }
-                                <List>
-                                  {this.state.selectedTask.requests
-                                  .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                  .map(request => 
-                                    <ListItem
-                                      onTouchTap={() => {
-                                        return goTo(`/request/${request.id}`);
-                                      }}
-                                      primaryText={`${request.fromUser.firstName} ${request.fromUser.lastName}`}
-                                      secondaryText={
-                                        <p>
-                                          <Moment format="DD.MM.YYYY">{request.createdAt}</Moment>
-                                        </p>
-                                      }
-                                      leftAvatar={<Avatar src={request.fromUser.imageUrl || DEFAULTS.PROFILE_IMG_URL} />}
-                                      rightIcon={
-                                        <div style={{ width: '60px' }}>
-                                            <ReactStars
-                                              edit={false}
-                                              disable={true}
-                                              count={5}
-                                              size={12}
-                                              half={false}
-                                              value={request.fromUser.avgReviewRate}
-                                              color2={'#ffd700'}
-                                            />
-                                        </div>
-                                      }
-                                    />
-                                  )}
-                                </List>
-
-                            </Dialog>
-                     </div>
-
           {this.state.ready &&
           <div className="col-xs-12">
             <div className="col-xs-12" style={{ marginBottom: 20 }}>
@@ -143,6 +87,7 @@ export default class Dashboard extends Component {
                   const newState = { viewType };
 
                   setQueryParams(newState);
+
                   this.setState(newState);
               }}
               />
@@ -178,12 +123,6 @@ export default class Dashboard extends Component {
                               displayManagement={true}
                               displayPrice={true}
                               editable={true}
-                              onDisplayRequests={() => {
-                                this.setState({
-                                  selectedTask: task,
-                                  isShowingRequests: true
-                                });
-                              }}
                               onCancel={() => {
                                 const tasks = this.state.tasks;
 

@@ -1,4 +1,3 @@
-
 import { stripHtml } from './util';
 
 const CENT_CURRENCIES = [ 'PLN', 'EUR', 'USD' ];

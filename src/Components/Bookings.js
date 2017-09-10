@@ -156,7 +156,24 @@ export default class Bookings extends Component {
 
                                             { order.status === ORDER_STATUS.MARKED_DONE &&
                                                 <p className="text-muted">
-                                                    <strong>{translate("ORDER_MARKED_DONE")} (Will be automatically paid on <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)</strong>
+                                                    <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)</strong>
+                                                    <br />
+                                                    <a href="#" onTouchTap={() => {
+                                                        openConfirmDialog({
+                                                            headerLabel: translate("REVOKE_AUTOSETTLEMENT"),
+                                                            confirmationLabel: translate("REVOKE_AUTOSETTLEMENT_DESC")
+                                                        }, () => {
+                                                            apiOrderActions
+                                                            .revokeAutoSettlement(order.id)
+                                                            .then(() => {
+                                                                return alert(translate("SUCCESS"));
+                                                            }, err => {
+                                                                return alert(translate("ERROR"));
+                                                            });
+                                                        });
+                                                    }}>
+                                                        {translate("REVOKE_AUTOSETTLEMENT")}
+                                                    </a>
                                                 </p>
                                             }
                                         </div>

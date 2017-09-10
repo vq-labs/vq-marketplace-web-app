@@ -39,6 +39,32 @@ export default class Address extends Component {
             ready: true
         }));
     }
+
+    componentWillReceiveProps(nextProps) {
+        const newState = {};
+
+        const mutableProps = [
+            "locationQueryString",
+            "countryCode",
+            "street",
+            "streetNumber",
+            "formattedAddress",
+            "addressAddition",
+            "city",
+            "postalCode",
+            "lat",
+            "lng"
+        ];
+
+        Object.keys(nextProps.location)
+        .forEach(propKey => {
+            if (mutableProps.indexOf(propKey) > -1) {
+                newState[propKey] = nextProps.location[propKey];
+            }
+        });
+
+        this.setState(newState);
+    }
     
     getRequiredStar(mode) {
         return Number(mode) === 2 ? '*' : '';

@@ -9,6 +9,9 @@ import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { goTo } from '../core/navigation';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
 const stripHTML = html => {
    const tmp = document.createElement("DIV");
@@ -63,19 +66,58 @@ export default class Chat extends Component {
             { !this.state.isLoading && 
                 <div className="row">
                     <div className="col-xs-12">
+                        <div className="col-xs-3 col-sm-3">
+                            <DropDownMenu
+                                style={{
+                                    width: '100%'
+                                }}
+                                value={this.state.statusFilter} onChange={(_, _2, statusFilter) => {
+                                this.setState({
+                                    statusFilter
+                                })
+                            }}>
+                                <MenuItem value={undefined} primaryText="No filter" />
+                                {
+                                    Object.keys(REQUEST_STATUS)
+                                    .map(status => 
+                                        <MenuItem
+                                            value={REQUEST_STATUS[status]}
+                                            primaryText={status}
+                                        />
+                                    )
+                                }
+                            </DropDownMenu>
+                        </div>
+                        <div className="col-xs-3 col-sm-2">
+                        </div>
+                    </div>
+                    <div className="col-xs-12">
                         <div className="col-xs-12 col-sm-8">
-                            <Paper zDepth={1} style={ { paddingBottom: '10px' } }>
+                            <Paper zDepth={1} style={{ paddingBottom: '10px' }}>
                                 <div className="row">
                                     <div className="col-xs-12">
                                         <List>
                                             <Subheader>{ translate('REQUESTS') }</Subheader>
-                                            { !this.state.requests.length && 
+                                            { !this.state.requests.filter(request => {
+                                                    if (!this.state.statusFilter) {
+                                                        return true;
+                                                    }
+
+                                                    return this.state.statusFilter === request.status;
+                                                }).length && 
                                                 <div className="col-xs-12">
                                                     <p className="text-muted">{translate('NO_REQUESTS')}</p>
                                                 </div>
                                             }
                                             { this.state.requests && 
                                                 this.state.requests
+                                                .filter(request => {
+                                                    if (!this.state.statusFilter) {
+                                                        return true;
+                                                    }
+
+                                                    return this.state.statusFilter === request.status;
+                                                })
                                                 .map((request, index) => {
                                                     const lastMsg = request.lastMsg;
                                                     const lastMsgFirstName = request.with.firstName;

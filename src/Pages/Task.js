@@ -21,7 +21,10 @@ import { displayPrice } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
-
+import { openRequestDialog } from '../helpers/open-requests-dialog';
+import * as DEFAULTS from '../constants/DEFAULTS';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import { sortDates } from '../core/util';
 
 import '../App.css';
 
@@ -69,21 +72,30 @@ class Task extends Component {
     componentDidMount() {
         getConfigAsync(config => {
             getUserAsync(user => {
-                this.setState({
-                    configReady: true,
-                    config,
-                    user
-                });
-
                 let taskId = this.props.params.taskId;
-
-                pricingModelProvider.get()
-                .then(pricingModels => this.setState({
-                    pricingModels
-                }));
-
+                
                 apiTask.getItem(taskId)
                 .then(task => {
+                    const isMyTask = task.userId === user.id;
+
+                    if (String(user.userType) === '1' && !isMyTask) {
+                        goTo('/');
+
+                        return alert('You cannot access this page.');
+                    }
+
+                    this.setState({
+                        configReady: true,
+                        config,
+                        user
+                    });
+
+                    pricingModelProvider.get()
+                    .then(pricingModels => this.setState({
+                        pricingModels
+                    }));
+
+                    
                     let sentRequest;
 
                     if (user) {
@@ -100,7 +112,7 @@ class Task extends Component {
                         task,
                         isMyTask: task.userId === coreAuth.getUserId()
                     });
-                });
+            });
             }, true);
         });
     }
@@ -167,7 +179,7 @@ class Task extends Component {
                                         <div className="col-xs-1">
                                             { this.state.taskOwner.id &&
                                                 <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                    <Avatar src={this.state.taskOwner.imageUrl || '/images/avatar.png' }/>
+                                                    <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
                                                 </a>
                                             }
                                         </div>
@@ -222,8 +234,20 @@ class Task extends Component {
                                                     goTo(`/chat/${this.state.sentRequestId}`)
                                                 }}
                                             /> 
-                                       } 
-                                
+                                       }
+                                       { this.state.isMyTask &&
+                                            <RaisedButton
+                                                style={{width: '100%'}}
+                                                labelStyle={{color: 'white '}}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                label={`${this.state.task.requests
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                                    .length} ${translate('REQUESTS')}`}
+                                                onTouchTap={() => {
+                                                    openRequestDialog(this.state.task.requests);
+                                                }}
+                                            />
+                                       }
                                     </Card> 
                                 </div> 
                             </div>
@@ -263,10 +287,14 @@ class Task extends Component {
                                         
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">Job Date</h3>
-                                            {this.state.task.timing.map(timing =>
+                                            {sortDates(
+                                                this.state.task.timing.map(_ => _.date)
+                                                , -1
+                                            )
+                                            .map(date =>
                                                 <div className="row">
                                                     <div className="col-xs-12">
-                                                        <Moment format="DD.MM.YYYY">{timing.date}</Moment>
+                                                        <Moment format="DD.MM.YYYY">{date}</Moment>
                                                     </div>
                                                 </div>
                                             )}

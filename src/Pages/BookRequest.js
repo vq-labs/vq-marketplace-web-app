@@ -102,11 +102,34 @@ class BookRequest extends Component {
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
+
+                        {this.state.requestDetails.task.taskLocations.length &&
+                            <div className="col-xs-12" style={{
+                                marginTop: 10,
+                                marginBottom: 10
+                            }}>   
+                                <strong>
+                                    <a 
+                                        style={{
+                                            cursor: 'pointer'
+                                        }}
+                                        onTouchTap={() => {
+                                            this.setState({
+                                                billingAddress: this.state.requestDetails.task.taskLocations[0]
+                                            });
+                                        }}
+                                    >
+                                        {translate('BILLING_ADDRESS_USE_LISTING_LOCATION')}
+                                    </a>
+                                </strong>
+                            </div>
+                        }
+
                         <div className="col-xs-12 col-sm-6 pull-right">
                             <div className="col-xs-12">
                                 <h3>{this.state.requestDetails.task.title}</h3>
                                 <hr />
-                                <strong>{coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency)}</strong>
+                                <strong>{coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency, this.state.requestDetails.task.priceType)}</strong>
                             </div>
                             <div className="col-xs-12">
                                 <p className="text-muted">Application by:</p>
@@ -120,13 +143,12 @@ class BookRequest extends Component {
                                 withTaxNumber={true}
                                 location={this.state.billingAddress}
                                 onLocationChange={billingAddress => {
-                                    debugger;
                                     this.setState({
                                         billingAddress
                                     });
                                 }}
                             />
-                        </div>    
+                        </div>
 
                         <div className="col-xs-12" style={{ marginTop: 50 }}>
                             <RaisedButton

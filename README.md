@@ -40,12 +40,14 @@ gulp deploy
 ***Chrome*** (latest version)<br />
 ***Safari*** (latest version)<br />
 ***Firefox*** (latest version)<br />
-***Microsoft Edge*** (latest version)<br />
 
-*** Support Internet Explorer ***
-VQ Marketplace Web-App aims to also run on the latest version of Internet Explorer. However, the current developments are not specifically tested in this browser. Please submit issues in case of bugs.
+*** Support Internet Explorer and Microsoft Edge (latest versions) ***
+VQ Marketplace Web-App aims to also run on the latest version of Internet Explorer. However, the current developments are not specifically tested in this browser. Please submit issues on our support page.
 
 *** Mobile support ***
-VQ Marketplace Web-App aims to also be supported accross a range of mobile devices and screen-sizes. However, the current developments are not specifically tested on mobile screens. Please submit issues in case of bugs.
+VQ Marketplace Web-App is not developed with the full support for mobile screens, as mobile apps are offered by VQ LABS and the current developments are not specifically tested on mobile screens. However, the web app aims to be work accross a range of mobile devices and screen-sizes. Please submit issues on our support page.
+
+## Support
+https://vqlabs.freshdesk.com/support/home
 
 ## MIT License

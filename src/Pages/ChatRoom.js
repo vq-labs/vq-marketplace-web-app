@@ -2,6 +2,8 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import Moment from 'react-moment';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
@@ -318,6 +320,39 @@ export default class ChatRoom extends React.Component {
                                                 }}
                                             >
                                             </RaisedButton>
+                                    }
+
+                                    { this.state.request.order &&
+                                      (
+                                          String(this.state.request.order.status) === ORDER_STATUS.PENDING
+                                      ) &&
+                                        <RaisedButton
+                                            label={translate('REQUEST_ACTION_MARK_DONE')}
+                                            labelStyle={{color: 'white'}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            style={actionBtnStyle}
+                                            onTouchTap={() => {
+                                                const request = this.state.request;
+
+                                                openConfirmDialog({
+                                                    headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
+                                                    confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
+                                                }, () => {
+                                                    apiRequest
+                                                    .updateItem(request.id, {
+                                                        status: REQUEST_STATUS.MARKED_DONE
+                                                    })
+                                                    .then(_ => {
+                                                        request.status = REQUEST_STATUS.MARKED_DONE;
+                                                        request.order.status = ORDER_STATUS.MARKED_DONE;
+
+                                                        this.setState({
+                                                            request
+                                                        });
+                                                    });
+                                                });
+                                            }}
+                                        />
                                     }
 
                                     { this.state.isUserOwner && this.state.request.order &&

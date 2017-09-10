@@ -1,4 +1,4 @@
-import * as communication from '../core/communication'
+import * as communication from '../core/communication';
 
 export const users = {
     getItems: () => communication.doGet('/admin/user'),
@@ -13,7 +13,10 @@ export const task = {
 };
 
 export const request = {
-    getItems: () => communication.doGet('/admin/request'),
+    getItems: () =>
+        communication.doGet('/admin/request'),
+    getRequestMessages: requestId =>
+        communication.doGet(`/admin/request/${requestId}/messages`),
 };
 
 export const order = {

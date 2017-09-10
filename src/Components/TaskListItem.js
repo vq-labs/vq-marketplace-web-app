@@ -19,6 +19,7 @@ import { getConfigAsync } from '../core/config';
 import ReactStars from 'react-stars'
 import ListingHeader from '../Components/ListingHeader';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import { openRequestDialog } from '../helpers/open-requests-dialog';
 
 export default class TaskListItem extends Component {
   constructor(props) {
@@ -36,30 +37,6 @@ export default class TaskListItem extends Component {
         config
       });
     });
-  }
-
-  handleGoToTask (taskId) {
-    coreNavigation.goTo(`/task/${taskId}`)
-  }
-
-  formatTitle (title) {
-    if (title) {
-      if (title.length > 55) {
-        return title.substring(0, 55) + '...';
-      }
-
-      return title;
-    }
-
-    return 'No title';
-  }
-
-  formatLocation (task) {
-    if (task.location) {
-       return `${task.location.street}, ${task.location.postalCode} ${task.location.city}`
-    }
-
-    return '';
   }
 
   getTaskListItem(task) {
@@ -156,7 +133,7 @@ export default class TaskListItem extends Component {
                                           labelStyle={{color: 'white '}}
                                           backgroundColor={this.state.config.COLOR_PRIMARY}
                                           onTouchTap={() => {
-                                            this.props.onDisplayRequests();
+                                            openRequestDialog(task.requests);
                                           }}
                                       />
                                     </div>

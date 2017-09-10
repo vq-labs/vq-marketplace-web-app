@@ -111,7 +111,7 @@ export default class SectionUsers extends React.Component {
                                     } 
                                     primaryText={
                                         <p>
-                                            {user.firstName} {user.lastName} (#{user.id})}<br />
+                                            {user.firstName} {user.lastName} (#{user.id})<br />
                                             Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong>
                                         </p>
                                     }
@@ -221,28 +221,40 @@ export default class SectionUsers extends React.Component {
                                         const isBlocking = this.state.isBlockingUser;
                                         const USER_STATUS_BLOCKED = isBlocking ? '20' : '10';
 
-                                        users
-                                            .find(_ => _.id === userId)
-                                            .status = USER_STATUS_BLOCKED;
-
                                         apiAdmin
                                             .users[
                                                 isBlocking ? 'blockUser' : 'unblockUser'
-                                            ](userId);
+                                            ](userId)
+                                            .then(_ => {
+                                                alert('OK! User Blocked!');
 
-                                        this.setState({
-                                            users,
-                                            isBlockingUser: false,
-                                            isUnblockingUser: false,
-                                            selectedUserId: null
-                                        });
+                                                users
+                                                .find(_ => _.id === userId)
+                                                .status = USER_STATUS_BLOCKED;
+
+                                                this.setState({
+                                                    users,
+                                                    isBlockingUser: false,
+                                                    isUnblockingUser: false,
+                                                    selectedUserId: null
+                                                });
+                                            }, err => {
+                                                return alert(JSON.stringify(err));
+                                            });
                                     }}
                                 />,
                             ]}
                             modal={false}
                             open={this.state.isBlockingUser || this.state.isUnblockingUser}
                             >
-                                Block user #{this.state.selectedUserId}
+                                <h1>Block user #{this.state.selectedUserId}</h1>
+
+                                <p>
+                                Read in VQ-MARKETPLACE Solution Center: <br />
+                                <a target="_blank" href="https://vqlabs.freshdesk.com/support/solutions/articles/33000166411-blocking-unblocking-users">
+                                        What happens when Admin blocks a user?
+                                </a>
+                                </p>
                             </Dialog>
 
                             <div>

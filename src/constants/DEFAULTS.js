@@ -1,0 +1,1 @@
+export const PROFILE_IMG_URL = '/images/avatar.png';

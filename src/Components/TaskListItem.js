@@ -18,6 +18,7 @@ import apiTask from '../api/task';
 import { getConfigAsync } from '../core/config';
 import ReactStars from 'react-stars'
 import ListingHeader from '../Components/ListingHeader';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 
 export default class TaskListItem extends Component {
   constructor(props) {
@@ -149,11 +150,13 @@ export default class TaskListItem extends Component {
                                       padding: 2
                                     }}>
                                       <RaisedButton
-                                          label={`${this.state.task.requests.length} ${translate('REQUESTS')}`}
+                                          label={`${this.state.task.requests
+                                            .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                            .length} ${translate('REQUESTS')}`}
                                           labelStyle={{color: 'white '}}
                                           backgroundColor={this.state.config.COLOR_PRIMARY}
                                           onTouchTap={() => {
-                                            
+                                            this.props.onDisplayRequests();
                                           }}
                                       />
                                     </div>

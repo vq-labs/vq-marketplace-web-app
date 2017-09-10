@@ -79,6 +79,12 @@ class Profile extends React.Component {
         apiUser
             .getItem(userId)
             .then(profile => {
+                if (profile.status === '20') {
+                    goTo('/');
+
+                    return alert('Page cannot be accessed');
+                }
+
                 this.setState({
                     ready: true,
                     isLoading: false,

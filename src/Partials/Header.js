@@ -11,8 +11,8 @@ import Avatar from 'material-ui/Avatar';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { translate } from '../core/i18n';
 import * as coreAuth from '../core/auth';
-import apiTask from '../api/task';
 import { goTo, goStartPage } from '../core/navigation';
+import * as DEFAULTS from '../constants/DEFAULTS';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -131,7 +131,7 @@ class Header extends Component {
                     <IconMenu
                           iconButtonElement={
                             <div>
-                              <Avatar src={this.state.user.imageUrl || '/images/avatar.png'} size={40} />
+                              <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
                             </div>
                           }
                           anchorOrigin={{horizontal: 'left', vertical: 'top'}}

@@ -168,20 +168,6 @@ class Profile extends React.Component {
             return profileName;
         }
 
-        calculateRate(reviews) {
-            const reviewLength = reviews.length;
-
-            if (!reviewLength) {
-                return 3;
-            }
-
-            const totalRateSum = reviews.reduce((sum, review) => {
-                return sum + review.rate;
-            }, 0);
-
-            return totalRateSum / reviewLength;
-        }
-
         render() {
             const profileImageUrl = this.state.profile && this.state.profile.imageUrl || '/images/avatar.png';
 
@@ -203,8 +189,6 @@ class Profile extends React.Component {
                                         { this.showProfileName() }
                                     </h1>
                                 }
-
-                               
                             </div>
                         </div>
                         <div className="row">
@@ -228,7 +212,7 @@ class Profile extends React.Component {
                                         count={5}
                                         size={16}
                                         half={false}
-                                        value={this.calculateRate(this.state.reviews)}
+                                        value={this.state.profile.avgReviewRate}
                                         color2={'#ffd700'}
                                     />
                                 }
@@ -292,7 +276,7 @@ class Profile extends React.Component {
                 <RaisedButton onTouchTap={() => goTo('/new-listing')} label={ translate('POST_NEW_LISTING') } primary={true}  />
             </div>;
 
-        const OfferSection = 
+        const OfferSection =
             <div className="row" style={{ 'marginTop': '40px' }}>
                     <div className="col-xs-12">
                         <h1>
@@ -305,7 +289,7 @@ class Profile extends React.Component {
                     <Divider />
                     
                     <div className="col-xs-12" style={ { marginTop: '20px' }}>                
-                        { this.state.offers && this.state.offers.filter( offer => this.state.isMyProfile ? true : offer.status===0).map((offer, _id) =>
+                        { this.state.offers && this.state.offers.filter(offer => this.state.isMyProfile ? true : offer.status===0).map((offer, _id) =>
                                 <div key={offer._id} className="col-xs-12 col-sm-12 col-md-4 text-left" style={{ marginBottom: '40px' }}>
                                     <TaskCard task={offer} displayManagement={this.state.isMyProfile} displayPrice={false} />
                                 </div>
@@ -390,15 +374,32 @@ class Profile extends React.Component {
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                 Reviews
                             </h1>
-                            {!this.state.reviews.length &&
+                            {!this.state.reviews.filter(review => {
+                                if (!review.rate) {
+                                    return this.state.isMyProfile;
+                                }
+
+                                return true;
+                            }).length &&
                                 <p className="text-muted">
-                                    No reviews
+                                    {translate("NO_REVIEWS")}
                                 </p>
                             }
 
-                            {this.state.reviews.map(review =>
+                            {this.state.reviews
+                            .filter(review => {
+                                if (!review.rate) {
+                                    return this.state.isMyProfile;
+                                }
+
+                                return true;
+                            })
+                            .map(review =>
                                 <div className="col-xs-12">
-                                    <div className="col-xs-1" onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}>
+                                    <div
+                                        className="col-xs-1"
+                                        onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
+                                    >
                                         <IconButton
                                             style={{ bottom: 5 }}
                                             tooltip={
@@ -412,43 +413,66 @@ class Profile extends React.Component {
                                         </p>
                                     </div>
                                      <div className="col-xs-8">
-                                        <div className="row">
+                                     { !review.rate &&
+                                        <div className="row" style={{ padding: 15 }}>
                                                 <div className="col-xs-12">
-                                                    <div style={{
-                                                        lineHeight: 2
-                                                    }}>
-                                                        <ReactStars
-                                                            edit={false}
-                                                            disable={true}
-                                                            count={5}
-                                                            size={16}
-                                                            half={false}
-                                                            value={review.rate}
-                                                            color2={'#ffd700'}
-                                                        />
-                                                    </div>
+                                                    {translate("YOU_MUST_LEAVE_REVIEW")}
+                                                </div>
+                                                <div className="col-xs-12" style={{ marginTop: 5 }}>
+                                                    <RaisedButton
+                                                        labelStyle={{color: 'white '}}
+                                                        backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                        label={translate('LEAVE_REVIEW')}
+                                                        onTouchTap={() => {
+                                                            goTo(`/order/${review.orderId}/review`);
+                                                        }}
+                                                    />
+                                                </div>
+                                        </div>
+                                     }
+                                    { review.rate &&
+                                    <div className="row">
+                                            <div className="col-xs-12">
+                                                <div style={{
+                                                    lineHeight: 2
+                                                }}>
+                                                    <ReactStars
+                                                        edit={false}
+                                                        disable={true}
+                                                        count={5}
+                                                        size={16}
+                                                        half={false}
+                                                        value={review.rate}
+                                                        color2={'#ffd700'}
+                                                    />
                                                 </div>
                                             </div>
-                                            <div className="row">
-                                                <div className="col-xs-12" style={{ padding: 30}}>
-                                                    <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
-                                                </div>
-                                            </div>
-                                            <div className="row">
-                                                <div className="col-xs-12 text-muted">
-                                                        <Moment format="MM.YYYY">{review.createdAt}</Moment>
-                                                        <span> </span>
-                                                        <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
-                                                            {review.task.title}
-                                                        </a>
-                                                </div>
-                                            </div>
-                                     </div>
-                                     
-                                     <div className="col-xs-12">
-                                        <hr />
                                     </div>
+                                    }
+                                    { review.rate &&
+                                    <div className="row">
+                                        <div className="col-xs-12" style={{ padding: 30}}>
+                                            <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                        </div>
+                                    </div>
+                                    }
+                                    { review.rate &&
+                                    <div className="row">
+                                        <div className="col-xs-12 text-muted">
+                                                <Moment format="MM.YYYY">{review.createdAt}</Moment>
+                                                <span> </span>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                    {review.task.title}
+                                                </a>
+                                        </div>
+                                    </div>
+                                    }
+                                    </div>
+                                    
+                                    <div className="col-xs-12">
+                                    <hr />
                                 </div>
+                            </div>
                             )}
 
                         </div>

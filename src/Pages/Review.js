@@ -91,124 +91,127 @@ class Review extends Component {
             <div className="container" style={{ marginBottom: 75}}>
                 {this.state.config &&
                 <div className="col-md-8 col-md-offset-2">
-                <div className="row">
-                    <div className="col-xs-12">
-                       <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                            {this.state.reviewType === REVIEW_TYPES.ORDER ?
-                                translate('ORDER_REVIEW_RATE_HEADER') :
-                                translate('REQUEST_REVIEW_RATE_HEADER')
-                            }
-                        </h1>
-                        <p>
-                            {this.state.reviewType === REVIEW_TYPES.ORDER ?
-                                translate('ORDER_REVIEW_RATE_DESC') :
-                                translate('REQUEST_REVIEW_RATE_DESC')
-                            }
-                        </p>
-                    </div>
-                    <div className="col-xs-12" style={{
-                        lineHeight: 2
-                    }}>
-                    
-                        <ReactStars
-                            count={5}
-                            size={42}
-                            half={false}
-                            value={this.state.selectedRating}
-                            onChange={selectedRating => {
-                                this.setState({ selectedRating });
-                            }}
-                            color2={'#ffd700'}
-                        />
-                    </div>
-                    <div className="col-xs-12">
+                    <div className="row">
+                        <div className="col-xs-12">
                         <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                            { this.state.reviewType === REVIEW_TYPES.ORDER ?
-                                translate('ORDER_REVIEW_TEXT_HEADER') :
-                                translate('REQUEST_REVIEW_TEXT_HEADER')
-                            }
-                        </h1>
-                        <p>
-                            { this.state.reviewType === REVIEW_TYPES.ORDER ?
-                                translate('ORDER_REVIEW_TEXT_DESC') :
-                                translate('REQUEST_REVIEW_TEXT_DESC')
-                            }
-                        </p>
+                                {this.state.reviewType === REVIEW_TYPES.ORDER ?
+                                    translate('ORDER_REVIEW_RATE_HEADER') :
+                                    translate('REQUEST_REVIEW_RATE_HEADER')
+                                }
+                            </h1>
+                            <p>
+                                {this.state.reviewType === REVIEW_TYPES.ORDER ?
+                                    translate('ORDER_REVIEW_RATE_DESC') :
+                                    translate('REQUEST_REVIEW_RATE_DESC')
+                                }
+                            </p>
+                        </div>
+                        <div className="col-xs-12" style={{
+                            lineHeight: 2
+                        }}>
+                            <ReactStars
+                                count={5}
+                                size={42}
+                                half={false}
+                                value={this.state.selectedRating}
+                                onChange={selectedRating => {
+                                    this.setState({ selectedRating });
+                                }}
+                                color2={'#ffd700'}
+                            />
+                        </div>
+                        <div className="col-xs-12">
+                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                { this.state.reviewType === REVIEW_TYPES.ORDER ?
+                                    translate('ORDER_REVIEW_TEXT_HEADER') :
+                                    translate('REQUEST_REVIEW_TEXT_HEADER')
+                                }
+                            </h1>
+                            <p>
+                                { this.state.reviewType === REVIEW_TYPES.ORDER ?
+                                    translate('ORDER_REVIEW_TEXT_DESC') :
+                                    translate('REQUEST_REVIEW_TEXT_DESC')
+                                }
+                            </p>
+                        </div>
+                        <div className="col-xs-12">
+                            <HtmlTextField
+                                onChange={(ev, body) => {
+                                    this.setState({ body });
+                                }}
+                                value={this.state.body} 
+                            />
+                        </div>
                     </div>
-                    <div className="col-xs-12">
-                        <HtmlTextField
-                            onChange={(ev, body) => {
-                                this.setState({ body });
-                            }}
-                            value={this.state.body} 
-                        />
+                    <hr />
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <RaisedButton
+                                style={{
+                                    float: 'right'
+                                }}
+                                disabled={this.state.isProcessing || this.state.isProcessed}
+                                labelStyle={{color: 'white '}}
+                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                label={translate("SUBMIT")}
+                                onTouchTap={() => {
+                                    const reviewType = this.state.reviewType;
+                                    const order = this.state.order;
+                                    const request = this.state.request;
+
+                                    const orderId = order ? order.id : null;
+                                    const requestId = request ? request.id : null;
+
+
+                                    const review = {
+                                        rate: String(this.state.selectedRating),
+                                        body: this.state.body
+                                    };
+
+
+                                    if (!this.state.selectedRating) {
+                                        return alert('Rate is required (min. 1 start)');
+                                    }
+
+                                    if (!this.state.body) {
+                                        return alert('Review text is required');
+                                    }
+
+                                    this.setState({
+                                        isProcessing: true
+                                    });
+
+                                    if (reviewType === REVIEW_TYPES.ORDER) {
+                                        review.orderId = orderId;
+                                    }
+
+                                    if (reviewType === REVIEW_TYPES.REQUEST) {
+                                        review.requestId = requestId;
+                                    }
+
+                                    apiReview
+                                        .createItem(review)
+                                        .then(review => {
+                                            this.setState({
+                                                isProcessing: false,
+                                                isProcessed: true,
+                                            });
+
+                                            goTo('/review-completed')
+
+                                            console.log(review);
+                                        }, err => {
+                                            console.error(err);
+
+                                            this.setState({
+                                                isProcessing: false,
+                                                isProcessed: false
+                                            });
+                                        });
+                                }}
+                            />
+                        </div>
                     </div>
-                </div>
-
-                <RaisedButton
-                    style={{
-                        float: 'right'
-                    }}
-                    disabled={this.state.isProcessing || this.state.isProcessed}
-                    labelStyle={{color: 'white '}}
-                    backgroundColor={this.state.config.COLOR_PRIMARY}
-                    label={translate("SUBMIT")}
-                    onTouchTap={() => {
-                        const reviewType = this.state.reviewType;
-                        const order = this.state.order;
-                        const request = this.state.request;
-
-                        const orderId = order ? order.id : null;
-                        const requestId = request ? request.id : null;
-
-
-                        const review = {
-                            rate: String(this.state.selectedRating),
-                            body: this.state.body
-                        };
-
-
-                        if (!this.state.selectedRating) {
-                            return alert('Rate is required (min. 1 start)');
-                        }
-
-                        if (!this.state.body) {
-                            return alert('Review text is required');
-                        }
-
-                        this.setState({
-                            isProcessing: true
-                        });
-
-                        if (reviewType === REVIEW_TYPES.ORDER) {
-                            review.orderId = orderId;
-                        }
-
-                        if (reviewType === REVIEW_TYPES.REQUEST) {
-                            review.requestId = requestId;
-                        }
-
-                        apiReview
-                            .createItem(review)
-                            .then(review => {
-                                this.setState({
-                                    isProcessing: false,
-                                    isProcessed: true,
-                                });
-
-                                goTo('/review-completed')
-
-                                console.log(review);
-                            }, err => {
-                                console.error(err);
-
-                                this.setState({
-                                    isProcessing: false,
-                                    isProcessed: false
-                                });
-                            });
-                    }}
-                />
                 </div>
                 }
             </div>

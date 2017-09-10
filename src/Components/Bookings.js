@@ -128,7 +128,7 @@ export default class Bookings extends Component {
                             </div>
                         </div>
                     }
-                    { !this.state.isLoading && this.state.orders.map(order =>
+                    { !this.state.isLoading && this.state.orders.map((order, index) =>
                         <div 
                             className="col-xs-12"
                             style={{ marginTop: 10 }}
@@ -154,7 +154,7 @@ export default class Bookings extends Component {
                                                 </p>
                                             }
 
-                                            { order.status === ORDER_STATUS.MARKED_DONE &&
+                                            { order.status === ORDER_STATUS.MARKED_DONE && order.autoSettlementStartedAt &&
                                                 <p className="text-muted">
                                                     <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)</strong>
                                                     <br />
@@ -166,6 +166,14 @@ export default class Bookings extends Component {
                                                             apiOrderActions
                                                             .revokeAutoSettlement(order.id)
                                                             .then(() => {
+                                                                const orders = this.state.orders;
+
+                                                                orders[index].autoSettlementStartedAt = null;
+
+                                                                this.setState({
+                                                                    orders
+                                                                });
+
                                                                 return alert(translate("SUCCESS"));
                                                             }, err => {
                                                                 return alert(translate("ERROR"));
@@ -174,6 +182,12 @@ export default class Bookings extends Component {
                                                     }}>
                                                         {translate("REVOKE_AUTOSETTLEMENT")}
                                                     </a>
+                                                </p>
+                                            }
+
+                                            { order.status === ORDER_STATUS.MARKED_DONE && !order.autoSettlementStartedAt &&
+                                                <p className="text-muted">
+                                                    <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_CANCELED")})</strong>
                                                 </p>
                                             }
                                         </div>

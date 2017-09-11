@@ -24,6 +24,7 @@ import { getUserAsync } from '../core/auth';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import TASK_STATUS from '../constants/TASK_STATUS';
 import { sortDates } from '../core/util';
 
 import '../App.css';
@@ -199,13 +200,11 @@ class Task extends Component {
                                 </div>
                                 <div className="col-xs-12 col-sm-4">
                                     <Card style={{'marginTop': 60}}>
-                                        { this.state.task.priceType !== this.state.pricingModels.REQUEST_QUOTE &&
-                                            <CardText>
-                                                <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
-                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
-                                                </h2>
-                                            </CardText>
-                                        }
+                                        <CardText>
+                                            <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                                {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                                            </h2>
+                                        </CardText>
                                         { !this.state.user &&
                                             <RaisedButton
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
@@ -236,6 +235,22 @@ class Task extends Component {
                                             /> 
                                        }
                                        { this.state.isMyTask &&
+                                         this.state.task.status === TASK_STATUS.ACTIVE &&
+                                            <RaisedButton
+                                                style={{width: '100%'}}
+                                                labelStyle={{color: 'white '}}
+                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                label={`${this.state.task.requests
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                                    .length} ${translate('REQUESTS')}`}
+                                                onTouchTap={() => {
+                                                    openRequestDialog(this.state.task.requests);
+                                                }}
+                                            />
+                                       }
+
+                                       { false && this.state.isMyTask &&
+                                         this.state.task.status === TASK_STATUS.BOOKED &&
                                             <RaisedButton
                                                 style={{width: '100%'}}
                                                 labelStyle={{color: 'white '}}

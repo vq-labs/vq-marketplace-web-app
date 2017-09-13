@@ -3,12 +3,14 @@ import InfiniteCalendar, {
   Calendar,
   defaultMultipleDateInterpolation,
   withMultipleDates,
+  withRange
 } from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 
 const MultipleDatesCalendar = withMultipleDates(Calendar);
+const WithRangeCalendar = withRange(Calendar);
 
 export default class NewListingDate extends Component {
     constructor(props) {
@@ -17,9 +19,20 @@ export default class NewListingDate extends Component {
         const today = new Date((new Date()).setHours(0, 0, 0, 0));
         const minDate = new Date((new Date()).setHours(0, 0, 0, 0));
         const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
+        
+        const startDate = props.selected ?
+            props.selected[0] ? props.selected[0].date : today ||
+            today : today;
 
+        const endDate = props.selected ?
+            props.selected[0] ? props.selected[0].endDate || props.selected[0].date :
+            today : today;
+        
         this.state = {
-            selected: props.selected ? props.selected.map(_ => String(_)) : [ String(today) ],
+            selected: {
+                start: startDate,
+                end: endDate
+            },
             today,
             minDate,
             maxDate
@@ -47,8 +60,8 @@ export default class NewListingDate extends Component {
                 <div className="row">
                     <div className="col-xs-12">
                         <InfiniteCalendar
-                                Component={MultipleDatesCalendar}
-                                interpolateSelection={defaultMultipleDateInterpolation}
+                                Component={WithRangeCalendar}
+                                // interpolateSelection={defaultMultipleDateInterpolation}
                                 theme={{
                                     accentColor: '#448AFF',
                                     floatingNav: {
@@ -76,25 +89,44 @@ export default class NewListingDate extends Component {
                                 min={this.state.minDate}
                                 max={this.state.maxDate}
                                 selected={this.state.selected}
-                                onSelect={date => {
+                                onSelect={selectedEvent => {
+                                    /**
+                                     * 1: on selected start date
+                                     * 2: on hover end date
+                                     * 3: on selected start&end date
+                                     */
+                                    if (selectedEvent.eventType !== 3) {
+                                        return;
+                                    }
+
+                                    /**
                                     const selectedDates = this.state.selected;
                                     const dateIndex = selectedDates
                                         .map(_ => String(_))
                                         .indexOf(String(date));
-
 
                                     if (dateIndex === -1) {
                                         selectedDates.push(date);
                                     } else {
                                         selectedDates.splice(dateIndex, 1);
                                     }
+                                    */
 
-                                    
+                                    const selectedDate = {
+                                        start: selectedEvent.start,
+                                        end: selectedEvent.end
+                                    };
+
                                     this.setState({
-                                        selected: selectedDates.map(_ => String(_))
+                                        selectedDate
                                     });
 
-                                    this.props.onSelect(selectedDates);
+                                    if (this.props.onSelect) {
+                                        this.props.onSelect([{
+                                            date: selectedDate.start,
+                                            endDate: selectedDate.end
+                                        }]);
+                                    }
                                 }}
                         />
                     </div>

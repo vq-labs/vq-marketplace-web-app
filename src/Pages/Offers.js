@@ -26,7 +26,6 @@ import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
 const _chunk = require('lodash.chunk');
 
-
 class Offers extends Component {
     constructor(props) {
         super(props);

@@ -16,6 +16,7 @@ import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { getConfigAsync } from '../core/config';
 import displayTaskTiming from '../helpers/display-task-timing';
+import getUserProperty from '../helpers/get-user-property';
 
 const REQUEST_STATUS = {
     PENDING: '0',
@@ -197,9 +198,7 @@ export default class Requests extends Component {
                                                 <IconButton
                                                     style={{ top: 10 }}
                                                     tooltip={
-                                                        request.with.userProperties
-                                                        .find(_ => _.propKey === 'phoneNo')
-                                                        .propValue
+                                                        getUserProperty(request.with, 'phoneNo')
                                                     }>
                                                     <IconCall />
                                                 </IconButton>

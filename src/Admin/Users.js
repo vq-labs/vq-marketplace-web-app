@@ -162,9 +162,17 @@ export default class SectionUsers extends React.Component {
                                                 <MenuItem
                                                     primaryText="Show StudentID"
                                                     onClick={() => {
-                                                        this.setState({
-                                                            showProperty: true,
-                                                            selectedUser: user
+                                                        apiAdmin
+                                                        .users
+                                                        .getUserProperties(user.id)
+                                                        .then(userProperties => {
+                                                            debugger;
+
+                                                            this.setState({
+                                                                userProperties,
+                                                                showProperty: true,
+                                                                selectedUser: user
+                                                            });
                                                         })
                                                     }}
                                                 />
@@ -304,13 +312,34 @@ export default class SectionUsers extends React.Component {
                                                             alt="presentation"
                                                             width={400}
                                                             height={400}
-                                                            src={getProperty(this.state.selectedUser, 'studentIdUrl')}
+                                                            src={getProperty({
+                                                                userProperties: this.state.userProperties
+                                                            }, 'studentIdUrl')}
                                                         />
                                                     }
                                             </div>
                                             <div className="col-xs-12">
                                                 { this.state.showProperty &&
-                                                    <a href={getProperty(this.state.selectedUser, 'studentIdUrl')} target="_blank">Open in a separate page</a>
+                                                    <div className="row">
+                                                        {getProperty({
+                                                            userProperties: this.state.userProperties
+                                                        }, 'studentIdUrl') &&
+                                                            <div className="col-xs-12">
+                                                                <a href={getProperty({
+                                                                    userProperties: this.state.userProperties
+                                                                }, 'studentIdUrl')} target="_blank">Front: Open in a separate page</a>
+                                                            </div>
+                                                        }
+                                                        {getProperty({
+                                                            userProperties: this.state.userProperties
+                                                        }, 'studentIdBackUrl') &&
+                                                            <div className="col-xs-12">
+                                                                <a href={getProperty({
+                                                                    userProperties: this.state.userProperties
+                                                                }, 'studentIdBackUrl')} target="_blank">Back: Open in a separate page</a>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 }
                                             </div>
                                         </div>

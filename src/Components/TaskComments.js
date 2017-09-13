@@ -66,59 +66,61 @@ export default class TaskComments extends React.Component {
     render() {
         return (
             <div class="container">
-            <h3>{translate('COMMENTS')}</h3>
-            <p>{translate('COMMENTS_DESC')}</p>
+                <div className="col-xs-12">
+                    <h3>{translate('COMMENTS')}</h3>
+                    <p>{translate('COMMENTS_DESC')}</p>
+                </div>
             { this.state.comments
-                .map(message => {
-                    const sender = message.user;
-                    const firstName = sender.firstName;
-                    const lastName = sender.lastName;
-                    const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
+            .map(message => {
+                const sender = message.user;
+                const firstName = sender.firstName;
+                const lastName = sender.lastName;
+                const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
-                    return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px', marginBottom: '20px'} }>
-                                <div className="col-xs-12" style={{
-                                    marginBottom: '20px'
-                                }}>
-                                    <div className="row">
-                                        <div className="col-xs-2 col-sm-1">
-                                            <a
-                                                href="#"
-                                                onClick={() => goTo(`/profile/${sender.id}`)}
-                                            >
-                                                <img
-                                                    alt="profile"
-                                                    style={{ 
-                                                        borderRadius: '50%', 
-                                                        width: '50px',
-                                                        height: '50px' 
-                                                    }} 
-                                                    src={profileImageUrl}
-                                                />
+                return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px', marginBottom: '20px'} }>
+                            <div className="col-xs-12" style={{
+                                marginBottom: '20px'
+                            }}>
+                                <div className="row">
+                                    <div className="col-xs-2 col-sm-1">
+                                        <a
+                                            href="#"
+                                            onClick={() => goTo(`/profile/${sender.id}`)}
+                                        >
+                                            <img
+                                                alt="profile"
+                                                style={{ 
+                                                    borderRadius: '50%', 
+                                                    width: '50px',
+                                                    height: '50px' 
+                                                }} 
+                                                src={profileImageUrl}
+                                            />
+                                        </a>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-11" style={{
+                                        marginTop: 6
+                                    }}>
+                                        <strong>
+                                            <a href="#" onClick={ () => goTo(`/profile/${sender.id}`) }>
+                                                {firstName} {lastName}
                                             </a>
-                                        </div>
-                                        <div className="col-xs-10 col-sm-11" style={{
-                                            marginTop: 6
-                                        }}>
-                                            <strong>
-                                                <a href="#" onClick={ () => goTo(`/profile/${sender.id}`) }>
-                                                    {firstName} {lastName}
-                                                </a>
-                                                </strong>
-                                            <br />
-                                            <p className="text-muted">
-                                                <Moment format="DD.MM.YYYY, HH:mm">{message.createdAt}</Moment>
-                                            </p>
-                                        </div>
-                                    </div>   
-                                </div>
-                                <div className="col-xs-12">
-                                    <div dangerouslySetInnerHTML={{
-                                        __html: DOMPurify.sanitize(message.comment)
-                                    }} />
-                                    <Divider style={ { marginRight: '10px' } }/>
-                                </div>
-                        </div>;
-                })
+                                            </strong>
+                                        <br />
+                                        <p className="text-muted">
+                                            <Moment format="DD.MM.YYYY, HH:mm">{message.createdAt}</Moment>
+                                        </p>
+                                    </div>
+                                </div>   
+                            </div>
+                            <div className="col-xs-12">
+                                <div dangerouslySetInnerHTML={{
+                                    __html: DOMPurify.sanitize(message.comment)
+                                }} />
+                                <Divider style={ { marginRight: '10px' } }/>
+                            </div>
+                    </div>;
+            })
             }
 
                     <div className="row" style={{

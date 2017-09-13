@@ -72,11 +72,24 @@ export default class NewListingReview extends Component {
                                 { this.state.listing.timing
                                     .map(timing =>
                                         <div className="row">
-                                            <div className="col-xs-12">
-                                                <Moment format="DD.MM.YYYY">
-                                                    {timing}
-                                                </Moment>
-                                            </div>
+                                            { timing.date === timing.endDate &&
+                                                <div className="col-xs-12">
+                                                    <Moment format="DD.MM.YYYY">
+                                                        {timing.date}
+                                                    </Moment>
+                                                </div>
+                                            }
+                                            { timing.date !== timing.endDate &&
+                                                <div className="col-xs-12">
+                                                    <Moment format="DD.MM.YYYY">
+                                                        {timing.date}
+                                                    </Moment>
+                                                    -
+                                                    <Moment format="DD.MM.YYYY">
+                                                        {timing.endDate}
+                                                    </Moment>
+                                                </div>
+                                            }
                                         </div>
                                     )
                                 }

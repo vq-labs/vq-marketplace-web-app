@@ -13,6 +13,7 @@ import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import * as coreAuth from '../core/auth';
 import displayTaskLocation from '../helpers/display-task-location';
+import displayTaskTiming from '../helpers/display-task-timing';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
 import { translate } from '../core/i18n';
@@ -285,7 +286,8 @@ class Task extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                            
+
+                                       { this.state.task.location &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">Job Location</h3>
                                             <TaskLocationMap
@@ -299,20 +301,15 @@ class Task extends Component {
                                                 }
                                             />
                                         </div>
+                                        }
                                         
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">Job Date</h3>
-                                            {sortDates(
-                                                this.state.task.timing.map(_ => _.date)
-                                                , -1
-                                            )
-                                            .map(date =>
-                                                <div className="row">
-                                                    <div className="col-xs-12">
-                                                        <Moment format="DD.MM.YYYY">{date}</Moment>
-                                                    </div>
+                                            <div className="row">
+                                                <div className="col-xs-12">
+                                                    {displayTaskTiming(this.state.task.timing)}
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
 
                                         { this.state.task.timing && this.state.task.timing[0] &&

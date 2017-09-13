@@ -58,7 +58,7 @@ class ListingHeader extends Component {
                         </p>
                     }
                     { this.state.task.taskTimings &&
-                        this.state.task.taskTimings.length &&
+                        Boolean(this.state.task.taskTimings.length) &&
                         <p className="text-muted">
                             { displayTaskTiming(this.state.task.taskTimings) }
                         </p>

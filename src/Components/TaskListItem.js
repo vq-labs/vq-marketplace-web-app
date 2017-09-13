@@ -66,60 +66,64 @@ export default class TaskListItem extends Component {
                           <div className="col-xs-12">
                             <div className="row">
                               <div className="col-xs-12 col-sm-6">
-                                          <div style={{
-                                              display: 'inline-block',
-                                              marginTop: 10,
-                                              marginRight: 5
-                                          }}>
-                                            <strong>
-                                              <a
-                                                  className="vq-link"
-                                                  label={`${translate('EDIT')}`}
-                                                  labelStyle={{color: this.state.config.COLOR_PRIMARY}}
-                                                  onTouchTap={() => goTo(`/task/${task.id}/edit`)}
-                                              >
-                                                  {translate('EDIT')}
-                                              </a>
-                                            </strong>
-                                          </div>
-                                          <div style={{
-                                              display: 'inline-block',
-                                              marginTop: 10,
-                                              marginRight: 5
-                                          }}>
-                                            <strong>
-                                              <a  
-                                                  className="vq-link"
-                                                  label={`${translate('CANCEL')}`}
-                                                  labelStyle={{color: this.state.config.COLOR_PRIMARY}}
-                                                  onTouchTap={() => {
-                                                    openConfirmDialog({
-                                                      headerLabel: translate("CANCEL")
-                                                    }, () => {
-                                                      apiTask
-                                                        .updateItem(task.id, {
-                                                          status: '103'
-                                                        })
-                                                        .then(_ => {
-                                                          task.status = '103';
+                                  { this.state.task &&
+                                    this.state.task.requests &&
+                                    !this.state.task.requests.length &&
+                                    <div style={{
+                                        display: 'inline-block',
+                                        marginTop: 10,
+                                        marginRight: 5
+                                    }}>
+                                      <strong>
+                                        <a
+                                            className="vq-link"
+                                            label={`${translate('EDIT')}`}
+                                            labelStyle={{color: this.state.config.COLOR_PRIMARY}}
+                                            onTouchTap={() => goTo(`/task/${task.id}/edit`)}
+                                        >
+                                            {translate('EDIT')}
+                                        </a>
+                                      </strong>
+                                    </div>
+                                  }
+                                  <div style={{
+                                      display: 'inline-block',
+                                      marginTop: 10,
+                                      marginRight: 5
+                                  }}>
+                                    <strong>
+                                      <a  
+                                          className="vq-link"
+                                          label={`${translate('CANCEL')}`}
+                                          labelStyle={{color: this.state.config.COLOR_PRIMARY}}
+                                          onTouchTap={() => {
+                                            openConfirmDialog({
+                                              headerLabel: translate("CANCEL")
+                                            }, () => {
+                                              apiTask
+                                                .updateItem(task.id, {
+                                                  status: '103'
+                                                })
+                                                .then(_ => {
+                                                  task.status = '103';
 
-                                                          this.setState({
-                                                            task
-                                                          });
-                                                          
-                                                          if (this.props.onCancel) {
-                                                            this.props.onCancel(task);
-                                                          }
-                                                        }, err => {
-                                                          console.error(err);
-                                                        })
-                                                    });
-                                                  }}
-                                                >
-                                                  {translate('CANCEL')}
-                                                </a>
-                                              </strong>
-                                          </div>
+                                                  this.setState({
+                                                    task
+                                                  });
+                                                  
+                                                  if (this.props.onCancel) {
+                                                    this.props.onCancel(task);
+                                                  }
+                                                }, err => {
+                                                  console.error(err);
+                                                })
+                                            });
+                                          }}
+                                        >
+                                          {translate('CANCEL')}
+                                        </a>
+                                      </strong>
+                                  </div>
                               </div>
                               <div className="col-xs-12 col-sm-6 text-right">
                                     <div style={{

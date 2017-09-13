@@ -7,9 +7,12 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import apiTask from '../api/task';
 import * as apiTaskImage from '../api/task-image';
-import * as coreNavigation from '../core/navigation';
+import { goTo, goBack } from '../core/navigation';
+import { factory as errorFactory } from '../core/error-handler';
 import ImageUploader from '../Components/ImageUploader';
 import { translate } from '../core/i18n';
+import { getUserAsync } from '../core/auth';
+
 
 import '../App.css';
 
@@ -28,23 +31,47 @@ export default class TaskEdit extends Component {
     }
    
     componentDidMount() {
-      let taskId = this.props.params.taskId;
-
-      apiTask.getItem(taskId)
-      .then(rTask => {
-        this.setState({
-            isLoading: false,
-            task: rTask,
-            updatedTask: {
-                images: rTask.images,
-                title: rTask.title,
-                description: rTask.description,
-                price: rTask.price,
-                priceType: rTask.priceType
+        getUserAsync(user => {
+            if (!user) {
+                return goTo('/');
             }
-      });
-    });
-  }
+
+            let taskId = this.props.params.taskId;
+            
+            apiTask
+            .getItem(taskId)
+            .then(rTask => {
+                if (!rTask) {
+                    return goTo('/');
+                }
+
+                if (rTask.userId !== user.id) {
+                    goTo('/');
+
+                    return alert('NOT_YOUR_TASK');
+                }
+
+                if (rTask.requests.length) {
+                    goTo('/');
+
+                    return alert('EDITING_NOT_POSSIBLE');
+                }
+                
+
+                this.setState({
+                    isLoading: false,
+                    task: rTask,
+                    updatedTask: {
+                        images: rTask.images,
+                        title: rTask.title,
+                        description: rTask.description,
+                        price: rTask.price,
+                        priceType: rTask.priceType
+                    }
+                });
+            }, errorFactory());
+        }, false)
+    }
 
   handleFieldChange (field, transform)  {
         return (event, value) => {
@@ -68,7 +95,7 @@ export default class TaskEdit extends Component {
 
     apiTask
         .updateItem(taskId, updatedTask)
-        .then(task => coreNavigation.goTo(`/task/${taskId}`));
+        .then(task => goTo(`/task/${taskId}`));
   }
 
   render() {
@@ -85,9 +112,8 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                     <h4>{translate("LISTING_TITLE")}</h4>
                                     <TextField
-                                        disabled={true}
                                         ref="title"
-                                        onChange={ this.handleFieldChange('title') }
+                                        onChange={this.handleFieldChange('title')}
                                         value={this.state.updatedTask.title}
                                         style={{width: '100%'}}
                                         inputStyle={{width: '100%'}}
@@ -150,7 +176,7 @@ export default class TaskEdit extends Component {
                                         label={translate('CANCEL')}
                                         primary={ true }
                                         disabled={ false }
-                                        onTouchTap={ () => coreNavigation.goBack() }
+                                        onTouchTap={ () => goBack() }
                                     />
                                     <RaisedButton
                                         style={ { float: 'right' } }

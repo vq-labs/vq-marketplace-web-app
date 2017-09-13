@@ -79,6 +79,21 @@ export default class Chat extends Component {
                                 <MenuItem value={undefined} primaryText="No filter" />
                                 {
                                     Object.keys(REQUEST_STATUS)
+                                    .filter(status => {
+                                        if (status === 'CANCELED') {
+                                            return false;
+                                        }
+
+                                        if (status === 'DECLINED') {
+                                            return false;
+                                        }
+
+                                        if (status === 'SETTLED') {
+                                            return false;
+                                        }
+                                        
+                                        return true;
+                                    })
                                     .map(status => 
                                         <MenuItem
                                             value={REQUEST_STATUS[status]}

@@ -52,7 +52,9 @@ class StartPage extends Component {
                             <div className="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
                                 <AutoComplete
                                     fullWidth={true}
-                                    floatingLabelStyle={{color: 'white'}}
+                                    floatingLabelStyle={{
+                                        color: 'white'
+                                    }}
                                     textareaStyle={{color: 'white'}}
                                     floatingLabelText={translate('START_PAGE_AUTOCOMPLETE_LABEL')}
                                     filter={AutoComplete.noFilter}

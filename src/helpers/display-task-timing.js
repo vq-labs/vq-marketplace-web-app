@@ -9,7 +9,6 @@ const displayTaskTiming = (taskTimings) => {
     //  .map( _ => _.date);
 
     // dates = sortDates(dates, -1);
-    debugger;
     if (dates.length === 1) {
       const timing = dates[0];
 

@@ -53,6 +53,15 @@ export default class Account extends Component {
                 emailNotifDisabledProp.propValue = emailNotifDisabledProp.propValue === "1";
             }
 
+            if (!phoneProp) {
+                phoneProp = {
+                    propKey: 'phoneNo',
+                    propValue: null
+                };
+
+                user.userProperties.push(phoneProp);
+            }
+
             this.setState({
                 data: {
                     emailNotifDisabled: emailNotifDisabledProp.propValue,
@@ -107,6 +116,17 @@ export default class Account extends Component {
                                 onTouchTap={
                                     () => {
                                         const phoneNo = this.state.data.phoneNo;
+
+
+                                        getUserAsync(user => {
+                                            try {
+                                                user.userProperties
+                                                .find(_ => _.propKey === 'phoneNo')
+                                                .propValue = phoneNo;
+                                            } catch (err) {
+                                                return alert('Error: Could not update internal model.')
+                                            }
+                                        });
 
                                         apiUserProperty
                                             .createItem(this.state.user.id, 'phoneNo', phoneNo)

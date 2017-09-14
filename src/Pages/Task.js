@@ -337,14 +337,17 @@ class Task extends Component {
                                             }
                                         </div>
                                         }
+                                        {this.state.task &&
                                         <div className="row">
                                             <div className="col-xs-12">
                                                     <TaskComments
                                                         taskId={this.state.task.id}
+                                                        canSubmit={this.state.task.status == TASK_STATUS.ACTIVE}
                                                         comments={this.state.task.comments}
                                                     />
                                             </div>
                                         </div>
+                                        }
                                     </div>
                                 </div>
                                 <div className="col-sm-3">

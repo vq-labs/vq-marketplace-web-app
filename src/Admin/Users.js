@@ -112,7 +112,8 @@ export default class SectionUsers extends React.Component {
                                     primaryText={
                                         <p>
                                             {user.firstName} {user.lastName} (#{user.id})<br />
-                                            Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong>
+                                            Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong><br/>
+                                            UserType: <strong>{String(user.userType) === '1' ? 'CLIENT' : 'TASKER'}</strong>
                                         </p>
                                     }
                                     secondaryText={
@@ -166,8 +167,6 @@ export default class SectionUsers extends React.Component {
                                                         .users
                                                         .getUserProperties(user.id)
                                                         .then(userProperties => {
-                                                            debugger;
-
                                                             this.setState({
                                                                 userProperties,
                                                                 showProperty: true,

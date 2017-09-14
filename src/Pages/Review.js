@@ -43,7 +43,7 @@ class Review extends Component {
                     user,
                     config
                 });
-
+                debugger;
                 if (this.state.reviewType === REVIEW_TYPES.ORDER) {
                     return apiOrder
                         .getItem(this.state.orderId)

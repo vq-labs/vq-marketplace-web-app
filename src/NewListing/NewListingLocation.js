@@ -41,6 +41,7 @@ export default class NewListingAddress extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <Address
+                                    countryRestriction={'hu'}
                                     location={this.state.location}
                                     onLocationChange={this.props.onLocationChange}
                                 />

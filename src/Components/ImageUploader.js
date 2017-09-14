@@ -13,6 +13,7 @@ export default class ImageUploader extends React.Component {
         super();
 
         this.state = {
+            imageResolution: props.imageResolution || [],
             singleImageMode: props.singleImageMode,
             newImageIsUploaded: false,
             images: props.images || []
@@ -44,8 +45,8 @@ export default class ImageUploader extends React.Component {
                                 });
 
                                 apiMedia.upload(files[0], {
-                                    width: 640,
-                                    height: 640
+                                    width: this.state.imageResolution[0] || 640,
+                                    height: this.state.imageResolution[1] || 640
                                 })
                                 .then(result => {
                                     const images = this.state.images;

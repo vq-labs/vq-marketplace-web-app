@@ -47,7 +47,7 @@ export default class TaskComments extends React.Component {
             user,
             comment: newCommentBody
         };
-
+        
         comments.push(newComment);
         
         apiTaskComment
@@ -122,7 +122,7 @@ export default class TaskComments extends React.Component {
                     </div>;
             })
             }
-
+            { this.props.canSubmit &&
                     <div className="row" style={{
                         paddingLeft: '20px',
                         marginTop: '20px',
@@ -142,6 +142,7 @@ export default class TaskComments extends React.Component {
                             </form>
                         </div>
                 </div>
+            }
         </div>
         )
     }

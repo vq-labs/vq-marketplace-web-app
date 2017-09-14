@@ -62,7 +62,6 @@ export default class EditableEntity extends Component {
 
                 updatedEntity[field] = transform ? transform(value) : value;
                 
-
                 this.state.fields
                 .filter(_ => _.deriveValue)
                 .forEach(_ => {
@@ -79,7 +78,9 @@ export default class EditableEntity extends Component {
     }
 
     handleUpdate () {
-        this.setState({ dirty: false });
+        this.setState({
+            dirty: false
+        });
 
         this.props.onConfirm(this.state.updatedEntity);
     }
@@ -201,10 +202,11 @@ export default class EditableEntity extends Component {
                                                         />
                                                     }
                                                     { field.type === 'single-image' &&
-                                                        <div>
-                                                            <h3>{field.label}</h3>
-                                                            <p>{field.hint}</p>
+                                                        <div style={{ marginTop: 15 }}>
+                                                            <strong>{field.label}</strong>
+                                                            {field.hint && <p>{field.hint}</p>}
                                                             <ImageUploader
+                                                                imageResolution={field.imageResolution}
                                                                 singleImageMode={true}
                                                                 images={
                                                                     this.state.updatedEntity[field.key] ?

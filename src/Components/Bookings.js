@@ -17,7 +17,9 @@ import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 import displayTaskTiming from '../helpers/display-task-timing';
+import getUserProperty from '../helpers/get-user-property';
 
 export default class Bookings extends Component {
   constructor(props) {
@@ -42,12 +44,16 @@ export default class Bookings extends Component {
 
     apiOrderActions
     .settleOrder(orderId)
-    .then(_ => _, _ => _);
+    .then(_ => {
+        this.setState({
+            orders,
+            open: false
+        });
 
-    this.setState({
-        orders,
-        open: false
-    });
+        return openMessageDialog({
+            header: translate("SUCCESS")
+        });
+    }, _ => _);
   };
 
   initSettleOrder = order => {
@@ -85,20 +91,6 @@ export default class Bookings extends Component {
                 this.props.onReady && this.props.onReady();
             });
     });
-  }
-
-  getUserPhoneFromOrder(order) {
-    const user = order.fromUser;
-    const userProperty = user.userProperties
-        .find(_ => _.propKey === 'phoneNo');
-
-    if (userProperty) {
-        return user.userProperties
-            .find(_ => _.propKey === 'phoneNo')
-            .propValue;
-    }
-
-    return '?';
   }
 
   render() {
@@ -168,13 +160,16 @@ export default class Bookings extends Component {
                                                             .then(() => {
                                                                 const orders = this.state.orders;
 
-                                                                orders[index].autoSettlementStartedAt = null;
+                                                                orders[index]
+                                                                    .autoSettlementStartedAt = null;
 
                                                                 this.setState({
                                                                     orders
                                                                 });
 
-                                                                return alert(translate("SUCCESS"));
+                                                                return openMessageDialog({
+                                                                    header: translate("SUCCESS")
+                                                                });
                                                             }, err => {
                                                                 return alert(translate("ERROR"));
                                                             });
@@ -185,9 +180,47 @@ export default class Bookings extends Component {
                                                 </p>
                                             }
 
-                                            { order.status === ORDER_STATUS.MARKED_DONE && !order.autoSettlementStartedAt &&
+                                            { order.status === ORDER_STATUS.MARKED_DONE &&
                                                 <p className="text-muted">
-                                                    <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_CANCELED")})</strong>
+                                                    <strong>{translate("ORDER_MARKED_DONE")}</strong>
+                                                    <br />
+                                                   
+                                                    <a href="#" onTouchTap={() => {
+                                                        openConfirmDialog({
+                                                            headerLabel: translate("CLOSE_ORDER"),
+                                                            confirmationLabel: translate("CLOSE_ORDER_DESC")
+                                                        }, () => {
+                                                            apiOrderActions
+                                                            .closeOrder(order.id)
+                                                            .then(() => {
+                                                                const orders = this.state.orders;
+
+                                                                orders[index]
+                                                                    .autoSettlementStartedAt = null;
+
+                                                                orders[index]
+                                                                    .status = ORDER_STATUS.CLOSED;
+
+                                                                this.setState({
+                                                                    orders
+                                                                });
+
+                                                                return openMessageDialog({
+                                                                    header: translate("SUCCESS")
+                                                                });
+                                                            }, err => {
+                                                                return alert(translate("ERROR"));
+                                                            });
+                                                        });
+                                                    }}>
+                                                        {translate("CLOSE_ORDER")}
+                                                    </a>
+                                                </p>
+                                            }
+
+                                            { order.status === ORDER_STATUS.CLOSED &&
+                                                <p className="text-muted">
+                                                    <strong>{translate("ORDER_CLOSED")}</strong>
                                                 </p>
                                             }
                                         </div>
@@ -200,6 +233,7 @@ export default class Bookings extends Component {
                                             <IconButton
                                                 style={{ bottom: 5 }}
                                                 onClick={() => goTo(`/profile/${order.fromUser.id}`)}
+                                                tooltipPosition="top-center"
                                                 tooltip={
                                                     `${order.fromUser.firstName} ${order.fromUser.lastName}`
                                                 }
@@ -207,19 +241,21 @@ export default class Bookings extends Component {
                                                 <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
                                             </IconButton>
                                         </div>
-                                        { order.status !== ORDER_STATUS.SETTLED && 
+                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE) && 
                                             <IconButton
                                                 style={{ top: 5 }}
-                                                tooltip={this.getUserPhoneFromOrder(order)}>
+                                                tooltipPosition="top-center"
+                                                tooltip={getUserProperty(order.fromUser, 'phoneNo')}>
                                                 <IconCall />
                                             </IconButton>
                                         }
-                                        { order.status !== ORDER_STATUS.SETTLED && 
+                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE || order.status == ORDER_STATUS.CLOSED) && 
                                             <div style={{ 
                                                 display: 'inline-block',
                                             }}>
                                                 <IconButton
                                                     style={{ top: 5 }}
+                                                    tooltipPosition="top-center"
                                                     tooltip={'Chat'}
                                                     onClick={() => goTo(`/chat/${order.request.id}`)}
                                                 >
@@ -228,7 +264,7 @@ export default class Bookings extends Component {
                                                 </IconButton>
                                             </div>
                                         }
-                                        { order.status !== ORDER_STATUS.SETTLED &&
+                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE) &&
                                             <RaisedButton
                                                 label={translate('SETTLE_ORDER')}
                                                 labelStyle={{color: 'white '}}
@@ -242,7 +278,7 @@ export default class Bookings extends Component {
                                                 }}
                                             />
                                         }
-                                        { order.status === ORDER_STATUS.SETTLED &&
+                                        { (order.status === ORDER_STATUS.SETTLED || order.status === ORDER_STATUS.CLOSED) &&
                                             !order.review &&
                                             <div style={{
                                                 display: 'inline-block',

@@ -3,45 +3,59 @@ import { browserHistory } from 'react-router';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import InputRange from 'react-input-range';
 import Loader from "../Components/Loader";
 import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
 import VIEW_TYPES from '../Components/VIEW_TYPES';
-
+import { displayPrice }  from '../core/format';
 import * as apiConfig from '../api/config';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
 import TaskMap from "../Components/TaskMap";
-import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
+import TextField from 'material-ui/TextField';
+import Autocomplete from 'react-google-autocomplete';
 
-import { stripHtml } from '../core/util';
+import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
+import { stripHtml, formatGeoResults, serializeQueryObj } from '../core/util';
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
-import { serializeQueryObj } from '../core/util';
 import { translate } from '../core/i18n';
-
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
 const _chunk = require('lodash.chunk');
+
+let updatingResults;
 
 class Offers extends Component {
     constructor(props) {
         super(props);
 
+        const query = this.props.location.query;
+
+        let locationQueryString;
+
+        if ((query.q && query.q !== 'null') || (query.lat && query.lng)) {
+            locationQueryString = (query.q || `${query.lat} ${query.lng}`);
+        }
+        
         this.state = {
             offers: [],
             offerMarkers: [],
             viewType: VIEW_TYPES.LIST,
             queryCity: null,
+            config: {},
             autoCompleteText: '',
             isLoading: false,
-            meta: {},
+            locationQueryString,
             appliedFilter: {
-                category: this.props.location.query.category,
-                lat: this.props.location.query.lat,
-                lng: this.props.location.query.lng
+                q: locationQueryString,
+                minPrice: query.minPrice || 500,
+                maxPrice: query.maxPrice || 10000,
+                category: query.category,
+                lat: query.lat,
+                lng: query.lng
             },
             offer: {
                 utm: {}
@@ -54,6 +68,10 @@ class Offers extends Component {
 
     componentDidMount() {
         getConfigAsync(config => {
+            this.setState({
+                config
+            });
+
             getUserAsync(user => {
                 if (getMeOutFromHereIfAmNotAuthorized(user)) {
                     return;
@@ -70,22 +88,15 @@ class Offers extends Component {
                     isLoading: true
                 });
 
-                apiCategory.getItems()
+                apiCategory
+                .getItems()
                 .then(categories => 
                     this.setState({
                         categories
                     })
                 );
 
-                apiConfig.appConfig.getItems({}, { cache: true })
-                    .then(meta => this.setState({ meta }));
-
-
-                const queryCategory = this.props.location.query ? this.props.location.query.category : null;
-
-                setTimeout(() => {
-                    this.updateResults({ category: queryCategory });
-                }, 1100);
+                this.updateResults(this.state.appliedFilter);
             }, true);
         });
     }
@@ -103,11 +114,15 @@ class Offers extends Component {
             isLoading: true
         });
         
-        apiTask.getItems({
+        apiTask
+        .getItems({
+            untilNow: 1,
+            minPrice: query.minPrice,
+            maxPrice: query.maxPrice,
             taskType: 1,
             status: '0',
-            // lat: query.lat,
-            // lng: query.lng,
+            lat: query.lat,
+            lng: query.lng,
             category: query.category
         })
         .then(offers => {
@@ -156,9 +171,12 @@ class Offers extends Component {
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
         
-        browserHistory.push(`/app?${serializeQueryObj(appliedFilter)}`);
+        browserHistory
+            .push(`/app?${serializeQueryObj(appliedFilter)}`);
 
-        this.setState({ appliedFilter });
+        this.setState({
+            appliedFilter
+        });
         this.loadTasks(appliedFilter);
     }
 
@@ -211,35 +229,125 @@ class Offers extends Component {
 
     render() {
         const Intro = 
-        <div className="st-welcome text-center" style={{ 
-            background: `url(${this.state.meta.PROMO_URL}) no-repeat center center fixed`,
+        <div className="vq-listings-intro text-center" style={{ 
+            background: `url(${this.state.config.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
-            <div className="col-xs-12" style={{ marginTop: 18 }}>
-                <div style={{backgroundColor: this.state.meta.teaserBoxColor, padding: 10, maxWidth: '850px', margin: '0 auto' }}>
-                    <h1 style={{
+            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 50 }}>
+                <div style={{
+                    backgroundColor: this.state.config.teaserBoxColor,
+                    padding: 10,
+                    maxWidth: '850px',
+                    margin: '0 auto'
+                }}>
+                    
+                    { false && <h1 style={{
                         color: "white",
                         fontSize: 25
                     }}>
                         {translate('LISTINGS_PROMO_HEADER')}
                     </h1>
-                    <h2 style={{ 
+                    }
+                    { false && <h2 style={{ 
                         color: "white",
                         fontSize: 18
                     }}>
                         {translate('LISTINGS_PROMO_DESC')}
                     </h2>
+                    }
+                    
+                    <Autocomplete
+                        value={this.state.locationQueryString}
+                        onChange={ev => {
+                            const locationQueryString = ev.target.value;
+                            const newState = {};
+
+                            if (locationQueryString === '') {
+                                const appliedFilter = this.state.appliedFilter;
+                            
+
+                                appliedFilter.lat = null;
+                                appliedFilter.lng = null;
+                                appliedFilter.q = null;
+
+                                newState.appliedFilter = appliedFilter;
+
+                                this.updateResults(appliedFilter);
+                            }
+
+                            newState.locationQueryString = locationQueryString;
+
+                            this.setState(newState);
+                        }}
+                        style={{
+                            padding: 5,
+                            fontSize: 20,
+                            border: 0,
+                            borderRadius: 5,
+                            width: '100%',
+                            height: 50
+                        }}
+                        componentRestrictions={{
+                            country: 'hu'
+                        }}
+                        onPlaceSelected={place => {
+                            const locationQueryString = place.formatted_address;
+                            const locationValue = formatGeoResults([
+                                place
+                            ])[0];
+                            const appliedFilter = this.state.appliedFilter;
+                            
+                            appliedFilter.lat = locationValue.lat;
+                            appliedFilter.lng = locationValue.lng;
+                            appliedFilter.q = locationQueryString;
+
+                            this.setState({
+                                locationQueryString,
+                                appliedFilter
+                            });
+
+                            this.updateResults({
+                                q: locationQueryString,
+                                lat: appliedFilter.lat,
+                                lng: appliedFilter.lng
+                            });
+                        }}
+                        types={[ 'address' ]}
+                    >
+                    </Autocomplete>
+                    { this.state.locationQueryString &&
+                        <button
+                            onTouchTap={() => {
+                                const appliedFilter = this.state.appliedFilter;
+                                const locationQueryString = '';
+
+                                delete appliedFilter.lat;
+                                delete appliedFilter.lng;
+                                delete appliedFilter.q;
+
+                                this.setState({
+                                    locationQueryString,
+                                    appliedFilter
+                                });
+
+                                this.updateResults(appliedFilter);
+                            }}
+                            className="close-icon"
+                            type="reset"
+                        ></button>
+                    }
                 </div>
             </div>
         </div>;
 
         const SidebarContent =
-        <div className="container hidden-xs">
+        <div className="row hidden-xs">
+            <div className="col-xs-12"> 
             <div>
                 <span style={{
                     fontWeight: !this.state.appliedFilter.category ? 'bold' : 'normal'
                 }}    
-                className="vq-category-main with-pointer" onClick={
+                className="vq-uppercase with-pointer" onClick={
                     () => this.updateResults({ category: null })
                 }>
                     { translate('ALL_CATEGORIES') }
@@ -252,15 +360,63 @@ class Offers extends Component {
                 <div key={index}>
                     <span style={{
                         fontWeight: this.state.appliedFilter.category === category.code ? 'bold' : 'normal'
-                    }} className="vq-category-main with-pointer" onClick={
+                    }} className="vq-uppercase with-pointer" onClick={
                     () => {
-                        this.updateResults({ category: category.code }); 
+                        this.updateResults({
+                            category: category.code
+                        }); 
                     }
-                    }>{translate(category.code) === category.code ? category.label : translate(category.code)}
+                    }>{translate(category.code) === category.code ?
+                        category.label : translate(category.code)
+                    }
                     </span>
                 </div>    
             )
             }
+            </div>
+            <div className="col-xs-12" style={{
+                marginTop: 50,
+            }}>
+                <span className="vq-uppercase vq-bold">
+                    <strong>{translate('PRICE')}</strong>
+                </span>
+                <hr style={{
+                    marginTop: '5px'
+                }}/>
+                <div style={{ width: '100%' }}>
+                    <InputRange
+                        formatLabel={value => displayPrice(value, 'HUF', 1)}
+                        maxValue={10000}
+                        step={500}
+                        minValue={500}
+                        value={{
+                            min: this.state.appliedFilter.minPrice,
+                            max: this.state.appliedFilter.maxPrice
+                        }}
+                        onChange={value => {
+                            const appliedFilter = this.state.appliedFilter;
+                            
+                            appliedFilter.minPrice = value.min;
+                            appliedFilter.maxPrice = value.max;
+
+                            if (!updatingResults) {
+                                updatingResults = setTimeout(() => {
+                                    updatingResults = null;
+                                    
+                                    this.updateResults({
+                                        minPrice: value.min,
+                                        maxPrice: value.max
+                                    });
+                                }, 1000);
+                            }
+
+                            return this.setState({
+                                appliedFilter
+                            });
+                        }}
+                    />
+                </div>
+            </div>
         </div>;
 
         return (
@@ -269,10 +425,14 @@ class Offers extends Component {
             {Intro}
 
             <div className="container custom-xs-style" style={{ marginTop: 10 }}>
-                <div className="col-sm-4 col-md-4">
-                    {SidebarContent}
-                </div>
-                        <div className="col-sm-8 col-md-8 custom-xs-style" >
+                        <div className="col-sm-4 col-md-3 col-lg-2">
+                            <div className="row">
+                                {SidebarContent}
+                            </div>
+                        </div>
+                        <div className="col-lg-2 visible-lg">
+                        </div>
+                        <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
                             <div className="col-xs-12" style={{ marginBottom: 5 }}>
                                 <OfferViewTypeChoice
                                     className="pull-right"

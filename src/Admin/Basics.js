@@ -15,17 +15,19 @@ const defaultConfigsFields = [
     {
         type: 'single-image',
         key: 'LOGO_URL',
-        label: 'Marketplace logo'
+        label: 'Marketplace logo (640px x 640px)'
     },
     {
         type: 'single-image',
         key: 'PROMO_URL',
-        label: 'Marketplace promo for buyers/clients'
+        label: 'Marketplace promo for buyers/clients (1280px x 850px are supported)',
+        imageResolution: [ 1280, 850 ]
     },
     {
         type: 'single-image',
         key: 'PROMO_URL_SELLERS',
-        label: 'Marketplace promo for sellers/taskers'
+        label: 'Marketplace promo for sellers/taskers (1280x850px are supported)',
+        imageResolution: [ 1280, 850 ]
     },
     {
         type: 'string',

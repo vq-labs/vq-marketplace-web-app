@@ -14,9 +14,11 @@ import { displayPrice, displayLocation } from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 import { getConfigAsync } from '../core/config';
 import displayTaskTiming from '../helpers/display-task-timing';
 import getUserProperty from '../helpers/get-user-property';
+import { factory as errorFactory } from '../core/error-handler';
 
 const REQUEST_STATUS = {
     PENDING: '0',
@@ -70,17 +72,24 @@ export default class Requests extends Component {
         const requests = this.state.requests;
 
         apiRequest
-        .updateItem(request.id, {
-            status: REQUEST_STATUS.MARKED_DONE
-        });
+            .updateItem(request.id, {
+                status: REQUEST_STATUS.MARKED_DONE
+            }).then(_ => {
+                const requestRef = requests
+                    .find(_ => _.id === request.id);
 
-        requests
-        .find(_ => _.id === request.id)
-        .status = REQUEST_STATUS.MARKED_DONE;
+                requestRef.status = REQUEST_STATUS.MARKED_DONE;
 
-        this.setState({
-            requests
-        });
+                requestRef.order.autoSettlementStartedAt = new Date();
+        
+                this.setState({
+                    requests
+                });
+
+                return openMessageDialog({
+                    header: translate("SUCCESS")
+                });
+            }, errorFactory());
     });
   }
 
@@ -90,15 +99,19 @@ export default class Requests extends Component {
         
         apiRequest.updateItem(request.id, {
             status: REQUEST_STATUS.CANCELED
-        });
-    
-        requests
-            .find(_ => _.id === request.id)
-            .status = REQUEST_STATUS.CANCELED;
-    
-        this.setState({
+        }).then(_ => {
             requests
-        });
+                .find(_ => _.id === request.id)
+                .status = REQUEST_STATUS.CANCELED;
+    
+            this.setState({
+                requests
+            });
+
+            return openMessageDialog({
+                header: translate("SUCCESS")
+            });
+        }, errorFactory());
     })
   };
 
@@ -188,6 +201,7 @@ export default class Requests extends Component {
                                         <div className="col-xs-12 col-sm-6 text-right">
                                             <IconButton
                                                 onClick={() => goTo(`/profile/${request.with.id}`)}
+                                                tooltipPosition="top-center"
                                                 tooltip={
                                                     `${request.with.firstName} ${request.with.lastName}`
                                                 }
@@ -197,6 +211,7 @@ export default class Requests extends Component {
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton
                                                     style={{ top: 10 }}
+                                                    tooltipPosition="top-center"
                                                     tooltip={
                                                         getUserProperty(request.with, 'phoneNo')
                                                     }>
@@ -207,6 +222,7 @@ export default class Requests extends Component {
                                                 <IconButton
                                                     style={{ top: 10 }}
                                                     tooltip={'Chat'}
+                                                    tooltipPosition="top-center"
                                                     onClick={() => goTo(`/chat/${request.id}`)}
                                                 >
                                                     <IconChatBubble />

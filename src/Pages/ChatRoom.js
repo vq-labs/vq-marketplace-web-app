@@ -26,6 +26,8 @@ import { getUserAsync } from '../core/auth';
 import { displayPrice } from '../core/format';
 import { stripHtml } from '../core/util';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
+
 import '../Chat.css';
 
 const _ = require('underscore');
@@ -171,6 +173,15 @@ export default class ChatRoom extends React.Component {
                                         </div>
                                     }
                                     { this.state.messages
+                                        .filter(message => {
+                                            if (this.state.users[message.fromUserId]) {
+                                                return true;
+                                            }
+
+                                            console.error("Sender not found. Inconsistent data!");
+
+                                            return false;
+                                        })
                                         .map(message => {
                                             const sender = this.state.users[message.fromUserId];
 
@@ -308,23 +319,12 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
-                                    { this.state.request.status === REQUEST_STATUS.SETTLED &&
-                                        !this.state.request.order.review &&
-                                            <RaisedButton
-                                                labelStyle={{color: 'white'}}
-                                                style={actionBtnStyle}
-                                                backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                label={translate('LEAVE_REVIEW')}
-                                                onTouchTap={() => {
-                                                    goTo(`/order/${this.state.request.order.id}/review`);
-                                                }}
-                                            >
-                                            </RaisedButton>
-                                    }
-
                                     { this.state.request.order &&
                                       (
                                           String(this.state.request.order.status) === ORDER_STATUS.PENDING
+                                      ) &&
+                                      (
+                                          this.state.request.fromUserId === this.state.fromUserId
                                       ) &&
                                         <RaisedButton
                                             label={translate('REQUEST_ACTION_MARK_DONE')}
@@ -348,6 +348,10 @@ export default class ChatRoom extends React.Component {
 
                                                         this.setState({
                                                             request
+                                                        });
+
+                                                        openMessageDialog({
+                                                            header: translate('SUCCESS')
                                                         });
                                                     });
                                                 });
@@ -379,6 +383,10 @@ export default class ChatRoom extends React.Component {
 
                                                             this.setState({
                                                                 request
+                                                            });
+
+                                                            openMessageDialog({
+                                                                header: translate('SUCCESS')
                                                             });
                                                         });
                                                 });

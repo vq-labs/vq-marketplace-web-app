@@ -69,10 +69,10 @@ export default class SectionLabels extends React.Component {
                         
                         this.getLabels(value);
                     }}>
-                        <MenuItem value={'en'} primaryText="English" />
-                        <MenuItem value={'de'} primaryText="Deutsch" />
-                        <MenuItem value={'pl'} primaryText="Polski" />
-                        <MenuItem value={'hu'} primaryText="Magyar" />
+                        { false && <MenuItem value={'en'} primaryText="English" /> }
+                        { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
+                        { false && <MenuItem value={'pl'} primaryText="Polski" /> }
+                        { false && <MenuItem value={'hu'} primaryText="Magyar" /> }
                     </DropDownMenu>
                 </div>
                  { Boolean(this.state.labels.length) &&

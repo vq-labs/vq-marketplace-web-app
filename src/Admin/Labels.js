@@ -69,7 +69,7 @@ export default class SectionLabels extends React.Component {
                         
                         this.getLabels(value);
                     }}>
-                        { false && <MenuItem value={'en'} primaryText="English" /> }
+                        <MenuItem value={'en'} primaryText="English" />
                         { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
                         { false && <MenuItem value={'pl'} primaryText="Polski" /> }
                         { false && <MenuItem value={'hu'} primaryText="Magyar" /> }

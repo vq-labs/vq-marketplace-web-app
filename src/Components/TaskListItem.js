@@ -98,7 +98,8 @@ export default class TaskListItem extends Component {
                                           labelStyle={{color: this.state.config.COLOR_PRIMARY}}
                                           onTouchTap={() => {
                                             openConfirmDialog({
-                                              headerLabel: translate("CANCEL")
+                                              headerLabel: translate("CANCEL"),
+                                              confirmationLabel: translate("CANCEL_LISTING_DESC")
                                             }, () => {
                                               apiTask
                                                 .updateItem(task.id, {

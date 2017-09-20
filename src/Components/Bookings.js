@@ -271,7 +271,8 @@ export default class Bookings extends Component {
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                                 onTouchTap={() => {
                                                     openConfirmDialog({
-                                                        headerLabel: translate('SETTLE_ORDER')
+                                                        headerLabel: translate('SETTLE_ORDER'),
+                                                        confirmationLabel: translate('SETTLE_ORDER_DESC')
                                                     },() => {
                                                         this.settleOrder(order);
                                                     });

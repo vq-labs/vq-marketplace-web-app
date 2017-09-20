@@ -52,6 +52,7 @@ export default class Address extends Component {
             "addressAddition",
             "city",
             "postalCode",
+            "taxNumber",
             "lat",
             "lng"
         ];
@@ -94,7 +95,7 @@ export default class Address extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="row">
-                                <div className="col-xs-12">
+                                <div className="col-xs-12 col-sm-8">
                                     <h4 >
                                         {translate("LOCATION_STREET") + '*'}
                                     </h4>
@@ -126,9 +127,10 @@ export default class Address extends Component {
                                                     postalCode: locationValue.postalCode,
                                                     countryCode: locationValue.countryCode,
                                                     city: locationValue.city,
-                                                    addressAddition:
-                                                        locationValue.streetNumber ||
+                                                    addressAddition: this.state.addressAddition,
+                                                    /*  locationValue.streetNumber ||
                                                         this.state.addressAddition,
+                                                    */
                                                     street: locationValue.route,
                                                     streetNumber: locationValue.streetNumber,
                                                     lat: locationValue.lat,
@@ -142,7 +144,17 @@ export default class Address extends Component {
                                             types={[ 'address' ]}
                                         />
                                     </TextField>
-                                </div>   
+                                </div>
+                                <div className="col-xs-12 col-sm-4">
+                                        <h4 >{translate("LOCATION_STREET_NUMBER")}</h4>
+                                        <TextField
+                                            name="streetNumber"
+                                            onChange={this.onAddressFieldChange('streetNumber')}
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                            value={this.state.streetNumber}
+                                        />
+                                </div>
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">

@@ -60,6 +60,25 @@ const TASK_STATUS = {
     BOOKED: '20'
 };
 
+const verifyPostalCode = postalCode => {
+    if ([
+        "113",
+        "112",
+        "111",
+        "101",
+        "102",
+        "103",
+        "105",
+        "106",
+        "107"
+    ].indexOf(String(postalCode).substring(0, 3))
+    === -1) {
+        return false;
+    }
+
+    return true;
+};
+
 export default class NewListing extends Component {
     constructor(props) {
         super();
@@ -123,8 +142,11 @@ export default class NewListing extends Component {
                 }
 
                 apiTaskLocation
-                .getLast()
-                .then(lastLocation => {
+                .getItems({
+                    userId: user.id
+                })
+                .then(defaultLocations => {
+                    const defaultLocation = defaultLocations[0] || {};
                     const task = this.state.task;
 
                     const mutableProps = [
@@ -143,7 +165,7 @@ export default class NewListing extends Component {
 
                     mutableProps
                     .forEach(mutalblePropKey => {
-                        task.location[mutalblePropKey] = lastLocation[mutalblePropKey];
+                        task.location[mutalblePropKey] = defaultLocation[mutalblePropKey];
                     });
                     
                     this.setState({
@@ -298,7 +320,11 @@ export default class NewListing extends Component {
                         <div className="row">
                             <ImageUploader 
                                 images={this.state.task.images} 
-                                onChange={_ => this.handleListingFieldChange('images', _)}
+                                onChange={_ => {
+
+
+                                    this.handleListingFieldChange('images', _);
+                                }}
                             />
                         </div>
                 </div>;
@@ -354,7 +380,10 @@ export default class NewListing extends Component {
                                     }}
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
                                     onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
-                                    onLocationChange={_ => this.handleListingFieldChange('location', _)}
+                                    onLocationChange={_ => {
+                                        
+                                        return this.handleListingFieldChange('location', _);
+                                    }}
                                 />
                             }
 
@@ -362,7 +391,18 @@ export default class NewListing extends Component {
                                 <NewListingLocation
                                     countryRestriction={this.state.appConfig.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
-                                    onLocationChange={_ => this.handleListingFieldChange('location', _)}
+                                    onLocationChange={_ => {
+                                        debugger;
+
+                                        if (verifyPostalCode(String(_.postalCode)) === -1) {
+                                            this.setState({
+                                                openSnackbar: true,
+                                                snackbarMessage: translate("POSTAL_CODE") + ' ' +String(_.postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
+                                            });
+                                        }
+
+                                        this.handleListingFieldChange('location', _)
+                                    }}
                                 />
                             }
 
@@ -522,6 +562,22 @@ export default class NewListing extends Component {
                                                         openSnackbar: true,
                                                         snackbarMessage: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
                                                     });
+                                                }
+                                            }
+
+                                            
+
+                                            if (currentStep === LISTING_VIEWS.LOCATION) {
+                                                debugger;
+                                                if (task.location) {
+                                                    if (!verifyPostalCode(String(task.location.postalCode))) {
+                                                        const postalCode = task.location.postalCode;
+
+                                                        return this.setState({
+                                                            openSnackbar: true,
+                                                            snackbarMessage: translate("POSTAL_CODE") + ' ' + String(postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
+                                                        });
+                                                    }
                                                 }
                                             }
 

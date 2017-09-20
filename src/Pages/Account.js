@@ -3,8 +3,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
-
+import Address from '../Components/Address';
 import apiUser from '../api/user';
+import apiPost from '../api/post';
+import * as apiTaskLocation from '../api/task-location';
+import apiBillingAddress from '../api/billing-address';
 import * as apiUserProperty from '../api/user-property';
 import { goTo, goStartPage } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
@@ -18,9 +21,11 @@ export default class Account extends Component {
         super(props);
    
         this.state = {
+            billingAddressId: null,
             ready: false,
             isLoading: true,
             user: null,
+            billingAddress: null,
             data: {
                 emailNotifDisabled: false,
                 phoneNo: null
@@ -35,41 +40,115 @@ export default class Account extends Component {
             if (!user) {
                 return goTo('/');
             }
-            
-            let phoneProp = user.userProperties
-                .find(_ => _.propKey === 'phoneNo');
 
-            let emailNotifDisabledProp = user.userProperties
-                .find(_ => _.propKey === 'emailNotifDisabled');
-
-            if (!emailNotifDisabledProp) {
-                emailNotifDisabledProp = {
-                    propKey: 'emailNotifDisabled',
-                    propValue: null
-                };
-
-                user.userProperties.push(emailNotifDisabledProp);
-            } else {
-                emailNotifDisabledProp.propValue = emailNotifDisabledProp.propValue === "1";
-            }
-
-            if (!phoneProp) {
-                phoneProp = {
-                    propKey: 'phoneNo',
-                    propValue: null
-                };
-
-                user.userProperties.push(phoneProp);
-            }
+            const data = this.state.data;
 
             this.setState({
-                data: {
-                    emailNotifDisabled: emailNotifDisabledProp.propValue,
-                    phoneNo: phoneProp.propValue
-                },
-                user,
-                isLoading: false
+                user
+            });
+
+            /**
+                user.userProperties
+                .forEach(userProperty => {
+                    userProperty.propValue = userProperty.propValue === "1";
+                });
+            */
+
+            apiPost
+            .getItems({
+                type: 'email'
             })
+            .then(emails => {
+                const emailCodes = emails.map(_ => `EMAIL_${_.code}`);
+
+                this.setState({
+                    emails: emailCodes
+                });
+                /**
+                const properties = emails;
+
+                properties.push('phone');
+                properties.push('emailNotifDisabled');
+                */
+
+                const propertyCodes = JSON.parse(JSON.stringify(emailCodes));
+
+                propertyCodes.push('phoneNo');
+                // propertyCodes.push('emailNotifDisabled');
+
+                propertyCodes.forEach(userPropertyKey => {
+                    let property = user.userProperties
+                    .find(_ => _.propKey === userPropertyKey);
+    
+                    if (!property) {
+                        property = {
+                            propKey: userPropertyKey,
+                            propValue: null
+                        };
+    
+                        user
+                        .userProperties
+                        .push(userPropertyKey);
+    
+                        data[userPropertyKey] = false;
+                    } else {
+                        if (userPropertyKey === 'phoneNo') {
+                            data[userPropertyKey] = property.propValue;
+                        } else {
+                            switch (property.propValue) {
+                                case '1':
+                                    data[userPropertyKey] = true;
+                                    break;
+                                case '0':
+                                    data[userPropertyKey] = false;
+                                    break;
+                                default:
+                                    data[userPropertyKey] = property.propValue;
+                            }
+                        }
+                    }
+                });
+           
+                this.setState({
+                    data,
+                    isLoading: false
+                });
+            });
+
+            apiTaskLocation
+            .getItems({
+                userId: user.id
+            })
+            .then(defaultListingLocation => {
+                if (defaultListingLocation[0]) {
+                    this.setState({
+                        defaultListingLocationId: defaultListingLocation[0].id,
+                        defaultListingLocation: defaultListingLocation[0]
+                    });
+                }
+            });
+
+            apiBillingAddress
+            .getItems({
+                default: true
+            })
+            .then(billingAddresses => {
+                const billingAddress = billingAddresses
+                    .find(_ => _.default === true) ||
+                    billingAddresses[billingAddresses.length - 1];
+                
+                if (billingAddress) {
+                    this.setState({
+                        billingAddressId: billingAddress.id,
+                        billingAddressReady: true,
+                        billingAddress
+                    });
+                } else {
+                    this.setState({
+                        billingAddressReady: true
+                    });
+                }
+            });
         }, true);
     }
     render() {
@@ -86,7 +165,6 @@ export default class Account extends Component {
                             <h2>{translate('ACCOUNT_USER_DETAILS_HEADER')}</h2>
                             <p className="text-muted">{translate('ACCOUNT_USER_DETAILS_DESC')}</p>
                         </div>
-
                         <div className="col-xs-12">
                               <TextField
                                     maxLength={10}
@@ -108,7 +186,6 @@ export default class Account extends Component {
                                     type="number"
                                 />
                         </div>
-
                         <div className="col-xs-12">
                             <FlatButton
                                 disabled={!this.state.toBeUpdated.phoneNo}
@@ -116,7 +193,6 @@ export default class Account extends Component {
                                 onTouchTap={
                                     () => {
                                         const phoneNo = this.state.data.phoneNo;
-
 
                                         getUserAsync(user => {
                                             try {
@@ -146,27 +222,180 @@ export default class Account extends Component {
                     <hr />
                     <div className="row">
                         <div className="col-xs-12">
+                            <h2>{translate('ACCOUNT_BILLING_ADDRESS_HEADER')}</h2>
+                            <p className="text-muted">{translate('ACCOUNT_BILLING_ADDRESS_DESC')}</p>
+                        </div>
+                        <div className="col-xs-12 col-sm-6">
+                            <Address
+                                withTaxNumber={true}
+                                location={this.state.billingAddress || {}}
+                                onLocationChange={billingAddress => {
+                                    const toBeUpdated = this.state.toBeUpdated;
+                                    
+                                    toBeUpdated.billingAddress = true;
+
+                                    this.setState({
+                                        billingAddress,
+                                        toBeUpdated
+                                    });
+                                }}
+                            />
+                        </div>
+                        <div className="col-xs-12">
+                            <FlatButton
+                                disabled={!this.state.toBeUpdated.billingAddress}
+                                primary={true}
+                                onTouchTap={
+                                    () => {
+                                        const billingAddress = this.state.billingAddress;
+                                        const billingAddressId = this.state.billingAddressId;
+
+                                        if (!billingAddressId) {
+                                            return apiBillingAddress
+                                                .createItem(billingAddress)
+                                                .then(BillingAddress => {
+                                                    const toBeUpdated = this.state.toBeUpdated;
+
+                                                    toBeUpdated.billingAddress = false;
+
+                                                    this.setState({
+                                                        toBeUpdated,
+                                                        billingAddress
+                                                    })
+                                                }, err => {
+                                                    console.error(err);
+                                                });
+                                        }
+                                      
+                                        return apiBillingAddress
+                                            .updateItem(billingAddressId, billingAddress)
+                                            .then(data => {
+                                                const toBeUpdated = this.state.toBeUpdated;
+
+                                                toBeUpdated.billingAddress = false;
+
+                                                this.setState({
+                                                    toBeUpdated
+                                                });
+                                            }, err => {
+                                                console.error(err);
+                                            });
+                                    }
+                                }
+                                label={translate('UPDATE')}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <h2>{translate('ACCOUNT_DEFAULT_LISTING_LOCATION_HEADER')}</h2>
+                            <p className="text-muted">{translate('ACCOUNT_DEFAULT_LISTING_LOCATION_DESC')}</p>
+                        </div>
+                        <div className="col-xs-12 col-sm-6">
+                            <Address
+                                location={this.state.defaultListingLocation || {}}
+                                onLocationChange={defaultListingLocation => {
+                                    const toBeUpdated = this.state.toBeUpdated;
+                                    
+                                    toBeUpdated.defaultListingLocation = true;
+
+                                    this.setState({
+                                        defaultListingLocationId: defaultListingLocation.id,
+                                        defaultListingLocation,
+                                        toBeUpdated
+                                    });
+                                }}
+                            />
+                        </div>
+                        <div className="col-xs-12">
+                            <FlatButton
+                                disabled={!this.state.toBeUpdated.defaultListingLocation}
+                                primary={true}
+                                onTouchTap={
+                                    () => {
+                                        const defaultListingLocationId = this.state.defaultListingLocationId;
+                                        const defaultListingLocation = this.state.defaultListingLocation;
+
+                                        if (!defaultListingLocationId) {
+                                            return apiTaskLocation
+                                                .updateDefaultItem(defaultListingLocation)
+                                                .then(_ => {
+                                                    const toBeUpdated = this.state.toBeUpdated;
+
+                                                    toBeUpdated.defaultListingLocation = false;
+
+                                                    this.setState({
+                                                        toBeUpdated
+                                                    })
+                                                }, err => {
+                                                    console.error(err);
+                                                });
+                                        }
+                                    }
+                                }
+                                label={translate('UPDATE')}
+                            />
+                        </div>
+                    </div>
+                
+                    <div className="row">
+                        <div className="col-xs-12">
                             <h2>{translate('ACCOUNT_NOTIFICATIONS_HEADER')}</h2>
                             <p className="text-muted">{translate('ACCOUNT_NOTIFICATIONS_DESC')}</p>
                         </div>
 
-                        <div className="col-xs-12">
-                            <Checkbox
-                                checked={!this.state.data.emailNotifDisabled}
-                                label={translate("EMAIL_NOTIFICATIONS")}
-                                onCheck={() => {
-                                    const oldState = this.state;
+                        { false && <div className="col-xs-12">
+                                <Checkbox
+                                    checked={!this.state.data.emailNotifDisabled}
+                                    label={translate("EMAIL_NOTIFICATIONS")}
+                                    onCheck={() => {
+                                        const oldState = this.state;
 
-                                    oldState.data.emailNotifDisabled = !oldState.data.emailNotifDisabled;
+                                        oldState.data.emailNotifDisabled = !oldState.data.emailNotifDisabled;
 
-                                    this.setState(oldState);
+                                        this.setState(oldState);
 
-                                    apiUserProperty
-                                            .createItem(this.state.user.id, 'emailNotifDisabled', oldState.data.emailNotifDisabled)
-                                            .then(_ => _, _ => _);
-                                }}
-                            />
+                                        apiUserProperty
+                                                .createItem(
+                                                    this.state.user.id,
+                                                    'emailNotifDisabled',
+                                                    oldState.data.emailNotifDisabled
+                                                )
+                                                .then(_ => _, _ => _);
+                                    }}
+                                />
                         </div>
+                        }
+                        { this.state.emails &&
+                          this.state.emails.map(emailCode => {
+                            const propKey = emailCode;
+
+                            return <div className="col-xs-12">
+                                <Checkbox
+                                    checked={!this.state.data[propKey]}
+                                    label={translate(propKey)}
+                                    onCheck={() => {
+                                        const data = this.state.data;
+
+                                        data[propKey] = !data[propKey];
+
+                                        this.setState({
+                                            data
+                                        });
+
+                                        apiUserProperty
+                                            .createItem(
+                                                this.state.user.id,
+                                                propKey,
+                                                data[propKey]
+                                            )
+                                            .then(_ => _, _ => _);
+                                    }}
+                                />
+                            </div>
+                            }
+                        )}
                     </div>
                     <hr />
                     <div className="row">

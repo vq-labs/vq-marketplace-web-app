@@ -12,13 +12,13 @@ import Moment from 'react-moment';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import * as coreAuth from '../core/auth';
-import displayTaskLocation from '../helpers/display-task-location';
 import displayTaskTiming from '../helpers/display-task-timing';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
-import { displayPrice } from '../core/format';
+import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
@@ -27,8 +27,10 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import { sortDates } from '../core/util';
-
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import '../App.css';
+
+const async = require("async");
 
 class Task extends Component {
     constructor(props) {
@@ -74,47 +76,60 @@ class Task extends Component {
     componentDidMount() {
         getConfigAsync(config => {
             getUserAsync(user => {
+                if (!user) {
+                    return goTo('/login');
+                }
+
+                apiRequest.getItems({
+                    userId: user.id
+                })
+                .then(userRequests => {
+                    this.setState({
+                        userRequests
+                    });
+                });
+
                 let taskId = this.props.params.taskId;
                 
                 apiTask.getItem(taskId)
-                .then(task => {
-                    const isMyTask = task.userId === user.id;
+                    .then(task => {
+                        const isMyTask = task.userId === user.id;
 
-                    if (String(user.userType) === '1' && !isMyTask) {
-                        goTo('/');
+                        if (String(user.userType) === '1' && !isMyTask) {
+                            goTo('/');
 
-                        return alert('You cannot access this page.');
-                    }
+                            return alert('You cannot access this page.');
+                        }
 
-                    this.setState({
-                        configReady: true,
-                        config,
-                        user
-                    });
+                        this.setState({
+                            configReady: true,
+                            config,
+                            user
+                        });
 
-                    pricingModelProvider.get()
-                    .then(pricingModels => this.setState({
-                        pricingModels
-                    }));
+                        pricingModelProvider.get()
+                        .then(pricingModels => this.setState({
+                            pricingModels
+                        }));
 
-                    
-                    let sentRequest;
+                        
+                        let sentRequest;
 
-                    if (user) {
-                        sentRequest = task.requests
-                            .find(
-                                _ => _.fromUserId === user.id
-                            );
-                    }
-                    
-                    this.setState({
-                        taskOwner: task.user,
-                        sentRequestId: sentRequest ? sentRequest.id : null,
-                        isLoading: false,
-                        task,
-                        isMyTask: task.userId === coreAuth.getUserId()
-                    });
-            });
+                        if (user) {
+                            sentRequest = task.requests
+                                .find(
+                                    _ => _.fromUserId === user.id
+                                );
+                        }
+                        
+                        this.setState({
+                            taskOwner: task.user,
+                            sentRequestId: sentRequest ? sentRequest.id : null,
+                            isLoading: false,
+                            task,
+                            isMyTask: task.userId === coreAuth.getUserId()
+                        });
+                });
             }, true);
         });
     }
@@ -178,14 +193,14 @@ class Task extends Component {
                                     </div>
 
                                     <div className="row">
-                                        <div className="col-xs-1">
+                                        <div className="col-xs-2 col-sm-1">
                                             { this.state.taskOwner.id &&
                                                 <a href={ '/app/profile/' + this.state.taskOwner.id }>
                                                     <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
                                                 </a>
                                             }
                                         </div>
-                                        <div className="col-xs-11">
+                                        <div className="col-xs-10 col-sm-9">
                                             {this.state.taskOwner.id &&     
                                                 <strong>
                                                     <a href={'/app/profile/' + this.state.taskOwner.id}>
@@ -221,9 +236,54 @@ class Task extends Component {
                                                 labelColor={"white"}
                                                 style={{width: '100%'}}
                                                 label={translate("SEND_REQUEST")} 
-                                                onClick={ () => this.setState({
-                                                    applicationInProgress: true
-                                                }) 
+                                                onClick={() => {
+                                                    const userRequests = this.state.userRequests;
+
+
+                                                    const taskStartDate = (new Date(this.state.task.timing[0].date)).getTime() / 1000;
+                                                    const taskEndDate = (new Date(this.state.task.timing[0].endDate)).getTime() / 1000;
+                                                    let alreadyAppliedSomewhere = false;
+
+                                                    userRequests
+                                                    .forEach(userRequest => {
+                                                        const requestStartDate = (new Date(userRequest.task.taskTimings[0].date)).getTime() / 1000;
+                                                        
+                                                        if (requestStartDate >= taskStartDate && requestStartDate <= taskEndDate) {
+                                                            alreadyAppliedSomewhere = true;
+                                                        }
+                                                    });
+                                                    
+                                                    if (alreadyAppliedSomewhere) {
+                                                        return openConfirmDialog({
+                                                            headerLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_HEADER"),
+                                                            confirmationLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_DESC")
+                                                        }, () => {
+                                                            async
+                                                            .eachSeries(userRequests, (userRequest, cb) => {
+                                                                apiRequest
+                                                                .updateItem(userRequest.id, {
+                                                                    status: REQUEST_STATUS.CANCELED
+                                                                })
+                                                                .then(_ => {
+                                                                    cb();
+                                                                }, cb);
+                                                            }, err => {
+                                                                if (err) {
+                                                                    return alert(err);
+                                                                }
+
+                                                                return this.setState({
+                                                                    shouldCancelOtherRequests: true,
+                                                                    applicationInProgress: true
+                                                                });
+                                                            });
+                                                        })
+                                                    } 
+
+                                                    this.setState({
+                                                        applicationInProgress: true
+                                                    });
+                                                }
                                             }/> 
                                        }
                                        { !this.state.isMyTask && this.state.sentRequestId &&
@@ -278,7 +338,7 @@ class Task extends Component {
                                                 <div>
                                                     <h3 className="text-left">About the job</h3>
                                                     <p className="text-muted">
-                                                        <div style={{ display: 'block-inline' }}>{displayTaskLocation([ this.state.task.location ])}</div>
+                                                        <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
                                                     </p>
                                                 </div>
                                                 <div>

@@ -19,15 +19,7 @@ import { getConfigAsync } from '../core/config';
 import displayTaskTiming from '../helpers/display-task-timing';
 import getUserProperty from '../helpers/get-user-property';
 import { factory as errorFactory } from '../core/error-handler';
-
-const REQUEST_STATUS = {
-    PENDING: '0',
-    ACCEPTED: '5',
-    MARKED_DONE: '10',
-    SETTLED: '15',
-    DECLINED: '20',
-    CANCELED: '25'
-};
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 
 export default class Requests extends Component {
   constructor(props) {
@@ -228,7 +220,7 @@ export default class Requests extends Component {
                                                     <IconChatBubble />
                                                 </IconButton>
                                             }
-                                        { this.shouldAllowCancel(request) &&
+                                            { this.shouldAllowCancel(request) &&
                                                 <RaisedButton
                                                     labelStyle={{color: 'white '}}
                                                     backgroundColor={this.state.config.COLOR_PRIMARY}

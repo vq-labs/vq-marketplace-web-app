@@ -69,7 +69,9 @@ class BookRequest extends Component {
                 });
 
                 apiBillingAddress
-                .getItems()
+                .getItems({
+                    default: true
+                })
                 .then(billingAddresses => {
                     const billingAddress = billingAddresses[0] || {};
         

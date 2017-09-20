@@ -11,7 +11,6 @@ import * as apiOrderActions from '../api/orderActions';
 import { translate } from '../core/i18n';
 import { goTo, tryGoBack } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
-import displayTaskLocation from '../helpers/display-task-location';
 import DOMPurify from 'dompurify'
 import Loader from "../Components/Loader";
 import {
@@ -23,7 +22,7 @@ import { getConfigAsync } from '../core/config';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import ORDER_STATUS from '../constants/ORDER_STATUS';
 import { getUserAsync } from '../core/auth';
-import { displayPrice } from '../core/format';
+import { displayPrice, displayLocation } from '../core/format';
 import { stripHtml } from '../core/util';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
@@ -158,7 +157,7 @@ export default class ChatRoom extends React.Component {
                                                 </div>
                                                 <div className="col-xs-12 col-sm-4">
                                                     <p className="text-muted">
-                                                        {translate('LISTING_LOCATION')}: {displayTaskLocation(this.state.task.taskLocations)}
+                                                        {translate('LISTING_LOCATION')}: {displayLocation(this.state.task.taskLocations)}
                                                     </p>
                                                 </div>
                                                 <div className="col-xs-12 col-sm-4">

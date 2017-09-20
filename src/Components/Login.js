@@ -34,7 +34,8 @@ export default class Login extends Component {
 
       data.password = this.refs.password.getValue();
 
-      apiAuth.login(data)
+      apiAuth
+        .login(data)
         .then(result => {
           if (result.user && result.token) {
             coreAuth.setToken(result.token);
@@ -61,7 +62,7 @@ export default class Login extends Component {
             return alert(errorMessage);
           }
 
-          alert(err.err ? err.err.code : err);
+          alert(err.err ? translate(err.err.code) : err);
         })
   }
   render() {

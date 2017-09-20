@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-
+import Checkbox from 'material-ui/Checkbox';
 import { appUserProperty } from '../api/config';
 import * as apiAuth from '../api/auth';
 import * as coreAuth from '../core/auth';
 import { getAppPath } from '../core/navigation';
-
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 
@@ -36,7 +35,6 @@ class Signup extends Component {
         userProperties
       })
     ))
-    
   }
 
   handleLogin(event) {
@@ -45,7 +43,8 @@ class Signup extends Component {
       const refs = this.refs;
       const data = {};
 
-      Object.keys(refs)
+      Object
+        .keys(refs)
         .forEach(refKey => {
           data[refKey] = refs[refKey].getValue();
         });
@@ -53,7 +52,7 @@ class Signup extends Component {
       data.userType = this.state.userType;
 
       if (data['repeatPassword'] !== data['password']) {
-        return alert('Passwords do not match!');
+        return alert(translate('PASSWORDS_DO_NOT_MATCH'));
       }
 
       apiAuth
@@ -129,13 +128,30 @@ class Signup extends Component {
                     { this.state.userProperties
                       .map(userProperty =>
                         <TextField
-                          maxLength={10}
+                          onChange={(_, newValue) => {
+                            newValue = String(newValue);
+
+                            newValue = newValue.split('.').join('');
+                            newValue = newValue.split('+').join('');
+                            newValue = newValue.split(' ').join('');
+
+                            if (!isNaN(Number(newValue)) && newValue.length < 14) {
+                              this.setState({
+                                phoneNo: newValue
+                              });
+                            } else {
+                              this.setState({
+                                phoneNo: this.state.phoneNo
+                              });
+                            }
+                          }}
                           required={userProperty.required}
                           key={userProperty.propKey}
+                          value={this.state.phoneNo}
                           ref={userProperty.propKey}
                           style={{width: '100%'}}
                           floatingLabelText={`${translate(userProperty.labelKey)} ${userProperty.required ? '*' : ''}`}
-                          type="number"/>
+                          type="text"/>
                       )
                     }
                     <div className="row">
@@ -177,30 +193,42 @@ class Signup extends Component {
                               />
                             }
                           </div>
+                          <div className="col-xs-12" style={{
+                            marginTop: 20
+                          }}>
+                                <Checkbox
+                                    checked={this.state.termsAccepted}
+                                    label={translate("TERMS_AND_PRIVACY_AGREEMENT_STATEMENT")}
+                                    onCheck={() => {
+                                        this.setState({
+                                          termsAccepted: !this.state.termsAccepted
+                                        })
+                                    }}
+                                />
+                                <p className="text-center text-muted">
+                                  <ul className="text-left">
+                                    <li>
+                                      <a href="/app/terms" target="_blank">{translate('TERMS_OF_SERVICE')}</a>
+                                    </li>
+                                    <li>
+                                      <a href="/app/privacy" target="_blank">{translate('PRIVACY_POLICY')}</a>
+                                    </li>
+                                  </ul>
+                                </p>
+                            </div>
                         </div>
                     </div>
-
                     <br />
-                    <RaisedButton type="submit" label={translate('REGISTER')} fullWidth={true} />
+                    <RaisedButton
+                      disabled={!this.state.termsAccepted}
+                      type="submit"
+                      label={translate('REGISTER')}
+                      fullWidth={true}
+                    />
                 </form>
               </div>
             </div>
             <hr/>
-            <div class="row">
-                  <div className="col-xs-12">
-                      <p className="text-center text-muted">
-                        {translate('TERMS_AND_PRIVACY_AGREEMENT_STATEMENT')}
-                        <ul className="text-left">
-                          <li>
-                            <a href="/terms" target="_blank">{translate('TERMS_OF_SERVICE')}</a>
-                          </li>
-                          <li>
-                            <a href="/privacy" target="_blank">{translate('PRIVACY_POLICY')}</a>
-                          </li>
-                        </ul>
-                      </p>
-                  </div>
-            </div>
             <div class="row">
                   <div className="col-xs-12">
                       <p className="text-center text-muted">

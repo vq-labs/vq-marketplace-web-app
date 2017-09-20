@@ -2,6 +2,10 @@ body {
   line-height: 1.5em;
 }
 
+p {
+  overflow-wrap: break-word;
+}
+
 .vq-margin-top-xs {
   margin-top: 10px
 }

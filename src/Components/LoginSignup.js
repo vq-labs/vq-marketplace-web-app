@@ -11,6 +11,7 @@ export default class LoginSignup extends Component {
       value: 'signup'
     };
   }
+
   render() {
     return (
       <div className="col-xs-12">

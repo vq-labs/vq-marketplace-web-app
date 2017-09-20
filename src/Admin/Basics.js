@@ -15,7 +15,8 @@ const defaultConfigsFields = [
     {
         type: 'single-image',
         key: 'LOGO_URL',
-        label: 'Marketplace logo (640px x 640px)'
+        label: 'Marketplace logo (284px x 100px)',
+        imageResolution: [ 100 * 2.84, 100 ]
     },
     {
         type: 'single-image',

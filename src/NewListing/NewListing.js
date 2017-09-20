@@ -21,9 +21,9 @@ import NewListingDate from './NewListingDate';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
 import NewListingDuration from './NewListingDuration';
-
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { validateAddress } from '../api/vq-services';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
 const _chunk = require('lodash.chunk');
@@ -129,7 +129,7 @@ export default class NewListing extends Component {
                 if (!user) {
                     return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
                 }
-
+                
                 if (getMeOutFromHereIfAmNotAuthorized(user)) {
                     return;
                 }
@@ -140,7 +140,7 @@ export default class NewListing extends Component {
                 if (String(user.userType) !== '1') {
                     return goTo('/');
                 }
-
+                
                 apiTaskLocation
                 .getItems({
                     userId: user.id
@@ -209,7 +209,7 @@ export default class NewListing extends Component {
                         pricingConfig,
                         currency
                     });
-                
+                    
                     const category = listingCategories
                         .filter(
                             _ => _.code === task.categories[0] || this.props.location.query.category
@@ -321,8 +321,6 @@ export default class NewListing extends Component {
                             <ImageUploader 
                                 images={this.state.task.images} 
                                 onChange={_ => {
-
-
                                     this.handleListingFieldChange('images', _);
                                 }}
                             />
@@ -392,8 +390,6 @@ export default class NewListing extends Component {
                                     countryRestriction={this.state.appConfig.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
-                                        debugger;
-
                                         if (verifyPostalCode(String(_.postalCode)) === -1) {
                                             this.setState({
                                                 openSnackbar: true,
@@ -554,21 +550,8 @@ export default class NewListing extends Component {
                                                     });
                                                 }
                                             }
-
-
-                                            if (currentStep === LISTING_VIEWS.CALENDAR) {
-                                                if (!task.timing.length) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
-                                                    });
-                                                }
-                                            }
-
                                             
-
                                             if (currentStep === LISTING_VIEWS.LOCATION) {
-                                                debugger;
                                                 if (task.location) {
                                                     if (!verifyPostalCode(String(task.location.postalCode))) {
                                                         const postalCode = task.location.postalCode;
@@ -578,6 +561,39 @@ export default class NewListing extends Component {
                                                             snackbarMessage: translate("POSTAL_CODE") + ' ' + String(postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
                                                         });
                                                     }
+                                                }
+                                            }
+
+                                            if (currentStep === LISTING_VIEWS.LOCATION) {
+                                                this.setState({
+                                                    continueBtnDisabled: true
+                                                });
+
+                                                return validateAddress(task.location)
+                                                .then(data => {
+                                                    if (!data.length) {
+                                                        return alert('Incorrect address');
+                                                    }
+
+                                                    this.setState({
+                                                        continueBtnDisabled: false,
+                                                        step: nextStep
+                                                    })
+                                                }, err => {
+                                                    console.error(err);
+
+                                                    this.setState({
+                                                        continueBtnDisabled: false
+                                                    });
+                                                })
+                                            }
+
+                                            if (currentStep === LISTING_VIEWS.CALENDAR) {
+                                                if (!task.timing.length) {
+                                                    return this.setState({
+                                                        openSnackbar: true,
+                                                        snackbarMessage: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
+                                                    });
                                                 }
                                             }
 

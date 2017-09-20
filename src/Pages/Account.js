@@ -59,7 +59,13 @@ export default class Account extends Component {
                 type: 'email'
             })
             .then(emails => {
-                const emailCodes = emails.map(_ => `EMAIL_${_.code}`);
+                const emailCodes = emails
+                .filter(_ => [
+                    'welcome',
+                    'password-reset'
+                ].indexOf(_.code) === -1)
+                .map(_ => `EMAIL_${_.code}`)
+                
 
                 this.setState({
                     emails: emailCodes

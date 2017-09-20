@@ -8,7 +8,7 @@ import { getConfigAsync } from '../core/config';
 export default class Address extends Component {
     constructor(props) {
         super();
-
+        
         let locationQueryString = '';
         const address = props.location || {};
 
@@ -87,7 +87,7 @@ export default class Address extends Component {
             this.props.onLocationChange(location);
         };
     }
-
+    
     render() {
      return <div className="row">
                 { this.state.ready &&

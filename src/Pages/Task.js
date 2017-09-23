@@ -91,7 +91,8 @@ class Task extends Component {
 
                 let taskId = this.props.params.taskId;
                 
-                apiTask.getItem(taskId)
+                apiTask
+                    .getItem(taskId)
                     .then(task => {
                         const isMyTask = task.userId === user.id;
 
@@ -230,7 +231,12 @@ class Task extends Component {
                                                 onClick={ () => goTo('/signup') }
                                             /> 
                                        }>
-                                        { this.state.user && String(this.state.user.userType) === '2' && !this.state.isMyTask && !this.state.sentRequestId && 
+                                        { 
+                                            this.state.user &&
+                                            String(this.state.user.userType) === '2' &&
+                                            !this.state.isMyTask &&
+                                            !this.state.sentRequestId &&
+                                            this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                                 labelColor={"white"}
@@ -238,8 +244,6 @@ class Task extends Component {
                                                 label={translate("SEND_REQUEST")} 
                                                 onClick={() => {
                                                     const userRequests = this.state.userRequests;
-
-
                                                     const taskStartDate = (new Date(this.state.task.timing[0].date)).getTime() / 1000;
                                                     const taskEndDate = (new Date(this.state.task.timing[0].endDate)).getTime() / 1000;
                                                     let alreadyAppliedSomewhere = false;
@@ -253,7 +257,7 @@ class Task extends Component {
                                                         }
                                                     });
                                                     
-                                                    if (alreadyAppliedSomewhere) {
+                                                    if (false && alreadyAppliedSomewhere) {
                                                         return openConfirmDialog({
                                                             headerLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_HEADER"),
                                                             confirmationLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_DESC")

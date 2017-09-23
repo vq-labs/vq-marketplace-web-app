@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify'
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { displayPrice } from '../core/format';
+import displayTaskTiming from '../helpers/display-task-timing';
 
 export default class NewListingReview extends Component {
     constructor(props) {
@@ -69,30 +70,7 @@ export default class NewListingReview extends Component {
                         <div className="col-xs-12">
                             <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DATE")}</h4>
                             <div>
-                                { this.state.listing.timing
-                                    .map(timing =>
-                                        <div className="row">
-                                            { timing.date === timing.endDate &&
-                                                <div className="col-xs-12">
-                                                    <Moment format="DD.MM.YYYY">
-                                                        {timing.date}
-                                                    </Moment>
-                                                </div>
-                                            }
-                                            { timing.date !== timing.endDate &&
-                                                <div className="col-xs-12">
-                                                    <Moment format="DD.MM.YYYY">
-                                                        {timing.date}
-                                                    </Moment>
-                                                    -
-                                                    <Moment format="DD.MM.YYYY">
-                                                        {timing.endDate}
-                                                    </Moment>
-                                                </div>
-                                            }
-                                        </div>
-                                    )
-                                }
+                                {displayTaskTiming(this.state.listing.timing)}
                             </div>
                         </div>
                     </div>

@@ -669,10 +669,22 @@ export default class NewListing extends Component {
                                             .then(() => apiTask.updateItem(task.id, task))
                                             .then(() => apiTaskLocation.createItem(task.id, task.location))
                                             .then(() => apiTaskImage.createItem(task.id, task.images))
-                                            .then(() => apiTaskTiming.createItem(task.id, {
-                                                dates: task.timing,
-                                                duration: task.duration
-                                            }))
+                                            .then(() => {
+                                                const localStart = task.timing[0].date;
+                                                const localEnd = task.timing[0].endDate;
+
+                                                const selectedDate = {
+                                                    date: Date.UTC(localStart.getFullYear(), localStart.getMonth(), localStart.getDate(), 0, 0, 0, 0) / 1000,
+                                                    endDate: Date.UTC(localEnd.getFullYear(), localEnd.getMonth(), localEnd.getDate(), 23, 59, 59, 0) / 1000
+                                                };
+                                           
+                                                apiTaskTiming.createItem(task.id, {
+                                                    dates: [
+                                                        selectedDate
+                                                    ],
+                                                    duration: task.duration
+                                                })
+                                            })
                                             .then(() => apiTask.updateItem(task.id, {
                                                 status: 0
                                             }))

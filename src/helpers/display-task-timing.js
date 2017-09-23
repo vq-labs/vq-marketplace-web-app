@@ -11,15 +11,28 @@ const displayTaskTiming = (taskTimings) => {
     // dates = sortDates(dates, -1);
     if (dates.length === 1) {
       const timing = dates[0];
+      let utcTiming = {};
 
-      if (timing.date === timing.endDate) {
+      if (typeof timing.date === 'number') {
+        let startDate = new Date(timing.date * 1000);
+        let endDate = timing.endDate ? new Date(timing.endDate * 1000 ) : startDate;
+        
+        utcTiming.date = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate(),  startDate.getUTCHours(), startDate.getUTCMinutes(), startDate.getUTCSeconds());
+        utcTiming.endDate = new Date(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate(),  endDate.getUTCHours(), endDate.getUTCMinutes(), endDate.getUTCSeconds());
+      } else {
+        utcTiming.date = timing.date;
+        utcTiming.endDate = timing.endDate || timing.date;
+      }
+
+      debugger;
+      if (utcTiming.date.getDate() === utcTiming.endDate.getDate()) {
         return <div>
-          <Moment format={momentFormat}>{timing.date}</Moment>
+          <Moment format={momentFormat}>{utcTiming.date}</Moment>
         </div>;
       }
 
       return <div>
-                <Moment format={momentFormat}>{timing.date}</Moment> - <Moment format={momentFormat}>{timing.endDate}</Moment>
+                <Moment format={momentFormat}>{utcTiming.date}</Moment> - <Moment format={momentFormat}>{utcTiming.endDate}</Moment>
              </div>;
     }
 

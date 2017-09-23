@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactStars from 'react-stars'
 import RaisedButton from 'material-ui/RaisedButton';
 import HtmlTextField from '../Components/HtmlTextField';
+import ProfileImage from '../Components/ProfileImage';
 import apiReview from '../api/review';
 import apiOrder from '../api/order';
 import * as apiRequest from '../api/request';
@@ -43,7 +44,7 @@ class Review extends Component {
                     user,
                     config
                 });
-                debugger;
+    
                 if (this.state.reviewType === REVIEW_TYPES.ORDER) {
                     return apiOrder
                         .getItem(this.state.orderId)
@@ -56,7 +57,10 @@ class Review extends Component {
                                 return goTo('/');
                             }
 
+                            const userUnderReview = order.request.fromUser;
+
                             this.setState({
+                                userUnderReview,
                                 order
                             })
                         }, err => {
@@ -76,7 +80,10 @@ class Review extends Component {
                                 return goTo('/');
                             }
 
+                            const userUnderReview = request.request.toUser;
+                            
                             this.setState({
+                                userUnderReview,
                                 request: request.request
                             })
                         }, err => {
@@ -88,9 +95,10 @@ class Review extends Component {
     }
     render() {
         return (
-            <div className="container" style={{ marginBottom: 75}}>
+            <div className="container" style={{ marginBottom: 75, marginTop: 50 }}>
+                
                 {this.state.config &&
-                <div className="col-md-8 col-md-offset-2">
+                <div className="col-md-8">
                     <div className="row">
                         <div className="col-xs-12">
                         <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
@@ -213,6 +221,20 @@ class Review extends Component {
                         </div>
                     </div>
                 </div>
+                }
+                {this.state.config && this.state.userUnderReview &&
+                    <div className="col-md-4 text-center" style={{ paddingTop: 50 }}>
+                        <ProfileImage
+                            isLoading={false}
+                            allowChange={false}
+                            onDrop={_ => _}
+                            image={this.state.userUnderReview.imageUrl}
+                        />
+
+                        <h3><a href="#" onTouchTap={() => {
+                            goTo(`/profile/${this.state.userUnderReview.id}`)
+                        }}>{this.state.userUnderReview.firstName}  {this.state.userUnderReview.lastName}</a></h3>
+                    </div>
                 }
             </div>
         );

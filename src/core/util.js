@@ -1,9 +1,10 @@
 export const stripHtml = (html, noOfChars) => {
    const tmp = document.createElement("DIV");
-
+    debugger;
    tmp.innerHTML = html;
 
-   const text = tmp.textContent || tmp.innerText || "";
+   const text = (tmp.textContent || tmp.innerText || "")
+    .replace(/\s+$/, '');
 
    if (noOfChars && text.length > noOfChars) {
        return `${text.substring(0, noOfChars)}...`;

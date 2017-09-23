@@ -60,10 +60,46 @@ export default class Account extends Component {
             })
             .then(emails => {
                 const emailCodes = emails
-                .filter(_ => [
-                    'welcome',
-                    'password-reset'
-                ].indexOf(_.code) === -1)
+                .filter(_ => {
+                    if (String(user.userType) === '1') {
+                        if ([
+                            "new-request-sent",
+                            "request-accepted",
+                            "request-marked-as-done",
+                            "request-completed",
+                            "request-declined",
+                            "message-received",
+                            "request-cancelled",
+                            "listing-cancelled",
+                            "request-closed",
+                            "new-task",
+                            "user-blocked"
+                        ].indexOf(_.code) !== -1) {
+                            return false;
+                        }
+                    }
+
+                    if (String(user.userType) === '2') {
+                        if ([
+                            "new-request-received",
+                            "new-order",
+                            "order-marked-as-done",
+                            "order-completed",
+                            "message-received",
+                            "task-marked-spam",
+                            "user-blocked",
+                            "listing-cancelled",
+                            "order-closed",
+                        ].indexOf(_.code) !== -1) {
+                            return false;
+                        }
+                    }
+
+                    return [
+                        'welcome',
+                        'password-reset'
+                    ].indexOf(_.code) === -1;
+                })
                 .map(_ => `EMAIL_${_.code}`)
                 
 

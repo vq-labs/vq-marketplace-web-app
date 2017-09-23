@@ -105,6 +105,10 @@ export default class ChatRoom extends React.Component {
     handleNewMessage (event) {
         event.preventDefault()
     
+        if (this.state.newMessage < 2) {
+            return alert(translate('ERROR_MESSAGE_TOO_SHORT'));
+        }
+
         const data = {
             taskId: this.state.task.id,
             toUserId: this.state.toUserId,
@@ -152,12 +156,12 @@ export default class ChatRoom extends React.Component {
                                             <div className="col-xs-12">
                                                 <div className="col-xs-12 col-sm-4">
                                                     <p className="text-muted">
-                                                        {translate('LISTING_DATE')}: {displayTaskTiming(this.state.task.taskTimings)}
+                                                        {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings)}
                                                     </p>
                                                 </div>
                                                 <div className="col-xs-12 col-sm-4">
                                                     <p className="text-muted">
-                                                        {translate('LISTING_LOCATION')}: {displayLocation(this.state.task.taskLocations)}
+                                                        {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0])}
                                                     </p>
                                                 </div>
                                                 <div className="col-xs-12 col-sm-4">
@@ -189,7 +193,7 @@ export default class ChatRoom extends React.Component {
                                             const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
 
                                             return <div className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
-                                                        <div className="col-xs-12" style={ { marginBottom: '20px'} }>
+                                                        <div className="col-xs-12" style={{ marginBottom: '20px'}}>
                                                             <div className="row">
                                                                 <div className="col-xs-2 col-sm-1">
                                                                     <a 
@@ -232,7 +236,7 @@ export default class ChatRoom extends React.Component {
                                                             <div dangerouslySetInnerHTML={{
                                                                 __html: DOMPurify.sanitize(message.message)
                                                             }} />
-                                                            <Divider style={ { marginRight: '10px' } }/>
+                                                            <Divider style={{ marginRight: '10px' }}/>
                                                         </div>
                                                 </div>;
                                         })
@@ -253,7 +257,7 @@ export default class ChatRoom extends React.Component {
                                                         value={this.state.newMessage}
                                                     />
                                                     
-                                                    <RaisedButton type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
+                                                    <RaisedButton disabled={!stripHtml(this.state.newMessage)} type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
                                                 </form>
                                             </div>
                                         </div>
@@ -261,7 +265,7 @@ export default class ChatRoom extends React.Component {
                             </div>
 
                             <div className="col-xs-12 col-sm-4">
-                                    <Paper zDepth={1} style={ { padding: '10px' } }>
+                                    <Paper zDepth={1} style={{ padding: '10px' }}>
                                         <div className="row">
                                             <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                                 <h4>{translate("IN_THIS_CHAT")}</h4>
@@ -372,7 +376,8 @@ export default class ChatRoom extends React.Component {
                                                 const request = this.state.request;
 
                                                 openConfirmDialog({
-                                                    headerLabel: translate('SETTLE_ORDER')
+                                                    headerLabel: translate('SETTLE_ORDER'),
+                                                    confirmationLabel: translate('SETTLE_ORDER_DESC')
                                                 }, () => {
                                                     apiOrderActions
                                                         .settleOrder(request.order.id)

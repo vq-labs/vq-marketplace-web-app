@@ -112,10 +112,16 @@ export default class NewListingDate extends Component {
                                     }
                                     */
 
+
+                     
+                                    const localStart = selectedEvent.start;
+                                    const localEnd = selectedEvent.end;
+                                    
                                     const selectedDate = {
-                                        start: selectedEvent.start,
-                                        end: selectedEvent.end
+                                        start: localStart,
+                                        end: localEnd
                                     };
+                                    
 
                                     this.setState({
                                         selectedDate

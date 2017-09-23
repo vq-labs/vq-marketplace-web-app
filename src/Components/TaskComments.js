@@ -7,6 +7,7 @@ import * as coreAuth from '../core/auth';
 import * as apiTaskComment from '../api/task-comment';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
+import { stripHtml } from '../core/util';
 import DOMPurify from 'dompurify'
 import '../Chat.css';
 
@@ -138,7 +139,12 @@ export default class TaskComments extends React.Component {
                                         value={this.state.newComment}
                                     />
                                     
-                                    <RaisedButton type="submit" style={{ width: '100%' }} label={translate("SEND")} />
+                                    <RaisedButton
+                                        disabled={!stripHtml(this.state.newComment)}
+                                        type="submit"
+                                        style={{ width: '100%' }}
+                                        label={translate("SEND")}
+                                    />
                             </form>
                         </div>
                 </div>

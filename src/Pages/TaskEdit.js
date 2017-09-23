@@ -12,8 +12,6 @@ import { factory as errorFactory } from '../core/error-handler';
 import ImageUploader from '../Components/ImageUploader';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
-
-
 import '../App.css';
 
 export default class TaskEdit extends Component {
@@ -145,8 +143,8 @@ export default class TaskEdit extends Component {
                                 { this.state.task.priceType !== 2 &&
                                     <div className="col-xs-12">
                                         <TextField
-                                            disabled={true}
-                                            onChange={ this.handleFieldChange('price') }
+                                            disabled={false}
+                                            onChange={this.handleFieldChange('price')}
                                             ref="price"
                                             type="number"
                                             value={this.state.updatedTask.price }
@@ -172,14 +170,14 @@ export default class TaskEdit extends Component {
 
                                 <div className="col-xs-12 vq-margin-bottom-xs vq-margin-top-xs">
                                     <FlatButton
-                                        style={{ float: 'left' }}
+                                        style={{float: 'left'}}
                                         label={translate('CANCEL')}
                                         primary={ true }
                                         disabled={ false }
                                         onTouchTap={ () => goBack() }
                                     />
                                     <RaisedButton
-                                        style={ { float: 'right' } }
+                                        style={{ float: 'right' }}
                                         label={translate('CONFIRM')}
                                         primary={ true }
                                         disabled={ false }

@@ -170,20 +170,29 @@ export default class Requests extends Component {
                                                     { String(request.status) === REQUEST_STATUS.PENDING &&
                                                         translate("REQUEST_STATUS_PENDING")
                                                     }
+
                                                     { String(request.status) === REQUEST_STATUS.ACCEPTED &&
                                                         translate("REQUEST_STATUS_ACCEPTED")
                                                     }
+
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                                         <span>
                                                             {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(request.order.autoSettlementStartedAt).addHours(8))}</Moment>)
                                                         </span>
                                                     }
+
                                                     { String(request.status) === REQUEST_STATUS.SETTLED &&
                                                         translate("REQUEST_STATUS_SETTLED")
                                                     }
+
+                                                    { String(request.status) === REQUEST_STATUS.CLOSED &&
+                                                        translate("REQUEST_STATUS_CLOSED")
+                                                    }
+
                                                     { String(request.status) === REQUEST_STATUS.DECLINED &&
                                                         translate("REQUEST_STATUS_DECLINED")
                                                     }
+                                                    
                                                     { String(request.status) === REQUEST_STATUS.CANCELED &&
                                                         translate("REQUEST_STATUS_CANCELED")
                                                     }
@@ -238,7 +247,8 @@ export default class Requests extends Component {
                                             }
 
                                             {!request.review &&
-                                                request.status === REQUEST_STATUS.SETTLED &&
+                                                (request.status === REQUEST_STATUS.SETTLED ||
+                                                 request.status === REQUEST_STATUS.CLOSED) &&
                                                 <div style={{
                                                     display: 'inline-block',
                                                     padding: 10

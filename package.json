@@ -55,7 +55,6 @@
     "webpack-manifest-plugin": "1.1.0"
   },
   "dependencies": {
-    "ViciAuthSDK": "git+https://github.com/adrianbarwicki/viciauth-sdk.git",
     "async": "^2.5.0",
     "babel-polyfill": "^6.20.0",
     "classnames": "^2.2.5",

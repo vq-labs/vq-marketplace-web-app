@@ -2,11 +2,20 @@ import React from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import EditableEntity from '../Components/EditableEntity';
+import Loader from "../Components/Loader";
 import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'
+import { getConfigAsync } from '../core/config';
 
 const _ = require('underscore');
+
+const LANG_CODES = {
+   de: "Deutsch",
+   en: "English",
+   pl: "Polski",
+   hu: "Magyar"
+};
 
 export default class SectionLabels extends React.Component {
     constructor(props) {
@@ -18,7 +27,12 @@ export default class SectionLabels extends React.Component {
             labelsObj: {}
         };
 
-        this.getLabels = lang => apiConfig.appLabel
+        this.getLabels = lang => {
+            this.setState({
+                isLoading: true
+            });
+
+            apiConfig.appLabel
             .getItems({
                 lang: lang || this.state.lang
             }, {
@@ -42,14 +56,23 @@ export default class SectionLabels extends React.Component {
                 })
 
                 this.setState({
+                    isLoading: false,
                     labels,
                     labelsObj
                 });
-            });
+            })
+        };
     }
 
     componentDidMount() {
-        this.getLabels(this.state.lang);
+        getConfigAsync(config => {
+            this.setState({
+                config,
+                lang: config.DEFAULT_LANG
+            });
+
+            this.getLabels(config.DEFAULT_LANG);
+        });
     }
     
     render() {
@@ -69,13 +92,18 @@ export default class SectionLabels extends React.Component {
                         
                         this.getLabels(value);
                     }}>
-                        <MenuItem value={'en'} primaryText="English" />
+                        { true && <MenuItem value={this.state.lang} primaryText={LANG_CODES[this.state.lang]} /> }
+                        { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
+                        { false && <MenuItem value={'en'} primaryText="English" /> }
                         { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
                         { false && <MenuItem value={'pl'} primaryText="Polski" /> }
                         { false && <MenuItem value={'hu'} primaryText="Magyar" /> }
                     </DropDownMenu>
                 </div>
-                 { Boolean(this.state.labels.length) &&
+
+                { this.state.isLoading && <Loader isLoading={true}/> }
+
+                { !this.state.isLoading && Boolean(this.state.labels.length) &&
                     <EditableEntity
                         groupBy="group"
                         showCancelBtn={false}

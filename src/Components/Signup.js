@@ -65,13 +65,11 @@ class Signup extends Component {
           this.props.onSuccess(result.user);
         })
         .catch(err => {
-            if (err.desc) {
-              const translated = translate(err.code);
+            err = err.err || err;
 
-              return alert(translated === err.code ? err.desc : translated);
-            }
+            const translated = translate(err.code);
 
-            alert(err.err.code);
+            return alert(translated === err.code ? err.desc : translated);
         });
   }
 

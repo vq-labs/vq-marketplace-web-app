@@ -50,21 +50,15 @@ export const displayLocation = location => {
 };
 
 export const displayPrice = (amount, currencyCode, pricingModel) => {
-    if (pricingModel === 1) {
-        if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-            return `${(amount / 100).toFixed(2)} ${currencyCode}/h`;
-        }
-    
-        if (NOCENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-            return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
-        }
-    }
-
     if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-        return `${(amount / 100).toFixed(2)} ${currencyCode}`;
+        amount = amount ? (amount / 100).toFixed(2) : '';
+    } else {
+        amount = amount || '';
     }
 
-    if (NOCENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+    if (pricingModel === 1) {
+        return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
     }
+
+    return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
 };

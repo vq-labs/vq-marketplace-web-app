@@ -12,6 +12,7 @@ import { factory as errorFactory } from '../core/error-handler';
 import ImageUploader from '../Components/ImageUploader';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
+import { displayMessage } from '../helpers/display-message.js';
 import '../App.css';
 
 export default class TaskEdit extends Component {
@@ -87,6 +88,24 @@ export default class TaskEdit extends Component {
     const taskId = this.state.task.id;
     const updatedTask = this.state.updatedTask;
 
+    if (updatedTask.title < 5) {
+        return displayMessage({
+            label: translate('LISTING_TITLE_TOO_SHORT')
+        });
+    }
+
+    updatedTask.description = updatedTask.description
+        .split('<p><br></p>')
+        .filter(_ => _ !== '<p><br></p>')
+        .join('')
+        .replace(/(\r\n|\n|\r)/gm, "");
+
+    if (updatedTask.description.length < 50) {
+        return displayMessage({
+            label: translate('LISTING_DESCRIPTION_TOO_SHORT')
+        });
+    }
+    
     // updatedTask.price *= 100;
 
     apiTaskImage.createItem(taskId, updatedTask.images);

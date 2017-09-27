@@ -12,8 +12,6 @@ import * as apiTaskCategory from '../api/task-category';
 import * as apiTaskTiming from '../api/task-timing';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
-import Snackbar from 'material-ui/Snackbar';
-
 import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
 import NewListingPricing from './NewListingPricing';
@@ -25,6 +23,7 @@ import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { validateAddress } from '../api/vq-services';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
+import { displayMessage } from '../helpers/display-message.js';
 
 const _chunk = require('lodash.chunk');
 
@@ -115,7 +114,6 @@ export default class NewListing extends Component {
             value: 'signup',
             auth: coreAuth.getUserId(),
             minPrice: 0,
-            openSnackbar: false,
             insertedTask: {},
             listingCategories: [],
             step,
@@ -391,9 +389,8 @@ export default class NewListing extends Component {
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
                                         if (verifyPostalCode(String(_.postalCode)) === -1) {
-                                            this.setState({
-                                                openSnackbar: true,
-                                                snackbarMessage: translate("POSTAL_CODE") + ' ' +String(_.postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
+                                            displayMessage({
+                                                label: translate("POSTAL_CODE") + ' ' + String(_.postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
                                             });
                                         }
 
@@ -486,67 +483,55 @@ export default class NewListing extends Component {
                                             let nextStep = currentStep + 1;
                                             const task = this.state.task;
 
-                                            this.setState({
-                                                openSnackbar: false
-                                            });
-
                                             // CHECKS
                                             if (currentStep === LISTING_VIEWS.PRICING) {
                                                 if (typeof task.priceType === 'undefined') {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("PRICE_TYPE") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("PRICE_TYPE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (!task.price && task.priceType !== 2) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("PRICE") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("PRICE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
                                             }
 
                                             if (currentStep === LISTING_VIEWS.LOCATION) {
                                                 if (!task.location.city) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LOCATION_CITY") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LOCATION_CITY") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
                                                     
                                                 if (!task.location.postalCode) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (String(task.location.postalCode).length < 4) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_NOT_CORRECT")
+                                                    return displayMessage({
+                                                        label: translate("LOCATION_POSTAL_CODE") + " " + translate("IS_NOT_CORRECT")
                                                     });
                                                 }
 
                                                 if (!task.location.countryCode) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (!task.location.lat) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LOCATION_COUNTRY") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (!task.location.lng) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: 'Location is not exact enough.'
+                                                    return displayMessage({
+                                                        label: 'Location is not exact enough.'
                                                     });
                                                 }
                                             }
@@ -556,15 +541,15 @@ export default class NewListing extends Component {
                                                     if (!verifyPostalCode(String(task.location.postalCode))) {
                                                         const postalCode = task.location.postalCode;
 
-                                                        return this.setState({
-                                                            openSnackbar: true,
-                                                            snackbarMessage: translate("POSTAL_CODE") + ' ' + String(postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
+                                                        return displayMessage({
+                                                            label: translate("POSTAL_CODE") + ' ' + String(postalCode) + ' ' + translate("IS_NOT_SUPPORTED")
                                                         });
                                                     }
                                                 }
                                             }
 
                                             if (currentStep === LISTING_VIEWS.LOCATION) {
+                                                /**
                                                 this.setState({
                                                     continueBtnDisabled: true
                                                 });
@@ -586,36 +571,33 @@ export default class NewListing extends Component {
                                                         continueBtnDisabled: false
                                                     });
                                                 })
+                                                 */
                                             }
 
                                             if (currentStep === LISTING_VIEWS.CALENDAR) {
                                                 if (!task.timing.length) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LISTING_DATE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
                                             }
 
                                             if (currentStep === LISTING_VIEWS.BASICS) {
                                                 if (Number(this.state.appConfig.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_TITLE") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LISTING_TITLE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && !this.state.task.description) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
+                                                    return displayMessage({
+                                                        label: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
                                                 if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
-                                                    return this.setState({
-                                                        openSnackbar: true,
-                                                        snackbarMessage: translate("LISTING_DESCRIPTION") + " min. 50 chars"
+                                                    return displayMessage({
+                                                        label: translate("LISTING_DESCRIPTION_TOO_SHORT")
                                                     });
                                                 }
 
@@ -694,11 +676,6 @@ export default class NewListing extends Component {
                                         } }
                                     />
                                 }
-                                <Snackbar
-                                    open={this.state.openSnackbar}
-                                    message={this.state.snackbarMessage}
-                                    autoHideDuration={4000}
-                                />
                             </div>
                             }
                         </div> 

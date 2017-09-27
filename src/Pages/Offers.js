@@ -230,7 +230,7 @@ class Offers extends Component {
     render() {
         const Intro = 
         <div className="vq-listings-intro text-center" style={{ 
-            background: `url(${this.state.config.PROMO_URL}) no-repeat center center fixed`,
+            background: `url(${this.state.config.PROMO_URL_SELLERS || this.state.config.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
             <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 50 }}>
@@ -384,6 +384,7 @@ class Offers extends Component {
                     marginTop: '5px'
                 }}/>
                 <div style={{ width: '100%' }}>
+                    <h4 style={{ fontSize: '14px' }}>{this.state.appliedFilter.minPrice}-{this.state.appliedFilter.maxPrice} {displayPrice(undefined, 'HUF', 1)}</h4>
                     <InputRange
                         formatLabel={value => displayPrice(value, 'HUF', 1)}
                         maxValue={10000}

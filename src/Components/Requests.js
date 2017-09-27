@@ -86,7 +86,10 @@ export default class Requests extends Component {
   }
 
   cancelRequest = request => {
-    openConfirmDialog({}, () => {
+    openConfirmDialog({
+        headerLabel: translate('CANCEL_REQUEST_ACTION_HEADER'),
+        confirmationLabel: translate('CANCEL_REQUEST_ACTION_DESC')
+    }, () => {
         const requests = this.state.requests;
         
         apiRequest.updateItem(request.id, {
@@ -177,7 +180,7 @@ export default class Requests extends Component {
 
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                                         <span>
-                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(request.order.autoSettlementStartedAt).addHours(8))}</Moment>)
+                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
                                                         </span>
                                                     }
 
@@ -192,7 +195,7 @@ export default class Requests extends Component {
                                                     { String(request.status) === REQUEST_STATUS.DECLINED &&
                                                         translate("REQUEST_STATUS_DECLINED")
                                                     }
-                                                    
+
                                                     { String(request.status) === REQUEST_STATUS.CANCELED &&
                                                         translate("REQUEST_STATUS_CANCELED")
                                                     }

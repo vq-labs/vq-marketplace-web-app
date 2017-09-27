@@ -24,6 +24,5 @@ export const uploadImageFactory = url => (file, queryObject) => new Promise((res
           body: data
       })
     .then(parseJSON)
-    .then(result => resolve(result))
-    .catch(err => reject(err));
+    .then(result => resolve(result), err => reject(err));
   });

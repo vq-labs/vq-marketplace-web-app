@@ -5,12 +5,14 @@ const defaultConfigsFields = [
     {
         type: 'string',
         key: 'NAME',
-        label: 'Marketplace name'
+        label: 'Marketplace name',
+        explanation: 'It is used on the landing page in the footer and in the emails as the sender name.'
     },
     {
         type: 'string',
         key: 'DOMAIN',
-        label: 'What is your domain url? (with http or https)'
+        label: 'What is your domain url? (with http or https)',
+        explanation: 'It is used to build website paths in the emails. It must be specified for the e-mail actions routing to work correctly.'
     },
     {
         type: 'single-image',

@@ -75,7 +75,7 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-        <div className="container">
+        <div className="container vq-no-padding">
           {this.state.ready &&
           <div className="col-xs-12">
             <div className="col-xs-12" style={{ marginBottom: 20 }}>

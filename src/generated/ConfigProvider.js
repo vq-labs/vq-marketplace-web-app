@@ -1,5 +1,5 @@
 export default {
-    API_URL: 'http://click4work.eu-central-1.elasticbeanstalk.com/api',
-    GOOGLE_ANALYTICS_ID: 'UA-105312652-1',
-    LANG: 'hu',
+    API_URL: 'http://localhost:8080/api',
+    GOOGLE_ANALYTICS_ID: '',
+    LANG: 'en',
 };

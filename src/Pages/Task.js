@@ -17,7 +17,8 @@ import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
+import { getCategoriesAsync } from '../core/categories.js';
 import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { getConfigAsync } from '../core/config';
@@ -74,64 +75,79 @@ class Task extends Component {
         }
     }
     componentDidMount() {
-        getConfigAsync(config => {
-            getUserAsync(user => {
-                if (!user) {
-                    return goTo('/login');
-                }
+        getCategoriesAsync(categories => {
+            const categoryLabels = {};
+            
+            categories.forEach(category => {
+                categoryLabels[category.code] = category.label;
+            });
 
-                apiRequest.getItems({
-                    userId: user.id
-                })
-                .then(userRequests => {
-                    this.setState({
-                        userRequests
+            this.setState({
+                categoryLabels
+            });
+
+            getConfigAsync(config => {
+                getUserAsync(user => {
+                    if (!user) {
+                        return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
+                    }
+
+                    apiRequest.getItems({
+                        userId: user.id
+                    })
+                    .then(userRequests => {
+                        this.setState({
+                            userRequests
+                        });
                     });
-                });
 
-                let taskId = this.props.params.taskId;
-                
-                apiTask
-                    .getItem(taskId)
-                    .then(task => {
-                        const isMyTask = task.userId === user.id;
+                    let taskId = this.props.params.taskId;
+                    
+                    apiTask
+                        .getItem(taskId)
+                        .then(task => {
+                            const isMyTask = task.userId === user.id;
 
-                        if (String(user.userType) === '1' && !isMyTask) {
-                            goTo('/');
+                            if (String(user.userType) === '1' && !isMyTask) {
+                                goTo('/');
 
-                            return alert('You cannot access this page.');
-                        }
+                                return alert('You cannot access this page.');
+                            }
 
-                        this.setState({
-                            configReady: true,
-                            config,
-                            user
-                        });
+                            this.setState({
+                                configReady: true,
+                                config,
+                                user
+                            });
 
-                        pricingModelProvider.get()
-                        .then(pricingModels => this.setState({
-                            pricingModels
-                        }));
+                            pricingModelProvider.get()
+                            .then(pricingModels => this.setState({
+                                pricingModels
+                            }));
 
-                        
-                        let sentRequest;
+                            
+                            let sentRequest;
 
-                        if (user) {
-                            sentRequest = task.requests
-                                .find(
-                                    _ => _.fromUserId === user.id
-                                );
-                        }
-                        
-                        this.setState({
-                            taskOwner: task.user,
-                            sentRequestId: sentRequest ? sentRequest.id : null,
-                            isLoading: false,
-                            task,
-                            isMyTask: task.userId === coreAuth.getUserId()
-                        });
-                });
-            }, true);
+                            if (user) {
+                                sentRequest = task.requests
+                                    .filter(
+                                        _ => _.status !== REQUEST_STATUS.CANCELED
+                                    )
+                                    .find(
+                                        _ => _.fromUserId === user.id
+                                    );
+                            }
+                            
+                            this.setState({
+                                taskOwner: task.user,
+                                sentRequestId: sentRequest ? sentRequest.id : null,
+                                isLoading: false,
+                                task,
+                                isMyTask: task.userId === coreAuth.getUserId()
+                            });
+                    });
+                }, true);
+            });
         });
     }
 
@@ -248,15 +264,17 @@ class Task extends Component {
                                                     const taskEndDate = (new Date(this.state.task.timing[0].endDate)).getTime() / 1000;
                                                     let alreadyAppliedSomewhere = false;
 
-                                                    userRequests
-                                                    .forEach(userRequest => {
-                                                        const requestStartDate = (new Date(userRequest.task.taskTimings[0].date)).getTime() / 1000;
-                                                        
-                                                        if (requestStartDate >= taskStartDate && requestStartDate <= taskEndDate) {
-                                                            alreadyAppliedSomewhere = true;
-                                                        }
-                                                    });
-                                                    
+                                                    if (false) {
+                                                        userRequests
+                                                        .forEach(userRequest => {
+                                                            const requestStartDate = (new Date(userRequest.task.taskTimings[0].date)).getTime() / 1000;
+                                                            
+                                                            if (requestStartDate >= taskStartDate && requestStartDate <= taskEndDate) {
+                                                                alreadyAppliedSomewhere = true;
+                                                            }
+                                                        });
+                                                    }
+
                                                     if (false && alreadyAppliedSomewhere) {
                                                         return openConfirmDialog({
                                                             headerLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_HEADER"),
@@ -420,7 +438,11 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog toUserId={this.state.task.userId} taskId={this.state.task.id} open={this.state.applicationInProgress} />
+                  <ApplicationDialog
+                    toUserId={this.state.task.userId}
+                    taskId={this.state.task.id}
+                    open={this.state.applicationInProgress}
+                  />
             </div>
         );
     }

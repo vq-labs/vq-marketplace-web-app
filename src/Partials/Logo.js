@@ -22,8 +22,6 @@ class Logo extends Component {
                       return goTo('/');
                     }
 
-
-
                     return goStartPage();
                   }, true);
                 }
@@ -38,6 +36,7 @@ class Logo extends Component {
                   src={this.props.logo} 
                   role="presentation" 
                   style={{
+                    cursor: 'pointer',
                     marginTop: '6px',
                     marginBottom: '3px',
                     maxHeight: '45px'

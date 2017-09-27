@@ -9,6 +9,7 @@ import * as apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
 import { translate } from '../core/i18n';
 import { browserHistory } from 'react-router';
+import { displayMessage } from '../helpers/display-message.js';
 
 const _ = require('underscore');
 
@@ -85,10 +86,9 @@ export default class ApplicationDialog extends React.Component {
   }
   continuePosting (currentMask) {
          if (!this.state.application.message) {
-            return this.setState({
-                openSnackbar: true,
-                snackbarMessage: translate("MESSAGE") + " " + translate("IS_REQUIRED")
-            });
+            return displayMessage({
+                label: translate("MESSAGE") + " " + translate("IS_REQUIRED")
+            })
          }
 
          switch (currentMask) {

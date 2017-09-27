@@ -426,6 +426,16 @@ export default class Account extends Component {
                                             data
                                         });
 
+                                        getUserAsync(user => {
+                                            try {
+                                                user.userProperties
+                                                .find(_ => _.propKey === propKey)
+                                                .propValue = data[propKey];
+                                            } catch (err) {
+                                                return alert('Error: Could not update internal model.')
+                                            }
+                                        });
+
                                         apiUserProperty
                                             .createItem(
                                                 this.state.user.id,

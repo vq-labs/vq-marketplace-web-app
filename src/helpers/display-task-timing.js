@@ -24,7 +24,6 @@ const displayTaskTiming = (taskTimings) => {
         utcTiming.endDate = timing.endDate || timing.date;
       }
 
-      debugger;
       if (utcTiming.date.getDate() === utcTiming.endDate.getDate()) {
         return <div>
           <Moment format={momentFormat}>{utcTiming.date}</Moment>

@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify'
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { displayPrice } from '../core/format';
+import { getCategoriesAsync } from '../core/categories.js';
 import displayTaskTiming from '../helpers/display-task-timing';
 
 export default class NewListingReview extends Component {
@@ -17,10 +18,21 @@ export default class NewListingReview extends Component {
     }
 
     componentDidMount() {
-       getConfigAsync(config => this.setState({
-           config,
-           ready: true
-       }))
+       getConfigAsync(config => {
+            getCategoriesAsync(categories => {
+                const categoryLabels = {};
+
+                categories.forEach(category => {
+                    categoryLabels[category.code] = category.label;
+                });
+
+                this.setState({
+                    categoryLabels,
+                    config,
+                    ready: true
+                });
+            });
+        });
     }
     
     render() {
@@ -41,7 +53,7 @@ export default class NewListingReview extends Component {
                             {
                                 this.state.listing.categories
                                 .map(category =>
-                                    <span>{category}</span>
+                                    <span>{this.state.categoryLabels[category]}</span>
                                 )
                             }
                         </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
-
+import { getCategoriesAsync } from '../core/categories.js';
 import Chip from 'material-ui/Chip';
 
 const styles = {
@@ -25,6 +25,25 @@ const styles = {
 };
 
 export default class TaskCategories extends Component {
+    constructor() {
+        super();
+
+        this.state = {};
+    }
+
+    componentDidMount() {
+        getCategoriesAsync(categories => {
+            const categoryLabels = {};
+            
+            categories.forEach(category => {
+                categoryLabels[category.code] = category.label;
+            });
+
+            this.setState({
+                categoryLabels
+            });
+        });
+    }
     getChip(category) {
         return (
              <a style={styles.categoryStyle}>
@@ -36,7 +55,7 @@ export default class TaskCategories extends Component {
                             goTo(`/?category=${category.code}`);
                         }
                 }}>
-                    <div>{translate(category.code)}</div>
+                    <div>{this.state.categoryLabels[category.code]}</div>
                 </Chip> 
              </a>
         );
@@ -44,9 +63,11 @@ export default class TaskCategories extends Component {
     render() {
         return (
              <div style={styles.wrapper}>
-                    { this.props.categories && this.props.categories.map( 
+                    {   this.state.categoryLabels &&
+                        this.props.categories &&
+                        this.props.categories.map(
                         (category, i) => this.getChip(category)
-                    ) }
+                    )}
             </div>
         );
     };

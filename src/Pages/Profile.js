@@ -22,6 +22,8 @@ import ProfileImage from '../Components/ProfileImage';
 import TaskCard from '../Components/TaskCard';
 import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
+import { displayErrorFactory } from '../core/error-handler';
+import { getCategoriesAsync } from '../core/categories.js';
 import { getConfigAsync } from '../core/config';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import getUserProperty from '../helpers/get-user-property';
@@ -43,6 +45,7 @@ class Profile extends React.Component {
             skills: [],
             offers: [],
             reviews: [],
+            preferences: [],
             talents: [],
             profile: {}
         };
@@ -110,12 +113,20 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            isLoading: true
-        });
+        const categoryLabels = {};
 
-        getConfigAsync(config => {
-            this.loadData(config);
+        getCategoriesAsync(categories => {
+            categories.forEach(category => {
+                categoryLabels[category.code] = category.label;
+            });
+
+            this.setState({
+                categoryLabels
+            });
+
+            getConfigAsync(config => {
+                this.loadData(config);
+            });
         });
     }
 
@@ -149,12 +160,37 @@ class Profile extends React.Component {
                     isProfileImgLoaded: false
                 });
 
+                
                 apiUser
                 .updateItem(this.state.userId, {
                     imageUrl
+                })
+                .then(() => {
+                    
+                }, err => {
+                    alert('Error in updating profile');
                 });
-            })
+
+                setTimeout(() => {
+                    coreAuth.getUserAsync(user => {
+                        try {
+                            user.imageUrl = imageUrl;
+    
+                            coreAuth.setUser(user);
+                        } catch (err) {
+                            return alert('Error: Could not update internal model.')
+                        }
+                    });
+                }, 500);
+            }, err => {
+                this.setState({ 
+                    isProfileImgLoaded: false
+                });
+
+                displayErrorFactory()(err);
+            });
         }
+
         showProfileName() {
             if (!this.state.profile) {
                 return '';
@@ -173,7 +209,7 @@ class Profile extends React.Component {
             const profileImageUrl = this.state.profile && this.state.profile.imageUrl || '/images/avatar.png';
 
             const ProfileHeader =
-                <div className="row" style={{ 'marginTop': 30}} >
+                <div className="row" style={{ 'marginTop': 30}}>
                     <div className="col-xs-12 col-sm-12 col-md-2" style={{ 'paddingTop': 20}}>
                         <ProfileImage
                             isLoading={this.state.isProfileImgLoaded}
@@ -219,7 +255,7 @@ class Profile extends React.Component {
                                 }
                             </div>
                             { this.state.profile && this.state.profile.status === '10' &&
-                                <div className="col-xs-2 text-center" style={{ marginTop: 10 }}>
+                                <div className="col-sm-2 col-xs-6 text-center" style={{ marginTop: 10 }}>
                                     <div className="col-xs-12">
                                         <CheckCircleIcon color={'green'}/>
                                     </div>
@@ -232,7 +268,7 @@ class Profile extends React.Component {
                                 </div>
                             }
                             { this.state.profile && Boolean(getUserProperty(this.state.profile, 'studentIdUrl')) &&
-                                <div className="col-xs-2 text-center" style={{ marginTop: 10 }}>
+                                <div className="col-xs-6 col-sm-2 text-center" style={{ marginTop: 10 }}>
                                     <div className="col-xs-12">
                                         <CheckCircleIcon color={'green'}/>
                                     </div>
@@ -356,7 +392,9 @@ class Profile extends React.Component {
                                  display: 'flex',
                                  flexWrap: 'wrap'
                             }}>
-                            {this.state.preferences.map(preference =>
+                            {this.state.preferences
+                            .filter(_ => this.state.categoryLabels[_.value])
+                            .map(preference =>
                                 <Chip
                                     onTouchTap={() => {
                                         goTo(`/?category=${preference.value}`)
@@ -365,7 +403,7 @@ class Profile extends React.Component {
                                         margin: 5
                                     }}
                                 >
-                                    {preference.value}
+                                    {this.state.categoryLabels[preference.value]}
                                 </Chip>
                             )}
                             </div>

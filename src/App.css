@@ -1,5 +1,6 @@
 body {
   line-height: 1.5em;
+  overflow-wrap: break-word;
 }
 
 p {
@@ -8,6 +9,11 @@ p {
 
 .vq-margin-top-xs {
   margin-top: 10px
+}
+
+.vq-no-padding {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .vq-margin-bottom-xs {
@@ -259,13 +265,21 @@ width:172px;
   Overwrites react-input-range
 */
 
-.input-range__label--min, .input-range__label--max {
+.input-range__label--min {
   bottom: -3rem;
   position: absolute;
+  display: none;
+}
+
+.input-range__label--max {
+  bottom: 3rem;
+  position: absolute;
+  display: none;
 }
 
 .input-range__label {
   font-size: 1.5rem !important;
+  display: none;
 }
 
 .input-range__label--max {

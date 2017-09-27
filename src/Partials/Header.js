@@ -3,6 +3,8 @@ import { grey600 } from 'material-ui/styles/colors';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
+import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import Logo from './Logo';
@@ -75,13 +77,22 @@ class Header extends Component {
               />
               <ToolbarGroup>
                         { this.state.logged &&
-                          <FlatButton 
-                            label={translate("DASHBOARD")}
-                            onClick={ 
+                        <div onClick={ 
                               () => { goTo('/dashboard'); 
-                            }}
+                        }}>
+                          <IconButton
+                            className="visible-xs"
+                            iconStyle={{ color: grey600 }}>
+                            <DashboardIcon />
+                          </IconButton>
+
+                          <FlatButton
+                            className="hidden-xs"
+                            label={translate("DASHBOARD")}
+                            
                             style={headerBtnStyle}
                           />
+                        </div>
                         }
                         { !this.state.logged &&
                         <FlatButton label={translate("SIGNUP")} onClick={ 
@@ -96,9 +107,21 @@ class Header extends Component {
                   { this.state.logged && <ToolbarSeparator /> }
 
                   { this.state.logged && Number(this.state.user.userType) === 2 &&
-                    <FlatButton label={translate('HEADER_LISTINGS')}  onClick={ 
-                      () => goTo('/')
-                    } style={headerBtnStyle}/>
+                    <div onTouchTap={ 
+                        () => goTo('/')
+                    }>
+                      <IconButton
+                        className="visible-xs"
+                        iconStyle={{ color: grey600 }}>
+                        <SearchIcon />
+                      </IconButton>
+
+                      <FlatButton
+                        className="hidden-xs"
+                        label={translate('HEADER_LISTINGS')} 
+                        style={headerBtnStyle}
+                      />
+                    </div>
                   }
                  
                   
@@ -112,9 +135,6 @@ class Header extends Component {
                         </IconButton> :
                         <FlatButton 
                             label={translate('HEADER_ADD_LISTING')}
-                            onClick={ 
-                              () => { goTo('/dashboard'); 
-                            }}
                             style={headerBtnStyle}
                         />
                       }
@@ -129,6 +149,7 @@ class Header extends Component {
 
                   { this.state.logged &&
                     <IconMenu
+                          style={{ cursor: 'pointer' }}
                           iconButtonElement={
                             <div>
                               <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />

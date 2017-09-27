@@ -254,12 +254,13 @@ export default class SectionUsers extends React.Component {
                             modal={false}
                             open={this.state.isBlockingUser || this.state.isUnblockingUser}
                             >
-                                <h1>Block user #{this.state.selectedUserId}</h1>
+                                { this.state.isBlockingUser && <h1>Block user #{this.state.selectedUserId}</h1> }
+                                { !this.state.isBlockingUser && <h1>Unblock user #{this.state.selectedUserId}</h1> }
 
                                 <p>
                                 Read in VQ-MARKETPLACE Solution Center: <br />
                                 <a target="_blank" href="https://vqlabs.freshdesk.com/support/solutions/articles/33000166411-blocking-unblocking-users">
-                                        What happens when Admin blocks a user?
+                                        What happens when Admin blocks/unblock a user?
                                 </a>
                                 </p>
                             </Dialog>

@@ -46,6 +46,7 @@ import * as coreCategories from './core/categories.js';
 import { Component as ConfirmDialog } from './helpers/confirm-before-action.js';
 import { Component as RequestDialog } from './helpers/open-requests-dialog';
 import { Component as MessageDialog } from './helpers/open-message-dialog';
+import { Component as MessageSnackbar } from './helpers/display-message';
 import { setBase } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
@@ -218,6 +219,7 @@ class App extends Component {
             <ConfirmDialog />
             <RequestDialog />
             <MessageDialog />
+            <MessageSnackbar />
           </div>
         </MuiThemeProvider> 
       );

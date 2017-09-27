@@ -2,9 +2,10 @@ import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
+import Dropzone from 'react-dropzone';
 import * as apiMedia from '../api/media';
 import { translate } from '../core/i18n';
-import Dropzone from 'react-dropzone';
+import { displayErrorFactory } from '../core/error-handler';
 
 import '../App.css'
 
@@ -61,7 +62,13 @@ export default class ImageUploader extends React.Component {
                                     });
 
                                     this.props.onChange(images);
-                                })
+                                }, err => {
+                                    this.setState({
+                                        newImageIsUploaded: false
+                                    });
+
+                                    displayErrorFactory()(err);
+                                });
                             }} className="dropzone">
                                     <div className="row">
                                         <div className="text-center" style={{ marginTop: 20 }}>

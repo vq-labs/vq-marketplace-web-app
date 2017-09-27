@@ -148,7 +148,7 @@ export default class Bookings extends Component {
 
                                             { false && order.status === ORDER_STATUS.MARKED_DONE && order.autoSettlementStartedAt &&
                                                 <p className="text-muted">
-                                                    <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt).addHours(8))}</Moment>)</strong>
+                                                    <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)</strong>
                                                     <br />
                                                     <a href="#" onTouchTap={() => {
                                                         openConfirmDialog({

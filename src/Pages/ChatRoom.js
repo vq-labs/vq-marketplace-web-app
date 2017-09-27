@@ -84,6 +84,7 @@ export default class ChatRoom extends React.Component {
                         }
 
                         this.setState({
+                            newMessage: '',
                             config,
                             isUserOwner: user.id === chat.task.userId,
                             requestId,
@@ -105,7 +106,15 @@ export default class ChatRoom extends React.Component {
     handleNewMessage (event) {
         event.preventDefault()
     
-        if (this.state.newMessage < 2) {
+        let newMessage = this.state.newMessage;
+
+        newMessage = newMessage
+            .split('<p><br></p>')
+            .filter(_ => _ !== '<p><br></p>')
+            .join('')
+            .replace(/(\r\n|\n|\r)/gm, "");
+
+        if (newMessage < 2) {
             return alert(translate('ERROR_MESSAGE_TOO_SHORT'));
         }
 
@@ -114,7 +123,7 @@ export default class ChatRoom extends React.Component {
             toUserId: this.state.toUserId,
             fromUserId: this.state.fromUserId,
             requestId: this.state.requestId,
-            message: this.state.newMessage
+            message: newMessage
         };
 
         this.state.messages.push(data);
@@ -124,11 +133,23 @@ export default class ChatRoom extends React.Component {
             messages: this.state.messages
         });
 
-        apiRequest.createItemMessage(this.state.requestId, data);
+        apiRequest
+        .createItemMessage(this.state.requestId, data)
+        .then(rMessage => {
+            const messages = this.state.messages;
+            
+            messages[messages.length - 1] = rMessage;
+            
+            this.setState({
+                messages
+            });
+        }, err => {
+            alert('error');
+        });
     }
     render() {
         return (
-                <div className="container st-chat-view">
+                <div className="container vq-no-padding st-chat-view">
                     { this.state.isLoading && 
                         <Loader isLoading={true} />
                     }
@@ -137,7 +158,7 @@ export default class ChatRoom extends React.Component {
                             <div className="col-xs-12 col-sm-8">
                                     { this.state.task &&
                                         <div className="row">
-                                            <div className="col-xs-12" style={{ margin: '10px' }}>
+                                            <div className="hidden col-xs-12" style={{ margin: '10px' }}>
                                                 <RaisedButton 
                                                     onClick={() => tryGoBack(`/chat`)}
                                                     label={translate('BACK')}
@@ -195,7 +216,7 @@ export default class ChatRoom extends React.Component {
                                             return <div className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
                                                         <div className="col-xs-12" style={{ marginBottom: '20px'}}>
                                                             <div className="row">
-                                                                <div className="col-xs-2 col-sm-1">
+                                                                <div className="col-xs-3 col-sm-1">
                                                                     <a 
                                                                         style={{
                                                                             cursor: 'pointer'
@@ -214,7 +235,7 @@ export default class ChatRoom extends React.Component {
                                                                         />
                                                                     </a>
                                                                 </div>
-                                                                <div className="col-xs-10 col-sm-11" style={{ marginTop: 6 }}>
+                                                                <div className="col-xs-9 col-sm-11" style={{ marginTop: 6 }}>
                                                                     <strong>
                                                                         <a
                                                                             style={{

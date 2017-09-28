@@ -629,8 +629,12 @@ export default class NewListing extends Component {
                                         backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                         label={translate("NEW_LISTING_CONFIRM_AND_POST")}
                                         primary={true}
-                                        disabled={false}
+                                        disabled={this.state.isSubmitting}
                                         onTouchTap={() => {
+                                            this.setState({
+                                                isSubmitting: true
+                                            });
+
                                             const task = this.state.task;
 
                                             if (task.currency === 'EUR' || task.currency === 'USD' || task.currency === 'PLN') {
@@ -672,7 +676,14 @@ export default class NewListing extends Component {
                                             }))
                                             .then(task => this.setState({
                                                 step: this.state.step + 1
-                                            }));
+                                            }))
+                                            .catch(err => {
+                                                alert(err);
+
+                                                this.setState({
+                                                    isSubmitting: false
+                                                });
+                                            })
                                         } }
                                     />
                                 }

@@ -116,8 +116,12 @@ class BookRequest extends Component {
                                             cursor: 'pointer'
                                         }}
                                         onTouchTap={() => {
+                                            const billingAddress = this.state.requestDetails.task.taskLocations[0];
+
+                                            delete billingAddress.id;
+
                                             this.setState({
-                                                billingAddress: this.state.requestDetails.task.taskLocations[0]
+                                                billingAddress
                                             });
                                         }}
                                     >
@@ -145,6 +149,7 @@ class BookRequest extends Component {
                                 withTaxNumber={true}
                                 location={this.state.billingAddress}
                                 onLocationChange={billingAddress => {
+                                    debugger;
                                     this.setState({
                                         billingAddress
                                     });
@@ -154,10 +159,15 @@ class BookRequest extends Component {
 
                         <div className="col-xs-12" style={{ marginTop: 50 }}>
                             <RaisedButton
+                                disabled={this.state.isSubmitted}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 labelColor={"white"}
                                 label={translate("CONFIRM_BOOKING")} 
                                 onClick={() => {
+                                    this.setState({
+                                        isSubmitted: true
+                                    });
+
                                     const billingAddress = this.state.billingAddress;
                                     const order = this.state.order;
                                     
@@ -196,9 +206,15 @@ class BookRequest extends Component {
                                             .createItem(order)
                                             .then(rOrder => {
                                                 goTo(`/order/${rOrder.id}`);
+                                            }, err => {
+                                                alert(err);
+
+                                                this.setState({
+                                                    isSubmitted: false
+                                                });
                                             });
                                     };
-
+                          
                                     if (!billingAddress.id) {
                                         // commit billing address
                                         return apiBillingAddress

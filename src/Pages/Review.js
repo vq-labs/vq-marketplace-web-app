@@ -8,7 +8,7 @@ import apiOrder from '../api/order';
 import * as apiRequest from '../api/request';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
 import { translate } from '../core/i18n';
 
 const REVIEW_TYPES = {

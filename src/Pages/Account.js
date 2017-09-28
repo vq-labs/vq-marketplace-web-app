@@ -427,22 +427,32 @@ export default class Account extends Component {
                                         });
 
                                         getUserAsync(user => {
-                                            try {
-                                                user.userProperties
-                                                .find(_ => _.propKey === propKey)
-                                                .propValue = data[propKey];
-                                            } catch (err) {
-                                                return alert('Error: Could not update internal model.')
-                                            }
-                                        });
+                                            let property;
 
-                                        apiUserProperty
+                                            property = user.userProperties
+                                            .find(_ => _.propKey === propKey);
+
+                                            if (!property) {
+                                                property = {
+                                                    propKey: propKey,
+                                                    propValue: false
+                                                };
+                            
+                                                user
+                                                .userProperties
+                                                .push(property);
+                                            } else {
+                                                property.propValue = data[propKey];
+                                            }
+
+                                            apiUserProperty
                                             .createItem(
-                                                this.state.user.id,
+                                                user.id,
                                                 propKey,
                                                 data[propKey]
                                             )
-                                            .then(_ => _, _ => _);
+                                            .then(_ => _, _ => _);  
+                                        });
                                     }}
                                 />
                             </div>

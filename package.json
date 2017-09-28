@@ -2,7 +2,7 @@
   "name": "vq-marketplace-web-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/app",
+  "homepage": "/",
   "author": "vq-labs.com",
   "licence": "MIT",
   "devDependencies": {

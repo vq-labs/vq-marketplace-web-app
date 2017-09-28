@@ -171,12 +171,12 @@ class Offers extends Component {
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
         
-        browserHistory
-            .push(`/app?${serializeQueryObj(appliedFilter)}`);
+        goTo(`/app?${serializeQueryObj(appliedFilter)}`);
 
         this.setState({
             appliedFilter
         });
+        
         this.loadTasks(appliedFilter);
     }
 

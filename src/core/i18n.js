@@ -15,6 +15,10 @@ export const setLang = langKey => {
 export const addLang = (langKey, translations) => TRANSLATIONS[langKey] = translations;
 
 export const translate = fieldKey => {
+    if (typeof fieldKey === 'undefined') {
+        return '';
+    }
+
     if (typeof TRANSLATIONS[LANG][fieldKey.toUpperCase()] === 'undefined') {
         return fieldKey;
     }

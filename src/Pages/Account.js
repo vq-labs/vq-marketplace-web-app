@@ -471,7 +471,10 @@ export default class Account extends Component {
                                 secondary={true}
                                 label={translate('DELETE_YOUR_ACCOUNT_ACTION')}
                                 onTouchTap={() => {
-                                    openConfirmDialog({}, () => {
+                                    openConfirmDialog({
+                                        headerLabel: translate('DELETE_YOUR_ACCOUNT_HEADER'),
+                                        confirmationLabel: translate('DELETE_YOUR_ACCOUNT_DESC')
+                                    }, () => {
                                         apiUser
                                             .deleteItem(this.state.user.id)
                                             .then(_ => {

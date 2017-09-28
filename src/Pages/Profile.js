@@ -29,7 +29,6 @@ import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import getUserProperty from '../helpers/get-user-property';
 import Loader from "../Components/Loader";
 
-
 class Profile extends React.Component {
      constructor(props) {
         super();
@@ -145,7 +144,8 @@ class Profile extends React.Component {
                 isProfileImgLoaded: true
             });
 
-            apiMedia.upload(files[0], {
+            apiMedia
+            .upload(files[0], {
                 width: 150,
                 height: 150 
             })

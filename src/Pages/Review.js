@@ -40,6 +40,12 @@ class Review extends Component {
     componentDidMount() {
         getConfigAsync(config => {
             getUserAsync(user => {
+                if (!user) {
+                    goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
+            
+                    return true;
+                }
+
                 this.setState({
                     user,
                     config

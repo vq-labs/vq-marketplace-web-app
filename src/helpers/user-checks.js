@@ -1,8 +1,8 @@
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
 
 export const getMeOutFromHereIfAmNotAuthorized = user => {
     if (!user) {
-        goTo('/login');
+        goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
 
         return true;
     }

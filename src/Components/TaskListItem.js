@@ -18,8 +18,9 @@ import apiTask from '../api/task';
 import { getConfigAsync } from '../core/config';
 import ReactStars from 'react-stars'
 import ListingHeader from '../Components/ListingHeader';
-import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import TASK_STATUS from '../constants/TASK_STATUS';
 
 export default class TaskListItem extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ export default class TaskListItem extends Component {
                               <div className="col-xs-12 col-sm-6">
                                   { this.state.task &&
                                     this.state.task.requests &&
+                                    this.state.task.status === TASK_STATUS.ACTIVE &&
                                     !this.state.task.requests
                                       .filter(_ => _.status === REQUEST_STATUS.PENDING).length &&
                                     <div style={{

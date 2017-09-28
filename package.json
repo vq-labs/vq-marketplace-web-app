@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "/app",
-  "author": "VQ-LABS.com",
+  "author": "vq-labs.com",
   "licence": "MIT",
   "devDependencies": {
     "autoprefixer": "6.5.1",

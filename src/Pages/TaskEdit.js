@@ -5,6 +5,8 @@ import FlatButton from 'material-ui/FlatButton';
 import HtmlTextField from '../Components/HtmlTextField';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import TASK_STATUS from '../constants/TASK_STATUS';
 import apiTask from '../api/task';
 import * as apiTaskImage from '../api/task-image';
 import { goTo, goBack } from '../core/navigation';
@@ -50,7 +52,15 @@ export default class TaskEdit extends Component {
                     return alert('NOT_YOUR_TASK');
                 }
 
-                if (rTask.requests.length) {
+                const canEdit = Boolean(
+                    this.state.task &&
+                    this.state.task.status === TASK_STATUS.ACTIVE &&
+                    this.state.task.requests &&
+                    !this.state.task.requests
+                    .filter(_ => _.status === REQUEST_STATUS.PENDING).length
+                );
+
+                if (canEdit) {
                     goTo('/');
 
                     return alert('EDITING_NOT_POSSIBLE');

@@ -18,7 +18,7 @@ import Autocomplete from 'react-google-autocomplete';
 
 import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
 import { stripHtml, formatGeoResults, serializeQueryObj } from '../core/util';
-import { goTo } from '../core/navigation';
+import { goTo, setQueryParams } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
@@ -171,12 +171,12 @@ class Offers extends Component {
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
         
-        goTo(`/app?${serializeQueryObj(appliedFilter)}`);
+        setQueryParams(appliedFilter);
 
         this.setState({
             appliedFilter
         });
-        
+
         this.loadTasks(appliedFilter);
     }
 

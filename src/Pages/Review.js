@@ -96,7 +96,7 @@ class Review extends Component {
                             return goTo('/');
                         });
                 }
-            }, false);
+            }, true);
         });
     }
     render() {

@@ -25,6 +25,7 @@ import { translate } from '../core/i18n';
 import { displayErrorFactory } from '../core/error-handler';
 import { getCategoriesAsync } from '../core/categories.js';
 import { getConfigAsync } from '../core/config';
+import { getUserAsync } from '../core/auth';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import getUserProperty from '../helpers/get-user-property';
 import Loader from "../Components/Loader";
@@ -112,21 +113,27 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        const categoryLabels = {};
+        getUserAsync(user => {
+            if (!user) {
+                return goTo(`/login?redirectTo=/profile/${this.state.userId}`);
+            }
 
-        getCategoriesAsync(categories => {
-            categories.forEach(category => {
-                categoryLabels[category.code] = category.label;
-            });
+            const categoryLabels = {};
 
-            this.setState({
-                categoryLabels
-            });
+            getCategoriesAsync(categories => {
+                categories.forEach(category => {
+                    categoryLabels[category.code] = category.label;
+                });
 
-            getConfigAsync(config => {
-                this.loadData(config);
+                this.setState({
+                    categoryLabels
+                });
+
+                getConfigAsync(config => {
+                    this.loadData(config);
+                });
             });
-        });
+        }, true);
     }
 
     componentWillReceiveProps() {

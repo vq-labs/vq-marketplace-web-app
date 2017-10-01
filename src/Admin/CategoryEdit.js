@@ -22,7 +22,6 @@ import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip';
-
 import TextField from 'material-ui/TextField';
 
 import apiTask from '../api/task';

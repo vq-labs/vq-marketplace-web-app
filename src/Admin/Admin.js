@@ -14,6 +14,7 @@ import SectionLabels from './Labels';
 import SectionPricing from './Pricing';
 import SectionListing from './Listing';
 import SectionPosts from './Posts';
+import SectionSubscriptionPlan from './SubscriptionPlan';
 
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
@@ -84,17 +85,25 @@ export default class AdminPage extends React.Component {
                         <h4>Content</h4>
                         <MenuItem onClick={ () => this.goToSection('posts') }>Content</MenuItem>
 
+
+                        <h4>Subscription</h4>
+                        <MenuItem onClick={ () => this.goToSection('subscription-plan') }>
+                            Plan
+                        </MenuItem>
+
                         <h4>Support</h4>
                         <a className="vq-link" href="https://vqlabs.freshdesk.com/support/tickets/new" target="_blank">
                             <MenuItem>
                                 Submit ticket
                             </MenuItem>
                         </a>
+
                         <a className="vq-link" href="https://vqlabs.freshdesk.com/support/solutions" target="_blank">
                             <MenuItem>
                                 Knowledge solutions
                             </MenuItem>
                         </a>
+
                         <a className="vq-link" href="https://vq-labs.com" target="_blank">
                             <MenuItem>
                                 VQ LABS - Company
@@ -133,6 +142,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'pricing' && <SectionPricing /> }
                                         { this.state.section === 'listing' && <SectionListing /> }
                                         { this.state.section === 'posts' && <SectionPosts /> }
+                                        { this.state.section === 'subscription-plan' && <SectionSubscriptionPlan /> }
                                     </div> 
                                 </div> 
                         </div>    

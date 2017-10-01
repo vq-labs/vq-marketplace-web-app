@@ -61,9 +61,42 @@ export default class SectionUsers extends React.Component {
                 <div className="row">
                     <div className="col-xs-12">
                             <h1>Users</h1>
+                            <p className="text-muted">
+                                Each User can be either a Client, Provider or both Client/Provider. Read more about user types <a href="https://vqlabs.freshdesk.com/solution/articles/33000208637-clients-and-providers-user-types" target="_blank">here</a>.
+                            </p>
                     </div>
                     <div className="col-xs-12">
-                    <div className="col-xs-3 col-sm-3">
+                        <div className="col-xs-3 col-sm-3">
+                            <DropDownMenu
+                                style={{
+                                    width: '100%'
+                                }}
+                                value={this.state.userTypeFilter}
+                                onChange={(_, _2, userTypeFilter) => {
+                                    this.setState({
+                                        userTypeFilter
+                                    });
+                                }}
+                            >
+                                    <MenuItem
+                                        value={undefined}
+                                        primaryText="All user types"
+                                    />
+                                    <MenuItem
+                                        value={1}
+                                        primaryText={'Clients (User Type 1)'}
+                                    />
+                                    <MenuItem
+                                        value={2}
+                                        primaryText={'Providers (User Type 2)'}
+                                    />
+                                    <MenuItem
+                                        value={3}
+                                        primaryText={'Client/Provider (User Type 3)'}
+                                    />
+                            </DropDownMenu>
+                        </div>
+                        <div className="col-xs-3 col-sm-3">
                             <DropDownMenu
                                 style={{
                                     width: '100%'
@@ -97,12 +130,21 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                         <List>
                             { this.state.users
-                            .filter(task => {
-                                if (!this.state.statusFilter) {
-                                    return true;
+                            .filter(user => {
+                                if (!this.state.statusFilter && this.state.userTypeFilter) {
+                                    return this.state.userTypeFilter === user.userType;
                                 }
 
-                                return this.state.statusFilter === task.status;
+                                if (this.state.statusFilter && !this.state.userTypeFilter) {
+                                    return this.state.statusFilter === user.status;
+                                }
+
+                                if (this.state.statusFilter && this.state.userTypeFilter) {
+                                    return this.state.statusFilter === user.status &&
+                                        this.state.userTypeFilter === user.userType;
+                                }
+                                
+                                return true;
                             })
                             .map(user => 
                                 <ListItem

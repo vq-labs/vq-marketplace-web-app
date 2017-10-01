@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardMedia, CardTitle } from 'material-ui/Card';
+import Loader from "../Components/Loader";
 import * as apiCategory from '../api/category';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
@@ -11,7 +12,8 @@ export default class NewListingCategory extends React.Component {
         super();
 
         this.state = {
-            categories: []
+            categories: [],
+            isLoading: true
         };
     }
     componentDidMount() {
@@ -20,6 +22,7 @@ export default class NewListingCategory extends React.Component {
                 .getItems()
                 .then(categories => {
                     this.setState({
+                        isLoading: false,
                         ready: true,
                         config,
                         categories: _chunk(categories, 3) 
@@ -43,6 +46,11 @@ export default class NewListingCategory extends React.Component {
                         </div>
                     }
                     <hr />
+
+                    { this.state.isLoading &&
+                        <Loader isLoading={true}/>
+                    }
+                    
                     <div className="row">
                         <div className="col-xs-12">
                             { this.state.categories && this.state.categories

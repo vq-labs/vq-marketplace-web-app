@@ -89,7 +89,7 @@ export default class SectionUsers extends React.Component {
                                 <ListItem
                                     primaryText={
                                         <p>
-                                            Title{task.title}<br/>
+                                            {task.title}<br/>
                                             Status: <strong>{displayTaskStatus(task.status)}</strong>
                                             <br/>
                                         </p>

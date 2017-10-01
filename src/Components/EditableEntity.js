@@ -95,11 +95,36 @@ export default class EditableEntity extends Component {
                 }
                 { !this.state.isLoading &&
                             <div className="col-xs-12">
+                                {this.props.enableKeySearch &&
+                                    <div className="col-xs-12">
+                                        <TextField
+                                            onChange={(ev, value) => {
+                                                this.setState({
+                                                    labelKeySearchValue: value.toUpperCase()
+                                                });
+                                            }}
+                                            value={this.state.labelKeySearchValue}
+                                            floatingLabelText="Search"
+                                        />
+                                    </div>
+                                }
                                 <div className="col-xs-12 col-sm-8">
-                                    { Object.keys(this.state.groupedFields).map((groupKey) =>
+                                    { Object.keys(this.state.groupedFields)
+                                    .map((groupKey) =>
                                         <div className="row">
                                         <h3>{groupKey}</h3>
                                         {this.state.groupedFields[groupKey]
+                                        .filter(_ => {
+                                            if (!this.props.enableKeySearch) {
+                                                return true;
+                                            }
+
+                                            if (!this.state.labelKeySearchValue) {
+                                                return true;
+                                            }
+
+                                            return _.key.toUpperCase().indexOf(this.state.labelKeySearchValue) > -1;
+                                        })
                                         .map((field, index) =>
                                             <div className="col-xs-12" key={index}>
                                                     { field.type === 'color' &&

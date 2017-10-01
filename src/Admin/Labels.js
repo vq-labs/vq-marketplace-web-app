@@ -3,6 +3,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import EditableEntity from '../Components/EditableEntity';
 import Loader from "../Components/Loader";
+import TextField from 'material-ui/TextField';
 import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'
@@ -78,33 +79,36 @@ export default class SectionLabels extends React.Component {
     render() {
             return (
              <div className="col-xs-12">
-                <div>
-                    <DropDownMenu value={this.state.lang} onChange={(event, index, value) => {
-                        this.setState({
-                            labels: [],
-                            labelsObj: {},
-                            lang: value
-                        });
+                <div className="row"> 
+                    <div>
+                        <DropDownMenu value={this.state.lang} onChange={(event, index, value) => {
+                            this.setState({
+                                labels: [],
+                                labelsObj: {},
+                                lang: value
+                            });
 
-                        coreNavigation.setQueryParams({
-                            lang: value
-                        });
-                        
-                        this.getLabels(value);
-                    }}>
-                        { true && <MenuItem value={this.state.lang} primaryText={LANG_CODES[this.state.lang]} /> }
-                        { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
-                        { false && <MenuItem value={'en'} primaryText="English" /> }
-                        { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
-                        { false && <MenuItem value={'pl'} primaryText="Polski" /> }
-                        { false && <MenuItem value={'hu'} primaryText="Magyar" /> }
-                    </DropDownMenu>
+                            coreNavigation.setQueryParams({
+                                lang: value
+                            });
+                            
+                            this.getLabels(value);
+                        }}>
+                            { true && <MenuItem value={this.state.lang} primaryText={LANG_CODES[this.state.lang]} /> }
+                            { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
+                            { false && <MenuItem value={'en'} primaryText="English" /> }
+                            { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
+                            { false && <MenuItem value={'pl'} primaryText="Polski" /> }
+                            { false && <MenuItem value={'hu'} primaryText="Magyar" /> }
+                        </DropDownMenu>
+                    </div>
                 </div>
 
                 { this.state.isLoading && <Loader isLoading={true}/> }
 
                 { !this.state.isLoading && Boolean(this.state.labels.length) &&
                     <EditableEntity
+                        enableKeySearch={true}
                         groupBy="group"
                         showCancelBtn={false}
                         value={this.state.labelsObj}

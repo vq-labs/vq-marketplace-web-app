@@ -57,10 +57,15 @@ export default class NewListingCategory extends React.Component {
                                 .map(row => (
                                     <div className="row">
                                         { row.map(tile =>
-                                            <div className="col-xs-12 col-sm-4" style={{ marginBottom: 10 }}>
-                                                <Card onClick={
-                                                    () => this.onCategoryChosen(tile)
-                                                }>
+                                            <div
+                                                className="col-xs-12 col-sm-4"
+                                                style={{ marginBottom: 10 }}
+                                            >
+                                                <Card
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={
+                                                        () => this.onCategoryChosen(tile)
+                                                    }>
                                                     <CardMedia
                                                         overlay={
                                                             <CardTitle title={tile.label || translate(tile.code)} />

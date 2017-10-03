@@ -27,6 +27,7 @@ import Order from './Pages/Order';
 import NotFound from './Pages/NotFound';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
+import AdminUserPage from './Admin/User';
 import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
@@ -35,6 +36,7 @@ import PostReviewCompleted from './Pages/PostReviewCompleted';
 import Review from './Pages/Review';
 import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
+import UserDocuments from './Pages/UserDocuments';
 import UserPreferences from './Pages/UserPreferences';
 import UserVerifications from './Pages/UserVerifications';
 import * as coreAuth from './core/auth';
@@ -60,7 +62,7 @@ corei18n.setLang(CONFIG.LANG);
 class App extends Component {
   constructor (props) {
     super(props);
-
+    
     this.state = {
       ready: false,
       metaReady: false,
@@ -99,9 +101,10 @@ class App extends Component {
         } else {
           coreAuth.loadFromLocalStorage();
         }
-
+        
         coreAuth.addListener('login', () => {
-          apiAuth.me()
+          apiAuth
+            .me()
             .then(myUserData => {
               coreAuth.setUserId(myUserData.id);  
               coreAuth.setUser(myUserData);
@@ -139,7 +142,7 @@ class App extends Component {
       const labelTranslations = {};
 
       labels.forEach(item => {
-          labelTranslations[item.labelKey] = item.labelValue;
+        labelTranslations[item.labelKey] = item.labelValue;
       });
 
       corei18n.addLang(defaultLang, labelTranslations);
@@ -182,7 +185,9 @@ class App extends Component {
                 <Route path="listings" component={Offers}></Route>
                 <Route path="user-preferences" component={UserPreferences}></Route>
                 <Route path="user-verifications" component={UserVerifications}></Route>
+                <Route path="user-documents" component={UserDocuments}></Route>
                 <Route path="admin/:section" component={AdminPage}></Route>
+                <Route path="admin/user/:userId" component={AdminUserPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>
                 <Route path="premium" component={PremiumPage}></Route>

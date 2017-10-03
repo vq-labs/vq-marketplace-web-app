@@ -7,7 +7,7 @@ export const create = (resource, transformers) => {
     cache = cache ? JSON.parse(cache) : {};
    
     return {
-        getItem: (itemId, byProp) => communication.doGet(`/${resource}/${itemId}${byProp ? '/' + byProp : ''}`),
+        getItem: (itemId, byProp, query) => communication.doGet(`/${resource}/${itemId}${byProp ? '/' + byProp : ''}`, query),
         getItems: (query, params) => new Promise((resolve, reject) => {
             let resolved = false;
 

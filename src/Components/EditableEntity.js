@@ -8,9 +8,10 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import HtmlTextField from './HtmlTextField';
 import ImageUploader from './ImageUploader';
+import FileUploader from './FileUploader';
 import DOMPurify from 'dompurify'
-
 import * as coreNavigation from '../core/navigation';
+import { getConfigAsync } from '../core/config';
 import '../App.css';
 
 const _ = require('underscore');
@@ -45,7 +46,11 @@ export default class EditableEntity extends Component {
     }
     
     componentDidMount() {
-        
+        getConfigAsync(config => {
+            this.setState({
+                config
+            });
+        });
     }
 
     componentWillReceiveProps (nextProps) {
@@ -244,6 +249,23 @@ export default class EditableEntity extends Component {
                                                             />
                                                         </div>
                                                     }
+
+                                                    { field.type === 'single-file' &&
+                                                        <div style={{ marginTop: 15 }}>
+                                                            <strong>{field.label}</strong>
+                                                            {field.hint && <p>{field.hint}</p>}
+                                                            <FileUploader
+                                                                files={
+                                                                    this.state.updatedEntity[field.key] ?
+                                                                    [{ fileUrl: this.state.updatedEntity[field.key] }] :
+                                                                    []
+                                                                } 
+                                                                onChange={files => {
+                                                                    this.handleFieldChange(field.key)(null, files[0] ? files[0].fileUrl : undefined)
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    }
                                             </div>
                                         )}
                                         </div>
@@ -252,20 +274,24 @@ export default class EditableEntity extends Component {
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>
                                             { this.state.showCancelBtn &&  
                                                 <FlatButton
-                                                    style={ { float: 'left' } }
+                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    style={{ float: 'left' }}
                                                     label={this.props.cancelLabel || 'Cancel'}
                                                     primary={true}
                                                     disabled={false}
                                                     onTouchTap={ () => this.props.onCancel ? this.props.onCancel() : coreNavigation.goBack() }
                                                 />
                                             }
-                                            <RaisedButton
-                                                disabled={!this.state.dirty}
-                                                style={ { float: 'right' } }
-                                                label={this.props.saveLabel || 'Save'}
-                                                primary={ true }
-                                                onTouchTap={ this.handleUpdate }
-                                            />
+                                            { this.state.config &&
+                                                <RaisedButton
+                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    disabled={!this.props.enableSkip ? !this.state.dirty : false}
+                                                    labelStyle={{color: 'white '}}
+                                                    style={{float: 'right'}}
+                                                    label={this.props.saveLabel || 'Save'}
+                                                    onTouchTap={ this.handleUpdate }
+                                                />
+                                            }
                                         </div>
                                     </div>  
                                 </div>

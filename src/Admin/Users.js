@@ -155,7 +155,7 @@ export default class SectionUsers extends React.Component {
                                         <p>
                                             {user.firstName} {user.lastName} (#{user.id})<br />
                                             Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong><br/>
-                                            UserType: <strong>{String(user.userType) === '1' ? 'CLIENT' : 'TASKER'}</strong>
+                                            UserType: <strong>{String(user.userType) === '1' ? 'CLIENT' : 'PROVIDER'}</strong>
                                         </p>
                                     }
                                     secondaryText={
@@ -179,6 +179,12 @@ export default class SectionUsers extends React.Component {
                                                 vertical: 'top'
                                             }}
                                             >
+
+                                            <MenuItem
+                                                primaryText="Details (New)"
+                                                onClick={() => goTo(`/admin/user/${user.id}`)}
+                                            />
+
                                             <MenuItem
                                                 primaryText="Show Email"
                                                 onClick={() => {
@@ -201,23 +207,39 @@ export default class SectionUsers extends React.Component {
                                                     })
                                                 }}
                                             />
-                                            { String(user.userType) === '2' &&
-                                                <MenuItem
-                                                    primaryText="Show StudentID"
-                                                    onClick={() => {
-                                                        apiAdmin
-                                                        .users
-                                                        .getUserProperties(user.id)
-                                                        .then(userProperties => {
-                                                            this.setState({
-                                                                userProperties,
-                                                                showProperty: true,
-                                                                selectedUser: user
-                                                            });
-                                                        })
-                                                    }}
-                                                />
-                                            }
+                                  
+                                            <MenuItem
+                                                primaryText="Verifications"
+                                                onClick={() => {
+                                                    apiAdmin
+                                                    .users
+                                                    .getUserProperties(user.id)
+                                                    .then(userProperties => {
+                                                        this.setState({
+                                                            userProperties,
+                                                            showProperty: true,
+                                                            selectedUser: user
+                                                        });
+                                                    })
+                                                }}
+                                            />
+
+                                            <MenuItem
+                                                primaryText="Documents"
+                                                onClick={() => {
+                                                    apiAdmin
+                                                    .users
+                                                    .getUserProperties(user.id)
+                                                    .then(userProperties => {
+                                                        this.setState({
+                                                            userProperties,
+                                                            showProperty: true,
+                                                            selectedUser: user
+                                                        });
+                                                    })
+                                                }}
+                                            />
+                                       
                                             <MenuItem
                                                 primaryText="Go to profile page"
                                                 onClick={() => coreNavigation.goTo(`/profile/${user.id}`)}

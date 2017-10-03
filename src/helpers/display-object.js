@@ -1,18 +1,27 @@
 import React from 'react';
 
-const displayObject = obj => {
+const displayObject = (obj, options) => {
     if (!obj) {
         return 'nothing to display';
     }
 
+    options = options || {};
+
     return Object.keys(obj)
         .map(objKey => {
             if (typeof obj[objKey] === 'string' || typeof obj[objKey] === 'number') {
-                const valueToBeDisplayed = String(obj[objKey]).substring(0, 50);
-                const maybeThreeDots = String(obj[objKey]).length > 50 ? '...' : '';
+                let valueToBeDisplayed;
+
+                if (options.doNotTrim) {
+                    valueToBeDisplayed = obj[objKey];
+                } else {
+                    const maybeThreeDots = String(obj[objKey]).length > 50 ? '...' : '';
+
+                    valueToBeDisplayed = `${String(obj[objKey]).substring(0, 50)}${maybeThreeDots}`;
+                }
 
                 return <div className="col-xs-12">
-                            {objKey}: {valueToBeDisplayed}{maybeThreeDots}
+                            {objKey}: {valueToBeDisplayed}
                         </div>;
             }
 
@@ -25,7 +34,7 @@ const displayObject = obj => {
             return  <div className="col-xs-12">
                         <strong>{objKey}</strong>
                         <div className="col-xs-12">
-                            {displayObject(obj[objKey])}
+                            {displayObject(obj[objKey], options)}
                         </div>
                     </div>;
         });

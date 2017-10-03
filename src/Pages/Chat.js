@@ -97,7 +97,7 @@ export default class Chat extends Component {
                                     .map(status => 
                                         <MenuItem
                                             value={REQUEST_STATUS[status]}
-                                            primaryText={status}
+                                            primaryText={translate(`REQUEST_STATUS_${status}`)}
                                         />
                                     )
                                 }

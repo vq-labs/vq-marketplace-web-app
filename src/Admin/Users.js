@@ -1,6 +1,7 @@
 import React from 'react';
 import Avatar from 'material-ui/Avatar';
 import * as apiAdmin from '../api/admin';
+import { goTo } from '../core/navigation';
 import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -242,7 +243,7 @@ export default class SectionUsers extends React.Component {
                                        
                                             <MenuItem
                                                 primaryText="Go to profile page"
-                                                onClick={() => coreNavigation.goTo(`/profile/${user.id}`)}
+                                                onClick={() => goTo(`/profile/${user.id}`)}
                                             />
                                             { String(user.status) !== '20' &&
                                                 <MenuItem

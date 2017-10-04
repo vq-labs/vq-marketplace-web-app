@@ -278,7 +278,12 @@ export default class ChatRoom extends React.Component {
                                                         value={this.state.newMessage}
                                                     />
                                                     
-                                                    <RaisedButton disabled={!stripHtml(this.state.newMessage)} type="submit" style={{ marginTop: 10, width: '100%' }} label={translate("SEND")} />
+                                                    <RaisedButton
+                                                        disabled={!stripHtml(this.state.newMessage)}
+                                                        type="submit"
+                                                        style={{ marginTop: 10, width: '100%' }}
+                                                        label={translate("CHAT_MESSAGE_SUBMIT")}
+                                                    />
                                                 </form>
                                             </div>
                                         </div>
@@ -375,7 +380,7 @@ export default class ChatRoom extends React.Component {
                                                         });
 
                                                         openMessageDialog({
-                                                            header: translate('SUCCESS')
+                                                            header: translate('REQUEST_ACTION_MARK_DONE_SUCCESS')
                                                         });
                                                     });
                                                 });
@@ -411,7 +416,7 @@ export default class ChatRoom extends React.Component {
                                                             });
 
                                                             openMessageDialog({
-                                                                header: translate('SUCCESS')
+                                                                header: translate('ORDER_SETTLED_SUCCESS')
                                                             });
                                                         });
                                                 });

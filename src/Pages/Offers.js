@@ -313,6 +313,7 @@ class Offers extends Component {
                             });
                         }}
                         types={[ 'address' ]}
+                        placeholder={translate('LISTING_FILTER_GEO')}
                     >
                     </Autocomplete>
                     { this.state.locationQueryString &&

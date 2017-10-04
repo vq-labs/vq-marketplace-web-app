@@ -275,7 +275,6 @@ export default class EditableEntity extends Component {
                                             { this.state.config &&
                                                 this.state.showCancelBtn &&  
                                                 <FlatButton
-                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
                                                     style={{ float: 'left' }}
                                                     label={this.props.cancelLabel || 'Cancel'}
                                                     primary={true}

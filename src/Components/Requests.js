@@ -16,6 +16,7 @@ import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 import { getConfigAsync } from '../core/config';
+import { getUtcUnixTimeNow } from '../core/util';
 import displayTaskTiming from '../helpers/display-task-timing';
 import getUserProperty from '../helpers/get-user-property';
 import { factory as errorFactory } from '../core/error-handler';
@@ -72,14 +73,14 @@ export default class Requests extends Component {
 
                 requestRef.status = REQUEST_STATUS.MARKED_DONE;
 
-                requestRef.order.autoSettlementStartedAt = new Date();
+                requestRef.order.autoSettlementStartedAt = getUtcUnixTimeNow();
         
                 this.setState({
                     requests
                 });
 
                 return openMessageDialog({
-                    header: translate("SUCCESS")
+                    header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")
                 });
             }, errorFactory());
     });
@@ -104,7 +105,7 @@ export default class Requests extends Component {
             });
 
             return openMessageDialog({
-                header: translate("SUCCESS")
+                header: translate("CANCEL_REQUEST_ACTION_SUCCESS")
             });
         }, errorFactory());
     })
@@ -155,7 +156,6 @@ export default class Requests extends Component {
                         </div>
                     }
                     { !this.state.isLoading && this.state.requests
-                        .filter(_ => _.fromUser)
                         .map(request =>
                             <div
                                 className="col-xs-12"

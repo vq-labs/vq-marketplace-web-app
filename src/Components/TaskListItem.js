@@ -80,7 +80,7 @@ export default class TaskListItem extends Component {
                                       <strong>
                                         <a
                                             className="vq-link"
-                                            label={`${translate('EDIT')}`}
+                                            label={`${translate('EDIT_LISTING')}`}
                                             labelStyle={{color: this.state.config.COLOR_PRIMARY}}
                                             onTouchTap={() => goTo(`/task/${task.id}/edit`)}
                                         >
@@ -97,11 +97,11 @@ export default class TaskListItem extends Component {
                                     <strong>
                                       <a  
                                           className="vq-link"
-                                          label={`${translate('CANCEL')}`}
+                                          label={`${translate('CANCEL_LISTING_ACTION_HEADER')}`}
                                           labelStyle={{color: this.state.config.COLOR_PRIMARY}}
                                           onTouchTap={() => {
                                             openConfirmDialog({
-                                              headerLabel: translate("CANCEL"),
+                                              headerLabel: translate("CANCEL_LISTING_ACTION_HEADER"),
                                               confirmationLabel: translate("CANCEL_LISTING_DESC")
                                             }, () => {
                                               apiTask

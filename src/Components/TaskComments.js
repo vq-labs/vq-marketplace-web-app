@@ -68,8 +68,8 @@ export default class TaskComments extends React.Component {
         return (
             <div class="container">
                 <div className="col-xs-12">
-                    <h3>{translate('COMMENTS')}</h3>
-                    <p>{translate('COMMENTS_DESC')}</p>
+                    <h3>{translate('LISTING_COMMENTS_HEADER')}</h3>
+                    <p>{translate('LISTING_COMMENTS_DESC')}</p>
                 </div>
             { this.state.comments
             .map(message => {
@@ -143,7 +143,7 @@ export default class TaskComments extends React.Component {
                                         disabled={!stripHtml(this.state.newComment)}
                                         type="submit"
                                         style={{ width: '100%' }}
-                                        label={translate("SEND")}
+                                        label={translate("LISTING_COMMENTS_SUBMIT")}
                                     />
                             </form>
                         </div>

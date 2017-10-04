@@ -281,20 +281,23 @@ export default class NewListing extends Component {
     render() {
               const success=
               <div className="container">
+                { this.state.ready &&
                 <div className="row">
-                    { this.state.ready &&
-                        <div className="col-xs-12">
-                            <h1 style={{color: this.state.appConfig.COLOR_PRIMARY}}>Bravo! {translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
-                        </div>
-                    }
+                    <div className="col-xs-12">
+                        <h1 style={{color: this.state.appConfig.COLOR_PRIMARY}}>{translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
+                    </div>
+                
+                    <div className="col-xs-12">
+                        <p>{translate("YOUR_LISTING_HAS_BEEN_SUBMITTED_DESC")}</p>
+                    </div>
                 </div>
-
+                }
                 { this.state.ready &&
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
                            <RaisedButton
-                                label={'Go to your offer'}
+                                label={translate("GO_TO_LISTING")}
                                 backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                 primary={true}
                                 disabled={false}

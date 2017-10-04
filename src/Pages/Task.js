@@ -358,7 +358,7 @@ class Task extends Component {
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
-                                                    <h3 className="text-left">About the job</h3>
+                                                    <h3 className="text-left">{translate('LISTING_DESCRIPTION')}</h3>
                                                     <p className="text-muted">
                                                         <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
                                                     </p>
@@ -371,7 +371,7 @@ class Task extends Component {
 
                                        { this.state.task.location &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                            <h3 className="text-left">Job Location</h3>
+                                            <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
                                                 lng={this.state.task.location.lng}
@@ -386,7 +386,7 @@ class Task extends Component {
                                         }
                                         
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                            <h3 className="text-left">Job Date</h3>
+                                            <h3 className="text-left">{translate("LISTING_DATE")}</h3>
                                             <div className="row">
                                                 <div className="col-xs-12">
                                                     {displayTaskTiming(this.state.task.timing)}
@@ -396,13 +396,13 @@ class Task extends Component {
 
                                         { this.state.task.timing && this.state.task.timing[0] &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                            <h3 className="text-left">Estimated duration</h3>
+                                            <h3 className="text-left">{translate("LISTING_DURATION")}</h3>
                                             {this.state.task.timing[0].duration}h
                                         </div>
                                         }
                                         { false &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                            <h3 className="text-left">Task Images</h3>
+                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
                                             { this.state.task.images && this.state.task.images.map(img =>
                                                 <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
                                                     <img className="img-responsive" role="presentation" src={img.imageUrl}/>

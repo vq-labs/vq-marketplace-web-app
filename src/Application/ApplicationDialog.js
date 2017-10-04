@@ -68,7 +68,7 @@ export default class ApplicationDialog extends React.Component {
         case 'success':
             return translate("OK");
         default:
-            return translate("CONFIRM");
+            return translate("REQUEST_MESSAGE_CONFIRM");
     }
   }
   sendRequest() {

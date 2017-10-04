@@ -47,7 +47,7 @@ export default class ViewTypeChoice extends Component {
                         }
                         { this.state.viewType === this.state.viewTypes[viewType] &&
                             <RaisedButton
-                                labelStyle={{color: 'white '}}
+                                labelStyle={{color: 'white'}}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 label={translate(viewType)}
                             />

@@ -51,7 +51,7 @@ export default class Bookings extends Component {
         });
 
         return openMessageDialog({
-            header: translate("SUCCESS")
+            header: translate("ORDER_SETTLED_SUCCESS")
         });
     }, _ => _);
   };
@@ -168,7 +168,7 @@ export default class Bookings extends Component {
                                                                 });
 
                                                                 return openMessageDialog({
-                                                                    header: translate("SUCCESS")
+                                                                    header: translate("REVOKE_AUTOSETTLEMENT_SUCCESS")
                                                                 });
                                                             }, err => {
                                                                 return alert(translate("ERROR"));
@@ -206,7 +206,7 @@ export default class Bookings extends Component {
                                                                 });
 
                                                                 return openMessageDialog({
-                                                                    header: translate("SUCCESS")
+                                                                    header: translate("ORDER_CLOSED_SUCCESS")
                                                                 });
                                                             }, err => {
                                                                 return alert(translate("ERROR"));

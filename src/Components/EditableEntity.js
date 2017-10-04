@@ -272,7 +272,8 @@ export default class EditableEntity extends Component {
                                     )}
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>
-                                            { this.state.showCancelBtn &&  
+                                            { this.state.config &&
+                                                this.state.showCancelBtn &&  
                                                 <FlatButton
                                                     backgroundColor={this.state.config.COLOR_PRIMARY}
                                                     style={{ float: 'left' }}

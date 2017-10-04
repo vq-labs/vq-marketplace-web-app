@@ -39,6 +39,7 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                         <List>
                             { this.state.requests
+                            .filter(_ => _.fromUser)
                             .map(request => 
                                 <div className="row">
                                     <div class="col-xs-12">

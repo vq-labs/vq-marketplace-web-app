@@ -155,6 +155,7 @@ export default class Requests extends Component {
                         </div>
                     }
                     { !this.state.isLoading && this.state.requests
+                        .filter(_ => _.fromUser)
                         .map(request =>
                             <div
                                 className="col-xs-12"

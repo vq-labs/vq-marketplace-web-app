@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import Avatar from 'material-ui/Avatar';
 import ReactStars from 'react-stars'
 import FormatQuote from 'material-ui/svg-icons/editor/format-quote';
+import IconFileAttachment from 'material-ui/svg-icons/file/attachment';
 import apiUser from '../api/user';
 import apiReview from '../api/review';
 import DOMPurify from 'dompurify'
@@ -284,6 +285,21 @@ class Profile extends React.Component {
                                                 paddingBottom: 20,
                                                 fontSize: 10
                                         }}>{translate('DOCUMENT_UPLOADED')}</small>
+                                    </div>
+                                </div>
+                            }
+                            { this.state.profile && Boolean(getUserProperty(this.state.profile, 'referenceUrl')) &&
+                                <div className="col-xs-6 col-sm-2 text-center" style={{ marginTop: 10 }}>
+                                    <div className="col-xs-12">
+                                        <a href={getUserProperty(this.state.profile, 'referenceUrl')} target="_blank">
+                                            <IconFileAttachment/>
+                                        </a>
+                                    </div>
+                                    <div className="col-xs-12">
+                                        <small style={{
+                                                paddingBottom: 20,
+                                                fontSize: 10
+                                        }}>{translate('PROFILE_REFERENCE_UPLOADED')}</small>
                                     </div>
                                 </div>
                             }

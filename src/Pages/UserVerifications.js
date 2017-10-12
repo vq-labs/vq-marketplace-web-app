@@ -28,16 +28,19 @@ export default class UserVerifications extends React.Component {
             {
                 type: 'single-image',
                 key: this.VERIFICATIONS[0],
-                label: `${translate('USER_VERIFICATION_PERSONAL_ID_TITLE')} *`
+                label: `${translate('USER_VERIFICATION_PERSONAL_ID_TITLE')} *`,
+                imageResolution: [ null, null ]
             }, {
                 type: 'single-image',
                 key: this.VERIFICATIONS[1],
-                label: `${translate('USER_VERIFICATION_PERSONAL_ID_BACKSITE_TITLE')} *`
+                label: `${translate('USER_VERIFICATION_PERSONAL_ID_BACKSITE_TITLE')} *`,
+                imageResolution: [ null, null ]
             }, {
                 type: 'string',
                 title: translate('USER_VERIFICATION_FACEBOOK_TITLE'),
                 key: this.VERIFICATIONS[2],
                 label: translate('USER_VERIFICATION_FACEBOOK_LABEL'),
+                imageResolution: [ null, null ]
             }
         ];
 

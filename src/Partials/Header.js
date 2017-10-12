@@ -141,13 +141,13 @@ class Header extends Component {
                     </a>
                   }
               
-                { this.state.logged && 
+                { false && this.state.logged && 
                   <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
                     <CommunicationChatBubble />
                   </IconButton>
                 }
 
-                  { this.state.logged &&
+                { this.state.logged &&
                     <IconMenu
                           style={{ cursor: 'pointer' }}
                           iconButtonElement={

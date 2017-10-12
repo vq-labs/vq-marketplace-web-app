@@ -126,7 +126,7 @@ export default class ChatRoom extends React.Component {
             message: newMessage
         };
 
-        this.state.messages.push(data);
+        this.state.messages.unshift(data);
         
         this.setState({
             newMessage: '',
@@ -196,6 +196,34 @@ export default class ChatRoom extends React.Component {
                                             </div>
                                         </div>
                                     }
+
+                                    { this.state.users[this.state.fromUserId] &&
+                                        <div className="row" style={{
+                                            paddingLeft: 20,
+                                            marginTop: 20,
+                                            marginBottom: 20,
+                                            paddingRight: 20
+                                        }}>
+                                            <div className="col-xs-12">
+                                                <form onSubmit={this.handleNewMessage}>
+                                                    <HtmlTextField                                                 
+                                                        onChange={(event, newMessage) => this.setState({
+                                                            newMessage
+                                                        })}
+                                                        value={this.state.newMessage}
+                                                    />
+                                                    
+                                                    <RaisedButton
+                                                        disabled={!stripHtml(this.state.newMessage)}
+                                                        type="submit"
+                                                        style={{ marginTop: 10, width: '100%' }}
+                                                        label={translate("CHAT_MESSAGE_SUBMIT")}
+                                                    />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    } 
+
                                     { this.state.messages
                                         .filter(message => {
                                             if (this.state.users[message.fromUserId]) {
@@ -261,33 +289,7 @@ export default class ChatRoom extends React.Component {
                                                         </div>
                                                 </div>;
                                         })
-                                    }
-                                    { this.state.users[this.state.fromUserId] &&
-                                        <div className="row" style={{
-                                            paddingLeft: 20,
-                                            marginTop: 20,
-                                            marginBottom: 20,
-                                            paddingRight: 20
-                                        }}>
-                                            <div className="col-xs-12">
-                                                <form onSubmit={this.handleNewMessage}>
-                                                    <HtmlTextField                                                 
-                                                        onChange={(event, newMessage) => this.setState({
-                                                            newMessage
-                                                        })}
-                                                        value={this.state.newMessage}
-                                                    />
-                                                    
-                                                    <RaisedButton
-                                                        disabled={!stripHtml(this.state.newMessage)}
-                                                        type="submit"
-                                                        style={{ marginTop: 10, width: '100%' }}
-                                                        label={translate("CHAT_MESSAGE_SUBMIT")}
-                                                    />
-                                                </form>
-                                            </div>
-                                        </div>
-                                    }                
+                                    }          
                             </div>
 
                             <div className="col-xs-12 col-sm-4">

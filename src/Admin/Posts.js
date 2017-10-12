@@ -13,8 +13,6 @@ import apiPost from '../api/post';
 import { goTo, setQueryParams } from '../core/navigation';
 import DropDownMenu from 'material-ui/DropDownMenu';
 
-
-
 export default class SectionPosts extends React.Component {
     constructor() {
         super();
@@ -83,7 +81,7 @@ export default class SectionPosts extends React.Component {
                             }
                             { this.state.posts
                               .map((post, index) =>
-                                <TableRow key={index} >
+                                <TableRow style={{ cursor: 'pointer' }} key={index} >
                                     <TableRowColumn>{post.id}</TableRowColumn>
                                     <TableRowColumn>{post.type}</TableRowColumn>
                                     <TableRowColumn>{post.code}</TableRowColumn>

@@ -50,7 +50,7 @@ export default class ChangePasswordPage extends Component {
       'changePassword'
     ](data)
       .then(() => { 
-        alert('Password has been changed');
+        alert('CHANGE_PASSWORD_SUCCESS');
 
         return goTo('/login');
       }, err => {
@@ -68,7 +68,7 @@ export default class ChangePasswordPage extends Component {
       <div className="col-xs-12">
         <div className="row">
           <div className={columnWidth}>
-            <h1>{translate('RESET_PASSWORD')}</h1>
+            <h1>{translate('CHANGE_PASSWORD')}</h1>
           </div>
         </div>  
         <div className="row">
@@ -82,7 +82,7 @@ export default class ChangePasswordPage extends Component {
                   ref="currentPassword"
                   floatingLabelText={translate('PASSWORD')}
                   type="password"/>
-                }  
+                }
                 <br/>
                 <TextField
                   style={{width: '100%'}}

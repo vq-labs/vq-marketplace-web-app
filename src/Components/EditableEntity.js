@@ -12,6 +12,7 @@ import FileUploader from './FileUploader';
 import DOMPurify from 'dompurify'
 import * as coreNavigation from '../core/navigation';
 import { getConfigAsync } from '../core/config';
+import { translate } from '../core/i18n';
 import '../App.css';
 
 const _ = require('underscore');
@@ -288,7 +289,7 @@ export default class EditableEntity extends Component {
                                                     disabled={!this.props.enableSkip ? !this.state.dirty : false}
                                                     labelStyle={{color: 'white '}}
                                                     style={{float: 'right'}}
-                                                    label={this.props.saveLabel || 'Save'}
+                                                    label={this.props.saveLabel || translate("SAVE")}
                                                     onTouchTap={ this.handleUpdate }
                                                 />
                                             }

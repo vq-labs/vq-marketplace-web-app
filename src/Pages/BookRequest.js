@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import * as apiRequest from '../api/request';
 import apiOrder from '../api/order';
 import apiBillingAddress from '../api/billing-address';
 import { translate } from '../core/i18n';
 import Address from '../Components/Address';
-import { goTo } from '../core/navigation';
+import { goTo, goBack } from '../core/navigation';
 import * as coreFormat from '../core/format';
 import Loader from "../Components/Loader";
 import { getConfigAsync } from '../core/config';
-
+import { openDialog } from '../helpers/open-message-dialog.js';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import '../App.css';
-
-const REQUEST_STATUS = {
-    PENDING: '0',
-    ACCEPTED: '5',
-    MARKED_DONE: '10',
-    SETTLED: '15',
-    DECLINED: '20',
-    CANCELED: '25'
-};
 
 class BookRequest extends Component {
     constructor(props) {
@@ -50,8 +43,7 @@ class BookRequest extends Component {
                 const request = requestDetails.request;
 
                 if (request.status !== REQUEST_STATUS.PENDING) {
-                    // booked is just hotfix - it requires different solution
-                    return goTo(`/order/booked`);
+                    return goTo(`/chat/${request.id}`);
                 }
 
                 const order = this.state.order;
@@ -104,7 +96,6 @@ class BookRequest extends Component {
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
-
                         {this.state.requestDetails.task.taskLocations.length &&
                             <div className="col-xs-12" style={{
                                 marginTop: 10,
@@ -135,11 +126,12 @@ class BookRequest extends Component {
                             <div className="col-xs-12">
                                 <h3>{this.state.requestDetails.task.title}</h3>
                                 <hr />
-                                <strong>{coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency, this.state.requestDetails.task.priceType)}</strong>
+                                <strong>{this.state.requestDetails.task.price * this.state.requestDetails.task.taskTimings[0].duration} {this.state.requestDetails.task.currency}<br /></strong>
+                                <p>{coreFormat.displayPrice(this.state.requestDetails.task.price, this.state.requestDetails.task.currency, this.state.requestDetails.task.priceType)}, {this.state.requestDetails.task.taskTimings[0].duration}h</p>
                             </div>
                             <div className="col-xs-12">
                                 <p className="text-muted">Application by:</p>
-                                <h3>{this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].firstName} {this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].lastName}</h3>
+                                <strong>{this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].firstName} {this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].lastName}</strong>
                                 <hr />
                             </div>
                         </div>
@@ -149,16 +141,26 @@ class BookRequest extends Component {
                                 withTaxNumber={true}
                                 location={this.state.billingAddress}
                                 onLocationChange={billingAddress => {
-                                    debugger;
                                     this.setState({
                                         billingAddress
                                     });
                                 }}
                             />
-                        </div>
 
-                        <div className="col-xs-12" style={{ marginTop: 50 }}>
+                            <div className="row">
+                            <div className="col-xs-12" style={{ marginTop: 50 }}>
+                            { this.state.config &&
+                                <FlatButton
+                                    style={{ float: 'left' }}
+                                    label={translate('BACK')}
+                                    primary={true}
+                                    disabled={false}
+                                    onTouchTap={() => goBack()}
+                                />
+                            }
+                            { this.state.config &&
                             <RaisedButton
+                                style={{float: 'right'}}
                                 disabled={this.state.isSubmitted}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 labelColor={"white"}
@@ -185,6 +187,10 @@ class BookRequest extends Component {
                                         .keys(REQUIRED_FIELDS)
                                         .forEach(fieldKey => {
                                             if (isInvalid) {
+                                                this.setState({
+                                                    isSubmitted: false
+                                                });
+
                                                 return;
                                             }
 
@@ -205,7 +211,12 @@ class BookRequest extends Component {
                                         apiOrder
                                             .createItem(order)
                                             .then(rOrder => {
-                                                goTo(`/order/${rOrder.id}`);
+                                                return openDialog({
+                                                    header: 'BOOKING_SUCCESS_HEADER',
+                                                    desc: 'BOOKING_SUCCESS_DESC'
+                                                }, () => {
+                                                    goTo(`/chat/${rOrder.requestId}`);
+                                                });
                                             }, err => {
                                                 alert(err);
 
@@ -233,6 +244,9 @@ class BookRequest extends Component {
                                     return createOrder(order);
                                 }}
                             />
+                            }
+                        </div>
+                        </div>
                         </div>
                     </div>
                 }

@@ -124,11 +124,11 @@ export default class CategoryEdit extends Component {
                                     />
                                 
                                     <RaisedButton
-                                        style={ { float: 'right' } }
+                                        style={{ float: 'right' }}
                                         label = 'Übernehmen'
                                         primary = { true }
-                                        disabled = { false }
-                                        onTouchTap = { this.handleUpdate }
+                                        disabled={false}
+                                        onTouchTap={this.handleUpdate}
                                     />
                                 </div>
                              </div>

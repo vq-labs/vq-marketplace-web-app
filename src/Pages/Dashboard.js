@@ -11,10 +11,11 @@ import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
 import { goTo, setQueryParams } from '../core/navigation';
-import { getParams } from '../core/util.js'
+import { getParams } from '../core/util.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 import Loader from "../Components/Loader";
+import { openDialog } from '../helpers/open-message-dialog.js';
 
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import * as DEFAULTS from '../constants/DEFAULTS';
@@ -123,15 +124,19 @@ export default class Dashboard extends Component {
                               displayManagement={true}
                               displayPrice={true}
                               editable={true}
-                              onCancel={() => {
-                                const tasks = this.state.tasks;
+                              onCancel={() => openDialog({
+                                  header: translate('CANCEL_LISTING_SUCCESS_HEADER'),
+                                  desc: translate('CANCEL_LISTING_SUCCESS_DESC')
+                                }, () => {
+                                  const tasks = this.state.tasks;
 
-                                tasks.splice(index, 1);
+                                  tasks.splice(index, 1);
 
-                                this.setState({
-                                  tasks
-                                });
-                              }}
+                                  this.setState({
+                                    tasks
+                                  });
+                                })
+                              }
                           />
                         <div className="row"><hr /></div>
                       </div>

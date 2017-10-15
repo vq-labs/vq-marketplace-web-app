@@ -23,7 +23,6 @@ import Chat from './Pages/Chat';
 import EmailNotVerified from './Pages/EmailNotVerified';
 import ChatRoom from './Pages/ChatRoom';
 import BookRequest from './Pages/BookRequest';
-import Order from './Pages/Order';
 import NotFound from './Pages/NotFound';
 import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
@@ -32,7 +31,6 @@ import PostEdit from './Admin/PostEdit';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
-import PostReviewCompleted from './Pages/PostReviewCompleted';
 import Review from './Pages/Review';
 import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
@@ -196,9 +194,7 @@ class App extends Component {
                 <Route path="request/:chatId" component={ChatRoom}></Route>
                 <Route path="request/:requestId/book" component={BookRequest}></Route>
                 <Route path="request/:requestId/review" component={Review}></Route>
-                <Route path="order/:orderId" component={Order}></Route>
                 <Route path="order/:orderId/review" component={Review}></Route>
-                <Route path="review-completed" component={PostReviewCompleted}></Route>
                 <Route path="signup" component={SignupPage}></Route>
                 <Route path="login" component={LoginPage}></Route>
                 <Route path="post/:postId" component={Post}></Route>

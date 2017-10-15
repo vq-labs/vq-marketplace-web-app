@@ -73,8 +73,9 @@ class ListingHeader extends Component {
                         marginTop: 30,
                         color: this.state.config.COLOR_PRIMARY
                     }}>
-                        {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                        {this.state.task.price * this.state.task.taskTimings[0].duration} {this.state.task.currency}<br />
                     </h1>
+                    <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {this.state.task.taskTimings[0].duration}h</p>
                 </div>
             </div>
         );

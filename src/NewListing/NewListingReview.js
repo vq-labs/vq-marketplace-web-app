@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment';
 import DOMPurify from 'dompurify'
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';

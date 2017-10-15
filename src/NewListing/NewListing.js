@@ -24,6 +24,7 @@ import { getUserAsync } from '../core/auth';
 import { validateAddress } from '../api/vq-services';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import { displayMessage } from '../helpers/display-message.js';
+import { openDialog } from '../helpers/open-message-dialog.js';
 
 const _chunk = require('lodash.chunk');
 
@@ -279,36 +280,6 @@ export default class NewListing extends Component {
     }
 
     render() {
-              const success=
-              <div className="container">
-                { this.state.ready &&
-                <div className="row">
-                    <div className="col-xs-12">
-                        <h1 style={{color: this.state.appConfig.COLOR_PRIMARY}}>{translate("YOUR_LISTING_HAS_BEEN_SUBMITTED")}</h1>
-                    </div>
-                
-                    <div className="col-xs-12">
-                        <p>{translate("YOUR_LISTING_HAS_BEEN_SUBMITTED_DESC")}</p>
-                    </div>
-                </div>
-                }
-                { this.state.ready &&
-                <div className="col-xs-12">
-                    <div className="row">
-                        <div className="col-xs-12">
-                           <RaisedButton
-                                label={translate("GO_TO_LISTING")}
-                                backgroundColor={this.state.appConfig.COLOR_PRIMARY}
-                                primary={true}
-                                disabled={false}
-                                onTouchTap={() => goTo(`/task/${this.state.task.id}`)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                }
-              </div>;
-
               const addImages =
                 <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
                         <div className="row">
@@ -439,7 +410,6 @@ export default class NewListing extends Component {
                                 />
                             }
                             
-                            { this.state.step === LISTING_VIEWS.SUCCESS && success }
                             { this.state.ready &&
                             <div className="row" style={ { marginTop: 20 } }>
                                 { this.state.step !== LISTING_VIEWS.SUCCESS && this.state.step !== LISTING_VIEWS.START &&
@@ -677,9 +647,14 @@ export default class NewListing extends Component {
                                             .then(() => apiTask.updateItem(task.id, {
                                                 status: 0
                                             }))
-                                            .then(task => this.setState({
-                                                step: this.state.step + 1
-                                            }))
+                                            .then(task => {
+                                                openDialog({
+                                                    header: 'NEW_LISTING_SUCCESS_HEADER',
+                                                    desc: 'NEW_LISTING_SUCCESS_DESC'
+                                                }, () => {
+                                                    goTo(`/task/${task.id}`);
+                                                });
+                                            })
                                             .catch(err => {
                                                 alert(err);
 

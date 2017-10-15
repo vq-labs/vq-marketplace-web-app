@@ -6,10 +6,12 @@ import ProfileImage from '../Components/ProfileImage';
 import apiReview from '../api/review';
 import apiOrder from '../api/order';
 import * as apiRequest from '../api/request';
+import { stripHtml, purifyHtmlMessage } from '../core/util';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
-import { goTo, convertToAppPath } from '../core/navigation';
+import { goTo, convertToAppPath, goBack } from '../core/navigation';
 import { translate } from '../core/i18n';
+import { openDialog } from '../helpers/open-message-dialog.js';
 
 const REVIEW_TYPES = {
     ORDER: 1,
@@ -26,6 +28,7 @@ class Review extends Component {
         const reviewType = orderId ? REVIEW_TYPES.ORDER : REVIEW_TYPES.REQUEST;
 
         this.state = {
+            userUnderReview: null,
             reviewType,
             requestId,
             orderId,
@@ -164,10 +167,10 @@ class Review extends Component {
                                 style={{
                                     float: 'right'
                                 }}
-                                disabled={this.state.isProcessing || this.state.isProcessed}
+                                disabled={!stripHtml(this.state.body) || this.state.isProcessing || this.state.isProcessed}
                                 labelStyle={{color: 'white '}}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
-                                label={translate("SUBMIT")}
+                                label={translate("REVIEW_SUBMIT")}
                                 onTouchTap={() => {
                                     const reviewType = this.state.reviewType;
                                     const order = this.state.order;
@@ -176,12 +179,12 @@ class Review extends Component {
                                     const orderId = order ? order.id : null;
                                     const requestId = request ? request.id : null;
 
+                                    const body = purifyHtmlMessage(this.state.body);
 
                                     const review = {
                                         rate: String(this.state.selectedRating),
-                                        body: this.state.body
+                                        body
                                     };
-
 
                                     if (!this.state.selectedRating) {
                                         return alert('Rate is required (min. 1 start)');
@@ -194,6 +197,10 @@ class Review extends Component {
                                     this.setState({
                                         isProcessing: true
                                     });
+
+                                    
+
+                                    
 
                                     if (reviewType === REVIEW_TYPES.ORDER) {
                                         review.orderId = orderId;
@@ -211,9 +218,12 @@ class Review extends Component {
                                                 isProcessed: true,
                                             });
 
-                                            goTo('/review-completed')
-
-                                            console.log(review);
+                                            openDialog({
+                                                header: 'REVIEW_SUBMITTED_SUCCESS_HEADER',
+                                                desc: 'REVIEW_SUBMITTED_SUCCESS_DESC'
+                                            }, () => {
+                                                goBack();
+                                            });
                                         }, err => {
                                             console.error(err);
 
@@ -228,18 +238,26 @@ class Review extends Component {
                     </div>
                 </div>
                 }
-                {this.state.config && this.state.userUnderReview &&
+                {   this.state.config &&
+                    this.state.userUnderReview &&
+                    this.state.userUnderReview.imageUrl &&
                     <div className="col-md-4 text-center" style={{ paddingTop: 50 }}>
                         <ProfileImage
                             isLoading={false}
                             allowChange={false}
                             onDrop={_ => _}
-                            image={this.state.userUnderReview.imageUrl}
+                            imageUrl={this.state.userUnderReview.imageUrl}
                         />
 
-                        <h3><a href="#" onTouchTap={() => {
-                            goTo(`/profile/${this.state.userUnderReview.id}`)
-                        }}>{this.state.userUnderReview.firstName}  {this.state.userUnderReview.lastName}</a></h3>
+                        <h3>
+                            <a href="#"
+                               onTouchTap={() => {
+                                goTo(`/profile/${this.state.userUnderReview.id}`)
+                               }}
+                            >
+                                {this.state.userUnderReview.firstName}  {this.state.userUnderReview.lastName}
+                            </a>
+                        </h3>
                     </div>
                 }
             </div>

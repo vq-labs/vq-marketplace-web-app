@@ -1,14 +1,8 @@
 import React from 'react';
 import Avatar from 'material-ui/Avatar';
-import * as apiAdmin from '../api/admin';
-import { goTo } from '../core/navigation';
-import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { List, ListItem } from 'material-ui/List';
-import { translate } from '../core/i18n';
-import displayObject from '../helpers/display-object';
-import getProperty from '../helpers/get-user-property';
 import Moment from 'react-moment';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -16,6 +10,11 @@ import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import * as apiAdmin from '../api/admin';
+import { goTo } from '../core/navigation';
+import { translate } from '../core/i18n';
+import displayObject from '../helpers/display-object';
+import getProperty from '../helpers/get-user-property';
 import USER_STATUS from '../constants/USER_STATUS';
 
 const USER_TYPES = {

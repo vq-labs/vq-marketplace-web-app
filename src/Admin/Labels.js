@@ -3,7 +3,6 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import EditableEntity from '../Components/EditableEntity';
 import Loader from "../Components/Loader";
-import TextField from 'material-ui/TextField';
 import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'

@@ -174,3 +174,10 @@ export const getUtcUnixTimeNow = () => {
     return nowUtcUnix;
 };
 
+export const purifyHtmlMessage = message => {
+    return message
+        .split('<p><br></p>')
+        .filter(_ => _ !== '<p><br></p>')
+        .join('')
+        .replace(/(\r\n|\n|\r)/gm, "");
+};

@@ -1,21 +1,33 @@
 import React from 'react';
 import Moment from 'react-moment';
-
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { List } from 'material-ui/List';
-
+import DropDownMenu from 'material-ui/DropDownMenu';
 import Loader from "../Components/Loader";
-
+import MenuItem from 'material-ui/MenuItem';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import { goTo } from '../core/navigation';
 import displayObject from '../helpers/display-object';
 import * as apiAdmin from '../api/admin';
 import { stripHtml } from '../core/util';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+
+const REQUEST_STATUS_LABEL = {};
+
+Object
+    .keys(REQUEST_STATUS)
+    .forEach(STATUS_CODE => {
+        REQUEST_STATUS_LABEL[REQUEST_STATUS[STATUS_CODE]] = STATUS_CODE;
+    });
+
 
 export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            statusFilter: undefined,
             requests: []
         };
     }
@@ -36,26 +48,93 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                         <h1>Requests</h1>
                     </div>
+
+                    <div className="col-xs-12">
+                        <div className="col-xs-4 col-sm-4">
+                            <TextField
+                                type="number"
+                                
+                                onChange={(ev, value) => {
+                                    this.setState({
+                                        listingIdSearchValue: value
+                                    });
+                                }}
+                                value={this.state.listingIdSearchValue}
+                                floatingLabelText="ListingID"
+                            />
+                        </div>
+                        <div className="col-xs-3 col-sm-3">
+                            <DropDownMenu
+                                style={{
+                                    marginTop: 16,
+                                    width: '100%'
+                                }}
+                                value={this.state.statusFilter} onChange={(_, _2, statusFilter) => {
+                                this.setState({
+                                    statusFilter
+                                })
+                            }}>
+                                <MenuItem value={undefined} primaryText="No filter" />
+                                {
+                                    Object.keys(REQUEST_STATUS)
+                                    .map(status => 
+                                        <MenuItem
+                                            value={REQUEST_STATUS[status]}
+                                            primaryText={status}
+                                        />
+                                    )
+                                }
+                            </DropDownMenu>
+                        </div>
+                        <div className="col-xs-3 col-sm-2">
+                            <RaisedButton style={{
+                                marginTop: 24
+                            }} onClick={() => {
+                                alert("Contact support for exporting data.");
+                            }} label="Export" />
+                        </div>
+                    </div>
+
+                
+
                     <div className="col-xs-12">
                         <List>
                             { this.state.requests
-                            .filter(_ => _.fromUser)
+                            .filter(request => {
+                                if (!request.fromUser) {
+                                    return false;
+                                }
+
+                                if (!this.state.statusFilter && !this.state.listingIdSearchValue) {
+                                    return true;
+                                }
+
+                                if (!this.state.statusFilter && this.state.listingIdSearchValue) {
+                                    return this.state.listingIdSearchValue === request.taskId;
+                                }
+
+                                if (this.state.statusFilter && !this.state.listingIdSearchValue) {
+                                    return this.state.statusFilter === request.status;
+                                }
+
+                                return this.state.statusFilter === request.status && request.taskId === this.state.listingIdSearchValue;
+                            })
                             .map(request => 
                                 <div className="row">
                                     <div class="col-xs-12">
                                     <div className="row">
                                             <div class="col-xs-12">
-                                                <strong>Request #{request.id}</strong>
+                                                <strong>ID: {request.id}, Status: {REQUEST_STATUS_LABEL[request.status]}</strong>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div class="col-xs-12">
-                                                From user: <a style={{ padding: 5 }} onTouchTap={() => goTo(`/profile/${request.fromUser.id}`)}>#{request.fromUser.id} {request.fromUser.firstName} {request.fromUser.lastName}</a>
+                                                From user: <a href="#" style={{ padding: 5 }} onTouchTap={() => goTo(`/profile/${request.fromUser.id}`)}>#{request.fromUser.id} {request.fromUser.firstName} {request.fromUser.lastName}</a>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div class="col-xs-12">
-                                                Listing: <a style={{ padding: 5 }} onTouchTap={() => goTo(`/task/${request.task.id}`)}>#{request.task.id} {request.task.title}</a>
+                                                ListingId: <a href="#" style={{ padding: 5 }} onTouchTap={() => goTo(`/task/${request.task.id}`)}>(id: {request.task.id}) {request.task.title}</a>
                                             </div>
                                         </div>
 
@@ -64,7 +143,6 @@ export default class SectionUsers extends React.Component {
                                                 Created: <Moment format="DD.MM.YYYY, HH:MM">{request.createdAt}</Moment>
                                             </div>
                                         </div>
-
                                         
                                     </div>
 
@@ -167,7 +245,7 @@ export default class SectionUsers extends React.Component {
                                         { this.state.requestMessages && this.state.requestMessages
                                         .map(message =>
                                             <p>
-                                                {message.fromUser.firstName} {message.fromUser.lastName}: {stripHtml(message.message)}
+                                                {message.fromUser.firstName} {message.fromUser.lastName} (<Moment format="DD.MM.YYYY, HH:MM">{message.createdAt}</Moment>): {stripHtml(message.message)}
                                             </p>
                                         )}
                                     </div>

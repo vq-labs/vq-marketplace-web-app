@@ -40,6 +40,27 @@ const modules = {
       name: 'Support plan (Basic / Premium / Enterprise)',
       status: 'Basic'
     }
+  ],
+  listing: [
+    {
+      name: 'Listing Calendar',
+      status: 'Enabled'
+    }, {
+      name: 'Listing Duration',
+      status: 'Enabled'
+    }, {
+      name: 'Listing Comments',
+      status: 'Enabled'
+    }, {
+      name: 'Listing Geolocation',
+      status: 'Enabled'
+    }, {
+      name: 'Listing Images',
+      status: 'Disabled'
+    }, {
+      name: 'Listing Templates',
+      status: 'Disabled'
+    }
   ]
 }
 
@@ -152,7 +173,7 @@ export default class TableExampleComplex extends Component {
                   Support
               </TableHeaderColumn>
             </TableRow>
-            {modules.support.map( (row, index) => (
+            {modules.support.map((row, index) => (
               <TableRow key={index}>
                 <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
                 <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
@@ -160,11 +181,19 @@ export default class TableExampleComplex extends Component {
               </TableRow>
             ))}
 
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Listing (under construction)
-              </TableHeaderColumn>
-            </TableRow>
+              <TableRow>
+                <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
+                    Listing
+                </TableHeaderColumn>
+              </TableRow>
+              {modules.listing.map( (row, index) => (
+              <TableRow key={index}>
+                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
+                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
+                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
+              </TableRow>
+            ))}
+           
 
             <TableRow>
               <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>

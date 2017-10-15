@@ -391,11 +391,14 @@ class Profile extends React.Component {
                             <div className="row">
                                 <div className="col-xs-12 col-sm-11">
                                     <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                                        Preferences
+                                        {translate("PROFILE_PREFERENCES_HEADER")}
                                     </h1>
+                                    <p className="text-muted">
+                                        {translate("PROFILE_PREFERENCES_DESC")}
+                                    </p>
                                     {!this.state.preferences.length &&
                                         <p className="text-muted">
-                                            No preferences
+                                             {translate("PROFILE_PREFERENCES_NONE")}
                                         </p>
                                     }
                                 </div>
@@ -434,8 +437,11 @@ class Profile extends React.Component {
                         }
                         <div className="col-xs-12 col-sm-12">
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                                Reviews
+                                {translate("PROFILE_REVIEWS_HEADER")}
                             </h1>
+                            <p className="text-muted">
+                                {translate("PROFILE_REVIEWS_DESC")}
+                            </p>
                             {!this.state.reviews.filter(review => {
                                 if (!review.rate) {
                                     return this.state.isMyProfile;
@@ -547,7 +553,7 @@ class Profile extends React.Component {
                                         { review.rate &&
                                         <div className="row">
                                             <div className="col-xs-12 text-muted">
-                                                    <Moment format="MM.YYYY">{review.createdAt}</Moment>
+                                                    <Moment format="DD.MM.YYYY">{review.createdAt}</Moment>
                                                     <span> </span>
                                                     <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
                                                         {review.task.title}

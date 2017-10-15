@@ -8,7 +8,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-
+import { getParams } from '../core/util'
 import apiPost from '../api/post';
 import { goTo, setQueryParams } from '../core/navigation';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -16,8 +16,11 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 export default class SectionPosts extends React.Component {
     constructor() {
         super();
+
+        const viewType = getParams(location.search).type;
+
         this.state = {
-            type: 'terms',
+            type: viewType || 'email',
             posts: []
         };
     }
@@ -33,7 +36,7 @@ export default class SectionPosts extends React.Component {
     }
 
     componentDidMount() {
-        this.getPosts('terms');
+        this.getPosts(this.state.type);
     }
 
     render() {
@@ -57,10 +60,15 @@ export default class SectionPosts extends React.Component {
                     }}>
                         <MenuItem value={'email'} primaryText="Emails" />
                         <MenuItem value={'terms'} primaryText="Terms" />
-                        <MenuItem value={'blog'} primaryText="Blog" />
-                        <MenuItem value={'process'} primaryText="Process" />
+                        { false && <MenuItem value={'blog'} primaryText="Blog" /> }
+                        { false && <MenuItem value={'process'} primaryText="Process" /> }
                     </DropDownMenu>
                 </div>
+                { this.state.type === 'email' &&
+                    <div className="col-xs-12">
+                        <p className="text-muted">Read about e-mail content here: <a href="https://vqlabs.freshdesk.com/solution/articles/33000208415-email-descriptions" target="_blank">here</a>.</p>
+                    </div>
+                }
                 <div className="col-xs-12"> 
                     <Table selectable={true} onRowSelection={index => {
                         goTo(`/post/${this.state.posts[index].id}/edit`)   

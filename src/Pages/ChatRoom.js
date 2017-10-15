@@ -2,8 +2,6 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
 import Moment from 'react-moment';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
@@ -23,7 +21,7 @@ import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import ORDER_STATUS from '../constants/ORDER_STATUS';
 import { getUserAsync } from '../core/auth';
 import { displayPrice, displayLocation } from '../core/format';
-import { stripHtml } from '../core/util';
+import { stripHtml, purifyHtmlMessage } from '../core/util';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 
@@ -72,33 +70,33 @@ export default class ChatRoom extends React.Component {
                     return goTo(`/login?redirectTo=/chat/${requestId}`);
                 }
                 
-                apiRequest.
-                    getItem(requestId)
-                    .then(chat => {
-                        const task = chat.task;
+                apiRequest
+                .getItem(requestId)
+                .then(chat => {
+                    const task = chat.task;
 
-                        if (task.status === '99') {
-                            goTo('/');
+                    if (task.status === '99') {
+                        goTo('/');
 
-                            return alert('You cannot access this page. The listing has been marked as spam.');
-                        }
+                        return alert('You cannot access this page. The listing has been marked as spam.');
+                    }
 
-                        this.setState({
-                            newMessage: '',
-                            config,
-                            isUserOwner: user.id === chat.task.userId,
-                            requestId,
-                            isLoading: false,
-                            fromUserId: user.id,
-                            toUserId: chat.messages[0].fromUserId === user.id ?
-                                chat.messages[0].toUserId :
-                                chat.messages[0].fromUserId,
-                            messages: chat.messages,
-                            users: chat.users,
-                            task,
-                            request: chat.request
-                        });
+                    this.setState({
+                        newMessage: '',
+                        config,
+                        isUserOwner: user.id === chat.task.userId,
+                        requestId,
+                        isLoading: false,
+                        fromUserId: user.id,
+                        toUserId: chat.messages[0].fromUserId === user.id ?
+                            chat.messages[0].toUserId :
+                            chat.messages[0].fromUserId,
+                        messages: chat.messages,
+                        users: chat.users,
+                        task,
+                        request: chat.request
                     });
+                });
             }, true);
         });
     }
@@ -108,11 +106,7 @@ export default class ChatRoom extends React.Component {
     
         let newMessage = this.state.newMessage;
 
-        newMessage = newMessage
-            .split('<p><br></p>')
-            .filter(_ => _ !== '<p><br></p>')
-            .join('')
-            .replace(/(\r\n|\n|\r)/gm, "");
+        newMessage = purifyHtmlMessage(newMessage);
 
         if (newMessage < 2) {
             return alert(translate('ERROR_MESSAGE_TOO_SHORT'));
@@ -343,7 +337,7 @@ export default class ChatRoom extends React.Component {
                                             labelStyle={{color: 'white'}}
                                             backgroundColor={this.state.config.COLOR_PRIMARY}
                                             style={actionBtnStyle}
-                                            label={translate("BOOK")} 
+                                            label={translate("ORDER_CREATE")} 
                                             onClick={
                                                 () => goTo(`/request/${this.state.requestId}/book`)
                                             }

@@ -4,9 +4,12 @@ import FlatButton from 'material-ui/FlatButton';
 import { translate } from '../core/i18n';
 
 var onOpen;
+var cb;
 
-export const openDialog = data => {
+export const openDialog = (data, lCb) => {
     onOpen(data);
+
+    cb = lCb;
 };
 
 export const Component = class MessageDialog extends React.Component {
@@ -38,6 +41,12 @@ export const Component = class MessageDialog extends React.Component {
                                         this.setState({
                                             isOpen: false
                                         });
+
+                                        if (cb) {
+                                            cb();
+
+                                            cb = undefined;
+                                        }
                                     }}
                                 />
                             ]}

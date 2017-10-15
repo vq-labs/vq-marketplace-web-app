@@ -13,7 +13,6 @@ export default class SectionPostEdit extends React.Component {
         this.state = {
             postId: props.params.postId,
             ready: false,
-            saved: false,
             type: {},
             post: {}
         };
@@ -24,7 +23,6 @@ export default class SectionPostEdit extends React.Component {
             .getItem(postId, 'id')
             .then(post => {
                 this.setState({
-                    saved: true,
                     post,
                     ready: true
                 });
@@ -40,16 +38,20 @@ export default class SectionPostEdit extends React.Component {
     render() {
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-xs-6 text-left">
-                        <RaisedButton onClick={ () => coreNavigation.goTo(`/admin/posts`) } label={translate('BACK')}/>
-                    </div>
-                    <div className="col-xs-6 text-right">
-                        <p>{this.state.saved ? 'Saved' : 'Saving...'}</p>
-                    </div>
-                </div>
                 { this.state.ready &&
                 <div className="row">
+                <div className="row">
+                        <div className="col-xs-12 col-md-8 col-md-offset-2">
+                            <TextField
+                                disabled={true}
+                                value={this.state.post.code}
+                                style={{width: '100%'}}
+                                inputStyle={{width: '100%'}}
+                                floatingLabelText="Code"
+                            />
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
                             <TextField
@@ -57,9 +59,14 @@ export default class SectionPostEdit extends React.Component {
                                 onChange={(ev, value) => {
                                     const post = this.state.post;
 
+                                    if (post.title === value) {
+                                        return;
+                                    }
+
                                     post.title = value;
 
                                     this.setState({
+                                        dirty: true,
                                         post
                                     });
                                 }}
@@ -72,38 +79,50 @@ export default class SectionPostEdit extends React.Component {
                 
                     <div className="row" style={{ marginTop: 30 }}>
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
-                                        <HtmlTextField 
-                                            onChange={(ev, body) => {
-                                                const post = this.state.post;
+                            <HtmlTextField 
+                                onChange={(ev, body) => {
+                                    const post = this.state.post;
 
-                                                if (post.body === body) {
-                                                    return;
-                                                }
+                                    if (post.body === body) {
+                                        return;
+                                    }
 
-                                                this.setState({
-                                                    saved: false
-                                                });
+                                    this.setState({
+                                        saved: false
+                                    });
 
-                                                post.body = body;
+                                    post.body = body;
 
-                                                apiPost.updateItem(post.id, {
-                                                    title: post.title,
-                                                    body: post.body
-                                                }, 3000)
-                                                .then(() => this.setState({
-                                                    saved: true
-                                                }));
-
-                                                this.setState({ 
-                                                    post,
-                                                    dirty: true
-                                                });
-                                            }}
-                                            value={this.state.post.body} 
-                                        />
-                            </div>
+                                    this.setState({
+                                        post,
+                                        dirty: true
+                                    });
+                                }}
+                                value={this.state.post.body} 
+                            />
                         </div>
                     </div>
+                    <div className="row" style={{ marginTop: 30 }}>
+                        <div className="col-xs-12 col-md-8 col-md-offset-2">
+                            <RaisedButton
+                                disabled={!this.state.dirty}
+                                onTouchTap={() => {
+                                    const post = this.state.post;
+
+                                    apiPost
+                                    .updateItem(post.id, {
+                                        title: post.title,
+                                        body: post.body
+                                    }, 3000)
+                                    .then(() => this.setState({
+                                        dirty: false
+                                    }));
+                                }}
+                                label={'Save'}
+                            />
+                        </div>
+                    </div>
+                </div>
                 }
             </div>
         );

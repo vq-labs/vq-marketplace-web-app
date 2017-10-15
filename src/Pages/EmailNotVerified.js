@@ -24,7 +24,11 @@ export default class EmailNotVerified extends React.Component {
                     return goTo('/login');
                 }
 
-                if (user.status === '10') {
+                if (String(user.status) === '10' && String(user.userType) === '1') {
+                    return goTo('/new-listing');
+                }
+
+                if (String(user.status) === '10') {
                     return goTo('/');
                 }
 
@@ -78,14 +82,15 @@ export default class EmailNotVerified extends React.Component {
                                     { this.state.sentAgain && 
                                         <p>{translate("VERIFICATION_EMAIL_SENT")}</p>
                                     }
-
-                                    <RaisedButton
-                                        style={{ marginLeft: 10 }}
-                                        onClick={() => {
-                                            location.reload();
-                                        }}
-                                        label={translate("RELOAD")}
-                                    />
+                                    { translate("RELOAD") !== 'RELOAD' &&
+                                        <RaisedButton
+                                            style={{ marginLeft: 10 }}
+                                            onClick={() => {
+                                                location.reload();
+                                            }}
+                                            label={translate("RELOAD")}
+                                        />
+                                    }
                                 </div>
                             </div>
                         </div>

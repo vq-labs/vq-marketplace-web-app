@@ -223,7 +223,7 @@ class Profile extends React.Component {
                             isLoading={this.state.isProfileImgLoaded}
                             allowChange={this.state.isMyProfile}
                             onDrop={this.onDrop}
-                            image={profileImageUrl}
+                            imageUrl={profileImageUrl}
                         />
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-10">

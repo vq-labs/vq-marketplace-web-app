@@ -7,7 +7,6 @@ import TaskCategories from '../Partials/TaskCategories';
 class ListingHeader extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             config: props.config,
             task: props.task
@@ -28,7 +27,7 @@ class ListingHeader extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-xs-12 col-sm-9 text-left">
+                <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-9 text-left'}`}>
                     <h3>
                         <a  href="#"
                             style={{
@@ -41,15 +40,17 @@ class ListingHeader extends Component {
                         </a>
                     </h3>
                     
-                    <div style={{
-                        marginTop: 5,
-                        marginBottom: 5
-                    }}>
-                        <TaskCategories
-                            clickable={false}
-                            categories={this.state.task.categories}
-                        />
-                    </div>
+                    {!this.props.hideCategories &&
+                        <div style={{
+                            marginTop: 5,
+                            marginBottom: 5
+                        }}>
+                            <TaskCategories
+                                clickable={false}
+                                categories={this.state.task.categories}
+                            />
+                        </div>
+                    }
 
                     { this.state.task.taskLocations &&
                         this.state.task.taskLocations.length &&
@@ -57,6 +58,7 @@ class ListingHeader extends Component {
                             {displayLocation(this.state.task.taskLocations[0])}
                         </p>
                     }
+
                     { this.state.task.taskTimings &&
                         Boolean(this.state.task.taskTimings.length) &&
                         <p className="text-muted">
@@ -64,13 +66,15 @@ class ListingHeader extends Component {
                         </p>
                     }
 
+                    { !this.props.hideDesc &&
                     <p>
                         { displayListingDesc(this.state.task.description) }
                     </p>
+                    }
                 </div>
-                <div className="col-xs-12 col-sm-3 text-right"> 
+                <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} > 
                     <h1 style={{
-                        marginTop: 30,
+                        marginTop: this.props.noPaddings ? 5 : 30,
                         color: this.state.config.COLOR_PRIMARY
                     }}>
                         {this.state.task.price * this.state.task.taskTimings[0].duration} {this.state.task.currency}<br />

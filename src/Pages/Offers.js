@@ -15,7 +15,6 @@ import * as apiCategory from '../api/category';
 import TaskMap from "../Components/TaskMap";
 import TextField from 'material-ui/TextField';
 import Autocomplete from 'react-google-autocomplete';
-
 import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
 import { stripHtml, formatGeoResults, serializeQueryObj } from '../core/util';
 import { goTo, setQueryParams } from '../core/navigation';
@@ -43,13 +42,13 @@ class Offers extends Component {
         this.state = {
             offers: [],
             offerMarkers: [],
-            viewType: VIEW_TYPES.LIST,
             queryCity: null,
             config: {},
             autoCompleteText: '',
             isLoading: false,
             locationQueryString,
             appliedFilter: {
+                viewType: Number(query.viewType) || VIEW_TYPES.MAP,
                 q: locationQueryString,
                 minPrice: query.minPrice || 500,
                 maxPrice: query.maxPrice || 10000,
@@ -61,9 +60,6 @@ class Offers extends Component {
                 utm: {}
             }
         };
-
-        this.handleMarkerClick = this.handleMarkerClick.bind(this);
-        this.handleMarkerClose = this.handleMarkerClose.bind(this);
     }
 
     componentDidMount() {
@@ -178,53 +174,6 @@ class Offers extends Component {
         });
 
         this.loadTasks(appliedFilter);
-    }
-
-    handleMarkerClick(targetOffer) {
-        const offerMarkers = this.state.offerMarkers
-            .map(offer => {
-                if (offer.id === targetOffer.id) {
-                    return {
-                        ...offer,
-                        showInfo: true,
-                        infoBox:
-                        <div style={{ maxWidth: 200 }}>
-                            <h4>{offer.title}</h4>
-                            <p>{stripHtml(offer.description, 200)}</p>
-                            <p className="text-muted">
-                                {offer.location.street}, {offer.location.postalCode} {offer.location.city} 
-                            </p>
-                            <RaisedButton
-                                onClick={() => goTo(`/task/${offer.id}`)}
-                                label={translate('GO_TO_LISTING')}
-                                primary={true}
-                            />
-                        </div>
-                    };
-                }
-
-                return offer;
-            });
-
-        this.setState({
-            offerMarkers
-        });
-    }
-
-    handleMarkerClose(targetOffer) {
-        this.setState({
-            offerMarkers: this.state.offerMarkers
-                .map(offer => {
-                    if (offer.id === targetOffer.id) {
-                        return {
-                            ...offer,
-                            showInfo: false
-                        };
-                    }
-
-                    return offer;
-                }),
-        });
     }
 
     render() {
@@ -438,10 +387,18 @@ class Offers extends Component {
                             <div className="col-xs-12" style={{ marginBottom: 5 }}>
                                 <OfferViewTypeChoice
                                     className="pull-right"
-                                    selected={VIEW_TYPES.LIST}
-                                    onSelect={viewType => this.setState({
-                                        viewType
-                                    })}
+                                    selected={this.state.appliedFilter.viewType}
+                                    onSelect={viewType => {
+                                        const appliedFilter = this.state.appliedFilter;
+
+                                        appliedFilter.viewType = viewType;
+                                        
+                                        setQueryParams(appliedFilter);
+
+                                        this.setState({
+                                            appliedFilter
+                                        });
+                                    }}
                                 />
                             </div>
                             { this.state.isLoading && 
@@ -450,7 +407,7 @@ class Offers extends Component {
                             { !this.state.isLoading &&
                             <div className="col-xs-12">
                                     {!this.state.offers.length &&
-                                    this.state.viewType !== VIEW_TYPES.MAP &&
+                                    this.state.appliedFilter.viewType !== VIEW_TYPES.MAP &&
                                         <div 
                                             className="text-center text-muted col-xs-12"
                                             style={{ marginBottom: 10} }
@@ -461,7 +418,7 @@ class Offers extends Component {
                                     }
 
 
-                                    { this.state.viewType === VIEW_TYPES.LIST &&
+                                    { this.state.appliedFilter.viewType === VIEW_TYPES.LIST &&
                                             this.state.offers.map(offer =>
                                                 <div 
                                                     className="col-xs-12"
@@ -476,32 +433,24 @@ class Offers extends Component {
                                                 </div>
                                             )
                                     }
-                                    { this.state.viewType === VIEW_TYPES.MAP &&
+                                    { this.state.appliedFilter.viewType === VIEW_TYPES.MAP &&
                                         <div className="row">
                                             <div
                                                 class="col-xs-12" 
                                                 style={{
-                                                    height: '350px',
+                                                    height: '400px',
                                                     width: '100%'
                                                 }}
                                             >
+                                                {this.state.offers &&
                                                 <TaskMap
-                                                    onMarkerClick={this.handleMarkerClick}
-                                                    onMarkerClose={this.handleMarkerClose}
-                                                    markers={
-                                                        this.state.offerMarkers
-                                                    }
-                                                    containerElement={
-                                                        <div style={{ height: `100%` }} />
-                                                    }
-                                                    mapElement={
-                                                        <div style={{ height: `100%` }} />
-                                                    }
+                                                    listings={this.state.offers}
                                                 />
+                                                }
                                             </div>
                                         </div>
                                     }
-                                    {this.state.viewType === VIEW_TYPES.GRID &&
+                                    {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
                                         <div className="row visible-xs visible-sm" >
                                             { this.state.offersChunksXS && 
                                                 this.state.offersChunksXS.map((offerRow, index) =>
@@ -524,7 +473,7 @@ class Offers extends Component {
                                             )}
                                         </div>
                                     }
-                                    {this.state.viewType === VIEW_TYPES.GRID &&
+                                    {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
                                         <div className="row hidden-xs hidden-sm" >
                                             { this.state.offersChunksMD && 
                                                 this.state.offersChunksMD.map((offerRow, index) =>

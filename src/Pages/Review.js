@@ -219,8 +219,8 @@ class Review extends Component {
                                             });
 
                                             openDialog({
-                                                header: 'REVIEW_SUBMITTED_SUCCESS_HEADER',
-                                                desc: 'REVIEW_SUBMITTED_SUCCESS_DESC'
+                                                header: translate('REVIEW_SUBMITTED_SUCCESS_HEADER'),
+                                                desc: translate('REVIEW_SUBMITTED_SUCCESS_DESC')
                                             }, () => {
                                                 goBack();
                                             });

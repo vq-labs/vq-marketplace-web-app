@@ -649,8 +649,8 @@ export default class NewListing extends Component {
                                             }))
                                             .then(task => {
                                                 openDialog({
-                                                    header: 'NEW_LISTING_SUCCESS_HEADER',
-                                                    desc: 'NEW_LISTING_SUCCESS_DESC'
+                                                    header: translate('NEW_LISTING_SUCCESS_HEADER'),
+                                                    desc: translate('NEW_LISTING_SUCCESS_DESC')
                                                 }, () => {
                                                     goTo(`/task/${task.id}`);
                                                 });

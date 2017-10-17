@@ -217,8 +217,8 @@ class Profile extends React.Component {
             const profileImageUrl = this.state.profile && this.state.profile.imageUrl || '/images/avatar.png';
 
             const ProfileHeader =
-                <div className="row" style={{ 'marginTop': 30}}>
-                    <div className="col-xs-12 col-sm-12 col-md-2" style={{ 'paddingTop': 20}}>
+                <div className="row" style={{ 'marginTop': 30 }}>
+                    <div className="col-xs-12 col-sm-12 col-md-2" style={{ 'paddingTop': 20 }}>
                         <ProfileImage
                             isLoading={this.state.isProfileImgLoaded}
                             allowChange={this.state.isMyProfile}

@@ -213,7 +213,7 @@ class BookRequest extends Component {
                                             .then(rOrder => {
                                                 return openDialog({
                                                     header: translate('BOOKING_SUCCESS_HEADER'),
-                                                    desc: 'BOOKING_SUCCESS_DESC'
+                                                    desc: translate('BOOKING_SUCCESS_DESC')
                                                 }, () => {
                                                     goTo(`/chat/${rOrder.requestId}`);
                                                 });

@@ -180,10 +180,12 @@ export default class SectionUsers extends React.Component {
                                             }}
                                             >
 
-                                            <MenuItem
-                                                primaryText="Details (New)"
-                                                onClick={() => goTo(`/admin/user/${user.id}`)}
-                                            />
+                                            { false &&
+                                                <MenuItem
+                                                    primaryText="Details (New)"
+                                                    onClick={() => goTo(`/admin/user/${user.id}`)}
+                                                />
+                                            }
 
                                             <MenuItem
                                                 primaryText="Show Email"
@@ -364,6 +366,17 @@ export default class SectionUsers extends React.Component {
                                                 propertyName: null,
                                                 selectedUser: null,
                                             })}
+                                        />,
+                                        <FlatButton
+                                                label="Remove verifications"
+                                                onTouchTap={() => {
+                                                    apiAdmin
+                                                    .users
+                                                    .removeVerifications(this.state.selectedUser.id)
+                                                    .then(_ => {
+                                                        location.reload();
+                                                    })
+                                                }}
                                         />
                                     ]}
                                     modal={false}
@@ -371,18 +384,17 @@ export default class SectionUsers extends React.Component {
                                     >
                                         <div className="container">
                                             <div className="col-xs-12">
-                                                    { this.state.showProperty &&
-                                                        <img
-                                                            alt="presentation"
-                                                            width={400}
-                                                            height={400}
-                                                            src={getProperty({
-                                                                userProperties: this.state.userProperties
-                                                            }, 'studentIdUrl')}
-                                                        />
-                                                    }
-                                            </div>
-                                            <div className="col-xs-12">
+                                                { this.state.showProperty &&
+                                                    <img
+                                                        alt="presentation"
+                                                        width={400}
+                                                        height={400}
+                                                        src={getProperty({
+                                                            userProperties: this.state.userProperties
+                                                        }, 'studentIdUrl')}
+                                                    />
+                                                }
+
                                                 { this.state.showProperty &&
                                                     <div className="row">
                                                         {getProperty({
@@ -394,6 +406,25 @@ export default class SectionUsers extends React.Component {
                                                                 }, 'studentIdUrl')} target="_blank">Front: Open in a separate page</a>
                                                             </div>
                                                         }
+                                                    </div>
+                                                }
+                                            </div>
+                                            
+                                            <div className="col-xs-12" style={{
+                                                marginTop: 20
+                                            }}>
+                                                { this.state.showProperty &&
+                                                    <img
+                                                        alt="presentation"
+                                                        width={400}
+                                                        height={400}
+                                                        src={getProperty({
+                                                            userProperties: this.state.userProperties
+                                                        }, 'studentIdBackUrl')}
+                                                    />
+                                                }
+                                                { this.state.showProperty &&
+                                                    <div className="row">
                                                         {getProperty({
                                                             userProperties: this.state.userProperties
                                                         }, 'studentIdBackUrl') &&

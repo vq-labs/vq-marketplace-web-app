@@ -123,6 +123,7 @@ export default class ChatRoom extends React.Component {
         this.state.messages.unshift(data);
         
         this.setState({
+            isSubmitting: true,
             newMessage: '',
             messages: this.state.messages
         });
@@ -132,12 +133,16 @@ export default class ChatRoom extends React.Component {
         .then(rMessage => {
             const messages = this.state.messages;
             
-            messages[messages.length - 1] = rMessage;
+            messages[0] = rMessage;
             
             this.setState({
+                isSubmitting: false,
                 messages
             });
         }, err => {
+            this.setState({
+                isSubmitting: false
+            });
             alert('error');
         });
     }
@@ -208,7 +213,7 @@ export default class ChatRoom extends React.Component {
                                                     />
                                                     
                                                     <RaisedButton
-                                                        disabled={!stripHtml(this.state.newMessage)}
+                                                        disabled={this.state.isSubmitting || !stripHtml(this.state.newMessage)}
                                                         type="submit"
                                                         style={{ marginTop: 10, width: '100%' }}
                                                         label={translate("CHAT_MESSAGE_SUBMIT")}
@@ -420,6 +425,41 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
+                                    { this.state.isUserOwner && this.state.request.order &&
+                                      (
+                                          String(this.state.request.status) === REQUEST_STATUS.MARKED_DONE
+                                          ||
+                                          String(this.state.request.status) === REQUEST_STATUS.CLOSED
+                                      ) &&
+                                      (
+                                          !this.state.request.order.review
+                                      ) &&
+                                        <RaisedButton
+                                            label={translate('LEAVE_REVIEW')}
+                                            labelStyle={{color: 'white'}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            style={actionBtnStyle}
+                                            onTouchTap={() => goTo(`/order/${this.state.request.order.id}/review`)}
+                                        />
+                                    }
+
+                                    { !this.state.isUserOwner && this.state.request.order &&
+                                      (
+                                          String(this.state.request.status) === REQUEST_STATUS.SETTLED
+                                          ||
+                                          String(this.state.request.status) === REQUEST_STATUS.CLOSED
+                                      ) &&
+                                      (
+                                          !this.state.request.review
+                                      ) &&
+                                        <RaisedButton
+                                            label={translate('LEAVE_REVIEW')}
+                                            labelStyle={{color: 'white'}}
+                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            style={actionBtnStyle}
+                                            onTouchTap={() => goTo(`/request/${this.state.request.id}/review`)}
+                                        />
+                                    }
 
                                     <Stepper className="hidden-xs" activeStep={
                                         REQUEST_ORDER.indexOf(this.state.request.status)

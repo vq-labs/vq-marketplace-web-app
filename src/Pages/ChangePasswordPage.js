@@ -50,7 +50,7 @@ export default class ChangePasswordPage extends Component {
       'changePassword'
     ](data)
       .then(() => { 
-        alert('CHANGE_PASSWORD_SUCCESS');
+        alert(translate('CHANGE_PASSWORD_SUCCESS'));
 
         return goTo('/login');
       }, err => {

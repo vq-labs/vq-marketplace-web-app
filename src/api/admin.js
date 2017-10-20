@@ -6,6 +6,7 @@ export const users = {
     getUserEmail: userId => communication.doGet(`/admin/user/${userId}/emails`),
     blockUser: userId => communication.doPut(`/admin/user/${userId}/block`, {}),
     unblockUser: userId => communication.doPut(`/admin/user/${userId}/unblock`, {}),
+    removeVerifications: userId => communication.doDelete(`/admin/user/${userId}/verifications`, {}),
 };
 
 export const task = {

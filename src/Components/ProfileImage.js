@@ -32,7 +32,6 @@ export default class ProfileImage extends Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        
         this.setState({
             isLoading: Boolean(nextProps.isLoading), 
             image: nextProps.imageUrl || DEFAULTS.PROFILE_IMG_URL,

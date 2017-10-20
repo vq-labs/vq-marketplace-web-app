@@ -63,7 +63,9 @@ export default class SectionListing extends React.Component {
     }
 
     componentDidMount() {
-        apiConfig.appConfig.getItems()
+        apiConfig
+        .appConfig
+        .getItems()
         .then(meta => {
             return this.setState({
                 ready: true,

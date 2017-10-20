@@ -69,7 +69,6 @@ export default class Account extends Component {
                             "request-completed",
                             "request-declined",
                             "request-cancelled",
-                            "listing-cancelled",
                             "request-closed",
                             "new-task",
                             "user-blocked"
@@ -82,6 +81,7 @@ export default class Account extends Component {
                         if ([
                             "new-request-received",
                             "new-order",
+                            "task-request-cancelled",
                             "order-marked-as-done",
                             "order-completed",
                             "task-marked-spam",
@@ -260,26 +260,27 @@ export default class Account extends Component {
                         </div>
                     </div>
                     <hr />
+                    { this.state.user && this.state.user.userType === 1 &&
                     <div className="row">
                         <div className="col-xs-12">
                             <h2>{translate('ACCOUNT_BILLING_ADDRESS_HEADER')}</h2>
                             <p className="text-muted">{translate('ACCOUNT_BILLING_ADDRESS_DESC')}</p>
                         </div>
                         <div className="col-xs-12 col-sm-6">
-                            <Address
-                                withTaxNumber={true}
-                                location={this.state.billingAddress || {}}
-                                onLocationChange={billingAddress => {
-                                    const toBeUpdated = this.state.toBeUpdated;
-                                    
-                                    toBeUpdated.billingAddress = true;
+                                <Address
+                                    withTaxNumber={true}
+                                    location={this.state.billingAddress || {}}
+                                    onLocationChange={billingAddress => {
+                                        const toBeUpdated = this.state.toBeUpdated;
+                                        
+                                        toBeUpdated.billingAddress = true;
 
-                                    this.setState({
-                                        billingAddress,
-                                        toBeUpdated
-                                    });
-                                }}
-                            />
+                                        this.setState({
+                                            billingAddress,
+                                            toBeUpdated
+                                        });
+                                    }}
+                                />
                         </div>
                         <div className="col-xs-12">
                             <FlatButton
@@ -326,7 +327,8 @@ export default class Account extends Component {
                             />
                         </div>
                     </div>
-
+                    }
+                    { this.state.user && this.state.user.userType === 1 &&
                     <div className="row">
                         <div className="col-xs-12">
                             <h2>{translate('ACCOUNT_DEFAULT_LISTING_LOCATION_HEADER')}</h2>
@@ -378,7 +380,8 @@ export default class Account extends Component {
                             />
                         </div>
                     </div>
-                
+                    }
+
                     <div className="row">
                         <div className="col-xs-12">
                             <h2>{translate('ACCOUNT_NOTIFICATIONS_HEADER')}</h2>

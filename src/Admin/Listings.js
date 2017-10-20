@@ -165,7 +165,11 @@ export default class SectionUsers extends React.Component {
 
                                                                 alert('OK! Task has been marked as spam.');
                                                             }, err => {
-                                                                return alert(err);
+                                                                if (err.code === "TASK_IS_NOT_ACTIVE") {
+                                                                    return alert('TASK_IS_NOT_ACTIVE: You can only mark active tasks as spam.');
+                                                                }
+                                                                
+                                                                return alert(`Unknown error occured ${err}`);
                                                             })
                                                         })
                                                     }}

@@ -4,6 +4,22 @@ import { goTo } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import TaskCategories from '../Partials/TaskCategories';
 
+const displayTotalPrice = (price, timings) => {
+    try {
+        return this.state.task.price * this.state.task.taskTimings[0].duration;
+    } catch (err) {
+        return '?';
+    }
+};
+
+const displayDuration = timings => {
+    try {
+        return this.state.task.taskTimings[0].duration;
+    } catch (err) {
+        return '?';
+    }
+}
+
 class ListingHeader extends Component {
     constructor(props) {
         super(props);
@@ -77,9 +93,9 @@ class ListingHeader extends Component {
                         marginTop: this.props.noPaddings ? 5 : 30,
                         color: this.state.config.COLOR_PRIMARY
                     }}>
-                        {this.state.task.price * this.state.task.taskTimings[0].duration} {this.state.task.currency}<br />
+                        {displayTotalPrice(this.state.task.price, this.state.task.taskTimings)} {this.state.task.currency}<br />
                     </h1>
-                    <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {this.state.task.taskTimings[0].duration}h</p>
+                    <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
                 </div>
             </div>
         );

@@ -39,7 +39,7 @@ import UserPreferences from './Pages/UserPreferences';
 import UserVerifications from './Pages/UserVerifications';
 import * as coreAuth from './core/auth';
 import * as coreTracking from './core/tracking';
-import * as corei18n from './core/i18n.js';
+import { getLang } from './core/i18n.js';
 import * as coreUtil from './core/util.js';
 import * as coreConfig from './core/config.js';
 import * as coreCategories from './core/categories.js';
@@ -47,15 +47,13 @@ import { Component as ConfirmDialog } from './helpers/confirm-before-action.js';
 import { Component as RequestDialog } from './helpers/open-requests-dialog';
 import { Component as MessageDialog } from './helpers/open-message-dialog';
 import { Component as MessageSnackbar } from './helpers/display-message';
+import { fetchAndAddLang } from './helpers/i18n-helpers';
 import { setBase } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
 import CONFIG from './generated/ConfigProvider.js'
 
 setBase('app');
-
-corei18n.addLang(CONFIG.LANG, {});
-corei18n.setLang(CONFIG.LANG);
 
 class App extends Component {
   constructor (props) {
@@ -126,44 +124,23 @@ class App extends Component {
           meta: config
         })
       });
-
-    const defaultLang = CONFIG.LANG;
-
-    apiConfig
-    .appLabel
-    .getItems({
-      lang: defaultLang
-    }, {
-      cache: true
-    })
-    .then(labels => {
-      const labelTranslations = {};
-
-      labels.forEach(item => {
-        labelTranslations[item.labelKey] = item.labelValue;
-      });
-
-      corei18n.addLang(defaultLang, labelTranslations);
-
-      this.setState({
-        labelsReady: true
-      })
-    });
   }
 
   componentDidMount() {
     coreConfig.getConfigAsync(config => {
-      coreAuth.getUserAsync(user => {
+      fetchAndAddLang(getLang(), false, () => {
+        coreAuth.getUserAsync(user => {
           this.setState({
             ready: true
           });
         }, true);
+      });
     });
   }
 
   render() {
       return (
-        this.state.ready && this.state.metaReady && this.state.labelsReady && <MuiThemeProvider>
+        this.state.ready && this.state.metaReady && <MuiThemeProvider>
           <div>
             <Header
               appName={this.state.meta.NAME}

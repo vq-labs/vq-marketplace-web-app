@@ -7,22 +7,17 @@ import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
+import { getLang } from '../core/i18n';
+import LANG_CODES from '../constants/LANG_CODES.js';
 
 const _ = require('underscore');
-
-const LANG_CODES = {
-   de: "Deutsch",
-   en: "English",
-   pl: "Polski",
-   hu: "Magyar"
-};
 
 export default class SectionLabels extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            lang: getParams(location.search).lang || 'en',
+            lang: getParams(location.search).lang,
             labels: [],
             labelsObj: {}
         };
@@ -93,12 +88,12 @@ export default class SectionLabels extends React.Component {
                             
                             this.getLabels(value);
                         }}>
-                            { true && <MenuItem value={this.state.lang} primaryText={LANG_CODES[this.state.lang]} /> }
+                            <MenuItem value={'en'} primaryText={LANG_CODES['en']} />
+                            <MenuItem value={'hu'} primaryText={LANG_CODES['hu']} />
                             { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
                             { false && <MenuItem value={'en'} primaryText="English" /> }
                             { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
                             { false && <MenuItem value={'pl'} primaryText="Polski" /> }
-                            { false && <MenuItem value={'hu'} primaryText="Magyar" /> }
                         </DropDownMenu>
                     </div>
                 </div>

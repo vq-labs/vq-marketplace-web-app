@@ -1,16 +1,25 @@
+import CONFIG from '../generated/ConfigProvider.js'
+
 const TRANSLATIONS = {};
-const defaultLang = 'en';
+
 let LANG = localStorage.getItem('ST_LANG');
 
+debugger;
+
 if (!LANG) {
-    LANG = defaultLang;
+    LANG = CONFIG.LANG;
 
     localStorage.setItem('ST_LANG', LANG);
 }
 
 export const setLang = langKey => {
-    LANG = langKey || defaultLang;
-}
+    TRANSLATIONS[langKey] = TRANSLATIONS[langKey] || {};
+    LANG = langKey;
+
+    localStorage.setItem('ST_LANG', langKey);
+};
+
+export const getLang = () => LANG;
 
 export const addLang = (langKey, translations) => TRANSLATIONS[langKey] = translations;
 

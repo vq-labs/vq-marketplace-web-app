@@ -96,7 +96,7 @@ export default class Address extends Component {
                         <div className="col-xs-12">
                             <div className="row">
                                 <div className="col-xs-12 col-sm-8">
-                                    <h4 >
+                                    <h4>
                                         {translate("LOCATION_STREET") + '*'}
                                     </h4>
                                     <TextField id={'listing_location'} name="location" style={{width: '100%'}}>

@@ -75,9 +75,25 @@ p {
   color: white;
 }
 
-.App-intro {
-  fontSize: large;
+.vq-account-sector-list {
+  font-size: 15px;
 }
+
+.vq-account-sector-list > li {
+  padding-top: 7px;
+}
+
+.vq-account-sector-list > li > a {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #484848;
+}
+
+.vq-account-sector-list > li.vq-account-sector-active {
+  font-weight: bold;
+}
+
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

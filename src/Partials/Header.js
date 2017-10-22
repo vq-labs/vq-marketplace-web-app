@@ -176,30 +176,6 @@ class Header extends Component {
                           primaryText={translate("ACCOUNT_SETTINGS")}
                       />     
                    
-
-                      { Number(this.state.user.userType) === 2 &&
-                        <MenuItem 
-                            onClick={() => goTo(`/user-verifications`)}
-                            primaryText={translate("USER_VERIFICATIONS")}
-                          />     
-                      }
-
-                      { Number(this.state.user.userType) === 2 &&
-                        <MenuItem 
-                          onClick={() => goTo(`/user-preferences`)}
-                          primaryText={translate("USER_PREFERENCES")}
-                        />
-                      }
-
-                      { Number(this.state.user.userType) === 2 &&
-                        <MenuItem 
-                          onClick={() => goTo(`/user-documents`)}
-                          primaryText={translate("HEADER_USER_DOCUMENTS")}
-                        />
-                      }
-
-                      <MenuItem onClick={ () => goTo('/change-password' )} primaryText={translate("CHANGE_PASSWORD")} />                 
-                      
                       { coreAuth.isAdmin() &&
                         <MenuItem onClick={
                           () => goTo('/admin/overview')

@@ -1,5 +1,5 @@
 import * as coreMedia from '../core/media';
-import CONFIG from '../generated/ConfigProvider.js'
+import CONFIG from '../generated/ConfigProvider.js';
 
 const API_URL = CONFIG.API_URL;
 

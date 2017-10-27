@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Address from '../Components/Address';
+import EditableEntity from '../Components/EditableEntity';
 import apiUser from '../api/user';
 import apiPost from '../api/post';
 import * as apiTaskLocation from '../api/task-location';
@@ -59,6 +60,13 @@ export default class Account extends Component {
                     userProperty.propValue = userProperty.propValue === "1";
                 });
             */
+
+
+            apiUser
+            .getItem(user.id)
+            .then(profile => this.setState({
+                profile
+            }));
 
             apiPost
             .getItems({
@@ -201,6 +209,15 @@ export default class Account extends Component {
     changeSectorFn = sector => () => {
         setQueryParams({ sector });
 
+        if (sector === 'profile') {
+            return apiUser
+            .getItem(this.state.user.id)
+            .then(profile => this.setState({
+                profile,
+                sector
+            }));
+        }
+
         this.setState({
             sector
         });
@@ -301,9 +318,58 @@ export default class Account extends Component {
                             { this.state.sector === 'profile' &&
                                 <div className="row">
                                     <div className="col-xs-12">
+                                        <h2>{translate('EDIT_PROFILE')}</h2>
+                                    </div>
+
+                                    <div className="row">
+                                        <EditableEntity
+                                            cancelLabel={translate('CANCEL')}
+                                            saveLabel={translate('SAVE')}
+                                            showCancelBtn={false}
+                                            value={this.state.profile} 
+                                            fields={[
+                                                {
+                                                    type: 'string',
+                                                    key: 'firstName',
+                                                    label: translate('FIRST_NAME')
+                                                },
+                                                {
+                                                    type: 'string',
+                                                    key: 'lastName',
+                                                    label: translate('LAST_NAME') 
+                                                },
+                                                
+                                                {
+                                                    type: 'html',
+                                                    key: 'bio',
+                                                    label: translate('PROFILE_BIO'),
+                                                    hint: translate('PROFILE_BIO_DESC'),
+                                                },
+                                                /** 
+                                                {
+                                                    type: 'string',
+                                                    key: 'website',
+                                                    label: translate('WEBSITE')
+                                                }
+                                                */
+                                            ]}
+                                            onConfirm={
+                                                updatedEntity => {
+                                                    debugger;
+
+                                                    apiUser
+                                                    .updateItem(this.state.user.id, updatedEntity)
+                                                    .then(_ => _, _ => _)
+                                                }
+                                            }
+                                        />
+                                    </div>
+                                    
+                                    <div className="col-xs-12">
                                         <h2>{translate('ACCOUNT_USER_DETAILS_HEADER')}</h2>
                                         <p className="text-muted">{translate('ACCOUNT_USER_DETAILS_DESC')}</p>
                                     </div>
+
                                     <div className="col-xs-12">
                                             <TextField
                                                 maxLength={10}

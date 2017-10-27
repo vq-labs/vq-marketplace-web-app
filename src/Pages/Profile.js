@@ -312,7 +312,7 @@ class Profile extends React.Component {
                                 </div>
                             </div>
                         }   
-                        { this.state.isMyProfile &&
+                        { false && this.state.isMyProfile &&
                             <div className="row">
                                 <div className="col-xs-12" style={{ marginTop: 10 }}>
                                     <RaisedButton label={ translate('EDIT_PROFILE') } onTouchTap={

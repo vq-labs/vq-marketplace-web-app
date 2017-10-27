@@ -6,7 +6,7 @@ import TaskCategories from '../Partials/TaskCategories';
 
 const displayTotalPrice = (price, timings) => {
     try {
-        return this.state.task.price * this.state.task.taskTimings[0].duration;
+        return price * timings[0].duration;
     } catch (err) {
         return '?';
     }
@@ -14,7 +14,7 @@ const displayTotalPrice = (price, timings) => {
 
 const displayDuration = timings => {
     try {
-        return this.state.task.taskTimings[0].duration;
+        return timings[0].duration;
     } catch (err) {
         return '?';
     }

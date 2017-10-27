@@ -447,9 +447,9 @@ export default class NewListing extends Component {
                                         style={{
                                             float: 'right'
                                         }}
+                                        labelStyle={{color: 'white '}}
                                         backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                         label={translate("CONTINUE")}
-                                        primary={true}
                                         disabled={false}
                                         onTouchTap={() => {
                                             const currentStep = this.state.step;
@@ -599,9 +599,9 @@ export default class NewListing extends Component {
                                         style={{
                                             float: 'right'
                                         }}
+                                        labelStyle={{color: 'white '}}
                                         backgroundColor={this.state.appConfig.COLOR_PRIMARY}
                                         label={translate("NEW_LISTING_CONFIRM_AND_POST")}
-                                        primary={true}
                                         disabled={this.state.isSubmitting}
                                         onTouchTap={() => {
                                             this.setState({

@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
+import Loader from "../Components/Loader";
 import FlatButton from 'material-ui/FlatButton';
-import HtmlTextField from '../Components/HtmlTextField';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
+import Slider from 'material-ui/Slider';
+import ImageUploader from '../Components/ImageUploader';
+import HtmlTextField from '../Components/HtmlTextField';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import apiTask from '../api/task';
 import * as apiTaskImage from '../api/task-image';
 import { goTo, goBack } from '../core/navigation';
 import { factory as errorFactory } from '../core/error-handler';
-import ImageUploader from '../Components/ImageUploader';
 import { translate } from '../core/i18n';
+import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { displayPrice } from '../core/format';
 import { displayMessage } from '../helpers/display-message.js';
 import '../App.css';
 
@@ -32,54 +35,58 @@ export default class TaskEdit extends Component {
     }
    
     componentDidMount() {
-        getUserAsync(user => {
-            if (!user) {
-                return goTo('/');
-            }
+        getConfigAsync(config => {
+            this.setState({ config });
 
-            let taskId = this.props.params.taskId;
-            
-            apiTask
-            .getItem(taskId)
-            .then(rTask => {
-                if (!rTask) {
+            getUserAsync(user => {
+                if (!user) {
                     return goTo('/');
                 }
 
-                if (rTask.userId !== user.id) {
-                    goTo('/');
-
-                    return alert('NOT_YOUR_TASK');
-                }
-
-                const canEdit = Boolean(
-                    this.state.task &&
-                    this.state.task.status === TASK_STATUS.ACTIVE &&
-                    this.state.task.requests &&
-                    !this.state.task.requests
-                    .filter(_ => _.status === REQUEST_STATUS.PENDING).length
-                );
-
-                if (canEdit) {
-                    goTo('/');
-
-                    return alert('EDITING_NOT_POSSIBLE');
-                }
+                let taskId = this.props.params.taskId;
                 
-
-                this.setState({
-                    isLoading: false,
-                    task: rTask,
-                    updatedTask: {
-                        images: rTask.images,
-                        title: rTask.title,
-                        description: rTask.description,
-                        price: rTask.price,
-                        priceType: rTask.priceType
+                apiTask
+                .getItem(taskId)
+                .then(rTask => {
+                    if (!rTask) {
+                        return goTo('/');
                     }
-                });
-            }, errorFactory());
-        }, false)
+
+                    if (rTask.userId !== user.id) {
+                        goTo('/');
+
+                        return alert('NOT_YOUR_TASK');
+                    }
+
+                    const canEdit = Boolean(
+                        this.state.task &&
+                        this.state.task.status === TASK_STATUS.ACTIVE &&
+                        this.state.task.requests &&
+                        !this.state.task.requests
+                        .filter(_ => _.status === REQUEST_STATUS.PENDING).length
+                    );
+
+                    if (canEdit) {
+                        goTo('/');
+
+                        return alert('EDITING_NOT_POSSIBLE');
+                    }
+                    
+
+                    this.setState({
+                        isLoading: false,
+                        task: rTask,
+                        updatedTask: {
+                            images: rTask.images,
+                            title: rTask.title,
+                            description: rTask.description,
+                            price: rTask.price,
+                            priceType: rTask.priceType
+                        }
+                    });
+                }, errorFactory());
+            }, false);
+        });
     }
 
   handleFieldChange (field, transform)  {
@@ -129,15 +136,13 @@ export default class TaskEdit extends Component {
         return (
             <div >
               { this.state.isLoading && 
-                <div className="text-center" style={{ 'marginTop': '40px' }}>
-                    <CircularProgress size={80} thickness={5} />
-                </div>
+                <Loader isLoading={true} />
               }
               { !this.state.isLoading &&           
                         <div className="container">
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
-                                    <h4>{translate("LISTING_TITLE")}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_TITLE")}</h4>
                                     <TextField
                                         ref="title"
                                         onChange={this.handleFieldChange('title')}
@@ -147,7 +152,7 @@ export default class TaskEdit extends Component {
                                     />
                                 </div>
                                 <div className="col-xs-12">
-                                    <h4>{translate("LISTING_DESCRIPTION")}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
                                         <HtmlTextField
                                             onChange={this.handleFieldChange('description')}
                                             value={this.state.updatedTask.description}
@@ -155,7 +160,7 @@ export default class TaskEdit extends Component {
                                     <hr />
                                 </div>
                                 <div className="col-xs-12">
-                                    <h4>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
+                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
                                     <RadioButtonGroup 
                                         name="priceType" 
                                         onChange={ this.handleFieldChange('priceType', value => Number(value))} 
@@ -170,23 +175,26 @@ export default class TaskEdit extends Component {
                                     </RadioButtonGroup>
                                 </div>
                                 { this.state.task.priceType !== 2 &&
-                                    <div className="col-xs-12">
-                                        <TextField
-                                            disabled={false}
+                                    <div className={"col-xs-12"}>
+                                        <h2 
+                                            style={{color: this.state.config.COLOR_PRIMARY}}
+                                            className="text-center"
+                                        >
+                                            {displayPrice(this.state.updatedTask.price, this.state.config.PRICING_DEFAULT_CURRENCY, this.state.updatedTask.priceType)}
+                                        </h2>
+                                        <Slider
+                                            min={this.state.minPrice}
+                                            max={10000}
+                                            step={500}
+                                            value={this.state.updatedTask.price}
                                             onChange={this.handleFieldChange('price')}
-                                            ref="price"
-                                            type="number"
-                                            value={this.state.updatedTask.price }
-                                            style={{width: '100%'}}
-                                            inputStyle={{width: '100%'}}
-                                            floatingLabelText={translate("PRICE")}
                                         />
                                     </div>
                                 }
 
                                 { false &&
                                     <div className="col-xs-12">
-                                        <h4>Photos</h4>
+                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>Photos</h4>
                                         <ImageUploader images={this.state.updatedTask.images} onChange={images => {
                                             const updatedTask = this.state.updatedTask;
 
@@ -197,6 +205,7 @@ export default class TaskEdit extends Component {
                                     </div>
                                 }
 
+                                { this.state.config && 
                                 <div className="col-xs-12 vq-margin-bottom-xs vq-margin-top-xs">
                                     <FlatButton
                                         style={{float: 'left'}}
@@ -208,11 +217,13 @@ export default class TaskEdit extends Component {
                                     <RaisedButton
                                         style={{ float: 'right' }}
                                         label={translate('CONFIRM')}
-                                        primary={ true }
+                                        labelStyle={{color: 'white '}}
+                                        backgroundColor={this.state.config.COLOR_PRIMARY}
                                         disabled={ false }
                                         onTouchTap={ this.handleUpdate }
                                     />
                                 </div>
+                                }
                              </div>
                         </div>
                   }

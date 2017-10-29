@@ -60,6 +60,7 @@ gulp.task('build', [ "prepare" ], cb => {
 gulp.task('deploy', [ 'build' ], cb => {
     const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
     const AWS_REGION = process.env.AWS_REGION || 'eu-central-1';
+    const VQ_TENANT_ID = process.env.VQ_TENANT_ID;
 
     if (!AWS_BUCKET_NAME) {
         throw new Error('AWS_BUCKET_NAME is required');
@@ -75,6 +76,11 @@ gulp.task('deploy', [ 'build' ], cb => {
         '--bucket',
         AWS_BUCKET_NAME
     ];
+
+    if (VQ_TENANT_ID) {
+        args.push('--filePrefix');
+        args.push(VQ_TENANT_ID);
+    }
 
     const npm = spawn("s3-deploy", args, { cwd: './build' });
 

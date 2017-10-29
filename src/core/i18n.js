@@ -4,8 +4,6 @@ const TRANSLATIONS = {};
 
 let LANG = localStorage.getItem('ST_LANG');
 
-debugger;
-
 if (!LANG) {
     LANG = CONFIG.LANG;
 

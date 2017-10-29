@@ -355,8 +355,6 @@ export default class Account extends Component {
                                             ]}
                                             onConfirm={
                                                 updatedEntity => {
-                                                    debugger;
-
                                                     apiUser
                                                     .updateItem(this.state.user.id, updatedEntity)
                                                     .then(_ => _, _ => _)

@@ -45,6 +45,7 @@
     "promise": "7.1.1",
     "react-dev-utils": "^0.3.0",
     "recursive-readdir": "2.1.0",
+    "renamer": "^0.6.1",
     "rimraf": "2.5.4",
     "s3-deploy": "^0.7.3",
     "strip-ansi": "3.0.1",
@@ -97,6 +98,9 @@
     "start:local": "node ./node_modules/gulp/bin/gulp.js prepare --env local && node scripts/start.js",
     "start:tenant": "VQ_API_URL=http://click4work.vqmarketplace.vq-labs.com:8080/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js",
+    "build-rename": "npm run build-rename-js && npm run build-rename-css",
+    "build-rename-js": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.js' --replace 'main.js' build/static/js/*.js",
+    "build-rename-css": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.css' --replace 'main.css' build/static/css/*.css",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {

@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import SectionOverview from './Overview';
 import SectionCategories from './Categories';
 import SectionBasics from './Basics';
+import SectionSEO from './SEO';
 import SectionCustomPages from './CustomPages';
 import SectionDesign from './Design';
 import SectionUsers from './Users';
@@ -75,6 +76,7 @@ export default class AdminPage extends React.Component {
                     
                         <h4>Configuration</h4>
                         <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('seo') }>SEO</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('custom-pages') }>Custom pages</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
@@ -138,6 +140,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
+                                        { this.state.section === 'seo' && <SectionSEO /> }
                                         { this.state.section === 'design' && <SectionDesign /> }
                                         { this.state.section === 'pricing' && <SectionPricing /> }
                                         { this.state.section === 'listing' && <SectionListing /> }

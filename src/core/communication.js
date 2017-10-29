@@ -3,7 +3,8 @@ import { getToken } from './auth'
 import { serializeQueryObj, parseJSON } from './util'
 import CONFIG from '../generated/ConfigProvider.js'
 
-const API_URL = CONFIG.API_URL;
+// VQ_API_URL is defined in production mode
+const API_URL = typeof window.VQ_API_URL === 'undefined' ? CONFIG.API_URL : window.VQ_API_URL;
 
 export const doGet = (url, queryObject) => {
     url = API_URL + url;

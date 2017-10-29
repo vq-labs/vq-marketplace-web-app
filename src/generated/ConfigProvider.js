@@ -1,5 +1,4 @@
 export default {
-    API_URL: 'http://localhost:8080/api',
-    GOOGLE_ANALYTICS_ID: '',
-    LANG: 'en',
+    API_URL: 'https://click4work.vq-labs.com/api',
+    LANG: 'en'
 };

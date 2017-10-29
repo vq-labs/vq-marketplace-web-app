@@ -46,7 +46,7 @@ export default class Login extends Component {
           }
         })
         .catch(err => {
-          if (err && err.err && err.err.code && err.err.code === 'USER_NOT_VERIFIED') {
+          if (err.code === 'USER_NOT_VERIFIED' || err && err.err && err.err.code && err.err.code === 'USER_NOT_VERIFIED') {
             if (this.props.onNotVerified) {
               coreAuth.setUserId(err.user.id);
               coreAuth.setUser(err.user);
@@ -56,13 +56,7 @@ export default class Login extends Component {
             }
           }
 
-          const errorMessage = err.desc;
-
-          if (errorMessage) {
-            return alert(errorMessage);
-          }
-
-          alert(err.err ? translate(err.err.code) : err);
+          alert(err ? translate(err.code) : err);
         })
   }
   render() {

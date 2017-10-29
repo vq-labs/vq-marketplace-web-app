@@ -34,6 +34,11 @@ const defaultConfigsFields = [
     },
     {
         type: 'string',
+        key: 'GOOGLE_ANALYTICS_ID',
+        label: 'Google Analytics Tracking ID'
+    },
+    {
+        type: 'string',
         key: 'SOCIAL_FB_USERNAME',
         label: 'Facebook username'
     },

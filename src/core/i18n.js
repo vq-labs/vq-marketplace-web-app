@@ -1,13 +1,16 @@
 import CONFIG from '../generated/ConfigProvider.js'
+import { getConfigAsync } from './config';
 
 const TRANSLATIONS = {};
 
 let LANG = localStorage.getItem('ST_LANG');
 
 if (!LANG) {
-    LANG = CONFIG.LANG;
-
-    localStorage.setItem('ST_LANG', LANG);
+    getConfigAsync(config => {
+        LANG = config.DEFAULT_LANG || CONFIG.LANG;
+        
+        localStorage.setItem('ST_LANG', LANG);
+    });
 }
 
 export const setLang = langKey => {

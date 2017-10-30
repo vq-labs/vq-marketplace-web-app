@@ -240,7 +240,6 @@ class Review extends Component {
                 }
                 {   this.state.config &&
                     this.state.userUnderReview &&
-                    this.state.userUnderReview.imageUrl &&
                     <div className="col-md-4 text-center" style={{ paddingTop: 50 }}>
                         <ProfileImage
                             isLoading={false}

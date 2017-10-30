@@ -1,5 +1,6 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import HtmlTextField from '../Components/HtmlTextField';
 import apiPost from '../api/post';
@@ -33,6 +34,25 @@ export default class SectionPostEdit extends React.Component {
         const postId = this.state.postId;
 
         this.getPost(postId);
+    }
+
+    renderAddFieldButton(fieldKey) {
+        return (
+          <Chip
+            key={fieldKey}
+            onClick={() => {
+                const post = this.state.post;
+
+                post.body = `${post.body}${fieldKey}`;
+                
+                this.setState({
+                    post
+                });
+            }}
+          >
+            {fieldKey}
+          </Chip>
+        );
     }
 
     render() {
@@ -102,6 +122,13 @@ export default class SectionPostEdit extends React.Component {
                             />
                         </div>
                     </div>
+                    { false &&
+                        <div className="row" style={{ marginTop: 30 }}>
+                            <div className="col-xs-12 col-md-8 col-md-offset-2">
+                                {this.renderAddFieldButton('LISTING_TITLE')}
+                            </div>
+                        </div>
+                    }
                     <div className="row" style={{ marginTop: 30 }}>
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
                             <RaisedButton

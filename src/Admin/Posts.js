@@ -61,7 +61,6 @@ export default class SectionPosts extends React.Component {
                         <MenuItem value={'email'} primaryText="Emails" />
                         <MenuItem value={'terms'} primaryText="Terms" />
                         { false && <MenuItem value={'blog'} primaryText="Blog" /> }
-                        { false && <MenuItem value={'process'} primaryText="Process" /> }
                     </DropDownMenu>
                 </div>
                 { this.state.type === 'email' &&

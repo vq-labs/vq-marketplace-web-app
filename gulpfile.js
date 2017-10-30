@@ -29,10 +29,6 @@ gulp.task('prepare', cb => {
                 {
                     match: 'VQ_LANG',
                     replacement: VQ_LANG
-                },
-                {
-                    match: 'GOOGLE_ANALYTICS_ID',
-                    replacement: GOOGLE_ANALYTICS_ID
                 }
             ]
         }))

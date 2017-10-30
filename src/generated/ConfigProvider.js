@@ -1,4 +1,4 @@
 export default {
-    API_URL: 'https://click4work.vq-labs.com/api',
+    API_URL: 'http://localhost:8080/api',
     LANG: 'en'
 };

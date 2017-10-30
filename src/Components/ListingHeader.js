@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import { displayPrice, displayLocation, displayListingDesc }  from '../core/format';
+import { displayPrice, displayLocation, displayListingDesc, displayTotalPrice }  from '../core/format';
 import { goTo } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import TaskCategories from '../Partials/TaskCategories';
-
-const displayTotalPrice = (price, timings) => {
-    try {
-        return price * timings[0].duration;
-    } catch (err) {
-        return '?';
-    }
-};
 
 const displayDuration = timings => {
     try {
@@ -93,7 +85,7 @@ class ListingHeader extends Component {
                         marginTop: this.props.noPaddings ? 5 : 30,
                         color: this.state.config.COLOR_PRIMARY
                     }}>
-                        {displayTotalPrice(this.state.task.price, this.state.task.taskTimings)} {this.state.task.currency}<br />
+                        {displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency)}<br />
                     </h1>
                     <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
                 </div>

@@ -33,6 +33,7 @@ class Review extends Component {
             requestId,
             orderId,
             request: null,
+            user: null,
             order: null,
             config: null,
             body: '',
@@ -198,10 +199,6 @@ class Review extends Component {
                                         isProcessing: true
                                     });
 
-                                    
-
-                                    
-
                                     if (reviewType === REVIEW_TYPES.ORDER) {
                                         review.orderId = orderId;
                                     }
@@ -222,6 +219,16 @@ class Review extends Component {
                                                 header: translate('REVIEW_SUBMITTED_SUCCESS_HEADER'),
                                                 desc: translate('REVIEW_SUBMITTED_SUCCESS_DESC')
                                             }, () => {
+                                                const user = this.state.user;
+
+                                                if (user.userType === 1) {
+                                                    return goTo(`/profile/${user.id}`);
+                                                }
+
+                                                if (user.userType === 2) {
+                                                    return goTo(`/profile/${user.id}`);
+                                                }
+
                                                 goBack();
                                             });
                                         }, err => {

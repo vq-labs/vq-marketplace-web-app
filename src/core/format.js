@@ -25,11 +25,20 @@ Object
         INVERSE_TASK_STATUS[TASK_STATUS[statusName]] = statusName;
     });
  
-
 export const displayTaskStatus = taskStatus => {
     return INVERSE_TASK_STATUS[taskStatus] ?
         INVERSE_TASK_STATUS[taskStatus] :
         'Unknown status';
+};
+
+export const displayTotalPrice = (price, timings, currencyCode) => {
+    try {
+        const amount = price * timings[0].duration;
+        
+        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+    } catch (err) {
+        return '?';
+    }
 };
 
 export const displayListingDesc = desc => {

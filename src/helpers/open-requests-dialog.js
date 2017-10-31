@@ -5,6 +5,7 @@ import { List, ListItem } from 'material-ui/List';
 import Moment from 'react-moment';
 import ReactStars from 'react-stars';
 import { translate } from '../core/i18n';
+import { getConfigAsync } from '../core/config';
 import { goTo } from '../core/navigation';
 
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
@@ -27,6 +28,10 @@ export const Component = class RequestDialog extends React.Component {
     }
 
     componentDidMount() {
+        getConfigAsync(config => {
+            this.setState({ config });
+        });
+
         onOpen = requests => {
             this.setState({
                 requests,
@@ -78,7 +83,9 @@ export const Component = class RequestDialog extends React.Component {
                                                 primaryText={`${request.fromUser.firstName} ${request.fromUser.lastName}`}
                                                 secondaryText={
                                                     <p>
-                                                        <Moment format="DD.MM.YYYY">{request.createdAt}</Moment>
+                                                        {this.state.config &&
+                                                            <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{request.createdAt}</Moment>
+                                                        }
                                                     </p>
                                                 }
                                                 leftAvatar={<Avatar src={request.fromUser.imageUrl || DEFAULTS.PROFILE_IMG_URL} />}

@@ -109,7 +109,7 @@ export default class TaskComments extends React.Component {
                                             </strong>
                                         <br />
                                         <p className="text-muted">
-                                            <Moment format="DD.MM.YYYY, HH:mm">{message.createdAt}</Moment>
+                                            <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>
                                         </p>
                                     </div>
                                 </div>   

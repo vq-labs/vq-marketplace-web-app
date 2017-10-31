@@ -160,7 +160,7 @@ export default class SectionUsers extends React.Component {
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format="DD.MM.YYYY, HH:MM">{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
+                                            Created at: <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
                                         </p>
                                     }
                                     rightIcon={
@@ -226,21 +226,22 @@ export default class SectionUsers extends React.Component {
                                                 }}
                                             />
 
-                                            <MenuItem
-                                                primaryText="Documents"
-                                                onClick={() => {
-                                                    apiAdmin
-                                                    .users
-                                                    .getUserProperties(user.id)
-                                                    .then(userProperties => {
-                                                        this.setState({
-                                                            userProperties,
-                                                            showProperty: true,
-                                                            selectedUser: user
-                                                        });
-                                                    })
-                                                }}
-                                            />
+                                            { false && <MenuItem
+                                                    primaryText="Documents"
+                                                    onClick={() => {
+                                                        apiAdmin
+                                                        .users
+                                                        .getUserProperties(user.id)
+                                                        .then(userProperties => {
+                                                            this.setState({
+                                                                userProperties,
+                                                                showProperty: true,
+                                                                selectedUser: user
+                                                            });
+                                                        })
+                                                    }}
+                                                />
+                                            }
                                        
                                             <MenuItem
                                                 primaryText="Go to profile page"
@@ -385,6 +386,10 @@ export default class SectionUsers extends React.Component {
                                         <div className="container">
                                             <div className="col-xs-12">
                                                 { this.state.showProperty &&
+                                                    getProperty({
+                                                        userProperties: this.state.userProperties
+                                                    }, 'studentIdUrl')
+                                                    &&    
                                                     <img
                                                         alt="presentation"
                                                         width={400}
@@ -414,6 +419,9 @@ export default class SectionUsers extends React.Component {
                                                 marginTop: 20
                                             }}>
                                                 { this.state.showProperty &&
+                                                    getProperty({
+                                                        userProperties: this.state.userProperties
+                                                    }, 'studentIdBackUrl') &&
                                                     <img
                                                         alt="presentation"
                                                         width={400}

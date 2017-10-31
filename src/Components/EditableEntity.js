@@ -62,25 +62,31 @@ export default class EditableEntity extends Component {
         });
     } 
     
-    handleFieldChange (field, transform) {
-            return (_, value) => {
-                const updatedEntity = this.state.updatedEntity;
+    updateField(fieldKey, fieldValue, transform) {
+        const updatedEntity = this.state.updatedEntity;
+        
+        updatedEntity[fieldKey] = transform ? transform(fieldValue) : fieldValue;
+        
+        this.state.fields
+        .filter(_ => _.deriveValue)
+        .forEach(_ => {
+            if (_.key !== fieldKey) {
+                updatedEntity[_.key] = _.deriveValue(updatedEntity);
+            }
+        });
+        
+        this.setState({
+            updatedEntity,
+            dirty: true
+        });
+    }
 
-                updatedEntity[field] = transform ? transform(value) : value;
-                
-                this.state.fields
-                .filter(_ => _.deriveValue)
-                .forEach(_ => {
-                    if (_.key !== field) {
-                        updatedEntity[_.key] = _.deriveValue(updatedEntity);
-                    }
-                });
-                
-                this.setState({
-                    updatedEntity,
-                    dirty: true
-                });
-            };
+    handleFieldChange (fieldKey, transform) {
+        return (_, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
+    }
+    
+    handleFieldSelection (fieldKey, transform) {
+        return (_, _2, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
     }
 
     handleUpdate () {
@@ -182,16 +188,17 @@ export default class EditableEntity extends Component {
                                                             
                                                         </div>
                                                     }
-                                                    { (field.type === 'select') &&
+                                                    { field.type === 'select' &&
                                                     <SelectField
-                                                        disabled={true}
+                                                        style={{width: '100%'}}
+                                                        disabled={field.disabled}
                                                         floatingLabelText={field.label}
-                                                        value={Number(this.state.updatedEntity[field.key])}
-                                                        onChange={this.handleFieldChange(field.key)}
+                                                        value={this.state.updatedEntity[field.key]}
+                                                        onChange={this.handleFieldSelection(field.key)}
                                                     >
-                                                        <MenuItem key={0} value={0} primaryText={'Disabled'} />
-                                                        <MenuItem key={1} value={1} primaryText={'Optional'} />
-                                                        <MenuItem key={2} value={2} primaryText={'Required'} />
+                                                        {field.selection.map((selectionItem, index) => 
+                                                            <MenuItem key={index} value={selectionItem.value} primaryText={selectionItem.label} />
+                                                        )}
                                                     </SelectField>
                                                     }
 

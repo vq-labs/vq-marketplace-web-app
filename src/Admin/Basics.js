@@ -14,6 +14,25 @@ const defaultConfigsFields = [
         label: 'What is your domain url? (with http or https)',
         explanation: 'It is used to build website paths in the emails. It must be specified for the e-mail actions routing to work correctly.'
     },
+    {   
+        selection: [
+            { value: 'DD.MM.YYYY', label: 'DD.MM.YYYY' },
+            { value: 'YYYY.MM.DD', label: 'YYYY.MM.DD' },
+            { value: 'YYYY/MM/DD', label: 'YYYY/MM/DD' },
+            { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY' }
+        ],
+        type: 'select',
+        key: 'DATE_FORMAT',
+        label: 'Date format',
+    },
+    {
+        selection: [
+            { value: 'HH:mm', label: 'HH:mm' },
+        ],
+        type: 'select',
+        key: 'TIME_FORMAT',
+        label: 'Time format',
+    },
     {
         type: 'single-image',
         key: 'LOGO_URL',

@@ -81,7 +81,7 @@ export default class NewListingReview extends Component {
                         <div className="col-xs-12">
                             <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DATE")}</h4>
                             <div>
-                                {displayTaskTiming(this.state.listing.timing)}
+                                {displayTaskTiming(this.state.listing.timing, `${this.state.config.DATE_FORMAT}`)}
                             </div>
                         </div>
                     </div>

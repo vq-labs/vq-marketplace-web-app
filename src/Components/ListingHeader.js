@@ -70,7 +70,7 @@ class ListingHeader extends Component {
                     { this.state.task.taskTimings &&
                         Boolean(this.state.task.taskTimings.length) &&
                         <p className="text-muted">
-                            { displayTaskTiming(this.state.task.taskTimings) }
+                            { displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`) }
                         </p>
                     }
 

@@ -184,7 +184,6 @@ class Offers extends Component {
         }}>
             <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 50 }}>
                 <div style={{
-                    backgroundColor: this.state.config.teaserBoxColor,
                     padding: 10,
                     maxWidth: '850px',
                     margin: '0 auto'
@@ -205,66 +204,70 @@ class Offers extends Component {
                     </h2>
                     }
                     
-                    <Autocomplete
-                        value={this.state.locationQueryString}
-                        onChange={ev => {
-                            const locationQueryString = ev.target.value;
-                            const newState = {};
+                    { this.state.config &&
+                      this.state.config.LISTING_GEOFILTER_COUNTRY_RESTRICTION &&
+                      this.state.config.LISTING_GEOFILTER_MODE &&
+                        <Autocomplete
+                            value={this.state.locationQueryString}
+                            onChange={ev => {
+                                const locationQueryString = ev.target.value;
+                                const newState = {};
 
-                            if (locationQueryString === '') {
+                                if (locationQueryString === '') {
+                                    const appliedFilter = this.state.appliedFilter;
+                                
+
+                                    appliedFilter.lat = null;
+                                    appliedFilter.lng = null;
+                                    appliedFilter.q = null;
+
+                                    newState.appliedFilter = appliedFilter;
+
+                                    this.updateResults(appliedFilter);
+                                }
+
+                                newState.locationQueryString = locationQueryString;
+
+                                this.setState(newState);
+                            }}
+                            style={{
+                                padding: 5,
+                                fontSize: 20,
+                                border: 0,
+                                borderRadius: 5,
+                                width: '100%',
+                                height: 50
+                            }}
+                            componentRestrictions={{
+                                country: this.state.config.LISTING_GEOFILTER_COUNTRY_RESTRICTION
+                            }}
+                            onPlaceSelected={place => {
+                                const locationQueryString = place.formatted_address;
+                                const locationValue = formatGeoResults([
+                                    place
+                                ])[0];
                                 const appliedFilter = this.state.appliedFilter;
-                            
+                                
+                                appliedFilter.lat = locationValue.lat;
+                                appliedFilter.lng = locationValue.lng;
+                                appliedFilter.q = locationQueryString;
 
-                                appliedFilter.lat = null;
-                                appliedFilter.lng = null;
-                                appliedFilter.q = null;
+                                this.setState({
+                                    locationQueryString,
+                                    appliedFilter
+                                });
 
-                                newState.appliedFilter = appliedFilter;
-
-                                this.updateResults(appliedFilter);
-                            }
-
-                            newState.locationQueryString = locationQueryString;
-
-                            this.setState(newState);
-                        }}
-                        style={{
-                            padding: 5,
-                            fontSize: 20,
-                            border: 0,
-                            borderRadius: 5,
-                            width: '100%',
-                            height: 50
-                        }}
-                        componentRestrictions={{
-                            country: 'hu'
-                        }}
-                        onPlaceSelected={place => {
-                            const locationQueryString = place.formatted_address;
-                            const locationValue = formatGeoResults([
-                                place
-                            ])[0];
-                            const appliedFilter = this.state.appliedFilter;
-                            
-                            appliedFilter.lat = locationValue.lat;
-                            appliedFilter.lng = locationValue.lng;
-                            appliedFilter.q = locationQueryString;
-
-                            this.setState({
-                                locationQueryString,
-                                appliedFilter
-                            });
-
-                            this.updateResults({
-                                q: locationQueryString,
-                                lat: appliedFilter.lat,
-                                lng: appliedFilter.lng
-                            });
-                        }}
-                        types={[ 'address' ]}
-                        placeholder={translate('LISTING_FILTER_GEO')}
-                    >
-                    </Autocomplete>
+                                this.updateResults({
+                                    q: locationQueryString,
+                                    lat: appliedFilter.lat,
+                                    lng: appliedFilter.lng
+                                });
+                            }}
+                            types={[ this.state.config.LISTING_GEOFILTER_MODE ? `(${this.state.config.LISTING_GEOFILTER_MODE})` : '(cities)' ]}
+                            placeholder={translate('LISTING_FILTER_GEO')}
+                        >
+                        </Autocomplete>
+                    }
                     { this.state.locationQueryString &&
                         <button
                             onTouchTap={() => {
@@ -436,16 +439,15 @@ class Offers extends Component {
                                     { this.state.appliedFilter.viewType === VIEW_TYPES.MAP &&
                                         <div className="row">
                                             <div
-                                                class="col-xs-12" 
                                                 style={{
                                                     height: '400px',
                                                     width: '100%'
                                                 }}
                                             >
                                                 {this.state.offers &&
-                                                <TaskMap
-                                                    listings={this.state.offers}
-                                                />
+                                                    <TaskMap
+                                                        listings={this.state.offers}
+                                                    />
                                                 }
                                             </div>
                                         </div>

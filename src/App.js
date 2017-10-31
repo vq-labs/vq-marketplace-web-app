@@ -16,7 +16,7 @@ import SignupPage from './Pages/SignupPage';
 import Profile from './Pages/Profile';
 import ProfileEdit from './Pages/ProfileEdit';
 import MyListings from './Pages/MyListings';
-import Offers from './Pages/Offers';
+import BrowseListings from './Pages/BrowseListings';
 import Account from './Pages/Account';
 import NewTask from './NewListing/NewListing';
 import Chat from './Pages/Chat';
@@ -51,7 +51,6 @@ import { fetchAndAddLang } from './helpers/i18n-helpers';
 import { setBase } from './core/navigation';
 import * as apiAuth from './api/auth';
 import * as apiConfig from './api/config';
-import CONFIG from './generated/ConfigProvider.js'
 
 setBase('app');
 
@@ -152,12 +151,12 @@ class App extends Component {
                 <IndexRoute component={StartPage}/>
               </Route>
               <Route path="/app">
-                <IndexRoute component={Offers}/>
+                <IndexRoute component={BrowseListings}/>
                 <Route path="account" component={Account}></Route>
                 <Route path="dashboard" component={Dashboard}></Route>
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
-                <Route path="listings" component={Offers}></Route>
+                <Route path="listings" component={BrowseListings}></Route>
                 <Route path="user-preferences" component={UserPreferences}></Route>
                 <Route path="user-verifications" component={UserVerifications}></Route>
                 <Route path="user-documents" component={UserDocuments}></Route>

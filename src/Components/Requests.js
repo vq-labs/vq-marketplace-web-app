@@ -181,7 +181,7 @@ export default class Requests extends Component {
 
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                                         <span>
-                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format="DD.MM.YYYY, HH:MM">{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
+                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
                                                         </span>
                                                     }
 

@@ -11,6 +11,7 @@ import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import apiTask from '../api/task';
 import * as apiTaskImage from '../api/task-image';
+import * as apiCategory from '../api/category';
 import { goTo, goBack } from '../core/navigation';
 import { factory as errorFactory } from '../core/error-handler';
 import { translate } from '../core/i18n';
@@ -36,7 +37,9 @@ export default class TaskEdit extends Component {
    
     componentDidMount() {
         getConfigAsync(config => {
-            this.setState({ config });
+            this.setState({
+                config
+            });
 
             getUserAsync(user => {
                 if (!user) {
@@ -71,18 +74,30 @@ export default class TaskEdit extends Component {
 
                         return alert('EDITING_NOT_POSSIBLE');
                     }
-                    
 
-                    this.setState({
-                        isLoading: false,
-                        task: rTask,
-                        updatedTask: {
-                            images: rTask.images,
-                            title: rTask.title,
-                            description: rTask.description,
-                            price: rTask.price,
-                            priceType: rTask.priceType
-                        }
+                    apiCategory
+                    .getItems()
+                    .then(listingCategories => {
+                        debugger;
+                        const category = listingCategories
+                            .filter(
+                                _ => _.code === rTask.categories[0].code
+                            )[0];
+                            
+                        const minPrice = category ? category.minPriceHour || 0 : 0;
+    
+                        this.setState({
+                            minPrice,
+                            isLoading: false,
+                            task: rTask,
+                            updatedTask: {
+                                images: rTask.images,
+                                title: rTask.title,
+                                description: rTask.description,
+                                price: rTask.price,
+                                priceType: rTask.priceType
+                            }
+                        });
                     });
                 }, errorFactory());
             }, false);

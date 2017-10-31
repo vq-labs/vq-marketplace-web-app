@@ -19,6 +19,7 @@ import {
 import { getConfigAsync } from '../core/config';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import ORDER_STATUS from '../constants/ORDER_STATUS';
+import TASK_STATUS from '../constants/TASK_STATUS';
 import { getUserAsync } from '../core/auth';
 import { displayPrice, displayLocation } from '../core/format';
 import { stripHtml, purifyHtmlMessage } from '../core/util';
@@ -36,14 +37,46 @@ const REQUEST_ORDER = [
     REQUEST_STATUS.ACCEPTED,
     REQUEST_STATUS.MARKED_DONE,
     REQUEST_STATUS.SETTLED,
+    REQUEST_STATUS.CLOSED,
     REQUEST_STATUS.DECLINED,
     REQUEST_STATUS.CANCELED
+];
+
+const STEPER_STATUSES = [
+    [],
+    [ REQUEST_STATUS.PENDING ],
+    [ REQUEST_STATUS.ACCEPTED ],
+    [ REQUEST_STATUS.MARKED_DONE ],
+    [ REQUEST_STATUS.SETTLED, REQUEST_STATUS.CLOSED ]
 ];
 
 const actionBtnStyle = {
     marginTop: 10,
     marginBottom: 10,
     width: '100%'
+};
+
+const getActiveStep = (requestStatus, isReviewed) => {
+    let stepIndex = 1;
+
+    STEPER_STATUSES.forEach((STEPPER_STATUS, index) => {
+        stepIndex = STEPPER_STATUS.indexOf(requestStatus) > -1 ? index : stepIndex;
+    });
+
+    if (stepIndex === 4) {
+        return isReviewed ? stepIndex + 1 : stepIndex;
+    }
+
+    return stepIndex;
+};
+
+const getReviewFromState = state => {
+    try {
+        return state.user.userType === 1 ?
+            state.request.order.review : state.request.review
+    } catch (err) {
+        return undefined;
+    }
 };
 
 export default class ChatRoom extends React.Component {
@@ -73,6 +106,14 @@ export default class ChatRoom extends React.Component {
                 apiRequest
                 .getItem(requestId)
                 .then(chat => {
+                    if (chat.task.status === TASK_STATUS.INACTIVE) {
+                        return goTo('/');
+                    }
+
+                    if (chat.request.status === REQUEST_STATUS.CANCELED || chat.request.status === REQUEST_STATUS.DECLINED) {
+                        return goTo('/');
+                    }
+
                     const task = chat.task;
 
                     if (task.status === '99') {
@@ -86,6 +127,7 @@ export default class ChatRoom extends React.Component {
                         config,
                         isUserOwner: user.id === chat.task.userId,
                         requestId,
+                        user,
                         isLoading: false,
                         fromUserId: user.id,
                         toUserId: chat.messages[0].fromUserId === user.id ?
@@ -152,42 +194,48 @@ export default class ChatRoom extends React.Component {
                     { this.state.isLoading && 
                         <Loader isLoading={true} />
                     }
-                    { !this.state.isLoading && 
-                        <div className="col-xs-12">
+
+                    { !this.state.isLoading &&
+                        <div className="row">
                             <div className="col-xs-12 col-sm-8">
+                                    <div className="row">
+                                        <div className="col-xs-12">
+                                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                                {translate("CHAT_PAGE_HEADER")}
+                                            </h1>
+                                            <p>{translate("CHAT_PAGE_DESC")}</p>
+                                        </div>
+                                    </div>
+                                    <hr />
                                     { this.state.task &&
                                         <div className="row">
-                                            <div className="hidden col-xs-12" style={{ margin: '10px' }}>
-                                                <RaisedButton 
-                                                    onClick={() => tryGoBack(`/chat`)}
-                                                    label={translate('BACK')}
-                                                />
-                                            </div>    
-                                            <div className="col-xs-12" style={ { margin: '10px' } }>
-                                                <h1 className="st-h1">
+                                            <div className="col-xs-12">
+                                                <h3>
                                                     <a style={{
                                                         textDecoration: 'none',
                                                         cursor: 'pointer'
                                                     }} onTouchTap={() => goTo(`/task/${this.state.task.id}`)}>
                                                         { this.state.task.title }
                                                     </a>
-                                                </h1>
+                                                </h3>
                                             </div>
                                             <div className="col-xs-12">
-                                                <div className="col-xs-12 col-sm-4">
-                                                    <p className="text-muted">
-                                                        {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings)}
-                                                    </p>
-                                                </div>
-                                                <div className="col-xs-12 col-sm-4">
-                                                    <p className="text-muted">
-                                                        {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0])}
-                                                    </p>
-                                                </div>
-                                                <div className="col-xs-12 col-sm-4">
-                                                    <p className="text-muted">
-                                                        {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
-                                                    </p>
+                                                <div className="row">
+                                                    <div className="col-xs-12 col-sm-4">
+                                                        <p className="text-muted">
+                                                            {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`)}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-xs-12 col-sm-4">
+                                                        <p className="text-muted">
+                                                            {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0])}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-xs-12 col-sm-4">
+                                                        <p className="text-muted">
+                                                            {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="col-xs-12">
@@ -275,7 +323,7 @@ export default class ChatRoom extends React.Component {
                                                                         </strong>
                                                                     <br />
                                                                     <p className="text-muted">
-                                                                        <Moment format="DD.MM.YYYY, HH:mm">{message.createdAt}</Moment>
+                                                                        <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>
                                                                     </p>
                                                                 </div>
                                                             </div>   
@@ -427,7 +475,7 @@ export default class ChatRoom extends React.Component {
 
                                     { this.state.isUserOwner && this.state.request.order &&
                                       (
-                                          String(this.state.request.status) === REQUEST_STATUS.MARKED_DONE
+                                          String(this.state.request.status) === REQUEST_STATUS.SETTLED
                                           ||
                                           String(this.state.request.status) === REQUEST_STATUS.CLOSED
                                       ) &&
@@ -461,22 +509,27 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
-                                    <Stepper className="hidden-xs" activeStep={
-                                        REQUEST_ORDER.indexOf(this.state.request.status)
-                                    } orientation="vertical">
-                                        <Step>
-                                            <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel>{translate('REQUEST_SETLLED')}</StepLabel>
-                                        </Step>
-                                    </Stepper>
+                                    { this.state.user &&
+                                        <Stepper className="hidden-xs" activeStep={
+                                            getActiveStep(this.state.request.status, getReviewFromState(this.state))
+                                        } orientation="vertical">
+                                            <Step>
+                                                <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>{ this.state.request.status === REQUEST_STATUS.CLOSED ? translate('REQUEST_CLOSED') : translate('REQUEST_SETLLED')}</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>{translate('REQUEST_REVIEWED')}</StepLabel>
+                                            </Step>
+                                        </Stepper>
+                                    }
                             </div>
                         </div>   
                     }

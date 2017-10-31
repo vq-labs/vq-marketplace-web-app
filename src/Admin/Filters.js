@@ -8,59 +8,31 @@ const selection = [
     { value: 2, label: 'required' }
 ];
 
-const defaultConfigsFields = [
+const geofilterFields = [
     {
-        disabled: true,
-        selection,
+        selection: [ "AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB" ].map(_ => {
+            _ = _.toLowerCase();
+
+            return { value: _, label: _ };
+        }),
         type: 'select',
-        key: 'LISTING_CATEGORY_MODE',
-        label: 'Listing category'
+        key: 'LISTING_GEOFILTER_COUNTRY_RESTRICTION',
+        label: 'Restrict filtering to one country'
     },
-    {
-        disabled: true,
-        selection,
+    {   
+        selection: [
+            { value: 'address', label: 'address' },
+            { value: 'cities', label: 'cities' },
+            { value: 'coutries', label: 'coutries' },
+            { value: 'regions', label: 'regions' }
+        ],
         type: 'select',
-        key: 'LISTING_TITLE_MODE',
-        label: 'Listing title'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_DESCRIPTION_MODE',
-        label: 'Listing description'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_LOCATION_MODE',
-        label: 'Listing location'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_DATE_MODE',
-        label: 'Listing date'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_PRICE_MODE',
-        label: 'Listing price'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_IMAGES_MODE',
-        label: 'Listing images'
-    },
+        key: 'LISTING_GEOFILTER_MODE',
+        label: 'Location filter mode (how exact should be the filtering?'
+    }
 ];
 
-export default class SectionListing extends React.Component {
+export default class SectionFilters extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -73,10 +45,10 @@ export default class SectionListing extends React.Component {
         apiConfig
         .appConfig
         .getItems()
-        .then(meta => {
+        .then(config => {
             return this.setState({
                 ready: true,
-                meta
+                config
             });
         });
     }
@@ -85,15 +57,18 @@ export default class SectionListing extends React.Component {
         return (
             <div className="row">
                     <div className="col-xs-12">
-                        <h1>Listing config</h1>
+                        <h1>Filters</h1>
                         <p>
-                            Specify what attributes of listing are disabled, optional and required.
+                            Configure the filters for browsing listings.
                         </p>
+                    </div>
+                    <div className="col-xs-12">
+                        <h3>Location filter</h3>
                         { this.state.ready &&
                             <EditableEntity
                                 showCancelBtn={false}
-                                value={this.state.meta} 
-                                fields={defaultConfigsFields}
+                                value={this.state.config} 
+                                fields={geofilterFields}
                                 onConfirm={
                                     updatedEntity => {
                                         const updatedData = Object.keys(updatedEntity).map(fieldKey => {
@@ -105,9 +80,13 @@ export default class SectionListing extends React.Component {
                                             return mappedItem;
                                         });
 
-                                        apiConfig.appConfig.createItem(updatedData);
+                                        apiConfig
+                                        .appConfig
+                                        .createItem(updatedData);
 
-                                        this.setState({ meta: updatedEntity })
+                                        this.setState({
+                                            config: updatedEntity
+                                        });
                                     }
                                 }
                             />

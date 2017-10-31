@@ -553,7 +553,7 @@ class Profile extends React.Component {
                                         { review.rate &&
                                         <div className="row">
                                             <div className="col-xs-12 text-muted">
-                                                    <Moment format="DD.MM.YYYY">{review.createdAt}</Moment>
+                                                    <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{review.createdAt}</Moment>
                                                     <span> </span>
                                                     <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
                                                         {review.task.title}

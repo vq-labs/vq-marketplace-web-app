@@ -177,7 +177,7 @@ class Task extends Component {
                     <CircularProgress size={80} thickness={5} />
                 </div>
               }
-              { !this.state.isLoading &&           
+              { !this.state.isLoading && this.state.config &&  
                     <div className="container-fluid" >
                         { this.state.task && this.state.task.status === '103' &&
                             <div className="row">
@@ -226,7 +226,7 @@ class Task extends Component {
                                                 </strong>
                                             }
                                             <p className="text-muted">
-                                                am <Moment format="DD.MM.YYYY">{this.state.task.createdAt}</Moment>
+                                                <Moment format={`${this.state.config.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
                                             </p>
                                         </div>  
                                     </div>     
@@ -389,7 +389,7 @@ class Task extends Component {
                                             <h3 className="text-left">{translate("LISTING_DATE")}</h3>
                                             <div className="row">
                                                 <div className="col-xs-12">
-                                                    {displayTaskTiming(this.state.task.timing)}
+                                                    {displayTaskTiming(this.state.task.timing, `${this.state.config.DATE_FORMAT}`)}
                                                 </div>
                                             </div>
                                         </div>

@@ -197,6 +197,10 @@ class BookRequest extends Component {
                                             if (!billingAddress[fieldKey]) {
                                                 isInvalid = true;
 
+                                                this.setState({
+                                                    isSubmitted: false
+                                                });
+
                                                 return alert(
                                                     translate(`${REQUIRED_FIELDS[fieldKey]}`) + ' ' + translate('IS_REQUIRED')
                                                 );

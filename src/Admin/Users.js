@@ -160,7 +160,7 @@ export default class SectionUsers extends React.Component {
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
+                                            Created at: <Moment format={`DD.MM.YYYY, HH.mm`}>{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
                                         </p>
                                     }
                                     rightIcon={

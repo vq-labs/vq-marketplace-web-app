@@ -140,7 +140,7 @@ export default class SectionUsers extends React.Component {
 
                                         <div className="row">
                                             <div class="col-xs-12">
-                                                Created: <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{request.createdAt}</Moment>
+                                                Created: <Moment format={`DD.MM.DD, HH:mm`}>{request.createdAt}</Moment>
                                             </div>
                                         </div>
                                         
@@ -245,7 +245,7 @@ export default class SectionUsers extends React.Component {
                                         { this.state.requestMessages && this.state.requestMessages
                                         .map(message =>
                                             <p>
-                                                {message.fromUser.firstName} {message.fromUser.lastName} (<Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>): {stripHtml(message.message)}
+                                                {message.fromUser.firstName} {message.fromUser.lastName} (<Moment format={`DD.MM.DD, HH:mm`}>{message.createdAt}</Moment>): {stripHtml(message.message)}
                                             </p>
                                         )}
                                     </div>

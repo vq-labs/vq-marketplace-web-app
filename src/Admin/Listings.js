@@ -96,7 +96,7 @@ export default class SectionUsers extends React.Component {
                                     }
                                     secondaryText={
                                         <p>
-                                            Created at: <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{task.createdAt}</Moment>
+                                            Created at: <Moment format={`DD.MM.DD, HH:mm`}>{task.createdAt}</Moment>
                                         </p>
                                     }
                                     rightIcon={

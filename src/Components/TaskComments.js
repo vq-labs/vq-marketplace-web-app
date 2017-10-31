@@ -8,6 +8,7 @@ import * as apiTaskComment from '../api/task-comment';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 import { stripHtml } from '../core/util';
+import { getConfigAsync } from '../core/config';
 import DOMPurify from 'dompurify'
 import '../Chat.css';
 
@@ -32,7 +33,9 @@ export default class TaskComments extends React.Component {
     }
 
     componentDidMount() {
-
+        getConfigAsync(config => {
+            this.setState({ config });
+        });
     }
 
     handleNewComment (event) {
@@ -77,7 +80,7 @@ export default class TaskComments extends React.Component {
                 const firstName = sender.firstName;
                 const lastName = sender.lastName;
                 const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
-
+                
                 return <div className="row" style={ { paddingLeft: '20px', marginTop: '20px', marginBottom: '20px'} }>
                             <div className="col-xs-12" style={{
                                 marginBottom: '20px'
@@ -108,9 +111,11 @@ export default class TaskComments extends React.Component {
                                             </a>
                                             </strong>
                                         <br />
-                                        <p className="text-muted">
-                                            <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>
-                                        </p>
+                                        { this.state.config &&
+                                            <p className="text-muted">
+                                                <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>
+                                            </p>
+                                        }
                                     </div>
                                 </div>   
                             </div>

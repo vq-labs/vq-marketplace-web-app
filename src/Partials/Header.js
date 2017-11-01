@@ -64,7 +64,9 @@ class Header extends Component {
       user: false
     });
     
-    goStartPage();
+    setTimeout(() => {
+      goStartPage();
+    }, 500);
   }
 
   render() {

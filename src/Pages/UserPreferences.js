@@ -8,14 +8,18 @@ import { goTo } from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { translate } from '../core/i18n';
+import { getParams } from '../core/util.js';
 
 export default class SectionCategories extends React.Component {
     constructor() {
         super();
 
+        const redirectTo = getParams(location.search).redirectTo;
+
         this.state = {
             categories: [],
-            selected: []
+            selected: [],
+            redirectTo
         };
     }
 
@@ -127,18 +131,6 @@ export default class SectionCategories extends React.Component {
                                 }
                             }>
                                 <CardMedia>
-                                    <div style={{
-                                            position: 'absolute',
-                                            bottom: 5,
-                                            left: 10,
-                                        }}
-                                    >
-                                        { this.isSelected(category.code) &&
-                                            <CheckCircle
-                                                color={'green'}
-                                            />
-                                        }
-                                    </div>
                                     <img src={category.imageUrl || '/images/category-default-img.jpeg'} alt={category.label}/>
                                 </CardMedia>
                         
@@ -146,6 +138,18 @@ export default class SectionCategories extends React.Component {
                                     children={
                                         <div className="row">
                                             <div className="col-xs-12">
+                                                <div style={{
+                                                    position: 'absolute',
+                                                    top: 7,
+                                                    right: 10
+                                                }}
+                                                >
+                                                    { this.isSelected(category.code) &&
+                                                        <CheckCircle
+                                                            color={'green'}
+                                                        />
+                                                    }
+                                                </div>
                                                 <h4>
                                                     {category.label}
                                                 </h4>
@@ -168,7 +172,7 @@ export default class SectionCategories extends React.Component {
                                 }}
                                 labelStyle={{color: 'white '}}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
-                                label={translate("CONTINUE")}
+                                label={translate(this.state.redirectTo ?  "SAVE" : "CONTINUE")}
                                 disabled={false}
                                 onTouchTap={() => {
                                     getUserAsync(user => {
@@ -176,7 +180,7 @@ export default class SectionCategories extends React.Component {
                                             return alert("Select at least one preference");
                                         }
 
-                                        return goTo('/');
+                                        return goTo(this.state.redirectTo ? this.state.redirectTo: '');
                                     });
                                    
                                 }}

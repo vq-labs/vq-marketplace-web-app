@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Signup from '../Components/Signup';
 import { goTo } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
-import { getParams } from '../core/util.js'
+import { getParams } from '../core/util.js';
 
 const getOutOfHere = (user, redirectTo) => {
   if (redirectTo) {

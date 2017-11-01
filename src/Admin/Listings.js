@@ -2,6 +2,7 @@ import React from 'react';
 import * as apiAdmin from '../api/admin';
 import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { List, ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
@@ -45,9 +46,23 @@ export default class SectionUsers extends React.Component {
                             <h1>Listings</h1>
                     </div>
                     <div className="col-xs-12">
+                        <div className="col-xs-4 col-sm-4">
+                            <TextField
+                                min={1}
+                                type="number"
+                                onChange={(ev, value) => {
+                                    this.setState({
+                                        listingIdSearchValue: value
+                                    });
+                                }}
+                                value={this.state.listingIdSearchValue}
+                                floatingLabelText="ListingID"
+                            />
+                        </div>
                         <div className="col-xs-3 col-sm-3">
                             <DropDownMenu
                                 style={{
+                                    marginTop: 16,
                                     width: '100%'
                                 }}
                                 value={this.state.statusFilter} onChange={(_, _2, statusFilter) => {
@@ -85,13 +100,18 @@ export default class SectionUsers extends React.Component {
 
                                 return this.state.statusFilter === task.status;
                             })
+                            .filter(listing => {
+                                return this.state.listingIdSearchValue ?
+                                    String(listing.id) === String(this.state.listingIdSearchValue) :
+                                    true;
+                            })
                             .map(task => 
                                 <ListItem
                                     primaryText={
                                         <p>
+                                            ID: {task.id}<br/>
                                             {task.title}<br/>
                                             Status: <strong>{displayTaskStatus(task.status)}</strong>
-                                            <br/>
                                         </p>
                                     }
                                     secondaryText={

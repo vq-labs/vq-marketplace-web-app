@@ -196,7 +196,7 @@ class Task extends Component {
                         }
 
                         <div className="row">
-                            <div className="col-sm-offset-2 col-xs-12 col-sm-8">
+                            <div className="col-sm-offset-1 col-xs-12 col-sm-10">
                                 <div className="col-xs-12 col-sm-8">
                                     <div className="row">
                                         <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
@@ -208,28 +208,36 @@ class Task extends Component {
                                             categories={this.state.task.categories}
                                         />
                                     </div>
-
-                                    <div className="row">
-                                        <div className="col-xs-2 col-sm-1">
-                                            { this.state.taskOwner.id &&
-                                                <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                    <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
-                                                </a>
-                                            }
+                                    { this.state.taskOwner.id &&
+                                        <div className="row">
+                                            <div className="col-xs-12">
+                                                    <ul className="list-unstyled list-inline">
+                                                        <li>
+                                                            <a href={ '/app/profile/' + this.state.taskOwner.id }>
+                                                                <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
+                                                            </a>
+                                                        </li>
+                                                        <li style={{
+                                                            marginLeft: 10,
+                                                            top: -19,
+                                                            position: "absolute"
+                                                        }}>
+                                                            <div style={{ height: 20 }}></div>
+                                                                <strong>
+                                                                    <a href={'/app/profile/' + this.state.taskOwner.id}>
+                                                                        {this.state.taskOwner.firstName} {this.state.taskOwner.lastName}
+                                                                    </a>
+                                                                </strong>
+                                                                
+                                                                <p className="text-muted">
+                                                                    <Moment format={`${this.state.config.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
+                                                                </p>
+                                                            
+                                                        </li>
+                                                   </ul>
+                                            </div>
                                         </div>
-                                        <div className="col-xs-10 col-sm-9">
-                                            {this.state.taskOwner.id &&     
-                                                <strong>
-                                                    <a href={'/app/profile/' + this.state.taskOwner.id}>
-                                                        {this.state.taskOwner.firstName} {this.state.taskOwner.lastName}
-                                                    </a>
-                                                </strong>
-                                            }
-                                            <p className="text-muted">
-                                                <Moment format={`${this.state.config.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
-                                            </p>
-                                        </div>  
-                                    </div>     
+                                    }   
                                 </div>
                                 <div className="col-xs-12 col-sm-4">
                                     <Card style={{'marginTop': 60}}>

@@ -12,7 +12,7 @@ import apiPost from '../api/post';
 import * as apiTaskLocation from '../api/task-location';
 import apiBillingAddress from '../api/billing-address';
 import * as apiUserProperty from '../api/user-property';
-import { goTo, goStartPage, setQueryParams } from '../core/navigation';
+import { goTo, goStartPage, setQueryParams, convertToAppPath } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { translate, getLang, setLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
@@ -258,7 +258,7 @@ export default class Account extends Component {
 
                                     { this.state.user && this.state.user.userType === 2 &&
                                         <li>
-                                            <a href="#" onTouchTap={() => goTo('/user-preferences')}>{translate('USER_PREFERENCES')}</a>
+                                            <a href="#" onTouchTap={() => goTo(`/user-preferences?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_PREFERENCES')}</a>
                                         </li>
                                     }
 

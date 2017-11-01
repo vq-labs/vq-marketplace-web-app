@@ -52,8 +52,8 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                         <div className="col-xs-4 col-sm-4">
                             <TextField
+                                min={1}
                                 type="number"
-                                
                                 onChange={(ev, value) => {
                                     this.setState({
                                         listingIdSearchValue: value
@@ -110,21 +110,21 @@ export default class SectionUsers extends React.Component {
                                 }
 
                                 if (!this.state.statusFilter && this.state.listingIdSearchValue) {
-                                    return this.state.listingIdSearchValue === request.taskId;
+                                    return String(this.state.listingIdSearchValue) === String(request.taskId);
                                 }
 
                                 if (this.state.statusFilter && !this.state.listingIdSearchValue) {
                                     return this.state.statusFilter === request.status;
                                 }
 
-                                return this.state.statusFilter === request.status && request.taskId === this.state.listingIdSearchValue;
+                                return this.state.statusFilter === request.status && String(request.taskId) === String(this.state.listingIdSearchValue);
                             })
                             .map(request => 
                                 <div className="row">
                                     <div class="col-xs-12">
                                     <div className="row">
                                             <div class="col-xs-12">
-                                                <strong>ID: {request.id}, Status: {REQUEST_STATUS_LABEL[request.status]}</strong>
+                                                <strong>ID: {request.id}, Status: {REQUEST_STATUS_LABEL[request.status]} {request.review ? 'Reviewed by Provider' : ''} {request.order && request.order.review ? 'Reviewed by Client' : ''}</strong>
                                             </div>
                                         </div>
                                         <div className="row">

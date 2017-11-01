@@ -14,7 +14,7 @@ import apiUser from '../api/user';
 import apiReview from '../api/review';
 import DOMPurify from 'dompurify'
 import * as coreAuth from '../core/auth';
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
 import * as apiMedia from '../api/media';
 import * as requestOrder from '../api/requestOrder';
 import * as apiUserPreference from '../api/user-preference';
@@ -385,7 +385,12 @@ class Profile extends React.Component {
                     </div>
                     }
                     { this.state.ready &&
-                    <div className="row">
+                    <div
+                        className="row"
+                        style={{
+                            marginTop: 20
+                        }}
+                    >
                         {this.shouldShowPreferences() &&
                         <div className="col-xs-12 col-sm-12">
                             <div className="row">
@@ -402,10 +407,10 @@ class Profile extends React.Component {
                                         </p>
                                     }
                                 </div>
-                                { this.state.isMyProfile &&
+                                { false && this.state.isMyProfile &&
                                     <div className="col-xs-12 col-sm-1">     
                                         <FloatingActionButton 
-                                            onClick={() => goTo('/user-preferences')}
+                                            onClick={() => goTo(`/user-preferences?redirectTo=${convertToAppPath(location.pathname)}`)}
                                             mini={true}
                                             backgroundColor={"#546e7a"}
                                         >
@@ -435,7 +440,12 @@ class Profile extends React.Component {
                             </div>
                         </div>
                         }
-                        <div className="col-xs-12 col-sm-12">
+                        <div
+                            className="col-xs-12 col-sm-12"
+                            style={{
+                                marginTop: 20
+                            }}
+                        >
                             <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
                                 {translate("PROFILE_REVIEWS_HEADER")}
                             </h1>

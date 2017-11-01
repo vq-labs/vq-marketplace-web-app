@@ -107,7 +107,8 @@ class App extends Component {
               this.setState({
                 user: myUserData
               });
-            }).catch(err => {
+            })
+            .catch(err => {
               coreAuth.destroy();
             });
         }, true);

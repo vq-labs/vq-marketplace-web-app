@@ -4,7 +4,7 @@ import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { goTo } from '../core/navigation';
-import { resendVerificationEmail } from '../api/auth';
+import { resendVerificationEmail, me } from '../api/auth';
 
 export default class EmailNotVerified extends React.Component {
     constructor(props) {
@@ -19,16 +19,16 @@ export default class EmailNotVerified extends React.Component {
    
     componentDidMount() {
         getConfigAsync(config => {
-            getUserAsync(user => {
+            me().then(user => {
                 if (!user) {
                     return goTo('/login');
                 }
 
-                if (String(user.status) === '10' && String(user.userType) === '1') {
+                if (user.status === "10" && user.userType === 1) {
                     return goTo('/new-listing');
                 }
 
-                if (String(user.status) === '10') {
+                if (user.status === '10') {
                     return goTo('/');
                 }
 
@@ -37,8 +37,12 @@ export default class EmailNotVerified extends React.Component {
                     ready: true,
                     config
                 })
-            })
-        })
+            }, err => {
+                if (err) {
+                    return goTo('/login');
+                }
+            });
+        });
     }
     
     render() {

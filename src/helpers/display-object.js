@@ -1,4 +1,13 @@
 import React from 'react';
+import DOMPurify from 'dompurify'
+
+const displayText = (text, props) => {
+    props = props || {};
+
+    return props.type === 'html' ?
+        <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(text)}}></div> :
+        text;
+};
 
 const displayObject = (obj, options) => {
     if (!obj) {
@@ -6,6 +15,7 @@ const displayObject = (obj, options) => {
     }
 
     options = options || {};
+    options.fields = options.fields || {};
 
     return Object.keys(obj)
         .map(objKey => {
@@ -21,14 +31,13 @@ const displayObject = (obj, options) => {
                 }
 
                 return <div className="col-xs-12">
-                            {objKey}: {valueToBeDisplayed}
+                            {objKey}: {displayText(valueToBeDisplayed, options.fields[objKey])}
+                            <hr />
                         </div>;
             }
 
             if (obj[objKey] === null || obj[objKey] === undefined) {
-                return <div className="col-xs-12">
-                            {objKey}: null
-                        </div>;
+                return;
             }
 
             return  <div className="col-xs-12">
@@ -36,6 +45,7 @@ const displayObject = (obj, options) => {
                         <div className="col-xs-12">
                             {displayObject(obj[objKey], options)}
                         </div>
+                        <hr />
                     </div>;
         });
 };

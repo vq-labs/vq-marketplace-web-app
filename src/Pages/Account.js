@@ -370,28 +370,38 @@ export default class Account extends Component {
 
                                     <div className="col-xs-12">
                                             <TextField
-                                                maxLength={10}
+                                                maxLength={11}
                                                 required={true}
-                                                onChange={(_, value) => {
+                                                onChange={(_, newValue) => {
                                                     const data = this.state.data;
 
-                                                    data.phoneNo = value;
+                                                    data.phoneNo = newValue;
 
-                                                    this.setState({
-                                                        data,
-                                                        toBeUpdated: {
-                                                            phoneNo: true
-                                                        }
-                                                    });
+                                                    newValue = String(newValue);
+
+                                                    newValue = newValue.split('.').join('');
+                                                    newValue = newValue.split('+').join('');
+                                                    newValue = newValue.split(' ').join('');
+
+                                                    if (!isNaN(Number(newValue)) && newValue.length < 14) {
+                                                        data.phoneNo = newValue;
+
+                                                        this.setState({
+                                                            data,
+                                                            toBeUpdated: {
+                                                                phoneNo: true
+                                                            }
+                                                        });
+                                                    }
                                                 }}
                                                 value={this.state.data.phoneNo}
                                                 floatingLabelText={`${translate('PHONE_NO')}*`}
-                                                type="number"
+                                                type="text"
                                             />
                                     </div>
                                     <div className="col-xs-12">
                                         <FlatButton
-                                            disabled={!this.state.toBeUpdated.phoneNo}
+                                            disabled={!this.state.toBeUpdated.phoneNo || String(this.state.data.phoneNo).length < 8}
                                             primary={true}
                                             onTouchTap={
                                                 () => {

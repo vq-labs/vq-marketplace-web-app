@@ -39,7 +39,7 @@ export default class TaskComments extends React.Component {
     }
 
     handleNewComment (event) {
-        event.preventDefault()
+        event.preventDefault();
         
         const taskId = this.state.taskId;
         const comments = this.state.comments;

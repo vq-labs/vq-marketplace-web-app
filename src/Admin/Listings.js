@@ -129,7 +129,7 @@ export default class SectionUsers extends React.Component {
                                                 }}
                                             />
                                             <MenuItem
-                                                primaryText="Show full information"
+                                                primaryText="Details"
                                                 onClick={() => {
                                                     this.setState({
                                                         showDetails: true,
@@ -247,7 +247,14 @@ export default class SectionUsers extends React.Component {
                                     open={this.state.showDetails}
                                     >
                                         <div className="container">
-                                            { displayObject(this.state.selectedUser || {})}
+                                            { displayObject(this.state.selectedUser || {}, {
+                                                doNotTrim: true,
+                                                fields: {
+                                                    description: {
+                                                        type: 'html'
+                                                    }
+                                                }
+                                            })}
                                         </div>
                                 </Dialog>
                             </div>

@@ -186,7 +186,6 @@ export default class SectionUsers extends React.Component {
                                                     onClick={() => goTo(`/admin/user/${user.id}`)}
                                                 />
                                             }
-
                                             <MenuItem
                                                 primaryText="Show Email"
                                                 onClick={() => {
@@ -349,7 +348,14 @@ export default class SectionUsers extends React.Component {
                                     open={this.state.showDetails}
                                     >
                                         <div className="container">
-                                            { displayObject(this.state.selectedUser || {})}
+                                            { displayObject(this.state.selectedUser || {}, {
+                                                doNotTrim: true,
+                                                fields: {
+                                                    description: {
+                                                        type: 'html'
+                                                    }
+                                                }
+                                            })}
                                         </div>
                                 </Dialog>
                             </div>

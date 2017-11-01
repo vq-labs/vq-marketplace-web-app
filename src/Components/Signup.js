@@ -90,6 +90,7 @@ class Signup extends Component {
                 <form onSubmit={this.handleLogin}>   
                   <TextField
                       required={true}
+                      floatingLabelFixed={true}
                       style={{width: '100%'}}
                       ref="firstName"
                       floatingLabelText={`${translate('FIRST_NAME')} *`}
@@ -97,6 +98,7 @@ class Signup extends Component {
                     <br />
                   <TextField
                       required={true}
+                      floatingLabelFixed={true}
                       style={{width: '100%'}}
                       ref="lastName"
                       floatingLabelText={`${translate('LAST_NAME')} *` }
@@ -104,6 +106,7 @@ class Signup extends Component {
                     <br />
                     <TextField
                       required={true}
+                      floatingLabelFixed={true}
                       style={{width: '100%'}}
                       ref="email"
                       floatingLabelText={`${translate('EMAIL_ADDRESS')} *`}
@@ -111,6 +114,7 @@ class Signup extends Component {
                     <br/>
                     <TextField
                       required={true}
+                      floatingLabelFixed={true}
                       style={{width: '100%'}}
                       ref="password"
                       floatingLabelText={`${translate('PASSWORD')} *`}
@@ -118,6 +122,7 @@ class Signup extends Component {
                     <br />
                     <TextField
                       required={true}
+                      floatingLabelFixed={true}
                       style={{width: '100%'}}
                       ref="repeatPassword"
                       floatingLabelText={`${translate('REPEAT_PASSWORD')} *`}
@@ -126,6 +131,7 @@ class Signup extends Component {
                     { this.state.userProperties
                       .map(userProperty =>
                         <TextField
+                          floatingLabelFixed={true}
                           onChange={(_, newValue) => {
                             newValue = String(newValue);
 
@@ -149,7 +155,8 @@ class Signup extends Component {
                           ref={userProperty.propKey}
                           style={{width: '100%'}}
                           floatingLabelText={`${translate(userProperty.labelKey)} ${userProperty.required ? '*' : ''}`}
-                          type="text"/>
+                          type="text"
+                        />
                       )
                     }
                     <div className="row">
@@ -218,7 +225,7 @@ class Signup extends Component {
                     </div>
                     <br />
                     <RaisedButton
-                      disabled={!this.state.termsAccepted}
+                      disabled={!this.state.termsAccepted || String(this.state.phoneNo).length < 8}
                       type="submit"
                       label={translate('REGISTER')}
                       fullWidth={true}

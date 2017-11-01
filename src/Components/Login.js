@@ -80,16 +80,20 @@ export default class Login extends Component {
           <div className="col-xs-12">
               <form onSubmit={this.handleLogin}>   
                 <TextField
+                  floatingLabelFixed={true}
                   style={{width: '100%'}}
                   ref="email"
                   floatingLabelText={translate('EMAIL')}
                   type="email"/>
                 <br/>
-                { this.state.authMode !== 'password_reset' && <TextField
-                  style={{width: '100%'}}
-                  ref="password"
-                  floatingLabelText={translate('PASSWORD')}
-                  type="password"/>
+                { this.state.authMode !== 'password_reset' &&
+                  <TextField
+                    floatingLabelFixed={true}
+                    style={{width: '100%'}}
+                    ref="password"
+                    floatingLabelText={translate('PASSWORD')}
+                    type="password"
+                  />
                 }  
                   <br />
                   <RaisedButton 

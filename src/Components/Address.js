@@ -80,6 +80,23 @@ export default class Address extends Component {
 
     onAddressFieldChange(fieldKey) {
         return (ev, newValue) => {
+
+            if (fieldKey === 'postalCode') {
+                newValue = String(newValue);
+                
+                newValue = newValue.split('.').join('');
+                newValue = newValue.split('+').join('');
+                newValue = newValue.split(' ').join('');
+    
+                if (newValue.charAt() === '-') {
+                    return;
+                }
+
+                if (isNaN(Number(newValue.replace('-', ''))) || newValue.length > 6) {
+                    return;
+                }
+            }
+
             const location = this.state;
             
             location[fieldKey] = newValue;
@@ -185,7 +202,8 @@ export default class Address extends Component {
                                     <h4 >{translate("LOCATION_POSTAL_CODE") + '*'}</h4>
                                     <TextField
                                         disabled={this.state.deriveOnly}
-                                        type="number"
+                                        type="text"
+                                        
                                         name="postalCode"
                                         onChange={this.onAddressFieldChange('postalCode')}
                                         style={{width: '100%'}}

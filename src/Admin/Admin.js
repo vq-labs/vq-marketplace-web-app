@@ -67,7 +67,7 @@ export default class AdminPage extends React.Component {
             <div className="container">
                 <Drawer open={true}>
                     <div className="col-xs-12" style={{ marginBottom: 10 }}>
-                        <MenuItem onClick={ () => this.goToSection('get-started') }>Get Started</MenuItem>
+                        { false && <MenuItem onClick={ () => this.goToSection('get-started') }>Get Started</MenuItem> }
 
                         <h4>General</h4>
                         <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>

@@ -1,13 +1,32 @@
 import React from 'react';
 import ConfigEdit from '../Components/ConfigEdit';
+import LabelEdit from '../Components/LabelEdit';
 
-const defaultConfigsFields = [
+const basicFields = [
     {
         type: 'string',
         key: 'NAME',
         label: 'Marketplace name',
         explanation: 'It is used on the landing page in the footer and in the emails as the sender name.'
+    }
+];
+
+const sloganFields = [
+    {
+        type: 'string',
+        key: 'START_PAGE_HEADER',
+        label: 'Slogan',
+        explanation: 'Use the slogan to quickly tell visitors what your marketplace is about. "Buy food from locals" or "Get guitar lessons from a pro" are good examples.'
     },
+    {
+        type: 'string',
+        key: 'START_PAGE_DESC',
+        label: 'Description',
+        explanation: 'Use the description to share your main value proposition. "FoodMarket is the easiest way to order produce directly from local providers" or "GuitarPro is the best place to compare music teachers" are good examples.'
+    }
+];
+
+const otherFields = [
     {
         type: 'string',
         key: 'DOMAIN',
@@ -32,24 +51,6 @@ const defaultConfigsFields = [
         type: 'select',
         key: 'TIME_FORMAT',
         label: 'Time format',
-    },
-    {
-        type: 'single-image',
-        key: 'LOGO_URL',
-        label: 'Marketplace logo (284px x 100px)',
-        imageResolution: [ 100 * 2.84, 100 ]
-    },
-    {
-        type: 'single-image',
-        key: 'PROMO_URL',
-        label: 'Marketplace promo for buyers/clients (1280px x 850px are supported)',
-        imageResolution: [ 1280, 850 ]
-    },
-    {
-        type: 'single-image',
-        key: 'PROMO_URL_SELLERS',
-        label: 'Marketplace promo for sellers/taskers (1280x850px are supported)',
-        imageResolution: [ 1280, 850 ]
     },
     {
         type: 'string',
@@ -91,11 +92,28 @@ const defaultConfigsFields = [
 export default class SectionBasics extends React.Component {
     render() {
         return (
-            <ConfigEdit
-                header={'Marketplace Basics'}
-                desc={'Configure the basics of your marketplace.'}
-                fields={defaultConfigsFields}
-            />
+            <div>
+                <ConfigEdit
+                    header={'Marketplace Basics'}
+                    desc={'Configure the basics of your marketplace.'}
+                    fields={basicFields}
+                />
+                <LabelEdit
+                    header={'Slogans'}
+                    desc={'Slogans are shown on the homepage of the marketplace for the users who are not logged in.'}
+                    onContinue={() => {
+                        this.setState({
+                            activeStep: this.state.activeStep + 1
+                        });
+                    }}
+                    fields={sloganFields}
+                />
+                <ConfigEdit
+                    header={'Other details'}
+                    desc={'Make it your own.'}
+                    fields={otherFields}
+                />
+            </div>
         );
     }
 }

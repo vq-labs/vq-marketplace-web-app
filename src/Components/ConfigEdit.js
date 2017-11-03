@@ -23,10 +23,10 @@ export default class ConfigEdit extends React.Component {
     render() {
         return (
             <div className="row">
+                    <h1>{this.props.header}</h1>
+                    <p className="text-muted">{this.props.desc}</p>
+                    <hr />
                     <div className="col-xs-12">
-                        <h1>{this.props.header}</h1>
-                        <p className="text-muted">{this.props.desc}</p>
-                        <hr />
                         { this.state.meta &&
                             <EditableEntity
                                 showCancelBtn={false}

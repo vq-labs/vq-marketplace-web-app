@@ -188,11 +188,13 @@ class App extends Component {
                 <Route path="*" component={NotFound}></Route>
               </Route>
             </Router>
-            <Footer
-              logo={this.state.meta.LOGO_URL}
-              appName={this.state.meta.NAME}
-            >
-            </Footer>
+            { window.location.pathname.indexOf("admin") === -1 &&
+              <Footer
+                logo={this.state.meta.LOGO_URL}
+                appName={this.state.meta.NAME}
+              >
+              </Footer>
+            }
 
             <ConfirmDialog />
             <RequestDialog />

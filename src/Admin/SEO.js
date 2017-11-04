@@ -40,7 +40,7 @@ const socialMediaFields = [
     {
         type: 'string',
         key: 'SOCIAL_GITHUB_USERNAME',
-        label: 'Youtube username'
+        label: 'Github username'
     }
 ];
 

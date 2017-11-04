@@ -9,6 +9,7 @@ import SectionSEO from './SEO';
 import SectionCustomPages from './CustomPages';
 import SectionDesign from './Design';
 import SectionUsers from './Users';
+import SectionAnalytics from './Analytics';
 import SectionListingFilters from './Filters';
 import SectionListings from './Listings';
 import SectionOrders from './Orders';
@@ -82,6 +83,7 @@ export default class AdminPage extends React.Component {
                         <MenuItem onClick={ () => this.goToSection('basics') }>Basics details</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('seo') }>SEO</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('analytics') }>Analytics</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('custom-pages') }>Custom pages</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('listing') }>Listing fields</MenuItem>
@@ -140,6 +142,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'overview' && <SectionOverview /> } 
                                         { this.state.section === 'users' && <SectionUsers /> }
                                         { this.state.section === 'listings' && <SectionListings /> }
+                                        { this.state.section === 'analytics' && <SectionAnalytics /> }
                                         { this.state.section === 'orders' && <SectionOrders /> }
                                         { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }

@@ -33,13 +33,13 @@ const coverPhotoFields = [
     {
         type: 'single-image',
         key: 'PROMO_URL',
-        label: 'Marketplace promo for buyers/clients (1280px x 850px are supported)',
+        label: 'Marketplace promo for clients/buyers (1280px x 850px are supported)',
         imageResolution: [ 1280, 850 ]
     },
     {
         type: 'single-image',
         key: 'PROMO_URL_SELLERS',
-        label: 'Marketplace promo for sellers/taskers (1280x850px are supported)',
+        label: 'Marketplace promo for providers/sellers (1280x850px are supported)',
         imageResolution: [ 1280, 850 ]
     }
 ];

@@ -23,7 +23,7 @@ export default class Account extends Component {
     constructor(props) {
         super(props);
    
-        const sector = this.props.location.query.sector || 'profile';
+        const sector = props.params.sector || this.props.location.query.sector || 'profile';
 
         this.state = {
             lang: getLang(),
@@ -45,7 +45,7 @@ export default class Account extends Component {
     componentDidMount() {
         getUserAsync(user => {
             if (!user) {
-                return goTo('/');
+                return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
             }
 
             const data = this.state.data;

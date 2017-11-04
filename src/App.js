@@ -153,7 +153,7 @@ class App extends Component {
               </Route>
               <Route path="/app">
                 <IndexRoute component={BrowseListings}/>
-                <Route path="account" component={Account}></Route>
+                <Route path="account(/:sector)" component={Account}></Route>
                 <Route path="dashboard" component={Dashboard}></Route>
                 <Route path="change-password" component={ChangePasswordPage}></Route>
                 <Route path="my-listings" component={MyListings}></Route>
@@ -161,7 +161,7 @@ class App extends Component {
                 <Route path="user-preferences" component={UserPreferences}></Route>
                 <Route path="user-verifications" component={UserVerifications}></Route>
                 <Route path="user-documents" component={UserDocuments}></Route>
-                <Route path="admin/:section" component={AdminPage}></Route>
+                <Route path="admin/(/:section)" component={AdminPage}></Route>
                 <Route path="admin/user/:userId" component={AdminUserPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>

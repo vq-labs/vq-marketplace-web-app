@@ -28,7 +28,7 @@ export default class AdminPage extends React.Component {
         super(props);
 
         this.state = {
-            section: props.params.section,
+            section: props.params.section || 'overview',
             isAddingNewCategory: false,
             users: [],
             categories: [],

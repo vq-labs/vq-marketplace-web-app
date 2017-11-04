@@ -16,14 +16,49 @@ const defaultConfigsFields = [
     }
 ];
 
+const socialMediaFields = [
+    {
+        type: 'string',
+        key: 'SOCIAL_FB_USERNAME',
+        label: 'Facebook username'
+    },
+    {
+        type: 'string',
+        key: 'SOCIAL_TWITTER_USERNAME',
+        label: 'Twitter username'
+    },
+    {
+        type: 'string',
+        key: 'SOCIAL_INSTAGRAM_USERNAME',
+        label: 'Instagram username'
+    },
+    {
+        type: 'string',
+        key: 'SOCIAL_YOUTUBE_USERNAME',
+        label: 'Youtube username'
+    },
+    {
+        type: 'string',
+        key: 'SOCIAL_GITHUB_USERNAME',
+        label: 'Youtube username'
+    }
+];
+
 export default class SectionBasics extends React.Component {
     render() {
         return (
-            <ConfigEdit
-                header={'Marketplace SEO'}
-                desc={'Define how you appear in search results.'}
-                fields={defaultConfigsFields}
-            />
+            <div>
+                <ConfigEdit
+                    header={'Search engines'}
+                    desc={'Define how you appear in search results.'}
+                    fields={defaultConfigsFields}
+                />
+                <ConfigEdit
+                    header={'Social media'}
+                    desc={'Connect your users with your social media channels'}
+                    fields={socialMediaFields}
+                />
+            </div>
         );
     }
 }

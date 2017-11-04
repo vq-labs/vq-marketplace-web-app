@@ -22,7 +22,19 @@ const sloganFields = [
         type: 'string',
         key: 'START_PAGE_DESC',
         label: 'Description',
-        explanation: 'Use the description to share your main value proposition. "FoodMarket is the easiest way to order produce directly from local providers" or "GuitarPro is the best place to compare music teachers" are good examples.'
+        explanation: 'Use the description to share your main value proposition. "FoodMarket is the easiest way to order directly from local providers" or "GuitarPro is the best place to find music teachers" are good examples.'
+    },
+    {
+        type: 'string',
+        key: 'START_PAGE_HEADER_SELLERS',
+        label: 'Slogan',
+        explanation: 'Use the slogan to quickly tell what your marketplace is about to the Providers/Sellers of your marketplace. "Share your food with locals" or "Offer your skills in Music" are good examples.'
+    },
+    {
+        type: 'string',
+        key: 'START_PAGE_DESC_SELLERS',
+        label: 'Description',
+        explanation: 'Use the description to share your main value proposition. "Share your food with locals and build your personal food business" or "Offer your specific skill and start earning extra money" are good examples.'
     }
 ];
 

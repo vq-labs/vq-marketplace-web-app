@@ -256,8 +256,7 @@ class Profile extends React.Component {
                                         disable={true}
                                         count={5}
                                         size={16}
-                                        half={false}
-                                        value={this.state.profile.avgReviewRate}
+                                        value={Math.round(this.state.profile.avgReviewRate * 2) / 2}
                                         color2={'#ffd700'}
                                     />
                                 }
@@ -501,76 +500,73 @@ class Profile extends React.Component {
                                                     </div>
                                                 </div>
                                         </div>
-                                     
                                         <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
-                                        { !review.rate &&
-                                            <div className="row" style={{ marginTop: 15 }}>
-                                                    <div className="col-xs-12">
-                                                        {translate("YOU_MUST_LEAVE_REVIEW")}
-                                                    </div>
-                                                    <div className="col-xs-12" style={{ marginTop: 5 }}>
-                                                        <RaisedButton
-                                                            labelStyle={{color: 'white '}}
-                                                            backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                            label={translate('LEAVE_REVIEW')}
-                                                            onTouchTap={() => {
-                                                                if (review.orderId) {
-                                                                    requestOrder
-                                                                    .getCorrespondingRequestForOrder(review.orderId)
-                                                                    .then(request => {
-                                                                        return goTo(`/request/${request.id}/review`);
-                                                                    })
-                                                                }
+                                            { !review.rate &&
+                                                <div className="row" style={{ marginTop: 15 }}>
+                                                        <div className="col-xs-12">
+                                                            {translate("YOU_MUST_LEAVE_REVIEW")}
+                                                        </div>
+                                                        <div className="col-xs-12" style={{ marginTop: 5 }}>
+                                                            <RaisedButton
+                                                                labelStyle={{color: 'white '}}
+                                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                                label={translate('LEAVE_REVIEW')}
+                                                                onTouchTap={() => {
+                                                                    if (review.orderId) {
+                                                                        requestOrder
+                                                                        .getCorrespondingRequestForOrder(review.orderId)
+                                                                        .then(request => {
+                                                                            return goTo(`/request/${request.id}/review`);
+                                                                        })
+                                                                    }
 
-                                                                if (review.requestId) {
-                                                                    requestOrder
-                                                                    .getCorrespondingOrderForRequest(review.requestId)
-                                                                    .then(order => {
-                                                                        return goTo(`/order/${order.id}/review`);
-                                                                    })
-                                                                }
-                                                            }}
-                                                        />
-                                                    </div>
-                                            </div>
-                                        }
-                                        { review.rate &&
-                                        <div className="row">
-                                                <div className="col-xs-12">
-                                                    <div style={{
-                                                        lineHeight: 2
-                                                    }}>
-                                                        <ReactStars
-                                                            edit={false}
-                                                            disable={true}
-                                                            count={5}
-                                                            size={16}
-                                                            half={false}
-                                                            value={review.rate}
-                                                            color2={'#ffd700'}
-                                                        />
-                                                    </div>
+                                                                    if (review.requestId) {
+                                                                        requestOrder
+                                                                        .getCorrespondingOrderForRequest(review.requestId)
+                                                                        .then(order => {
+                                                                            return goTo(`/order/${order.id}/review`);
+                                                                        })
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
                                                 </div>
-                                        </div>
-                                        }
-                                        { review.rate &&
-                                        <div className="row">
-                                            <div className="col-xs-12" style={{ padding: 30}}>
-                                                <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                            }
+                                            { review.rate &&
+                                            <div className="row">
+                                                    <div className="col-xs-12">
+                                                        <div style={{
+                                                            lineHeight: 2
+                                                        }}>
+                                                            <ReactStars
+                                                                edit={false}
+                                                                disable={true}
+                                                                count={5}
+                                                                size={16}
+                                                                half={false}
+                                                                value={review.rate}
+                                                                color2={'#ffd700'}
+                                                            />
+                                                        </div>
+                                                    </div>
                                             </div>
-                                        </div>
-                                        }
-                                        { review.rate &&
-                                        <div className="row">
-                                            <div className="col-xs-12 text-muted">
-                                                    <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{review.createdAt}</Moment>
-                                                    <span> </span>
-                                                    <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
-                                                        {review.task.title}
-                                                    </a>
+                                            }
+                                            { review.rate &&
+                                            <div className="row">
+                                                <div className="col-xs-12" style={{ padding: 30}}>
+                                                    <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                                </div>
                                             </div>
-                                        </div>
-                                        }
+                                            }
+                                            <div className="row">
+                                                <div className="col-xs-12 text-muted">
+                                                        <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{review.createdAt}</Moment>
+                                                        <span> </span>
+                                                        <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                            {review.task.title}
+                                                        </a>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <div className="col-xs-12">

@@ -130,9 +130,9 @@ export default class ChatRoom extends React.Component {
                         user,
                         isLoading: false,
                         fromUserId: user.id,
-                        toUserId: chat.messages[0].fromUserId === user.id ?
-                            chat.messages[0].toUserId :
-                            chat.messages[0].fromUserId,
+                        toUserId: chat.request.fromUserId === user.id ?
+                            chat.request.toUserId :
+                            chat.request.fromUserId,
                         messages: chat.messages,
                         users: chat.users,
                         task,
@@ -198,29 +198,28 @@ export default class ChatRoom extends React.Component {
                     { !this.state.isLoading &&
                         <div className="row">
                             <div className="col-xs-12 col-sm-8">
-                                    <div className="row">
-                                        <div className="col-xs-12">
-                                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                                                {translate("CHAT_PAGE_HEADER")}
-                                            </h1>
-                                            <p>{translate("CHAT_PAGE_DESC")}</p>
-                                        </div>
+                                    <div className="col-xs-12">
+                                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                            {translate("CHAT_PAGE_HEADER")}
+                                        </h1>
+                                        <p>{translate("CHAT_PAGE_DESC")}</p>
                                     </div>
                                     <hr />
                                     { this.state.task &&
                                         <div className="row">
                                             <div className="col-xs-12">
-                                                <h3>
-                                                    <a style={{
-                                                        textDecoration: 'none',
-                                                        cursor: 'pointer'
-                                                    }} onTouchTap={() => goTo(`/task/${this.state.task.id}`)}>
-                                                        { this.state.task.title }
-                                                    </a>
-                                                </h3>
+                                                <div className="col-xs-12">
+                                                    <h3>
+                                                        <a style={{
+                                                            textDecoration: 'none',
+                                                            cursor: 'pointer'
+                                                        }} onTouchTap={() => goTo(`/task/${this.state.task.id}`)}>
+                                                            { this.state.task.title }
+                                                        </a>
+                                                    </h3>
+                                                </div>
                                             </div>
                                             <div className="col-xs-12">
-                                                <div className="row">
                                                     <div className="col-xs-12 col-sm-4">
                                                         <p className="text-muted">
                                                             {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`)}
@@ -228,7 +227,12 @@ export default class ChatRoom extends React.Component {
                                                     </div>
                                                     <div className="col-xs-12 col-sm-4">
                                                         <p className="text-muted">
-                                                            {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0])}
+                                                            {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0], [
+                                                                REQUEST_STATUS.PENDING,
+                                                                REQUEST_STATUS.DECLINED,
+                                                                REQUEST_STATUS.CANCELED,
+                                                                REQUEST_STATUS.SETTLED
+                                                            ].indexOf(this.state.request.status) === -1)}
                                                         </p>
                                                     </div>
                                                     <div className="col-xs-12 col-sm-4">
@@ -236,7 +240,6 @@ export default class ChatRoom extends React.Component {
                                                             {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
                                                         </p>
                                                     </div>
-                                                </div>
                                             </div>
                                             <div className="col-xs-12">
                                                     <Divider />

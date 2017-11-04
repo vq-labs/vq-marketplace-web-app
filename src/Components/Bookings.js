@@ -142,7 +142,7 @@ export default class Bookings extends Component {
 
                                             { order.status === ORDER_STATUS.SETTLED &&
                                                 <p className="text-muted">
-                                                    <strong>{translate("ORDER_SETTLED")}</strong>
+                                                    <strong>{translate("ORDER_SETTLED")} {order.review ? `, ${translate("REVIEWED")}` : ''}</strong> 
                                                 </p>
                                             }
 
@@ -206,7 +206,8 @@ export default class Bookings extends Component {
                                                                 });
 
                                                                 return openMessageDialog({
-                                                                    header: translate("ORDER_CLOSED_SUCCESS")
+                                                                    header: translate("ORDER_CLOSED_SUCCESS_HEADER"),
+                                                                    desc: translate("ORDER_CLOSED_SUCCESS_DESC")
                                                                 });
                                                             }, err => {
                                                                 return alert(translate("ERROR"));
@@ -220,7 +221,7 @@ export default class Bookings extends Component {
 
                                             { order.status === ORDER_STATUS.CLOSED &&
                                                 <p className="text-muted">
-                                                    <strong>{translate("ORDER_CLOSED")}</strong>
+                                                    <strong>{translate("ORDER_CLOSED")} {order.review ? `, ${translate("REQUEST_REVIEWED")}` : ''}</strong>
                                                 </p>
                                             }
                                         </div>

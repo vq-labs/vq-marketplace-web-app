@@ -29,7 +29,7 @@ export default class LabelEdit extends React.Component {
                 })
                 .forEach(labelItem => {
                     labelsObj[labelItem.labelKey] = labelItem.labelValue;
-                })
+                });
 
                 return this.setState({
                     labels,

@@ -50,9 +50,11 @@ export const displayListingDesc = desc => {
     return 'No description';
 };
 
-export const displayLocation = location => {
+export const displayLocation = (location, showDetails) => {
     if (location) {
-        return `${location.street}, ${location.postalCode} ${location.city}`
+        return showDetails ?
+        `${location.street} ${location.streetNumber}, ${location.postalCode} ${location.city}` :
+        `${location.street}, ${location.postalCode} ${location.city}`
     }
 
     return '';

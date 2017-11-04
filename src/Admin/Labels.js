@@ -9,8 +9,19 @@ import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
 import { getLang } from '../core/i18n';
 import LANG_CODES from '../constants/LANG_CODES.js';
+import LABELS from '../constants/LABELS.js';
 
 const _ = require('underscore');
+
+const labels = Object.keys(LABELS)
+    .map(labelKey => { 
+        return {
+            type: 'string',
+            key: labelKey,
+            label: labelKey,
+            group: LABELS[labelKey]
+        };
+    });
 
 export default class SectionLabels extends React.Component {
     constructor(props) {
@@ -35,16 +46,7 @@ export default class SectionLabels extends React.Component {
             })
             .then(rLabels => {
                 const labelsObj = {};
-                const labels = rLabels
-                    .map(labelItem => { 
-                        return {
-                            type: 'string',
-                            key: labelItem.labelKey,
-                            label: labelItem.labelKey,
-                            group: labelItem.labelGroup
-                        };
-                    });
-
+                
                 rLabels
                 .forEach(labelItem => {
                     labelsObj[labelItem.labelKey] = labelItem.labelValue;
@@ -52,7 +54,6 @@ export default class SectionLabels extends React.Component {
 
                 this.setState({
                     isLoading: false,
-                    labels,
                     labelsObj
                 });
             })
@@ -77,7 +78,7 @@ export default class SectionLabels extends React.Component {
                     <div>
                         <DropDownMenu value={this.state.lang} onChange={(event, index, value) => {
                             this.setState({
-                                labels: [],
+                                isLoading: true,
                                 labelsObj: {},
                                 lang: value
                             });
@@ -100,16 +101,20 @@ export default class SectionLabels extends React.Component {
 
                 { this.state.isLoading && <Loader isLoading={true}/> }
 
-                { !this.state.isLoading && Boolean(this.state.labels.length) &&
+                { !this.state.isLoading &&
                     <EditableEntity
                         enableKeySearch={true}
                         groupBy="group"
                         showCancelBtn={false}
-                        value={this.state.labelsObj}
-                        fields={this.state.labels}
+                        value={JSON.parse(JSON.stringify(this.state.labelsObj))}
+                        fields={labels}
                         onConfirm={
                             updatedEntity => {
+                                const labelsObj = this.state.labelsObj;
                                 const updatedData = Object.keys(updatedEntity)
+                                    .filter(labelKey => {
+                                        return labelsObj[labelKey] !== updatedEntity[labelKey];
+                                    })
                                     .map(labelKey => {
                                         const mappedItem = {};
 
@@ -117,13 +122,17 @@ export default class SectionLabels extends React.Component {
                                         mappedItem.labelKey = labelKey;
                                         mappedItem.labelValue = updatedEntity[labelKey];
                             
+                                        labelsObj[labelKey] = updatedEntity[labelKey];
+
                                         return mappedItem;
                                     });
 
-                                apiConfig.appLabel.createItem(updatedData);
+                                apiConfig
+                                .appLabel
+                                .createItem(updatedData);
 
                                 this.setState({
-                                    labelsObj: updatedEntity
+                                    labelsObj
                                 });
                             }
                         }

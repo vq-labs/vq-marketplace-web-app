@@ -200,18 +200,19 @@ export default class Requests extends Component {
                                                     { String(request.status) === REQUEST_STATUS.CANCELED &&
                                                         translate("REQUEST_STATUS_CANCELED")
                                                     }
+                                                    {request.review ? `, ${translate("REQUEST_REVIEWED")}` : ''}
                                                 </strong>
                                             </p>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 text-right">
                                             <IconButton
-                                                onClick={() => goTo(`/profile/${request.with.id}`)}
+                                                onClick={() => goTo(`/profile/${request.toUser.id}`)}
                                                 tooltipPosition="top-center"
                                                 tooltip={
-                                                    `${request.with.firstName} ${request.with.lastName}`
+                                                    `${request.toUser.firstName} ${request.toUser.lastName}`
                                                 }
                                             >
-                                                <Avatar src={request.with.imageUrl || '/images/avatar.png'} />
+                                                <Avatar src={request.toUser.imageUrl || '/images/avatar.png'} />
                                             </IconButton>
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton

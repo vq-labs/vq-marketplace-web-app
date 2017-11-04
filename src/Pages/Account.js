@@ -591,7 +591,7 @@ export default class Account extends Component {
                                     this.state.emails.map(emailCode => {
                                     const propKey = emailCode;
 
-                                    return <div className="col-xs-12">
+                                    return <div className="col-xs-12" key={emailCode}>
                                         <Checkbox
                                             checked={!this.state.data[propKey]}
                                             label={translate(propKey)}

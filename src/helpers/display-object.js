@@ -37,7 +37,7 @@ const displayObject = (obj, options) => {
             }
 
             if (obj[objKey] === null || obj[objKey] === undefined) {
-                return;
+                return void 0;
             }
 
             return  <div className="col-xs-12">

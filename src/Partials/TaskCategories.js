@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 import { getCategoriesAsync } from '../core/categories.js';
 import Chip from 'material-ui/Chip';

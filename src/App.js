@@ -161,7 +161,7 @@ class App extends Component {
                 <Route path="user-preferences" component={UserPreferences}></Route>
                 <Route path="user-verifications" component={UserVerifications}></Route>
                 <Route path="user-documents" component={UserDocuments}></Route>
-                <Route path="admin/(/:section)" component={AdminPage}></Route>
+                <Route path="admin(/:section)" component={AdminPage}></Route>
                 <Route path="admin/user/:userId" component={AdminUserPage}></Route>
                 <Route path="new-listing" component={NewTask}></Route>
                 <Route path="new-listing/:taskId" component={NewTask}></Route>

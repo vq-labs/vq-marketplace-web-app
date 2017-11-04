@@ -12,9 +12,9 @@ import apiPost from '../api/post';
 import * as apiTaskLocation from '../api/task-location';
 import apiBillingAddress from '../api/billing-address';
 import * as apiUserProperty from '../api/user-property';
-import { goTo, goStartPage, setQueryParams, convertToAppPath } from '../core/navigation';
+import { goTo, goStartPage, convertToAppPath } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
-import { translate, getLang, setLang } from '../core/i18n';
+import { translate, getLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import LANG_CODES from '../constants/LANG_CODES.js';
@@ -207,9 +207,9 @@ export default class Account extends Component {
     }
 
     changeSectorFn = sector => () => {
-        setQueryParams({ sector });
-
         if (sector === 'profile') {
+            goTo(`/account/${sector}`)
+
             return apiUser
             .getItem(this.state.user.id)
             .then(profile => this.setState({
@@ -217,6 +217,8 @@ export default class Account extends Component {
                 sector
             }));
         }
+
+        goTo(`/account/${sector}`);
 
         this.setState({
             sector

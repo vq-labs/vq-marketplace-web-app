@@ -1,22 +1,11 @@
 import React, { Component } from 'react';
-import Avatar from 'material-ui/Avatar';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import * as coreNavigation from '../core/navigation';
-import displayTaskTiming from '../helpers/display-task-timing';
 import { translate } from '../core/i18n';
-import { displayPrice, displayLocation, displayListingDesc } from '../core/format';
-import { getCategoriesAsync } from '../core/categories';
 import { goTo } from '../core/navigation';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import apiTask from '../api/task';
 import { getConfigAsync } from '../core/config';
-import ReactStars from 'react-stars'
 import ListingHeader from '../Components/ListingHeader';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';

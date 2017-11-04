@@ -23,7 +23,7 @@ export default class EditableEntity extends Component {
 
         const updatedEntity = {};
 
-        props.fields.map(field => {
+        props.fields.forEach(field => {
             updatedEntity[field.key] = '';
         });
 
@@ -177,12 +177,9 @@ export default class EditableEntity extends Component {
                                                             </div>
                                                             { field.explanation &&
                                                                 <div className="col-xs-12">
-                                                                    <p
-                                                                        dangerouslySetInnerHTML={{
-                                                                            __html: DOMPurify.sanitize(field.explanation)
-                                                                        }}
-                                                                    >
-                                                                    </p>
+                                                                    <div dangerouslySetInnerHTML={{
+                                                                        __html: DOMPurify.sanitize(field.explanation)
+                                                                    }}></div>
                                                                 </div>
                                                             }
                                                             

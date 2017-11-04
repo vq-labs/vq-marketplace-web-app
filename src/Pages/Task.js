@@ -27,7 +27,6 @@ import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
-import { sortDates } from '../core/util';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import '../App.css';
 
@@ -432,7 +431,7 @@ class Task extends Component {
                                             <div className="col-xs-12">
                                                     <TaskComments
                                                         taskId={this.state.task.id}
-                                                        canSubmit={this.state.task.status == TASK_STATUS.ACTIVE}
+                                                        canSubmit={this.state.task.status === TASK_STATUS.ACTIVE}
                                                         comments={this.state.task.comments}
                                                     />
                                             </div>

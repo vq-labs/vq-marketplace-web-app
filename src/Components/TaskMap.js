@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import ListingHeader from '../Components/ListingHeader';
-import { compose, withProps, withStateHandlers } from "recompose";
+import { compose } from "recompose";
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
-import { stripHtml, formatGeoResults, serializeQueryObj } from '../core/util';
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 import { getConfigAsync } from '../core/config';
@@ -17,15 +16,6 @@ const getLocation = cb => {
 }
 
 const TaskMapBuilt = compose(
-    /**
-    withStateHandlers(() => ({
-        isOpen: false,
-    }), {
-            onToggleOpen: ({ isOpen }) => () => ({
-            isOpen: !isOpen,
-        })
-    }),
-    */
     withGoogleMap
     )(props => {
         const defaultCenter = props.markers.length ?

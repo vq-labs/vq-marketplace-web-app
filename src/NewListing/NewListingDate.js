@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import InfiniteCalendar, {
   Calendar,
-  defaultMultipleDateInterpolation,
-  withMultipleDates,
   withRange
 } from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 
-const MultipleDatesCalendar = withMultipleDates(Calendar);
 const WithRangeCalendar = withRange(Calendar);
 
 export default class NewListingDate extends Component {

@@ -2,12 +2,6 @@ import React from 'react';
 import * as apiConfig from '../api/config';
 import EditableEntity from '../Components/EditableEntity';
 
-const selection = [
-    { value: 0, label: 'disabled' },
-    { value: 1, label: 'optional' },
-    { value: 2, label: 'required' }
-];
-
 const geofilterFields = [
     {
         selection: [ "AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB" ].map(_ => {

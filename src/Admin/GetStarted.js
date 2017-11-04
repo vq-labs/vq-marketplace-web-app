@@ -1,53 +1,13 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import * as apiAdmin from '../api/admin';
 import { getUserAsync } from '../core/auth';
-import LabelEdit from '../Components/LabelEdit';
-import ConfigEdit from '../Components/ConfigEdit';
-import { goTo, convertToAppPath } from '../core/navigation';
+import { goTo } from '../core/navigation';
 
 import {
     Step,
     Stepper,
     StepLabel,
   } from 'material-ui/Stepper';
-
-const sloganFields = [
-    {
-        type: 'string',
-        key: 'START_PAGE_HEADER',
-        label: 'Slogan',
-        explanation: 'Use the slogan to quickly tell visitors what your marketplace is about. "Buy food from locals" or "Get guitar lessons from a pro" are good examples.'
-    },
-    {
-        type: 'string',
-        key: 'START_PAGE_DESC',
-        label: 'Description',
-        explanation: 'Use the description to share your main value proposition. "FoodMarket is the easiest way to order produce directly from local providers" or "GuitarPro is the best place to compare music teachers" are good examples.'
-    }
-];
-
-const coverPhotoFields = [
-    {
-        type: 'single-image',
-        key: 'LOGO_URL',
-        label: 'Marketplace logo (284px x 100px)',
-        imageResolution: [ 100 * 2.84, 100 ]
-    },
-    {
-        type: 'single-image',
-        key: 'PROMO_URL',
-        label: 'Marketplace promo for buyers/clients (1280px x 850px are supported)',
-        imageResolution: [ 1280, 850 ]
-    },
-    {
-        type: 'single-image',
-        key: 'PROMO_URL_SELLERS',
-        label: 'Marketplace promo for sellers/taskers (1280x850px are supported)',
-        imageResolution: [ 1280, 850 ]
-    }
-];
 
 export default class SectionOverview extends React.Component {
     constructor() {
@@ -91,7 +51,7 @@ export default class SectionOverview extends React.Component {
 
                     { this.state.activeStep === 0 &&
                         <div className="col-xs-12">
-                            <img src="/images/get-started-slogans.jpg" className="img-responsive" />
+                            <img alt={'Configure the slogan and description of the VQ-Marketplace'} src="/images/get-started-slogans.jpg" className="img-responsive" />
                             
                             <p style={{ marginTop: 30 }}>
                                 The slogan and description help new visitors understand what your marketplace is about. They are the first thing visitors notice when they land on your site, so try to make them compact but descriptive.

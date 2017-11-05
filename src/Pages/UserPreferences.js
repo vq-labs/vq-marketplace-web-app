@@ -180,7 +180,7 @@ export default class SectionCategories extends React.Component {
                                             return alert("Select at least one preference");
                                         }
 
-                                        return goTo(this.state.redirectTo ? this.state.redirectTo: '');
+                                        return goTo(this.state.redirectTo ? this.state.redirectTo: '/');
                                     });
                                    
                                 }}

@@ -254,7 +254,7 @@ export default class Account extends Component {
 
                                     { this.state.user && this.state.user.userType === 2 &&
                                         <li>
-                                            <a href="#" onTouchTap={() => goTo('/user-documents')}>{translate('HEADER_USER_DOCUMENTS')}</a>
+                                            <a href="#" onTouchTap={() => goTo(`/user-documents?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('HEADER_USER_DOCUMENTS')}</a>
                                         </li>
                                     }
 
@@ -266,7 +266,7 @@ export default class Account extends Component {
 
                                     { this.state.user && this.state.user.userType === 2 &&
                                         <li>
-                                            <a href="#" onTouchTap={() => goTo('/user-verifications')}>{translate('USER_VERIFICATIONS')}</a>
+                                            <a href="#" onTouchTap={() => goTo(`/user-verifications?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_VERIFICATIONS')}</a>
                                         </li>
                                     }
 

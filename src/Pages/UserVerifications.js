@@ -1,11 +1,14 @@
 import React from 'react';
+import EditableEntity from '../Components/EditableEntity';
+import Loader from "../Components/Loader";
+
 import * as apiUserProperty from '../api/user-property';
+
 import { goTo } from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { translate } from '../core/i18n';
-import EditableEntity from '../Components/EditableEntity';
-import Loader from "../Components/Loader";
+import { getParams } from '../core/util.js';
 
 const async = require("async");
 
@@ -13,9 +16,12 @@ export default class UserVerifications extends React.Component {
     constructor() {
         super();
 
+        const redirectTo = getParams(location.search).redirectTo;
+
         this.state = {
             isLoading: true,
-            verifications: {}
+            verifications: {},
+            redirectTo
         };
 
         this.VERIFICATIONS = [
@@ -107,6 +113,7 @@ export default class UserVerifications extends React.Component {
                                 <EditableEntity
                                     canSave={!this.isSubmitting}
                                     showCancelBtn={false}
+                                    saveLabel={translate(this.state.redirectTo ?  "SAVE" : "CONTINUE")}
                                     value={this.state.verifications}
                                     fields={this.defaultVerificationsFields}
                                     onConfirm={updatedEntity => {
@@ -161,7 +168,7 @@ export default class UserVerifications extends React.Component {
                                                     return alert(err);
                                                 }
 
-                                                return goTo('/');
+                                                return goTo(this.state.redirectTo ? this.state.redirectTo : '/');
                                             })
                                         });
                                     }

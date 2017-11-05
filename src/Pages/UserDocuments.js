@@ -1,11 +1,13 @@
 import React from 'react';
 import * as apiUserProperty from '../api/user-property';
+import EditableEntity from '../Components/EditableEntity';
+import Loader from "../Components/Loader";
 import { goTo } from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { translate } from '../core/i18n';
-import EditableEntity from '../Components/EditableEntity';
-import Loader from "../Components/Loader";
+
+import { getParams } from '../core/util.js';
 
 const async = require("async");
 
@@ -13,7 +15,10 @@ export default class UserDocuments extends React.Component {
     constructor() {
         super();
 
+        const redirectTo = getParams(location.search).redirectTo;
+
         this.state = {
+            redirectTo,
             isLoading: true,
             documents: {}
         };
@@ -90,7 +95,7 @@ export default class UserDocuments extends React.Component {
                             { !this.state.isLoading &&
                                 <EditableEntity
                                     enableSkip={true}
-                                    saveLabel={translate('CONTINUE')}
+                                    saveLabel={translate(this.state.redirectTo ?  "SAVE" : "CONTINUE")}
                                     canSave={!this.isSubmitting}
                                     showCancelBtn={false}
                                     value={this.state.documents}
@@ -139,7 +144,7 @@ export default class UserDocuments extends React.Component {
                                                     return alert(err);
                                                 }
 
-                                                return goTo('/dashboard');
+                                                return goTo(this.state.redirectTo ? this.state.redirectTo : '/dashboard');
                                             })
                                         });
                                     }

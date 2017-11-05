@@ -70,11 +70,6 @@ const otherFields = [
     },
     {
         type: 'string',
-        key: 'GOOGLE_ANALYTICS_ID',
-        label: 'Google Analytics Tracking ID'
-    },
-    {
-        type: 'string',
         key: 'COMPANY_NAME_SHORT',
         label: 'Short version of company name (will be included in landing page)'
     },

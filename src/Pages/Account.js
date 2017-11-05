@@ -444,6 +444,7 @@ export default class Account extends Component {
                                 </div>
                                 <div className="col-xs-12 col-sm-10 col-md-8">
                                         <Address
+                                            deriveOnly={true}
                                             withTaxNumber={true}
                                             location={this.state.billingAddress || {}}
                                             onLocationChange={billingAddress => {
@@ -513,6 +514,7 @@ export default class Account extends Component {
                                 </div>
                                 <div className="col-xs-12 col-sm-10 col-md-8">
                                     <Address
+                                        deriveOnly={true}
                                         location={this.state.defaultListingLocation || {}}
                                         onLocationChange={defaultListingLocation => {
                                             const toBeUpdated = this.state.toBeUpdated;

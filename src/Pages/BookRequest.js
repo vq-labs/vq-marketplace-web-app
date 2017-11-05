@@ -138,6 +138,7 @@ class BookRequest extends Component {
                         <div className="col-xs-12 col-sm-6">
                             <h3>{translate('BILLING_ADDRESS')}</h3>
                             <Address
+                                deriveOnly={true}
                                 withTaxNumber={true}
                                 location={this.state.billingAddress}
                                 onLocationChange={billingAddress => {

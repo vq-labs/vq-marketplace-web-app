@@ -18,8 +18,6 @@ export default class Address extends Component {
         if (address.streetNumber)
             locationQueryString += ` ${address.streetNumber}`;
 
-        debugger
-
         this.state = {
             deriveOnly: props.deriveOnly,
             countryRestriction: props.countryRestriction,
@@ -203,7 +201,6 @@ export default class Address extends Component {
                                     <TextField
                                         disabled={this.state.deriveOnly}
                                         type="text"
-                                        
                                         name="postalCode"
                                         onChange={this.onAddressFieldChange('postalCode')}
                                         style={{width: '100%'}}

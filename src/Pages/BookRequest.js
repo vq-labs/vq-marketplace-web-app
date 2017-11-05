@@ -158,7 +158,7 @@ class BookRequest extends Component {
                                     onTouchTap={() => goBack()}
                                 />
                             }
-                            { this.state.config &&
+                            { this.state.config && this.state.billingAddress &&
                             <RaisedButton
                                 style={{float: 'right'}}
                                 disabled={this.state.isSubmitted || String(this.state.billingAddress.postalCode) < 4}

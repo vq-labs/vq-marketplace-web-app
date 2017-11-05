@@ -379,7 +379,7 @@ export default class ChatRoom extends React.Component {
                                                                                 { name }
                                                                             </strong>
                                                                             <br />
-                                                                            { profileBio }
+                                                                            { profileBio ? profileBio : '' }
                                                                     </div>
                                                                 </a>
                                                             </div>;

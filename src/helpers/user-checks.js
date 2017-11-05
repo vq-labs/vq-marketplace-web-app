@@ -23,7 +23,11 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
         return true;
     }
 
-    if (Number(user.userType) === 1) {
+    if (user.userType === 0) {
+        return false;
+    }
+
+    if (user.userType === 1) {
         return false;
     }
 

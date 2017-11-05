@@ -48,7 +48,7 @@ class Offers extends Component {
             isLoading: false,
             locationQueryString,
             appliedFilter: {
-                viewType: Number(query.viewType) || VIEW_TYPES.MAP,
+                viewType: Number(query.viewType),
                 q: locationQueryString,
                 minPrice: query.minPrice || 500,
                 maxPrice: query.maxPrice || 10000,
@@ -64,8 +64,13 @@ class Offers extends Component {
 
     componentDidMount() {
         getConfigAsync(config => {
+            const appliedFilter = this.state.appliedFilter;
+            
+            appliedFilter.viewType = appliedFilter.viewType || Number(config.LISTINGS_DEFAULT_VIEW);
+
             this.setState({
-                config
+                config,
+                appliedFilter
             });
 
             getUserAsync(user => {
@@ -76,7 +81,7 @@ class Offers extends Component {
                 /**
                  * Only sellers can access this page
                  */
-                if (String(user.userType) !== '2') {
+                if (user.userType === 1) {
                     return goTo('/dashboard');
                 }
 
@@ -112,7 +117,7 @@ class Offers extends Component {
         
         apiTask
         .getItems({
-            untilNow: 1,
+            untilNow: this.state.config.LISTING_TIMING_MODE === '1' ? 1 : undefined,
             minPrice: query.minPrice,
             maxPrice: query.maxPrice,
             taskType: 1,
@@ -388,21 +393,23 @@ class Offers extends Component {
                         </div>
                         <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
                             <div className="col-xs-12" style={{ marginBottom: 5 }}>
-                                <OfferViewTypeChoice
-                                    className="pull-right"
-                                    selected={this.state.appliedFilter.viewType}
-                                    onSelect={viewType => {
-                                        const appliedFilter = this.state.appliedFilter;
+                                {this.state.appliedFilter.viewType &&
+                                    <OfferViewTypeChoice
+                                        className="pull-right"
+                                        selected={this.state.appliedFilter.viewType}
+                                        onSelect={viewType => {
+                                            const appliedFilter = this.state.appliedFilter;
 
-                                        appliedFilter.viewType = viewType;
-                                        
-                                        setQueryParams(appliedFilter);
+                                            appliedFilter.viewType = viewType;
+                                            
+                                            setQueryParams(appliedFilter);
 
-                                        this.setState({
-                                            appliedFilter
-                                        });
-                                    }}
-                                />
+                                            this.setState({
+                                                appliedFilter
+                                            });
+                                        }}
+                                    />
+                                }
                             </div>
                             { this.state.isLoading && 
                                 <Loader isLoading={true} />

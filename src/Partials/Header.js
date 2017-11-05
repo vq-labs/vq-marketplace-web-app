@@ -108,7 +108,7 @@ class Header extends Component {
                         }
                   { this.state.logged && <ToolbarSeparator /> }
 
-                  { this.state.logged && Number(this.state.user.userType) === 2 &&
+                  { this.state.logged && Number(this.state.user.userType) !== 1 &&
                     <div onTouchTap={ 
                         () => goTo('/')
                     }>
@@ -125,10 +125,8 @@ class Header extends Component {
                       />
                     </div>
                   }
-                 
-                  
 
-                  { this.state.logged && Number(this.state.user.userType) === 1 &&
+                  { this.state.logged && Number(this.state.user.userType) !== 2 &&
                     <a onClick={() => goTo('/new-listing')} target="_self">
                       {
                         translate('HEADER_ADD_LISTING') === 'HEADER_ADD_LISTING' ?

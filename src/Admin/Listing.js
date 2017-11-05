@@ -1,118 +1,65 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
-import EditableEntity from '../Components/EditableEntity';
+import ConfigEdit from '../Components/ConfigEdit';
 
-const selection = [
-    { value: 0, label: 'disabled' },
-    { value: 1, label: 'optional' },
-    { value: 2, label: 'required' }
+const browsingFields = [
+    {
+        type: 'bool',
+        key: 'LISTINGS_VIEW_LIST',
+        label: 'List'
+    },
+    {
+        disabled: true,
+        type: 'bool',
+        key: 'LISTINGS_VIEW_GRID',
+        label: 'Grid'
+    },
+    {
+        type: 'bool',
+        key: 'LISTINGS_VIEW_MAP',
+        label: 'Map'
+    },
+    {
+        selection: [
+            { value: '2', label: 'List' },
+            { value: '3', label: 'Map' }
+        ],
+        type: 'select',
+        key: 'LISTINGS_DEFAULT_VIEW',
+        label: 'Default browsing view'
+    },
 ];
 
-const defaultConfigsFields = [
+const newListingFields = [
     {
         disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_CATEGORY_MODE',
-        label: 'Listing category'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_TITLE_MODE',
-        label: 'Listing title'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_DESCRIPTION_MODE',
-        label: 'Listing description'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_LOCATION_MODE',
-        label: 'Listing location'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_DATE_MODE',
-        label: 'Listing date'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_PRICE_MODE',
-        label: 'Listing price'
-    },
-    {
-        disabled: true,
-        selection,
-        type: 'select',
-        key: 'LISTING_IMAGES_MODE',
-        label: 'Listing images'
-    },
+        type: 'bool',
+        key: 'LISTING_TIMING_MODE',
+        label: 'Should the listing be restricted to predefined days?',
+        explanation: 'This option will enable a calendar and restrict the visibility of the listing according to its availibity.'
+    }
 ];
 
 export default class SectionListing extends React.Component {
     constructor() {
         super();
-        this.state = {
-            ready: false,
-            meta: {} 
-        };
+        this.state = {};
     }
 
-    componentDidMount() {
-        apiConfig
-        .appConfig
-        .getItems()
-        .then(meta => {
-            return this.setState({
-                ready: true,
-                meta
-            });
-        });
-    }
-
+    componentDidMount() {}
     render() {
         return (
-            <div className="row">
-                    <div className="col-xs-12">
-                        <h1>Listing config</h1>
-                        <p>
-                            Specify what attributes of listing are disabled, optional and required.
-                        </p>
-                        { this.state.ready &&
-                            <EditableEntity
-                                showCancelBtn={false}
-                                value={this.state.meta} 
-                                fields={defaultConfigsFields}
-                                onConfirm={
-                                    updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity).map(fieldKey => {
-                                            const mappedItem = {};
+            <div>
+                <ConfigEdit
+                    header={'Browse'}
+                    desc={'Configure your browsing page.'}
+                    fields={browsingFields}
+                />
 
-                                            mappedItem.fieldKey = fieldKey;
-                                            mappedItem.fieldValue = updatedEntity[fieldKey];
-
-                                            return mappedItem;
-                                        });
-
-                                        apiConfig.appConfig.createItem(updatedData);
-
-                                        this.setState({ meta: updatedEntity })
-                                    }
-                                }
-                            />
-                        }
-                </div>    
+                <ConfigEdit
+                    header={'Listing properties'}
+                    desc={'Adapt the process of creating listings. Some of these options are only configurable once at the launch of a marketplace and may be only changed by the support team.'}
+                    fields={newListingFields}
+                />
             </div>
         );
     }

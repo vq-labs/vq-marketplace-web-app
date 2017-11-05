@@ -18,7 +18,7 @@ export default class ViewTypeChoice extends Component {
         getConfigAsync(config => {
             this.setState({
                 ready: true,
-                config,
+                config
             });
         })
     }

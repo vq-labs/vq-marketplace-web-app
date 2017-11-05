@@ -6,7 +6,7 @@ import CONFIG from '../generated/ConfigProvider.js'
 // VQ_API_URL is defined in production mode
 const API_URL = typeof window.VQ_API_URL === 'undefined' ? CONFIG.API_URL : window.VQ_API_URL;
 
-export const doGet = (url, queryObject) => {
+export const doGet = (url, queryObject, params) => {
     url = API_URL + url;
 
     if (queryObject) {
@@ -15,12 +15,20 @@ export const doGet = (url, queryObject) => {
 
     const xAuthToken = getToken();
 
+    const headers = {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': xAuthToken
+    };
+
+    if (params && params.noCache) {
+        headers['Cache-Control'] = 'no-cache';
+        headers['Pragma'] = 'no-cache';
+        headers['Expires'] = 'Sat, 01 Jan 2000 00:00:00 GMT';
+    }
+
     return fetch(url, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': xAuthToken
-        }
+        headers
     })
     .then(response => { 
         return parseJSON(response);

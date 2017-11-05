@@ -317,7 +317,7 @@ export default class Account extends Component {
                             }
 
 
-                            { this.state.sector === 'profile' &&
+                            { this.state.profile && this.state.sector === 'profile' &&
                                 <div className="row">
                                     <div className="col-xs-12">
                                         <h2>{translate('EDIT_PROFILE')}</h2>

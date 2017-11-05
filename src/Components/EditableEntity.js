@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import HtmlTextField from './HtmlTextField';
@@ -21,16 +22,21 @@ export default class EditableEntity extends Component {
     constructor(props) {
         super(props);
 
-        const updatedEntity = {};
+        const updatedEntity = _.clone(props.value);
 
         props.fields.forEach(field => {
-            updatedEntity[field.key] = '';
+            if (_.type === 'bool') {
+                updatedEntity[_.key] = updatedEntity[_.key] === true || updatedEntity[_.key] === '1';
+
+                return;
+            }
         });
 
         const groupedFields = props.groupBy ?
             _.groupBy(props.fields, props.groupBy) :
             { '': props.fields }
         
+            
 
         this.state = {
             canSave: props.canSave,
@@ -38,7 +44,7 @@ export default class EditableEntity extends Component {
             groupedFields,
             isLoading: false,
             fields: props.fields,
-            updatedEntity: _.clone(props.value) || updatedEntity,
+            updatedEntity,
             dirty: false
         };
 
@@ -55,10 +61,19 @@ export default class EditableEntity extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
+        const updatedEntity = _.clone(nextProps.value) || {};
+
+        this.state.fields
+        .forEach(_ => {
+            if (_.type === 'bool') {
+                updatedEntity[_.key] = updatedEntity[_.key] === true || updatedEntity[_.key] === '1';
+            }
+        });
+
         this.setState({
             canSave: nextProps.canSave,
             isLoading: !nextProps.value,
-            updatedEntity: nextProps.value || {},
+            updatedEntity
         });
     } 
     
@@ -182,7 +197,6 @@ export default class EditableEntity extends Component {
                                                                     }}></div>
                                                                 </div>
                                                             }
-                                                            
                                                         </div>
                                                     }
                                                     { field.type === 'select' &&
@@ -218,9 +232,20 @@ export default class EditableEntity extends Component {
                                                     
                                                     { field.type === 'bool' &&
                                                         <div className="col-xs-12">
-                                                            <div className="push-left">
-                                                                {field.label}: {Number(this.state.updatedEntity[field.key]) ? 'enabled' : 'disabled' }
-                                                            </div>
+                                                            <Checkbox
+                                                                disabled={field.disabled}
+                                                                label={field.label}
+                                                                checked={this.state.updatedEntity[field.key]}
+                                                                onCheck={this.handleFieldChange(field.key)}
+                                                            />
+                                                            
+                                                            { field.explanation &&
+                                                                <div className="col-xs-12">
+                                                                    <div dangerouslySetInnerHTML={{
+                                                                        __html: DOMPurify.sanitize(field.explanation)
+                                                                    }}></div>
+                                                                </div>
+                                                            }
                                                         </div>
                                                     }
                                                     { field.type === 'image' &&

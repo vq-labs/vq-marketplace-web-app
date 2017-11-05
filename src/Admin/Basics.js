@@ -58,7 +58,7 @@ const otherFields = [
         ],
         type: 'select',
         key: 'DATE_FORMAT',
-        label: 'Date format',
+        label: 'Date format'
     },
     {
         selection: [
@@ -66,7 +66,7 @@ const otherFields = [
         ],
         type: 'select',
         key: 'TIME_FORMAT',
-        label: 'Time format',
+        label: 'Time format'
     },
     {
         type: 'string',

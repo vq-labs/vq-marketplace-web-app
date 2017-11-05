@@ -3,7 +3,7 @@ import * as auth from '../core/auth'
 
 export const me = () => new Promise((resolve, reject) => {
     communication
-    .doGet('/me')
+    .doGet('/me', undefined, { noCache: true })
     .then(data => {
         auth.setAsRequested();
 

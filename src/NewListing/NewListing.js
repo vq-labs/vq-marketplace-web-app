@@ -136,7 +136,7 @@ export default class NewListing extends Component {
                 /**
                  * Only buyers can access this page
                  */
-                if (String(user.userType) !== '1') {
+                if (user.userType === 2) {
                     return goTo('/');
                 }
                 

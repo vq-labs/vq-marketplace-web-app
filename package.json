@@ -96,7 +96,7 @@
   },
   "scripts": {
     "start:local": "node ./node_modules/gulp/bin/gulp.js prepare --env local && node scripts/start.js",
-    "start:tenant": "VQ_API_URL=https://click4work.vq-labs.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
+    "start:tenant": "VQ_API_URL=http://sercan.viciqloud.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js && npm run build-rename",
     "build-rename": "npm run build-rename-js && npm run build-rename-css",
     "build-rename-js": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.js' --replace 'main.js' build/static/js/*.js",

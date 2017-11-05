@@ -4,7 +4,6 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import StActions from '../StActions';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
@@ -52,14 +51,14 @@ export default class TaskCard extends Component {
     const updatedTask = this.state.task;
 
     if (statusCode === 0) {
-      StActions.activateTask(taskId, () => {} );
+      // StActions.activateTask(taskId, () => {} );
       updatedTask.status = 0;
 
       this.setState({ task: updatedTask });
     }
 
     if (statusCode === 103) {
-      StActions.deactivateTask(taskId, () => {} );
+      // StActions.deactivateTask(taskId, () => {} );
 
       updatedTask.status = 103;
 

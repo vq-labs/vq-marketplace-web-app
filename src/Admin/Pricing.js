@@ -4,14 +4,17 @@ import EditableEntity from '../Components/EditableEntity';
 
 const defaultConfigsFields = [
     {
+        disabled: true,
         type: 'bool',
         key: 'PRICING_HOURLY',
         label: 'Hourly pricing'
     }, {
+        disabled: true,
         type: 'bool',
         key: 'PRICING_CONTRACT',
         label: 'Pricing per listing'
     }, {
+        disabled: true,
         type: 'bool',
         key: 'PRICING_REQUEST',
         label: 'Pricing on request'

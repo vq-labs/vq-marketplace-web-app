@@ -22,7 +22,7 @@ export default class EditableEntity extends Component {
     constructor(props) {
         super(props);
 
-        const updatedEntity = _.clone(props.value);
+        const updatedEntity = _.clone(props.value) || {};
 
         props.fields.forEach(field => {
             if (_.type === 'bool') {
@@ -30,13 +30,13 @@ export default class EditableEntity extends Component {
 
                 return;
             }
+
+            updatedEntity[_.key] = '';
         });
 
         const groupedFields = props.groupBy ?
             _.groupBy(props.fields, props.groupBy) :
             { '': props.fields }
-        
-            
 
         this.state = {
             canSave: props.canSave,

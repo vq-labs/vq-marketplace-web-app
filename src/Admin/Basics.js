@@ -112,11 +112,6 @@ export default class SectionBasics extends React.Component {
                 <LabelEdit
                     header={'Slogans'}
                     desc={'Slogans are shown on the homepage of the marketplace for the users who are not logged in.'}
-                    onContinue={() => {
-                        this.setState({
-                            activeStep: this.state.activeStep + 1
-                        });
-                    }}
                     fields={sloganFields}
                 />
                 <ConfigEdit

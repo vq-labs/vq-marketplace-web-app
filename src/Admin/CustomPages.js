@@ -14,6 +14,18 @@ const defaultConfigsFields = [
         label: 'Blog Page URL',
         explanation: 'If filled, users will see "Blog"-Link in the footer. You can create your custom blog <a href="http://wixstats.com/?a=15982&c=391&s1=" target="_blank">here</a>.'
     },
+    {
+        type: 'string',
+        key: 'CUSTOM_HOW_IT_WORKS_URL',
+        label: 'How it works URL',
+        explanation: 'Walk your users through the whole process.'
+    },
+    {
+        type: 'string',
+        key: 'CUSTOM_FAQ_URL',
+        label: 'FAQ URL',
+        explanation: 'Every marketplace needs to have a FAQ section.'
+    },
 ];
 
 export default class SectionBasics extends React.Component {
@@ -21,7 +33,7 @@ export default class SectionBasics extends React.Component {
         return (
             <ConfigEdit
                 header={'Custom pages'}
-                desc={'Integrate your marketplace with custom contact form and blog.'}
+                desc={'Integrate your marketplace with custom pages and other websites.'}
                 fields={defaultConfigsFields}
             />
         );

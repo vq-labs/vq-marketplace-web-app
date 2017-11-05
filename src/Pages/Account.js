@@ -403,7 +403,7 @@ export default class Account extends Component {
                                     </div>
                                     <div className="col-xs-12">
                                         <FlatButton
-                                            disabled={!this.state.toBeUpdated.phoneNo || String(this.state.data.phoneNo).length < 8}
+                                            disabled={!this.state.toBeUpdated.phoneNo || String(this.state.data.phoneNo).length < 9}
                                             primary={true}
                                             onTouchTap={
                                                 () => {
@@ -460,7 +460,7 @@ export default class Account extends Component {
                                 </div>
                                 <div className="col-xs-12">
                                     <FlatButton
-                                        disabled={!this.state.toBeUpdated.billingAddress}
+                                        disabled={!this.state.toBeUpdated.billingAddress || String(this.state.billingAddress.postalCode) < 4}
                                         primary={true}
                                         onTouchTap={
                                             () => {
@@ -529,7 +529,7 @@ export default class Account extends Component {
                                 </div>
                                 <div className="col-xs-12">
                                     <FlatButton
-                                        disabled={!this.state.toBeUpdated.defaultListingLocation}
+                                        disabled={!this.state.toBeUpdated.defaultListingLocation || String(this.state.defaultListingLocation.postalCode) < 4}
                                         primary={true}
                                         onTouchTap={
                                             () => {

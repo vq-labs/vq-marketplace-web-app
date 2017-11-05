@@ -31,7 +31,6 @@ const browsingFields = [
 
 const newListingFields = [
     {
-        disabled: true,
         type: 'bool',
         key: 'LISTING_TIMING_MODE',
         label: 'Should the listing be restricted to predefined days?',

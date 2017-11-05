@@ -225,7 +225,7 @@ class Signup extends Component {
                     </div>
                     <br />
                     <RaisedButton
-                      disabled={!this.state.termsAccepted || String(this.state.phoneNo).length < 10}
+                      disabled={!this.state.termsAccepted || String(this.state.phoneNo).length < 9}
                       type="submit"
                       label={translate('REGISTER')}
                       fullWidth={true}

@@ -161,7 +161,7 @@ class BookRequest extends Component {
                             { this.state.config &&
                             <RaisedButton
                                 style={{float: 'right'}}
-                                disabled={this.state.isSubmitted}
+                                disabled={this.state.isSubmitted || String(this.state.billingAddress.postalCode) < 4}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 labelColor={"white"}
                                 label={translate("CONFIRM_BOOKING")} 

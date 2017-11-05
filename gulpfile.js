@@ -15,8 +15,6 @@ gulp.task('prepare', cb => {
     const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS_ID || '';
 
     console.log(`VQ_API_URL: ${VQ_API_URL}`);
-    console.log(`VQ_LANG: ${VQ_LANG}`);
-    console.log(`GOOGLE_ANALYTICS_ID: ${GOOGLE_ANALYTICS_ID}`);
 
     const prepareForBuild = gulp
     .src([ 'code-templates/**.js' ], { base: './code-templates' })

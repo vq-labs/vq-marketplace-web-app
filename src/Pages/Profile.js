@@ -553,12 +553,12 @@ class Profile extends React.Component {
                                             }
                                             { review.rate &&
                                             <div className="row">
-                                                <div className="col-xs-12" style={{ padding: 30}}>
+                                                <div className="col-xs-12" style={{ padding: 30 }}>
                                                     <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
                                                 </div>
                                             </div>
                                             }
-                                            <div className="row">
+                                            <div className="row" style={{ marginTop: 15 }}>
                                                 <div className="col-xs-12 text-muted">
                                                         <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{review.createdAt}</Moment>
                                                         <span> </span>

@@ -66,8 +66,7 @@ class ListingHeader extends Component {
                         </div>
                     }
 
-                    { this.state.task.taskLocations &&
-                        this.state.task.taskLocations.length &&
+                    { this.state.task.taskLocations && Boolean(this.state.task.taskLocations.length) &&
                         <p className="text-muted">
                             {displayLocation(this.state.task.taskLocations[0])}
                         </p>
@@ -94,13 +93,16 @@ class ListingHeader extends Component {
                                 color: this.state.config.COLOR_PRIMARY
                             }}>
                                 {
-                                    this.state.task.taskTimings.length ?
+                                    Boolean(this.state.task.taskTimings.length) ?
                                         displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency) :
                                         displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)
                                 }
                             </h1>
                             <br />
-                            <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
+                            {
+                                Boolean(this.state.task.taskTimings.length) &&
+                                <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
+                            }
                         </div>
                     }
                 </div>

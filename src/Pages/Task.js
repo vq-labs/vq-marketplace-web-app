@@ -392,15 +392,16 @@ class Task extends Component {
                                         </div>
                                         }
                                         
-                                        <div className="col-xs-12" style={{ marginBottom: 20 }}>
-                                            <h3 className="text-left">{translate("LISTING_DATE")}</h3>
-                                            <div className="row">
-                                                <div className="col-xs-12">
-                                                    {displayTaskTiming(this.state.task.timing, `${this.state.config.DATE_FORMAT}`)}
+                                        {this.state.task.timing && !!this.state.task.timing.length &&
+                                            <div className="col-xs-12" style={{ marginBottom: 20 }}>
+                                                <h3 className="text-left">{translate("LISTING_DATE")}</h3>
+                                                <div className="row">
+                                                    <div className="col-xs-12">
+                                                        {displayTaskTiming(this.state.task.timing, `${this.state.config.DATE_FORMAT}`)}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-
+                                        }
                                         { this.state.task.timing && this.state.task.timing[0] &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate("LISTING_DURATION")}</h3>

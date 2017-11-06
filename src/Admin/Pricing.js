@@ -1,20 +1,19 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
-import EditableEntity from '../Components/EditableEntity';
+import ConfigEdit from '../Components/ConfigEdit';
 
 const defaultConfigsFields = [
     {
-        disabled: true,
+        // disabled: true,
         type: 'bool',
         key: 'PRICING_HOURLY',
         label: 'Hourly pricing'
     }, {
-        disabled: true,
+        // disabled: true,
         type: 'bool',
         key: 'PRICING_CONTRACT',
         label: 'Pricing per listing'
     }, {
-        disabled: true,
+        // disabled: true,
         type: 'bool',
         key: 'PRICING_REQUEST',
         label: 'Pricing on request'
@@ -24,49 +23,19 @@ const defaultConfigsFields = [
 export default class SectionPricing extends React.Component {
     constructor() {
         super();
-        this.state = { 
-            meta: {} 
-        };
+        this.state = {};
     }
 
-    componentDidMount() {
-        apiConfig.appConfig.getItems()
-        .then(meta => {
-            return this.setState({
-                meta
-            });
-        });
-    }
+    componentDidMount() {}
 
     render() {
         return (
             <div className="row">
-                    <div className="col-xs-12">
-                        <h1>Pricing configuration</h1>
-                        { this.state.meta &&
-                            <EditableEntity
-                                showCancelBtn={false}
-                                value={this.state.meta} 
-                                fields={defaultConfigsFields}
-                                onConfirm={
-                                    updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity).map(fieldKey => {
-                                            const mappedItem = {};
-
-                                            mappedItem.fieldKey = fieldKey;
-                                            mappedItem.fieldValue = updatedEntity[fieldKey];
-
-                                            return mappedItem;
-                                        });
-
-                                        apiConfig.appConfig.createItem(updatedData);
-
-                                        this.setState({ meta: updatedEntity })
-                                    }
-                                }
-                            />
-                        }
-                </div>    
+                <ConfigEdit
+                    header={'Pricing'}
+                    desc={'Specify how listings can be priced'}
+                    fields={defaultConfigsFields}
+                />
             </div>);
         }
 }

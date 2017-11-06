@@ -66,7 +66,7 @@ export default class SectionLabels extends React.Component {
                 lang: config.DEFAULT_LANG
             });
 
-            this.getLabels(config.DEFAULT_LANG);
+            this.getLabels(config.DEFAULT_LANG || 'en');
         });
     }
     

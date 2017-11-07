@@ -14,7 +14,7 @@ export const goTo = (url, shouldReload) => {
     // in production env. we want the admin to always access via https
     if (
         typeof TENANT_ID !== 'undefined'
-        && location.pathname.indexOf('admin') > -1
+        && newUrl.indexOf('admin') > -1
         && location.hostname !== 'localhost'
         && location.hostname.indexOf('viciqloud.com') === -1
         && location.hostname.indexOf('vq-labs.com') === -1) {

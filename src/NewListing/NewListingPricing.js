@@ -99,30 +99,28 @@ export default class NewListingPricing extends React.Component {
                 <hr />
                 <div className="row">
                     <div className="col-xs-12">
-                        { this.state.config &&
+                        { false && this.state.config &&
                             <RadioButtonGroup
-                                valueSelected={this.state.priceType}
+                                checked={this.state.priceType}
                                 value={this.state.priceType}
                                 name="priceTypeButtons" 
                                 onChange={(_, priceType) => this.handlePriceChange(null, priceType)} 
                                 style={{width: '100%'}}
                                 inputStyle={{width: '100%'}}
                             >       
-                                { this.state.config.PRICING_HOURLY === "1" &&
                                     <RadioButton
                                         value={PRICING_MODELS.HOURLY}
                                         label={translate("PRICING_MODEL_HOURLY")}
                                     />
-                                }
                             
-                                { this.state.config.PRICING_CONTRACT === "1" &&
+                                { false && this.state.config.PRICING_CONTRACT === "1" &&
                                     <RadioButton
                                         value={PRICING_MODELS.TOTAL}
                                         label={translate("PRICING_MODEL_TOTAL")}
                                     />
                                 }
                             
-                                { this.state.config.PRICING_REQUEST === "1" &&
+                                { false && this.state.config.PRICING_REQUEST === "1" &&
                                     <RadioButton
                                         value={PRICING_MODELS.REQUEST_QUOTE}
                                         label={translate("PRICING_MODEL_REQUEST_QUOTE")}
@@ -142,8 +140,9 @@ export default class NewListingPricing extends React.Component {
                                 {displayPrice(this.state.price, this.state.currency, this.state.priceType)}
                             </h2>
                             <Slider
-                                min={0}
+                                min={this.state.minPrice}
                                 max={10000}
+                                step={500}
                                 value={this.state.price}
                                 onChange={(ev, price) => this.handlePriceChange(price)}
                             />

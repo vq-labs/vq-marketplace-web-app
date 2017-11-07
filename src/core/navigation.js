@@ -12,16 +12,15 @@ export const goTo = (url, shouldReload) => {
     const oldUrl = location.pathname;
     
     // in production env. we want the admin to always access via https
-    if (typeof TENANT_ID !== 'undefined' && location.pathname.indexOf('admin') > -1 && location.hostname !== 'localhost') {
-        // Development env.
-        if (location.hostname.indexOf('viciqloud.com') > -1) {
-            // eslint-disable-next-line
-            return location.href = `http://${TENANT_ID}.viciqloud.com/admin`;
-        }
-
+    if (
+        typeof TENANT_ID !== 'undefined'
+        && location.pathname.indexOf('admin') > -1
+        && location.hostname !== 'localhost'
+        && location.hostname.indexOf('viciqloud.com') === -1
+        && location.hostname.indexOf('vq-labs.com') === -1) {
         // Production env. Note the https protocol.
         // eslint-disable-next-line
-        return location.href = `https://${TENANT_ID}.vq-labs.com/admin`;
+        return location.href = `https://${TENANT_ID}.vq-labs.com/app/admin`;
     }
 
     if (typeof shouldReload === 'function') {

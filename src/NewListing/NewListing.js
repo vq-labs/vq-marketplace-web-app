@@ -175,37 +175,15 @@ export default class NewListing extends Component {
                 apiCategory
                 .getItems()
                 .then(listingCategories => {
-                    let priceType = 0;
                     const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
-                    const pricingConfig = {
-                        hourly: Boolean(Number(meta.PRICING_HOURLY)),
-                        contract: Boolean(Number(meta.PRICING_CONTRACT)),
-                        request: Boolean(Number(meta.PRICING_REQUEST))
-                    };
-
-                    if (pricingConfig.hourly) {
-                        priceType = PRICING_MODELS.HOURLY;
-                    }
-
-                    if (pricingConfig.contract) {
-                        priceType = PRICING_MODELS.TOTAL;
-                    }
-
-                    if (pricingConfig.request) {
-                        priceType = PRICING_MODELS.REQUEST_QUOTE;
-                    }
-
                     const task = this.state.task;
                     
-                    task.priceType = priceType;
                     task.currency = currency;
 
                     this.setState({
                         appConfig: meta,
                         ready: true,
                         task,
-                        priceType,
-                        pricingConfig,
                         currency
                     });
                     
@@ -230,9 +208,9 @@ export default class NewListing extends Component {
 
     handlePricingChange (priceType, priceInCents) {
         const task = this.state.task;
-
-        task.priceType = Number(priceType);
-        task.price = Number(priceInCents);
+        
+        task.priceType = priceType;
+        task.price = priceInCents;
 
         this.setState({
             task 
@@ -330,11 +308,10 @@ export default class NewListing extends Component {
                         <div className="col-xs-12 col-sm-8 col-md-6">
                             { this.state.ready && this.state.step === LISTING_VIEWS.PRICING &&
                                 <NewListingPricing
-                                    pricingConfig={this.state.pricingConfig}
                                     currency={this.state.currency}
                                     minPrice={this.state.minPrice}
                                     price={this.state.task.price}
-                                    priceType={this.state.priceType}
+                                    priceType={this.state.task.priceType}
                                     onPricingChange={
                                         pricing => this.handlePricingChange(pricing.priceType, pricing.price)
                                     } 

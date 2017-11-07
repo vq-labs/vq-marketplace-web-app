@@ -3,39 +3,63 @@ import * as apiConfig from '../api/config';
 import EditableEntity from '../Components/EditableEntity';
 import { getLang } from '../core/i18n';
 
+const async = require("async");
+
 export default class LabelEdit extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
+
         this.state = { 
-            labels: {}
+            labels: props.labels || null,
+            fields: props.fields
         };
     }
 
-    componentDidMount() {
-        apiConfig
-            .appLabel
-            .getItems({
-                lang: getLang()
-            }, {
-                returnRaw: false
-            })
-            .then(labels => {
-                const labelsObj = {};
-                const propKeys = this.props.fields.map(_ => _.key);
-            
-                labels
-                .filter(labelItem => {
-                    return propKeys.indexOf(labelItem.labelKey) > -1;
-                })
-                .forEach(labelItem => {
-                    labelsObj[labelItem.labelKey] = labelItem.labelValue;
-                });
+    updateLabelsObjFromLabels(labels) {
+        const propKeys = this.props.fields.map(_ => _.key);
+        const labelsObj = {};
 
-                return this.setState({
-                    labels,
-                    labelsObj
-                });
-            });
+        labels
+        .filter(labelItem => {
+            return propKeys.indexOf(labelItem.labelKey) > -1;
+        })
+        .forEach(labelItem => {
+            labelsObj[labelItem.labelKey] = labelItem.labelValue;
+        });
+
+        return this.setState({
+            labelsObj
+        });
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            fields: nextProps.fields
+        })
+    }
+
+    componentDidMount() {
+        async.waterfall([
+            cb => {
+                const labels = this.props.labels;
+
+                if (labels) {
+                    return cb(null, labels);
+                }
+
+                apiConfig
+                .appLabel
+                .getItems({
+                    lang: getLang()
+                }, {
+                    returnRaw: false
+                })
+                .then(labels => {
+                    cb(null, labels);
+                }, cb);
+            },
+            (labels, cb) => this.updateLabelsObjFromLabels(labels)
+        ])
     }
 
     render() {
@@ -50,7 +74,7 @@ export default class LabelEdit extends React.Component {
                                 saveLabel="Save"
                                 showCancelBtn={false}
                                 value={this.state.labelsObj}
-                                fields={this.props.fields}
+                                fields={this.state.fields}
                                 onConfirm={
                                     updatedEntity => {
                                         const updatedData = Object.keys(updatedEntity)
@@ -68,11 +92,7 @@ export default class LabelEdit extends React.Component {
                                             .appLabel
                                             .createItem(updatedData);
 
-                                        this.setState({
-                                            labels: updatedEntity
-                                        });
-
-                                        this.props.onContinue();
+                                        this.props.onContinue && this.props.onContinue();
                                     }
                                 }
                             />

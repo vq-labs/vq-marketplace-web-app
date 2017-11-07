@@ -78,7 +78,6 @@ export default class TaskEdit extends Component {
                     apiCategory
                     .getItems()
                     .then(listingCategories => {
-                        debugger;
                         const category = listingCategories
                             .filter(
                                 _ => _.code === rTask.categories[0].code

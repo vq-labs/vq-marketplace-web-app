@@ -34,14 +34,9 @@ export default class EditableEntity extends Component {
             updatedEntity[_.key] = '';
         });
 
-        const groupedFields = props.groupBy ?
-            _.groupBy(props.fields, props.groupBy) :
-            { '': props.fields }
-
         this.state = {
             canSave: props.canSave,
             showCancelBtn: props.showCancelBtn,
-            groupedFields,
             isLoading: false,
             fields: props.fields,
             updatedEntity,
@@ -63,14 +58,8 @@ export default class EditableEntity extends Component {
     componentWillReceiveProps (nextProps) {
         const updatedEntity = _.clone(nextProps.value) || {};
 
-        this.state.fields
-        .forEach(_ => {
-            if (_.type === 'bool') {
-                updatedEntity[_.key] = updatedEntity[_.key] === true || updatedEntity[_.key] === '1';
-            }
-        });
-
         this.setState({
+            fields: nextProps.fields,
             canSave: nextProps.canSave,
             isLoading: !nextProps.value,
             updatedEntity
@@ -122,41 +111,15 @@ export default class EditableEntity extends Component {
                 }
                 { !this.state.isLoading &&
                             <div className="col-xs-12">
-                                {this.props.enableKeySearch &&
-                                    <div className="col-xs-12">
-                                        <TextField
-                                            onChange={(ev, value) => {
-                                                this.setState({
-                                                    labelKeySearchValue: value.toUpperCase()
-                                                });
-                                            }}
-                                            value={this.state.labelKeySearchValue}
-                                            floatingLabelText="Search"
-                                        />
-                                    </div>
-                                }
+                                
                                 <div className="col-xs-12 col-sm-8">
-                                    { Object.keys(this.state.groupedFields)
-                                    .map((groupKey) =>
-                                        <div className="row">
-                                        <h3>{groupKey}</h3>
-                                        {this.state.groupedFields[groupKey]
-                                        .filter(_ => {
-                                            if (!this.props.enableKeySearch) {
-                                                return true;
-                                            }
-
-                                            if (!this.state.labelKeySearchValue) {
-                                                return true;
-                                            }
-
-                                            return _.key.toUpperCase().indexOf(this.state.labelKeySearchValue) > -1;
-                                        })
+                                    {   this.state.fields
                                         .map((field, index) =>
-                                            <div className="col-xs-12" key={index}>
+                                            <div className="col-xs-12" key={field.key}>
                                                     { field.type === 'color' &&
                                                         <div>
                                                         <TextField
+                                                            floatingLabelFixed={true}
                                                             floatingLabelText={field.label}
                                                             disabled={true}
                                                             value={this.state.updatedEntity[field.key]}
@@ -298,8 +261,7 @@ export default class EditableEntity extends Component {
                                                     }
                                             </div>
                                         )}
-                                        </div>
-                                    )}
+                                    </div>
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>
                                             { this.state.config &&
@@ -314,10 +276,9 @@ export default class EditableEntity extends Component {
                                             }
                                             { this.state.config &&
                                                 <RaisedButton
-                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    primary={true}
                                                     disabled={!this.props.enableSkip ? !this.state.dirty : false}
-                                                    labelStyle={{color: 'white '}}
-                                                    style={{float: 'right'}}
+                                                    style={{ float: 'right' }}
                                                     label={this.props.saveLabel || translate("SAVE")}
                                                     onTouchTap={ this.handleUpdate }
                                                 />
@@ -325,7 +286,6 @@ export default class EditableEntity extends Component {
                                         </div>
                                     </div>  
                                 </div>
-                            </div>
                     }
                 </div>
             );

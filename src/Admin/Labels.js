@@ -1,7 +1,7 @@
 import React from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import EditableEntity from '../Components/EditableEntity';
+import TextField from 'material-ui/TextField';
 import Loader from "../Components/Loader";
 import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
@@ -9,11 +9,12 @@ import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
 import LANG_CODES from '../constants/LANG_CODES.js';
 import LABELS from '../constants/LABELS.js';
+import LabelEdit from '../Components/LabelEdit';
 
 const _ = require('underscore');
 
 const labels = Object.keys(LABELS)
-    .map(labelKey => { 
+    .map(labelKey => {
         return {
             type: 'string',
             key: labelKey,
@@ -21,6 +22,8 @@ const labels = Object.keys(LABELS)
             group: LABELS[labelKey]
         };
     });
+
+const labelGroups = _.groupBy(labels, 'group');
 
 export default class SectionLabels extends React.Component {
     constructor(props) {
@@ -37,25 +40,17 @@ export default class SectionLabels extends React.Component {
                 isLoading: true
             });
 
-            apiConfig.appLabel
+            apiConfig
+            .appLabel
             .getItems({
                 lang: lang || this.state.lang
             }, {
                 returnRaw: false
             })
-            .then(rLabels => {
-                const labelsObj = {};
-                
-                rLabels
-                .forEach(labelItem => {
-                    labelsObj[labelItem.labelKey] = labelItem.labelValue;
-                })
-
-                this.setState({
-                    isLoading: false,
-                    labelsObj
-                });
-            })
+            .then(labels => this.setState({
+                isLoading: false,
+                labels
+            }))
         };
     }
 
@@ -66,7 +61,7 @@ export default class SectionLabels extends React.Component {
                 lang: config.DEFAULT_LANG
             });
 
-            this.getLabels(config.DEFAULT_LANG);
+            this.getLabels(config.DEFAULT_LANG || 'en');
         });
     }
     
@@ -96,47 +91,65 @@ export default class SectionLabels extends React.Component {
                             { false && <MenuItem value={'pl'} primaryText="Polski" /> }
                         </DropDownMenu>
                     </div>
+                    <div className="col-xs-12">
+                            <TextField
+                                onChange={(ev, value) => {
+                                    this.setState({
+                                        labelKeySearch: value.toUpperCase()
+                                    });
+                                }}
+                                value={this.state.labelKeySearch}
+                                floatingLabelText="Search key"
+                            />
+                            <TextField
+                                style={{ marginLeft: 30 }}
+                                onChange={(ev, value) => {
+                                    this.setState({
+                                        labelValueSearch: value.toUpperCase()
+                                    });
+                                }}
+                                value={this.state.labelValueSearch}
+                                floatingLabelText="Search value"
+                            />
+                    </div>
                 </div>
 
                 { this.state.isLoading && <Loader isLoading={true}/> }
 
-                { !this.state.isLoading &&
-                    <EditableEntity
-                        enableKeySearch={true}
-                        groupBy="group"
-                        showCancelBtn={false}
-                        value={JSON.parse(JSON.stringify(this.state.labelsObj))}
-                        fields={labels}
-                        onConfirm={
-                            updatedEntity => {
-                                const labelsObj = this.state.labelsObj;
-                                const updatedData = Object.keys(updatedEntity)
-                                    .filter(labelKey => {
-                                        return labelsObj[labelKey] !== updatedEntity[labelKey];
-                                    })
-                                    .map(labelKey => {
-                                        const mappedItem = {};
-
-                                        mappedItem.lang = this.state.lang;
-                                        mappedItem.labelKey = labelKey;
-                                        mappedItem.labelValue = updatedEntity[labelKey];
-                            
-                                        labelsObj[labelKey] = updatedEntity[labelKey];
-
-                                        return mappedItem;
-                                    });
-
-                                apiConfig
-                                .appLabel
-                                .createItem(updatedData);
-
-                                this.setState({
-                                    labelsObj
-                                });
+                { !this.state.isLoading && Object.keys(labelGroups)
+                .map(labelGroupKey => {
+                    const labelGroup = labelGroups[labelGroupKey];
+                    
+                    const allowedLabelKeys = this.state.labels
+                        .filter(_ => {
+                            if (!_.labelValue) {
+                                return false;
                             }
-                        }
+
+                            return _.labelValue.toUpperCase().indexOf(this.state.labelValueSearch) > -1;
+                        })
+                        .map(_ => _.labelKey);
+                
+
+                    let filteredLabelGroup = !this.state.labelKeySearch ?
+                        labelGroup :
+                        labelGroup.filter(_ => {
+                            return _.key.indexOf(this.state.labelKeySearch) > -1;
+                        });
+
+                    filteredLabelGroup = !this.state.labelValueSearch ?
+                        filteredLabelGroup :
+                        filteredLabelGroup.filter(_ => {
+                            return allowedLabelKeys.indexOf(_.key) > -1
+                        });
+                    
+                    return !!filteredLabelGroup.length && <LabelEdit
+                        header={labelGroupKey}
+                        fields={filteredLabelGroup}
+                        labels={this.state.labels}
+                        onContinue={() => {}}
                     />
-                }
+                })}
             </div>
       );
     }

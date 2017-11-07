@@ -10,21 +10,37 @@ export const setBase = base => BASE = `/${base}`;
 export const goTo = (url, shouldReload) => {
     const newUrl = `${BASE}${url}`;
     const oldUrl = location.pathname;
+    
+    // in production env. we want the admin to always access via https
+    if (typeof TENANT_ID !== 'undefined' && location.pathname.indexOf('admin') > -1) {
+        if (location.hostname !== 'localhost') {
+            // development env.
+            if (location.hostname.indexOf('viciqloud.com') > -1) {
+                // eslint-disable-next-line
+                return location.href = `http://${TENANT_ID}.viciqloud.com/admin`;
+            }
 
-    history.push(`${BASE}${url}`);
-    browserHistory.push(`${BASE}${url}`);
+            // production env.
+            if (location.hostname.indexOf('vq-labs.com') > -1) {
+                // eslint-disable-next-line
+                return location.href = `https://${TENANT_ID}.vq-labs.com/admin`;
+            }
+        }
+    }
 
     if (typeof shouldReload === 'function') {
         if (shouldReload(newUrl, oldUrl)) {
-            return location.reload();
+            return location.href=`${location.origin}${newUrl}`;
         }
 
-        return;
+        return browserHistory.push(`${newUrl}`);
     }
 
     if (shouldReload) {
-        return location.reload();
+        return location.href=`${location.origin}${newUrl}`;
     }
+
+    browserHistory.push(`${newUrl}`);
 };
 
 export const goStartPage = () => {

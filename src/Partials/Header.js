@@ -30,6 +30,7 @@ class Header extends Component {
     super();
 
     this.state = {
+      shouldDisplay: location.pathname.indexOf("admin") == -1,
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
@@ -90,9 +91,8 @@ class Header extends Component {
               { !this.state.shouldDisplay &&
                 <ToolbarGroup>
                   <RaisedButton
-                    onTouchTap={() => goTo("/")}
-                    backgroundColor={"#000639"}
-                    labelColor={"white"}
+                    primary={true}
+                    onTouchTap={() => goTo("/", true)}
                     label={'Go to marketplace'}
                   />
                 </ToolbarGroup>
@@ -199,7 +199,7 @@ class Header extends Component {
                     
                         { coreAuth.isAdmin() &&
                           <MenuItem onClick={
-                            () => goTo('/admin/overview')
+                            () => goTo('/admin/overview', true)
                           } primaryText="Admin dashboard" /> 
                         }
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />

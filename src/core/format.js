@@ -4,9 +4,9 @@ const CENT_CURRENCIES = [ 'PLN', 'EUR', 'USD' ];
 const NOCENT_CURRENCIES = [ 'HUF' ];
 
 const CURRENCY_LABELS = {
-    PLN: 'PLN',
-    EUR: 'EUR',
-    USD: 'USD',
+    PLN: 'zł',
+    EUR: '€',
+    USD: '$',
     HUF: 'Ft',
 };
 

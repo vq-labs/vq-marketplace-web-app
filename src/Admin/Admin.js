@@ -8,6 +8,8 @@ import SectionBasics from './Basics';
 import SectionSEO from './SEO';
 import SectionCustomPages from './CustomPages';
 import SectionDesign from './Design';
+import SectionCustomScripts from './CustomScripts';
+import SectionLandingPage from './LandingPage';
 import SectionUsers from './Users';
 import SectionAnalytics from './Analytics';
 import SectionListingFilters from './Filters';
@@ -47,7 +49,7 @@ export default class AdminPage extends React.Component {
     componentDidMount() {
         getUserAsync(user => {
             if (!user) {
-                return goTo('/');
+                return goTo('?redirectTo=/admin');
             }
 
             if (!user.isAdmin) {
@@ -83,6 +85,8 @@ export default class AdminPage extends React.Component {
                         <MenuItem onClick={ () => this.goToSection('design') }>Design</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('seo') }>SEO</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('analytics') }>Analytics</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('landing-page') }>(Beta) Landing Page</MenuItem>
+                        <MenuItem onClick={ () => this.goToSection('custom-scripts') }>(Beta) Custom scripts</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('custom-pages') }>Custom pages</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('labels') }>Labels (i18n)</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('listing') }>Listing fields</MenuItem>
@@ -141,10 +145,12 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'overview' && <SectionOverview /> } 
                                         { this.state.section === 'users' && <SectionUsers /> }
                                         { this.state.section === 'listings' && <SectionListings /> }
+                                        { this.state.section === 'landing-page' && <SectionLandingPage /> }
                                         { this.state.section === 'analytics' && <SectionAnalytics /> }
                                         { this.state.section === 'orders' && <SectionOrders /> }
                                         { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }
+                                        { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
                                         { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                         { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }

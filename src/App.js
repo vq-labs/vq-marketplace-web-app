@@ -3,6 +3,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 // Library components
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 // Custom components
 import ChangePasswordPage from './Pages/ChangePasswordPage';  
@@ -54,6 +55,8 @@ import * as apiConfig from './api/config';
 
 setBase('app');
 
+let muiTheme;
+
 class App extends Component {
   constructor (props) {
     super(props);
@@ -88,7 +91,24 @@ class App extends Component {
     })
     .then(config => {
         coreConfig.set(config);
-        
+       
+        // This replaces the textColor value on the palette
+        // and then update the keys for each component that depends on it.
+        // More on Colors: http://www.material-ui.com/#/customization/colors
+        if (location.pathname.indexOf('admin') > -1) {
+          muiTheme = getMuiTheme({
+            palette: {
+              primary1Color: "#000639"
+            }
+          });
+        } else {
+          muiTheme = getMuiTheme({
+            palette: {
+              primary1Color: config.COLOR_PRIMARY  || "#000639"
+            }
+          });
+        }
+
         const params = coreUtil.getParams(location.search);
 
         if (params.token) {
@@ -137,10 +157,11 @@ class App extends Component {
       });
     });
   }
-
+        
   render() {
       return (
-        this.state.ready && this.state.metaReady && <MuiThemeProvider>
+        this.state.ready && this.state.metaReady &&
+        <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <Header
               appName={this.state.meta.NAME}

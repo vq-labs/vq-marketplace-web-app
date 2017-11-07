@@ -22,7 +22,7 @@ import SectionListing from './Listing';
 import SectionPosts from './Posts';
 import SectionSubscriptionPlan from './SubscriptionPlan';
 
-import { goTo } from '../core/navigation';
+import { goTo, convertToAppPath } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 
 export default class AdminPage extends React.Component {
@@ -49,7 +49,7 @@ export default class AdminPage extends React.Component {
     componentDidMount() {
         getUserAsync(user => {
             if (!user) {
-                return goTo('?redirectTo=/admin');
+                return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
             }
 
             if (!user.isAdmin) {

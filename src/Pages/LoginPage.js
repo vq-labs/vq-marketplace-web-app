@@ -27,7 +27,7 @@ export default class LoginPage extends Component {
 
                 setTimeout(() => {
                   if (this.state.redirectTo) {
-                    return goTo(this.state.redirectTo);
+                    return goTo(this.state.redirectTo, this.state.redirectTo.indexOf("admin") > -1);
                   }
 
                   switch (Number(user.userType)) {

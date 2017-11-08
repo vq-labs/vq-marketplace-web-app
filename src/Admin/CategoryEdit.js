@@ -88,7 +88,7 @@ export default class CategoryEdit extends Component {
                                         value={this.state.obj.code}
                                         style={{width: '100%'}}
                                         inputStyle={{width: '100%'}}
-                                        floatingLabelText="Kategorietitel"
+                                        floatingLabelText="Category title"
                                     />
                                 </div>
                                 <div className="col-xs-12">
@@ -117,7 +117,7 @@ export default class CategoryEdit extends Component {
                                 <div className="col-xs-12">
                                     <FlatButton
                                         style={ { float: 'left' } }
-                                        label = 'Abbrechen' 
+                                        label = 'Cancel' 
                                         primary = { true }
                                         disabled = { false }
                                         onTouchTap = { () => coreNavigation.goBack() }
@@ -125,7 +125,7 @@ export default class CategoryEdit extends Component {
                                 
                                     <RaisedButton
                                         style={{ float: 'right' }}
-                                        label = 'Übernehmen'
+                                        label = 'Confirm'
                                         primary = { true }
                                         disabled={false}
                                         onTouchTap={this.handleUpdate}

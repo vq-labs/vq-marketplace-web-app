@@ -58,7 +58,6 @@ export default class SectionFilters extends React.Component {
                     </div>
                     <div className="col-xs-12">
                         <h3>Location filter</h3>
-                        { this.state.ready &&
                             <EditableEntity
                                 showCancelBtn={false}
                                 value={this.state.config} 
@@ -84,7 +83,6 @@ export default class SectionFilters extends React.Component {
                                     }
                                 }
                             />
-                        }
                 </div>    
             </div>
         );

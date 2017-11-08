@@ -35,6 +35,7 @@ export default class SectionCategories extends React.Component {
         const EditableCategory = (values, index) =>
                 <div className="col-xs-12">
                     <EditableEntity
+                        canSave={true}
                         fields={[
                             {   
                                 key: 'code',
@@ -109,13 +110,11 @@ export default class SectionCategories extends React.Component {
              <div className="col-xs-12">
                 <h1>Listing categories</h1>
 
-                { this.state.categoryInEdit &&
-                    <div className="row">
-                        <div className="col-xs-12">
-                            { EditableCategory(this.state.categoryInEdit, this.state.categoryIndexInEdit) }
-                        </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        { this.state.categoryInEdit && this.state.categoryInEdit.code && EditableCategory(this.state.categoryInEdit, this.state.categoryIndexInEdit) }
                     </div>
-                }
+                </div>
 
                 { !this.state.categoryInEdit && this.state.categories && this.state.categories
                     .map((category, index) =>

@@ -38,9 +38,9 @@ export default class EditableEntity extends Component {
                 return;
             }
 
-            updatedEntity[field.key] = '';
+            updatedEntity[field.key] = updatedEntity[field.key] || '';
         });
-
+        
         this.state = {
             canSave: props.canSave,
             showCancelBtn: props.showCancelBtn,
@@ -49,7 +49,7 @@ export default class EditableEntity extends Component {
             updatedEntity,
             dirty: false
         };
-
+ 
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
     }

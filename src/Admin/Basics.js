@@ -23,6 +23,19 @@ const basicFields = [
         key: 'LANGUAGES',
         label: 'Supported languages',
         selection: LANGUAGES
+    },
+    {
+        disabled: true,
+        type: 'select',
+        multiple: true,
+        key: 'PRICING_DEFAULT_CURRENCY',
+        label: 'Default currency',
+        selection: [
+            { value: 'EUR', label: 'EUR' },
+            { value: 'HUF', label: 'HUF' },
+            { value: 'PLN', label: 'PLN' },
+            { value: 'USD', label: 'USD' }
+        ]
     }
 ];
 

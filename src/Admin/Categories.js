@@ -134,24 +134,29 @@ export default class SectionCategories extends React.Component {
                                     categoryInEdit: category
                                 });
                             }}/>
-                            <FlatButton label="Delete" onTouchTap={() => {
-                                openConfirmDialog({
-                                    headerLabel: `Delete category "${category.code}"`,
-                                    confirmationLabel: `Are you sure?`,
-                                    okLabel: 'Confirm',
-                                    cancelLabel: 'Cancel'
-                                }, () => {
-                                    this.state.categories.splice(index, 1);
+                            { false &&
+                                <FlatButton
+                                    label="Delete"
+                                    onTouchTap={() => {
+                                        openConfirmDialog({
+                                            headerLabel: `Delete category "${category.code}"`,
+                                            confirmationLabel: `Are you sure?`,
+                                            okLabel: 'Confirm',
+                                            cancelLabel: 'Cancel'
+                                        }, () => {
+                                            this.state.categories.splice(index, 1);
 
-                                    apiConfig.categories
-                                    .deleteItem(category.id)
-                                    .then(() => {
-                                        this.setState({ 
-                                            categories: this.state.categories
+                                            apiConfig.categories
+                                            .deleteItem(category.id)
+                                            .then(() => {
+                                                this.setState({ 
+                                                    categories: this.state.categories
+                                                });
+                                            });
                                         });
-                                    });
-                                });
-                            }} />
+                                    }}
+                                />
+                            }
                         </CardActions>
                     </Card>
                 </div>

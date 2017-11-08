@@ -28,6 +28,7 @@ export default class LabelEdit extends React.Component {
         });
 
         return this.setState({
+            ready: true,
             labelsObj
         });
     }
@@ -69,7 +70,7 @@ export default class LabelEdit extends React.Component {
                     <p className="text-muted">{this.props.desc}</p>
                     <hr />
                     <div className="col-xs-12">
-                        { this.state.labels &&
+                
                             <EditableEntity
                                 saveLabel="Save"
                                 showCancelBtn={false}
@@ -77,12 +78,14 @@ export default class LabelEdit extends React.Component {
                                 fields={this.state.fields}
                                 onConfirm={
                                     updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity)
+                                        const updatedData = Object
+                                        .keys(updatedEntity)
                                         .map(labelKey => {
                                             const mappedItem = {};
 
                                             mappedItem.lang = getLang();
                                             mappedItem.labelKey = labelKey;
+
                                             mappedItem.labelValue = updatedEntity[labelKey];
 
                                             return mappedItem;
@@ -96,7 +99,7 @@ export default class LabelEdit extends React.Component {
                                     }
                                 }
                             />
-                        }
+       
                 </div>    
             </div>);
         }

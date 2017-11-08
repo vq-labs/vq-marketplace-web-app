@@ -34,11 +34,27 @@ export default class ConfigEdit extends React.Component {
                                 fields={this.props.fields}
                                 onConfirm={
                                     updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity).map(fieldKey => {
+                                        const updatedData = Object.keys(updatedEntity)
+                                        .filter(fieldKey => {
+                                            return this.props.fields.find(_ => _.key === fieldKey)
+                                        })
+                                        .map(fieldKey => {
+                                            const field = this.props.fields.find(_ => _.key === fieldKey);
                                             const mappedItem = {};
 
                                             mappedItem.fieldKey = fieldKey;
                                             mappedItem.fieldValue = updatedEntity[fieldKey];
+
+                                            if (field.type === 'select') {
+                                                mappedItem.fieldValue = typeof updatedEntity[fieldKey] === 'string' ?
+                                                    updatedEntity[fieldKey] :
+                                                    updatedEntity[fieldKey].join(',');
+                                            }
+
+                                            if (field.type === 'bool') {
+                                                mappedItem.fieldValue =
+                                                (updatedEntity[fieldKey] === "1" || updatedEntity[fieldKey] === true)
+                                            }
 
                                             return mappedItem;
                                         });

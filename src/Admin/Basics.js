@@ -1,6 +1,7 @@
 import React from 'react';
 import ConfigEdit from '../Components/ConfigEdit';
 import LabelEdit from '../Components/LabelEdit';
+import LANGUAGES from '../constants/LANGUAGES';
 
 const basicFields = [
     {
@@ -8,6 +9,20 @@ const basicFields = [
         key: 'NAME',
         label: 'Marketplace name',
         explanation: 'It is used on the landing page in the footer and in the emails as the sender name.'
+    },
+    {
+        type: 'select',
+        multiple: false,
+        key: 'DEFAULT_LANG',
+        label: 'Default marketplace language',
+        selection: LANGUAGES
+    },
+    {
+        type: 'select',
+        multiple: true,
+        key: 'LANGUAGES',
+        label: 'Supported languages',
+        selection: LANGUAGES
     }
 ];
 

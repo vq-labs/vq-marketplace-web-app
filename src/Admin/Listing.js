@@ -31,6 +31,7 @@ const browsingFields = [
 
 const newListingFields = [
     {
+        disabled: true,
         type: 'bool',
         key: 'LISTING_TIMING_MODE',
         label: 'Should the listing be restricted to predefined days?',
@@ -45,12 +46,13 @@ export default class SectionListing extends React.Component {
     }
 
     componentDidMount() {}
+
     render() {
         return (
             <div>
                 <ConfigEdit
-                    header={'Browse'}
-                    desc={'Configure your browsing page.'}
+                    header={'"Browse" Page'}
+                    desc={'Configure your browsing page. Choose which browsing views are available to the user.'}
                     fields={browsingFields}
                 />
 

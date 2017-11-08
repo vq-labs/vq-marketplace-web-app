@@ -97,11 +97,12 @@ export default class AdminPage extends React.Component {
                         <h4>Content</h4>
                         <MenuItem onClick={ () => this.goToSection('posts') }>Content</MenuItem>
 
-
-                        <h4>Subscription</h4>
-                        <MenuItem onClick={ () => this.goToSection('subscription-plan') }>
-                            Plan
-                        </MenuItem>
+                        { false && <h4>Subscription</h4> }
+                        { false &&
+                            <MenuItem onClick={ () => this.goToSection('subscription-plan') }>
+                                Plan
+                            </MenuItem>
+                        }
 
                         <h4>Support</h4>
                         <a className="vq-link" href="https://vqlabs.freshdesk.com/support/tickets/new" target="_blank">

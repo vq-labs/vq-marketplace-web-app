@@ -32,6 +32,7 @@ export default class SectionLabels extends React.Component {
         this.state = {
             lang: getParams(location.search).lang,
             labels: [],
+            languages: [],
             labelsObj: {}
         };
 
@@ -58,7 +59,9 @@ export default class SectionLabels extends React.Component {
         getConfigAsync(config => {
             this.setState({
                 config,
-                lang: config.DEFAULT_LANG
+                defaultLang: config.DEFAULT_LANG,
+                lang: config.DEFAULT_LANG,
+                languages: config.LANGUAGES ? config.LANGUAGES.split(',') : []
             });
 
             this.getLabels(config.DEFAULT_LANG || 'en');
@@ -83,12 +86,10 @@ export default class SectionLabels extends React.Component {
                             
                             this.getLabels(value);
                         }}>
-                            <MenuItem value={'en'} primaryText={LANG_CODES['en']} />
-                            <MenuItem value={'hu'} primaryText={LANG_CODES['hu']} />
-                            { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
-                            { false && <MenuItem value={'en'} primaryText="English" /> }
-                            { false && <MenuItem value={'de'} primaryText="Deutsch" /> }
-                            { false && <MenuItem value={'pl'} primaryText="Polski" /> }
+                            <MenuItem value={this.state.defaultLang} primaryText={LANG_CODES[this.state.defaultLang]} />
+                            { this.state.languages.map(language => 
+                                <MenuItem value={language} primaryText={LANG_CODES[language]} />
+                            )}
                         </DropDownMenu>
                     </div>
                     <div className="col-xs-12">

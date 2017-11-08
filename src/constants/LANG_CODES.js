@@ -1,8 +1,9 @@
-const LANG_CODES = {
-    de: "Deutsch",
-    en: "English",
-    pl: "Polski",
-    hu: "Magyar"
- };
+import LANGUAGES from './LANGUAGES.js';
 
- export default LANG_CODES;
+const LANG_CODES = {};
+
+LANGUAGES.forEach(_ => {
+    LANG_CODES[_.value] = _.label;
+});
+
+export default LANG_CODES;

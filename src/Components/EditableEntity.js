@@ -25,13 +25,20 @@ export default class EditableEntity extends Component {
         const updatedEntity = _.clone(props.value) || {};
 
         props.fields.forEach(field => {
-            if (_.type === 'bool') {
-                updatedEntity[_.key] = updatedEntity[_.key] === true || updatedEntity[_.key] === '1';
+            if (field.type === 'bool') {
+                updatedEntity[field.key] = updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
 
                 return;
             }
 
-            updatedEntity[_.key] = '';
+            if (field.type === 'select' && field.multiple) {
+                updatedEntity[field.key] = updatedEntity[field.key] ?
+                    updatedEntity[field.key].split(",") : [];
+
+                return;
+            }
+
+            updatedEntity[field.key] = '';
         });
 
         this.state = {
@@ -58,6 +65,24 @@ export default class EditableEntity extends Component {
     componentWillReceiveProps (nextProps) {
         const updatedEntity = _.clone(nextProps.value) || {};
 
+        this.props.fields.forEach(field => {
+            if (field.type === 'bool') {
+                updatedEntity[field.key] = updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
+
+                return;
+            }
+
+            if (field.type === 'select' && field.multiple) {
+                if (typeof updatedEntity[field.key] === 'string') {
+                    return updatedEntity[field.key].split(',');
+                }
+
+                updatedEntity[field.key] = updatedEntity[field.key] || [];
+
+                return;
+            }
+        });
+
         this.setState({
             fields: nextProps.fields,
             canSave: nextProps.canSave,
@@ -65,8 +90,8 @@ export default class EditableEntity extends Component {
             updatedEntity
         });
     } 
-    
-    updateField(fieldKey, fieldValue, transform) {
+  
+    updateField(fieldKey, fieldValue, transform, isArray) {
         const updatedEntity = this.state.updatedEntity;
         
         updatedEntity[fieldKey] = transform ? transform(fieldValue) : fieldValue;
@@ -89,6 +114,10 @@ export default class EditableEntity extends Component {
         return (_, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
     }
     
+    handleFieldSelections (fieldKey, transform) {
+        return (_, _2, values) => this.updateField(fieldKey, values.filter(_ => _.length === 2), transform);
+    }
+
     handleFieldSelection (fieldKey, transform) {
         return (_, _2, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
     }
@@ -162,10 +191,34 @@ export default class EditableEntity extends Component {
                                                             }
                                                         </div>
                                                     }
-                                                    { field.type === 'select' &&
+                                                    { field.type === 'select' && field.multiple &&
                                                     <SelectField
                                                         style={{width: '100%'}}
                                                         disabled={field.disabled}
+                                                        multiple={field.multiple}
+                                                        floatingLabelText={field.label}
+                                                        value={this.state.updatedEntity[field.key]}
+                                                        onChange={this.handleFieldSelections(field.key)}
+                                                    >
+                                                        {field.selection.map((selectionItem, index) =>
+                                                            <MenuItem
+                                                                key={index}
+                                                                insetChildren={true}
+                                                                value={selectionItem.value}
+                                                                checked={
+                                                                    this.state.updatedEntity[field.key] &&
+                                                                    this.state.updatedEntity[field.key].indexOf(selectionItem.value) > -1}
+                                                                primaryText={selectionItem.label}
+                                                            />
+                                                        )}
+                                                    </SelectField>
+                                                    }
+
+                                                    { field.type === 'select' && !field.multiple &&
+                                                    <SelectField
+                                                        style={{width: '100%'}}
+                                                        disabled={field.disabled}
+                                                        multiple={field.multiple}
                                                         floatingLabelText={field.label}
                                                         value={this.state.updatedEntity[field.key]}
                                                         onChange={this.handleFieldSelection(field.key)}
@@ -198,7 +251,9 @@ export default class EditableEntity extends Component {
                                                             <Checkbox
                                                                 disabled={field.disabled}
                                                                 label={field.label}
-                                                                checked={this.state.updatedEntity[field.key]}
+                                                                checked={
+                                                                    this.state.updatedEntity[field.key] === "1" || this.state.updatedEntity[field.key] === true
+                                                                }
                                                                 onCheck={this.handleFieldChange(field.key)}
                                                             />
                                                             

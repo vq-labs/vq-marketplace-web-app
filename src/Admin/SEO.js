@@ -55,7 +55,7 @@ export default class SectionBasics extends React.Component {
                 />
                 <ConfigEdit
                     header={'Social media'}
-                    desc={'Connect your users with your social media channels'}
+                    desc={'Connect your users with your social media channels. Clear the input field if you would like to remove the social media icon.'}
                     fields={socialMediaFields}
                 />
             </div>

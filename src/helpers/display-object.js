@@ -1,12 +1,19 @@
 import React from 'react';
 import DOMPurify from 'dompurify'
+import Moment from 'react-moment';
 
 const displayText = (text, props) => {
     props = props || {};
 
-    return props.type === 'html' ?
-        <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(text)}}></div> :
-        text;
+    if (props.type === 'html') {
+        return <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(text)}}></div>;
+    }
+
+    if (props.type === 'datetime') {
+        return <Moment format={`DD.MM.YYYY, HH:mm`}>{text}</Moment>
+    }
+
+    return text;
 };
 
 const displayObject = (obj, options) => {
@@ -16,6 +23,14 @@ const displayObject = (obj, options) => {
 
     options = options || {};
     options.fields = options.fields || {};
+
+    options.fields.createdAt = {
+        type: 'datetime'
+    };
+
+    options.fields.updatedAt = {
+        type: 'datetime'
+    };
 
     return Object.keys(obj)
         .map(objKey => {

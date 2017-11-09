@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment';
-import { List, ListItem } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
 import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
@@ -16,9 +13,6 @@ import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 import Loader from "../Components/Loader";
 import { openDialog } from '../helpers/open-message-dialog.js';
-
-import REQUEST_STATUS from '../constants/REQUEST_STATUS';
-import * as DEFAULTS from '../constants/DEFAULTS';
 
 /**
  * Dashboard depends on a user type

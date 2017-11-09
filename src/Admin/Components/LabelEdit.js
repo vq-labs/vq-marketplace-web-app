@@ -1,7 +1,7 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
-import EditableEntity from '../Components/EditableEntity';
-import { getLang } from '../core/i18n';
+import * as apiConfig from '../../api/config';
+import EditableEntity from '../../Components/EditableEntity';
+import { getLang } from '../../core/i18n';
 
 const async = require("async");
 
@@ -10,6 +10,7 @@ export default class LabelEdit extends React.Component {
         super();
 
         this.state = { 
+            lang: props.lang || getLang(),
             labels: props.labels || null,
             fields: props.fields
         };
@@ -35,6 +36,7 @@ export default class LabelEdit extends React.Component {
     
     componentWillReceiveProps(nextProps) {
         this.setState({
+            lang: nextProps.lang || getLang(),
             fields: nextProps.fields
         })
     }
@@ -70,36 +72,34 @@ export default class LabelEdit extends React.Component {
                     <p className="text-muted">{this.props.desc}</p>
                     <hr />
                     <div className="col-xs-12">
-                
-                            <EditableEntity
-                                saveLabel="Save"
-                                showCancelBtn={false}
-                                value={this.state.labelsObj}
-                                fields={this.state.fields}
-                                onConfirm={
-                                    updatedEntity => {
-                                        const updatedData = Object
-                                        .keys(updatedEntity)
-                                        .map(labelKey => {
-                                            const mappedItem = {};
+                        <EditableEntity
+                            saveLabel="Save"
+                            showCancelBtn={false}
+                            value={this.state.labelsObj}
+                            fields={this.state.fields}
+                            onConfirm={
+                                updatedEntity => {
+                                    const updatedData = Object
+                                    .keys(updatedEntity)
+                                    .map(labelKey => {
+                                        const mappedItem = {};
 
-                                            mappedItem.lang = getLang();
-                                            mappedItem.labelKey = labelKey;
+                                        mappedItem.lang = this.state.lang;
+                                        mappedItem.labelKey = labelKey;
 
-                                            mappedItem.labelValue = updatedEntity[labelKey];
+                                        mappedItem.labelValue = updatedEntity[labelKey];
 
-                                            return mappedItem;
-                                        });
-                                        
-                                        apiConfig
-                                            .appLabel
-                                            .createItem(updatedData);
+                                        return mappedItem;
+                                    });
+                                    
+                                    apiConfig
+                                        .appLabel
+                                        .createItem(updatedData);
 
-                                        this.props.onContinue && this.props.onContinue();
-                                    }
+                                    this.props.onContinue && this.props.onContinue();
                                 }
-                            />
-       
+                            }
+                        />
                 </div>    
             </div>);
         }

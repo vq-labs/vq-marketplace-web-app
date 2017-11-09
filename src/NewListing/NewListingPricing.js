@@ -1,7 +1,5 @@
 import React from 'react';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
 import Slider from 'material-ui/Slider';
 import { displayPrice } from '../core/format';
 import { getConfigAsync } from '../core/config';

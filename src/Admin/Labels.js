@@ -9,7 +9,7 @@ import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
 import LANG_CODES from '../constants/LANG_CODES.js';
 import LABELS from '../constants/LABELS.js';
-import LabelEdit from '../Components/LabelEdit';
+import LabelEdit from './Components/LabelEdit';
 
 const _ = require('underscore');
 
@@ -145,6 +145,7 @@ export default class SectionLabels extends React.Component {
                         });
                     
                     return !!filteredLabelGroup.length && <LabelEdit
+                        lang={this.state.lang}
                         header={labelGroupKey}
                         fields={filteredLabelGroup}
                         labels={this.state.labels}

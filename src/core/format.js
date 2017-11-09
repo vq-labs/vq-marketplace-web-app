@@ -1,13 +1,16 @@
 import { stripHtml } from './util';
 
-const CENT_CURRENCIES = [ 'PLN', 'EUR', 'USD' ];
-const NOCENT_CURRENCIES = [ 'HUF' ];
+const CENT_CURRENCIES = [
+    'PLN',
+    'EUR',
+    'USD'
+];
 
 const CURRENCY_LABELS = {
     PLN: 'zł',
     EUR: '€',
     USD: '$',
-    HUF: 'Ft',
+    HUF: 'Ft'
 };
 
 const TASK_STATUS = {

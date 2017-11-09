@@ -12,13 +12,11 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
 import ListingHeader from '../Components/ListingHeader';
-import { displayPrice, displayLocation, displayListingDesc }  from '../core/format';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
-import displayTaskTiming from '../helpers/display-task-timing';
 import getUserProperty from '../helpers/get-user-property';
 
 export default class Bookings extends Component {
@@ -242,7 +240,7 @@ export default class Bookings extends Component {
                                                 <Avatar src={order.fromUser.imageUrl || '/images/avatar.png'} />
                                             </IconButton>
                                         </div>
-                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE) && 
+                                        { (order.status === ORDER_STATUS.PENDING || order.status === ORDER_STATUS.MARKED_DONE) && 
                                             <IconButton
                                                 style={{ top: 5 }}
                                                 tooltipPosition="top-center"
@@ -250,7 +248,12 @@ export default class Bookings extends Component {
                                                 <IconCall />
                                             </IconButton>
                                         }
-                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE || order.status == ORDER_STATUS.CLOSED) && 
+                                        {
+                                            (
+                                                order.status === ORDER_STATUS.PENDING ||
+                                                order.status === ORDER_STATUS.MARKED_DONE ||
+                                                order.status === ORDER_STATUS.CLOSED
+                                            ) && 
                                             <div style={{ 
                                                 display: 'inline-block',
                                             }}>
@@ -265,7 +268,7 @@ export default class Bookings extends Component {
                                                 </IconButton>
                                             </div>
                                         }
-                                        { (order.status == ORDER_STATUS.PENDING || order.status == ORDER_STATUS.MARKED_DONE) &&
+                                        { (order.status === ORDER_STATUS.PENDING || order.status === ORDER_STATUS.MARKED_DONE) &&
                                             <RaisedButton
                                                 label={translate('SETTLE_ORDER')}
                                                 labelStyle={{color: 'white '}}

@@ -1,6 +1,5 @@
 import React from 'react';
 import Moment from 'react-moment';
-import { sortDates } from '../core/util';
 
 const displayTaskTiming = (taskTimings, momentFormat) => {
     let dates = taskTimings;

@@ -52,8 +52,7 @@ export default class SectionCategories extends React.Component {
                             { key: 'label', type: 'string', label: 'Enter category label' },
                             { key: 'desc', type: 'string', label: 'Enter category description' },
                             { key: 'minPriceHour', type: 'number', label: 'Enter the minimum price per hour in the supported currency' },
-                            { key: 'imageUrl', type: 'single-image', label: 'Add category image', hint: 'Category image will be used on the category selection page.' },
-                            // { key: 'bigImageUrl', type: 'single-image', label: 'Add high resolution category image', hint: 'This image will be used to create a landing page for this category.' }
+                            { key: 'imageUrl', type: 'single-image', label: 'Add category image', hint: 'Category image will be used on the category selection page.' }
                         ]}
                         value={values}
                         showCancelBtn={true}
@@ -109,13 +108,13 @@ export default class SectionCategories extends React.Component {
                 <div className="row">
              <div className="col-xs-12">
                 <h1>Listing categories</h1>
-
-                <div className="row">
-                    <div className="col-xs-12">
-                        { this.state.categoryInEdit && this.state.categoryInEdit.code && EditableCategory(this.state.categoryInEdit, this.state.categoryIndexInEdit) }
-                    </div>
-                </div>
-
+                <p className="text-muted">
+                    When users add new listings, they have to choose what category it belongs to. Here you can create and mange the categories in your marketplace.
+                </p>
+                <hr />
+               
+                { this.state.categoryInEdit && EditableCategory(this.state.categoryInEdit, this.state.categoryIndexInEdit) }
+        
                 { !this.state.categoryInEdit && this.state.categories && this.state.categories
                     .map((category, index) =>
                     <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10 }}>
@@ -162,8 +161,9 @@ export default class SectionCategories extends React.Component {
                 )}
                 { !this.state.categoryInEdit && !this.state.isAddingNewCategory && 
                     <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10}}>       
-                        <FloatingActionButton 
-                            onClick={ () => {
+                        <FloatingActionButton
+                            primary={true}
+                            onClick={() => {
                                 const categories = this.state.categories;
                                 const categoryLastIndex = categories.length;
 
@@ -175,7 +175,7 @@ export default class SectionCategories extends React.Component {
                                     isAddingNewCategory: true,
                                     categories: this.state.categories 
                                 });
-                            } } mini={true} backgroundColor={"#546e7a"} >
+                            }} mini={true}  >
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>

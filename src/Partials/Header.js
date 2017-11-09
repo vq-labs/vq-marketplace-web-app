@@ -30,7 +30,7 @@ class Header extends Component {
     super();
 
     this.state = {
-      shouldDisplay: location.pathname.indexOf("admin") == -1,
+      shouldDisplay: location.pathname.indexOf("admin") === -1,
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
@@ -60,7 +60,7 @@ class Header extends Component {
   componentDidMount() {
     browserHistory.listen(location =>  {
       this.setState({
-        shouldDisplay: location.pathname.indexOf("admin") == -1
+        shouldDisplay: location.pathname.indexOf("admin") === -1
       })
     });
   }

@@ -72,6 +72,7 @@ export default class AdminPage extends React.Component {
                         { false && <MenuItem onClick={ () => this.goToSection('get-started') }>Get Started</MenuItem> }
 
                         <h4>General</h4>
+                        <MenuItem onClick={ () => this.goToSection('get-started') }>Get Started</MenuItem>
                         <MenuItem onClick={ () => this.goToSection('overview') }>Overview</MenuItem>
 
                         <h4>Entities</h4>
@@ -127,6 +128,7 @@ export default class AdminPage extends React.Component {
 
                         <a target="_self" href="https://vq-labs.com">
                             <img
+                                alt="presentation"
                                 style={{
                                     display: 'block',
                                     margin: '0 auto',

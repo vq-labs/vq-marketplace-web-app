@@ -16,6 +16,14 @@ This will start the app on localhost:3000. The app will assume that the [VQ-MARK
 npm run start:local
 ```
 
+## Integrating with an existing marketplace
+You can always connect to the marketplace your are running on VQ-MARKETPLACE. You just need ajust the VQ_API_URL when you start it up.
+```
+VQ_API_URL=https://<yourMarketplaceId>.vq-labs.com npm run start:local
+```
+
+In this way, you can work on your own marketplace storefront while still using the offical VQ web services.
+
 ## Configuration
 
 ## Deployment
@@ -30,8 +38,7 @@ The following command will prepare, build and deploy the app to S3 bucket:
 ```
 AWS_BUCKET_NAME=xxx.vq-labs.com \
 AWS_REGION=eu-central-1 \
-VQ_API_URL=xxx-api.vq-labs.com \
-VQ_LANG=en \
+VQ_API_URL=yourMarketplaceId.vq-labs.com \ 
 gulp deploy
 ```
 

@@ -11,22 +11,16 @@ gulp.task('prepare', cb => {
         VQ_API_URL = `http://${VQ_API_URL}`;
     }
 
-    const VQ_LANG = process.env.VQ_LANG || 'en';
-    const GOOGLE_ANALYTICS_ID = process.env.GOOGLE_ANALYTICS_ID || '';
 
     console.log(`VQ_API_URL: ${VQ_API_URL}`);
 
-    const prepareForBuild = gulp
+    gulp
     .src([ 'code-templates/**.js' ], { base: './code-templates' })
         .pipe(replace({
             patterns: [
                 {
                     match: 'VQ_API_URL',
                     replacement: VQ_API_URL
-                },
-                {
-                    match: 'VQ_LANG',
-                    replacement: VQ_LANG
                 }
             ]
         }))

@@ -7,7 +7,7 @@ let LANG = localStorage.getItem('ST_LANG');
 
 if (!LANG) {
     getConfigAsync(config => {
-        LANG = config.DEFAULT_LANG || CONFIG.LANG;
+        LANG = config.DEFAULT_LANG || "en";
         
         localStorage.setItem('ST_LANG', LANG);
     });

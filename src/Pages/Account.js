@@ -18,6 +18,7 @@ import { translate, getLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import LANG_CODES from '../constants/LANG_CODES.js';
+import UserEmailPropsEdit from '../Components/UserEmailPropsEdit.js';
 
 export default class Account extends Component {
     constructor(props) {
@@ -27,6 +28,7 @@ export default class Account extends Component {
 
         this.state = {
             lang: getLang(),
+            langDirty: false,
             billingAddressId: null,
             ready: false,
             isLoading: true,
@@ -293,7 +295,7 @@ export default class Account extends Component {
                                 </div>
                             </div>
                             }
-
+                            
                             { this.state.sector === 'language' &&
                                 <div className="row">
                                     <div className="col-xs-12">
@@ -304,14 +306,29 @@ export default class Account extends Component {
                                         <DropDownMenu
                                             value={this.state.lang}
                                             onChange={(event, index, value) => {
-                                                fetchAndAddLang(value, true, () => {
-                                                    location.reload();
+                                                this.setState({
+                                                    langDirty: true,
+                                                    lang: value,
                                                 });
                                             }}
                                         >
                                             <MenuItem value={'hu'} primaryText={LANG_CODES['hu']} />
                                             <MenuItem value={'en'} primaryText={LANG_CODES['en']} />
                                         </DropDownMenu>
+                                    </div>
+                                    <div className="col-xs-12">
+                                        <RaisedButton
+                                            disabled={!this.state.langDirty}
+                                            primary={true}
+                                            onTouchTap={
+                                                () => {
+                                                    fetchAndAddLang(this.state.lang, true, () => {
+                                                        location.reload();
+                                                    });
+                                                }
+                                            }
+                                            label={translate('UPDATE')}
+                                        />
                                     </div>
                                 </div>
                             }
@@ -325,8 +342,9 @@ export default class Account extends Component {
 
                                     <div className="row">
                                         <EditableEntity
+                                            saveLeft={true}
                                             cancelLabel={translate('CANCEL')}
-                                            saveLabel={translate('SAVE')}
+                                            saveLabel={translate('UPDATE')}
                                             showCancelBtn={false}
                                             value={this.state.profile} 
                                             fields={[
@@ -371,38 +389,38 @@ export default class Account extends Component {
                                     </div>
 
                                     <div className="col-xs-12">
-                                            <TextField
-                                                maxLength={11}
-                                                required={true}
-                                                onChange={(_, newValue) => {
-                                                    const data = this.state.data;
+                                        <TextField
+                                            maxLength={11}
+                                            required={true}
+                                            onChange={(_, newValue) => {
+                                                const data = this.state.data;
 
+                                                data.phoneNo = newValue;
+
+                                                newValue = String(newValue);
+
+                                                newValue = newValue.split('.').join('');
+                                                newValue = newValue.split('+').join('');
+                                                newValue = newValue.split(' ').join('');
+
+                                                if (!isNaN(Number(newValue)) && newValue.length < 14) {
                                                     data.phoneNo = newValue;
 
-                                                    newValue = String(newValue);
-
-                                                    newValue = newValue.split('.').join('');
-                                                    newValue = newValue.split('+').join('');
-                                                    newValue = newValue.split(' ').join('');
-
-                                                    if (!isNaN(Number(newValue)) && newValue.length < 14) {
-                                                        data.phoneNo = newValue;
-
-                                                        this.setState({
-                                                            data,
-                                                            toBeUpdated: {
-                                                                phoneNo: true
-                                                            }
-                                                        });
-                                                    }
-                                                }}
-                                                value={this.state.data.phoneNo}
-                                                floatingLabelText={`${translate('PHONE_NO')}*`}
-                                                type="text"
-                                            />
+                                                    this.setState({
+                                                        data,
+                                                        toBeUpdated: {
+                                                            phoneNo: true
+                                                        }
+                                                    });
+                                                }
+                                            }}
+                                            value={this.state.data.phoneNo}
+                                            floatingLabelText={`${translate('PHONE_NO')}*`}
+                                            type="text"
+                                        />
                                     </div>
                                     <div className="col-xs-12">
-                                        <FlatButton
+                                        <RaisedButton
                                             disabled={!this.state.toBeUpdated.phoneNo || String(this.state.data.phoneNo).length < 9}
                                             primary={true}
                                             onTouchTap={
@@ -443,24 +461,24 @@ export default class Account extends Component {
                                     <p className="text-muted">{translate('ACCOUNT_BILLING_ADDRESS_DESC')}</p>
                                 </div>
                                 <div className="col-xs-12 col-sm-10 col-md-8">
-                                        <Address
-                                            deriveOnly={true}
-                                            withTaxNumber={true}
-                                            location={this.state.billingAddress || {}}
-                                            onLocationChange={billingAddress => {
-                                                const toBeUpdated = this.state.toBeUpdated;
-                                                
-                                                toBeUpdated.billingAddress = true;
+                                    <Address
+                                        deriveOnly={true}
+                                        withTaxNumber={true}
+                                        location={this.state.billingAddress || {}}
+                                        onLocationChange={billingAddress => {
+                                            const toBeUpdated = this.state.toBeUpdated;
+                                            
+                                            toBeUpdated.billingAddress = true;
 
-                                                this.setState({
-                                                    billingAddress,
-                                                    toBeUpdated
-                                                });
-                                            }}
-                                        />
+                                            this.setState({
+                                                billingAddress,
+                                                toBeUpdated
+                                            });
+                                        }}
+                                    />
                                 </div>
-                                <div className="col-xs-12">
-                                    <FlatButton
+                                <div className="col-xs-12" style={{ marginTop: 20 }}>
+                                    <RaisedButton
                                         disabled={!this.state.toBeUpdated.billingAddress || String(this.state.billingAddress.postalCode) < 4}
                                         primary={true}
                                         onTouchTap={
@@ -529,8 +547,8 @@ export default class Account extends Component {
                                         }}
                                     />
                                 </div>
-                                <div className="col-xs-12">
-                                    <FlatButton
+                                <div className="col-xs-12" style={{ marginTop: 20 }}>
+                                    <RaisedButton
                                         disabled={!this.state.toBeUpdated.defaultListingLocation || String(this.state.defaultListingLocation.postalCode) < 4}
                                         primary={true}
                                         onTouchTap={
@@ -590,59 +608,10 @@ export default class Account extends Component {
                                         />
                                 </div>
                                 }
-                                
-                                { this.state.emails &&
-                                    this.state.emails.map(emailCode => {
-                                    const propKey = emailCode;
 
-                                    return <div className="col-xs-12" key={emailCode}>
-                                        <Checkbox
-                                            checked={!this.state.data[propKey]}
-                                            label={translate(propKey)}
-                                            onCheck={() => {
-                                                const data = this.state.data;
-
-                                                data[propKey] = !data[propKey];
-
-                                                this.setState({
-                                                    data
-                                                });
-
-                                                getUserAsync(user => {
-                                                    let property;
-
-                                                    property = user.userProperties
-                                                    .find(_ => _.propKey === propKey);
-
-                                                    if (!property) {
-                                                        property = {
-                                                            propKey: propKey,
-                                                            propValue: false
-                                                        };
-                                    
-                                                        user
-                                                        .userProperties
-                                                        .push(property);
-                                                    } else {
-                                                        property.propValue = data[propKey];
-                                                    }
-
-                                                    apiUserProperty
-                                                    .createItem(
-                                                        user.id,
-                                                        propKey,
-                                                        data[propKey]
-                                                    )
-                                                    .then(_ => _, _ => _);  
-                                                });
-                                            }}
-                                        />
-                                    </div>
-                                    }
-                                )}
+                            { this.state.emails && <UserEmailPropsEdit /> }
                             </div>
                             }
-
                             { this.state.sector === 'delete-account' &&
                                 <div className="row">
                                     <div className="col-xs-12">

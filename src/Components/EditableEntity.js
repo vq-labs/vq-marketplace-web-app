@@ -333,14 +333,14 @@ export default class EditableEntity extends Component {
                                                 <RaisedButton
                                                     primary={true}
                                                     disabled={!this.props.enableSkip ? !this.state.dirty : false}
-                                                    style={{ float: 'right' }}
+                                                    style={{ float: this.props.saveLeft ? 'left' : 'right' }}
                                                     label={this.props.saveLabel || translate("SAVE")}
                                                     onTouchTap={ this.handleUpdate }
                                                 />
                                             }
                                         </div>
                                     </div>  
-                                </div>
+                            </div>
                     }
                 </div>
             );

@@ -90,6 +90,9 @@ class App extends Component {
           apiAuth
             .me()
             .then(myUserData => {
+
+              initUserMode(myUserData.userType);
+
               coreAuth.setUserId(myUserData.id);  
               coreAuth.setUser(myUserData);
 

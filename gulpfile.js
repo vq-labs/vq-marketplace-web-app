@@ -46,7 +46,7 @@ gulp.task('build', [ "prepare" ], cb => {
 });
 
 gulp.task('deploy', [ 'build' ], cb => {
-    const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+    const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'vq-marketplace';
     const AWS_REGION = process.env.AWS_REGION || 'eu-central-1';
     const VQ_TENANT_ID = process.env.VQ_TENANT_ID;
 

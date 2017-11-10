@@ -4,8 +4,6 @@ import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import HtmlTextField from '../Components/HtmlTextField';
 import apiPost from '../api/post';
-import * as coreNavigation from '../core/navigation';
-import { translate } from '../core/i18n';
 
 export default class SectionPostEdit extends React.Component {
     constructor(props) {

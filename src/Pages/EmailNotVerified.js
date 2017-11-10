@@ -2,7 +2,6 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
-import { getUserAsync } from '../core/auth';
 import { goTo } from '../core/navigation';
 import { resendVerificationEmail, me } from '../api/auth';
 

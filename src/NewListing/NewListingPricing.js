@@ -139,8 +139,8 @@ export default class NewListingPricing extends React.Component {
                             </h2>
                             <Slider
                                 min={this.state.minPrice}
-                                max={10000}
-                                step={500}
+                                max={this.state.currency === "HUF" ? 10000 : 10000}
+                                step={this.state.currency === "HUF" ? 500 : 500}
                                 value={this.state.price}
                                 onChange={(ev, price) => this.handlePriceChange(price)}
                             />

@@ -40,15 +40,14 @@ export default class ViewTypeChoice extends Component {
                     <div style={{ display: 'inline-block' }}>
                         { this.state.viewType !== this.state.viewTypes[viewType] &&
                             <FlatButton
-                                labelStyle={{ color: this.state.config.COLOR_PRIMARY}}
+                                primary={true}
                                 onClick={() => this.changeViewType(this.state.viewTypes[viewType])}
                                 label={translate(viewType)}
                             />
                         }
                         { this.state.viewType === this.state.viewTypes[viewType] &&
                             <RaisedButton
-                                labelStyle={{color: 'white'}}
-                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                primary={true}
                                 label={translate(viewType)}
                             />
                         }

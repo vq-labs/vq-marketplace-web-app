@@ -4,11 +4,13 @@ import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
 import TaskListItem from '../Components/TaskListItem';
 import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
+import RaisedButton from 'material-ui/RaisedButton';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { getConfigAsync } from '../core/config';
 import { goTo, setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js';
+import { switchMode, getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 import Loader from "../Components/Loader";
@@ -24,6 +26,7 @@ export default class Dashboard extends Component {
       const viewType = getParams(location.search).viewType;
     
       this.state = {
+        userMode: getMode(),
         viewType,
         isLoading: false,
         tasks: [],
@@ -40,7 +43,9 @@ export default class Dashboard extends Component {
           return;
         }
 
-        const newState =  {
+        const userMode = this.state.userMode;
+
+        const newState = {
           isLoading: true,
           ready: true,
           config,
@@ -48,7 +53,7 @@ export default class Dashboard extends Component {
         };
 
         if (!this.state.viewType) {
-          newState.viewType =  Number(user.userType) === 1 ?
+          newState.viewType =  Number(userMode) === 1 ?
             'ORDERS_IN_PROGRESS' :
             'SENT_REQUESTS_ACCEPTED';
         }
@@ -74,8 +79,26 @@ export default class Dashboard extends Component {
           {this.state.ready &&
           <div className="col-xs-12">
             <div className="col-xs-12" style={{ marginBottom: 20 }}>
+              { this.state.userType === 0 &&
+                <RaisedButton
+                  primary={true}
+                  label={this.state.userMode === "1" ?
+                    translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :
+                    translate("SWITCH_USER_MODE_TO_DEMAND_SIDE")
+                  }
+                  onTouchTap={() => {
+                    const newUserMode = getMode() === "1" ? "2" : "1";
+
+                    switchMode(newUserMode);
+
+                    location.reload();
+                  }}
+                />
+              }
+            </div>
+            <div className="col-xs-12" style={{ marginBottom: 20 }}>
               <DashboardViewTypeChoice
-                userType={Number(this.state.userType)}
+                userType={Number(this.state.userMode)}
                 halign="left"
                 selected={this.state.viewType}
                 onSelect={viewType => {

@@ -1,6 +1,4 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
 import apiUser from '../api/user';
 import displayObject from '../helpers/display-object';
 import { Tabs, Tab } from 'material-ui/Tabs';
@@ -58,7 +56,10 @@ export default class AdminPage extends React.Component {
                                     <div>
                                         <h2>Basics</h2>
                                         <h3>{this.state.user.firstName} {this.state.user.lastName}</h3>
-                                        <img src={this.state.user.imageUrl} />
+                                        <img
+                                            alt={`${this.state.user.firstName} ${this.state.user.lastName}`}
+                                            src={this.state.user.imageUrl}
+                                        />
                                     </div>
                                 </Tab>
                                 <Tab label="Preferences" >
@@ -93,8 +94,6 @@ export default class AdminPage extends React.Component {
                         </div>
                     </div>
                 }
-
-                
             </div>
         );
   }

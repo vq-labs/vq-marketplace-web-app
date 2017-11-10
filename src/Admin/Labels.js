@@ -118,7 +118,7 @@ export default class SectionLabels extends React.Component {
                 { this.state.isLoading && <Loader isLoading={true}/> }
 
                 { !this.state.isLoading && Object.keys(labelGroups)
-                .map(labelGroupKey => {
+                .map((labelGroupKey, index) => {
                     const labelGroup = labelGroups[labelGroupKey];
                     
                     const allowedLabelKeys = this.state.labels
@@ -144,13 +144,15 @@ export default class SectionLabels extends React.Component {
                             return allowedLabelKeys.indexOf(_.key) > -1
                         });
                     
-                    return !!filteredLabelGroup.length && <LabelEdit
-                        lang={this.state.lang}
-                        header={labelGroupKey}
-                        fields={filteredLabelGroup}
-                        labels={this.state.labels}
-                        onContinue={() => {}}
-                    />
+                    return !!filteredLabelGroup.length &&
+                        <LabelEdit
+                            key={index}
+                            lang={this.state.lang}
+                            header={labelGroupKey}
+                            fields={filteredLabelGroup}
+                            labels={this.state.labels}
+                            onContinue={() => {}}
+                        />
                 })}
             </div>
       );

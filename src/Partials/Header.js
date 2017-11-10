@@ -7,7 +7,6 @@ import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
@@ -17,6 +16,7 @@ import * as coreAuth from '../core/auth';
 import { goTo, goStartPage } from '../core/navigation';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
+import { getMode } from '../core/user-mode.js';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -30,6 +30,7 @@ class Header extends Component {
     super();
 
     this.state = {
+      userMode: getMode(),
       shouldDisplay: location.pathname.indexOf("admin") === -1,
       homeLabel: props.homeLabel,
       logged: Boolean(props.user),
@@ -75,9 +76,7 @@ class Header extends Component {
       user: false
     });
     
-    setTimeout(() => {
-      goStartPage();
-    }, 500);
+    location.reload();
   }
 
   render() {
@@ -88,13 +87,12 @@ class Header extends Component {
                 appName={this.props.appName}
                 logo={this.props.logo}
               />
+
               { !this.state.shouldDisplay &&
                 <ToolbarGroup>
-                  <RaisedButton
-                    primary={true}
-                    onTouchTap={() => goTo("/", true)}
-                    label={'Go to marketplace'}
-                  />
+                  <MenuItem onTouchTap={() => goStartPage()} primaryText="Homepage" />
+                  <MenuItem onTouchTap={() => goTo("/", true)} primaryText="Marketplace" />
+                  <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                 </ToolbarGroup>
               }
               { this.state.shouldDisplay &&
@@ -129,7 +127,7 @@ class Header extends Component {
                           }
                     { this.state.logged && <ToolbarSeparator /> }
 
-                    { this.state.logged && Number(this.state.user.userType) !== 1 &&
+                    { this.state.logged && Number(this.state.userMode) === 2 &&
                       <div onTouchTap={ 
                           () => goTo('/')
                       }>
@@ -147,7 +145,7 @@ class Header extends Component {
                       </div>
                     }
 
-                    { this.state.logged && Number(this.state.user.userType) !== 2 &&
+                    { this.state.logged && Number(this.state.userMode) === 1 &&
                       <a onClick={() => goTo('/new-listing')} target="_self">
                         {
                           translate('HEADER_ADD_LISTING') === 'HEADER_ADD_LISTING' ?

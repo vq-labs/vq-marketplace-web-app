@@ -5,6 +5,7 @@ import Login from '../Components/Login';
 import Snackbar from 'material-ui/Snackbar';
 import { getParams } from '../core/util.js'
 import { getUserAsync } from '../core/auth';
+import { init as initUserMode } from '../core/user-mode.js';
 
 const getOutOfHere = (user, redirectTo) => {
   if (redirectTo) {
@@ -42,7 +43,9 @@ export default class LoginPage extends Component {
                 this.setState({
                   loginSuccessful: true
                 });
-                
+
+                initUserMode(user.userType);
+
                 setTimeout(() => {
                   if (this.state.redirectTo) {
                     return goTo(this.state.redirectTo, this.state.redirectTo.indexOf("admin") > -1);

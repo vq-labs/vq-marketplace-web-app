@@ -6,6 +6,12 @@ const userModes = {
 
 let activeMode;
 
+const fns = [];
+
+export const registerModeChange = fn => {
+    fns.push(fn);
+};
+
 export const init = userType => {
     if (userType === 1 || userType === 2) {
         localStorage.setItem('VQ_USER_MODE', userType);
@@ -22,6 +28,8 @@ export const init = userType => {
 
         localStorage.setItem('VQ_USER_MODE', activeMode);
     }
+
+    fns.forEach(fn => fn(activeMode));
 };
 
 export const switchMode = userMode => {
@@ -30,4 +38,10 @@ export const switchMode = userMode => {
     localStorage.setItem('VQ_USER_MODE', activeMode);
 };
 
-export const getMode = () => activeMode;
+export const getMode = () => {
+    if (!activeMode) {
+        init()
+    }
+
+    return activeMode;
+};

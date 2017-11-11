@@ -46,6 +46,7 @@ export default class Dashboard extends Component {
         const userMode = this.state.userMode;
 
         const newState = {
+          userMode: getMode(),
           isLoading: true,
           ready: true,
           config,

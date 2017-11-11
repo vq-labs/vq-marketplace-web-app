@@ -16,7 +16,7 @@ import * as coreAuth from '../core/auth';
 import { goTo, goStartPage } from '../core/navigation';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
-import { getMode } from '../core/user-mode.js';
+import { getMode, registerModeChange } from '../core/user-mode.js';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -59,6 +59,15 @@ class Header extends Component {
   } 
 
   componentDidMount() {
+    setInterval(() => {
+      const userMode = getMode();
+      if (this.state.userMode !== userMode) {
+        this.setState({
+          userMode
+        });
+      }
+    }, 300);
+
     browserHistory.listen(location =>  {
       this.setState({
         shouldDisplay: location.pathname.indexOf("admin") === -1

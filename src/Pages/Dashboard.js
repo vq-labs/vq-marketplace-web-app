@@ -26,7 +26,6 @@ export default class Dashboard extends Component {
       const viewType = getParams(location.search).viewType;
     
       this.state = {
-        userMode: getMode(),
         viewType,
         isLoading: false,
         tasks: [],
@@ -43,10 +42,10 @@ export default class Dashboard extends Component {
           return;
         }
 
-        const userMode = this.state.userMode;
+        const userMode = getMode();
 
         const newState = {
-          userMode: getMode(),
+          userMode,
           isLoading: true,
           ready: true,
           config,

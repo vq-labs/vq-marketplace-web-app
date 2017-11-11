@@ -1,23 +1,8 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import { getUserAsync } from '../core/auth';
-import ConfigEdit from '../Components/ConfigEdit';
-
-const basicFields = [
-    {
-        disabled: true,
-        type: 'string',
-        key: 'STRIPE_PUBLIC_KEY',
-        label: 'Stripe public key',
-    },
-    {
-        disabled: true,
-        type: 'string',
-        key: 'STRIPE_SECRET_KEY',
-        label: 'Stripe private key',
-        explanation: ''
-    }
-];
+import * as apiPayment from '../api/payment';
+import { displayErrorFactory } from '../core/error-handler';
 
 export default class SectionPayments extends React.Component {
     constructor() {
@@ -29,7 +14,7 @@ export default class SectionPayments extends React.Component {
     }
     componentDidMount() {
         getUserAsync(user => {
-            this.setState({user });
+            this.setState({ user });
         });
     }
 
@@ -43,14 +28,26 @@ export default class SectionPayments extends React.Component {
                         You can get your API keys by creating an account <a href="https://dashboard.stripe.com/register" target="href">here</a>.
                     </p>
                 
-                    <ConfigEdit
-                        fields={basicFields}
+                    <RaisedButton
+                        disabled={true}
+                        style={{ marginLeft: 30 }}
+                        primary={true}
+                        onClick={() => {
+                            apiPayment
+                            .createAccount()
+                            .then(rAccount => {
+                                return alert("Account has been created. Check your email.");
+                            })
+                            .catch(displayErrorFactory());
+                        }}
+                        label="Connect Stripe"
                     />
 
                     <hr />
 
                     <h2>Connect Mangopay</h2>
                     <RaisedButton
+                        disabled={true}
                         style={{ marginLeft: 30 }}
                         primary={true}
                         onClick={() => {
@@ -63,6 +60,7 @@ export default class SectionPayments extends React.Component {
 
                     <h2>Connect Barion</h2>
                     <RaisedButton
+                        disabled={true}
                         style={{ marginLeft: 30 }}
                         primary={true}
                         onClick={() => {

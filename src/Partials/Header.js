@@ -109,7 +109,7 @@ class Header extends Component {
 
                             <FlatButton
                               className="hidden-xs"
-                              label={translate("DASHBOARD")}
+                              label={translate("HEADER_DASHBOARD")}
                               
                               style={headerBtnStyle}
                             />

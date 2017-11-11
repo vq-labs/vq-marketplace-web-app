@@ -42,7 +42,7 @@ export default class Dashboard extends Component {
           return;
         }
 
-        const userMode = getMode();
+        const userMode = user.userType === 0 ? getMode() : user.userType;
 
         const newState = {
           userMode,

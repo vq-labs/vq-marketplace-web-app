@@ -185,31 +185,29 @@ class Offers extends Component {
             background: `url(${CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
-            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 50 }}>
+            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 25 }}>
                 <div style={{
-                    padding: 10,
                     maxWidth: '850px',
                     margin: '0 auto'
                 }}>
-                    
-                    { false && <h1 style={{
-                        color: "white",
-                        fontSize: 25
-                    }}>
-                        {translate('LISTINGS_PROMO_HEADER')}
-                    </h1>
+                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                        <h1 style={{
+                            color: "white",
+                            fontSize: 25
+                        }}>
+                            {translate('START_PAGE_HEADER')}
+                        </h1>
                     }
-                    { false && <h2 style={{ 
-                        color: "white",
-                        fontSize: 18
-                    }}>
-                        {translate('LISTINGS_PROMO_DESC')}
-                    </h2>
+                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                        <h2 style={{ 
+                            color: "white",
+                            fontSize: 18
+                        }}>
+                            {translate('START_PAGE_DESC')}
+                        </h2>
                     }
                     
-                    { CONFIG &&
-                      CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION &&
-                      CONFIG.LISTING_GEOFILTER_MODE &&
+                    { CONFIG.LISTING_GEOFILTER_ENABLED === "1" &&
                         <Autocomplete
                             value={this.state.locationQueryString}
                             onChange={ev => {

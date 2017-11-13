@@ -3,6 +3,11 @@ import * as apiConfig from '../api/config';
 import ConfigEdit from './Components/ConfigEdit';
 
 const geofilterFields = [
+    {   
+        type: 'bool',
+        key: 'LISTING_GEOFILTER_ENABLED',
+        label: 'Enable geolocation of listings?'
+    },
     {
         selection: [ "AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB" ].map(_ => {
             _ = _.toLowerCase();

@@ -54,10 +54,11 @@ export default class NewListingCategory extends React.Component {
                     <div className="row">
                         <div className="col-xs-12">
                             { this.state.categories && this.state.categories
-                                .map(row => (
-                                    <div className="row">
+                                .map((row, rowIndex) => (
+                                    <div key={rowIndex} className="row">
                                         { row.map(tile =>
                                             <div
+                                                key={tile.code}
                                                 className="col-xs-12 col-sm-4"
                                                 style={{ marginBottom: 10 }}
                                             >

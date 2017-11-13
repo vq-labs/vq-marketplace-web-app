@@ -25,7 +25,6 @@ import * as apiConfig from './api/config';
 setBase('app');
 
 let muiTheme;
-
 class App extends Component {
   constructor (props) {
     super(props);
@@ -85,7 +84,7 @@ class App extends Component {
         } else {
           coreAuth.loadFromLocalStorage();
         }
-        
+
         coreAuth.addListener('login', () => {
           apiAuth
             .me()
@@ -113,7 +112,7 @@ class App extends Component {
 
         return this.setState({
           metaReady: true,
-          meta: config
+          config
         })
       });
   }
@@ -134,22 +133,21 @@ class App extends Component {
       });
     });
   }
-        
+
   render() {
       return (
-        this.state.ready && this.state.metaReady &&
+        this.state.ready && this.state.config &&
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
-            <Header
-              appName={this.state.meta.NAME}
-              logo={this.state.meta.LOGO_URL}
-              user={this.state.user}>
-            </Header>
+            <Header user={this.state.user}></Header>
+           
             { AppRoutes }
+         
             { window.location.pathname.indexOf("admin") === -1 &&
+              this.state.config.APP_FOOTER_VISIBLE === "1" &&
               <Footer
-                logo={this.state.meta.LOGO_URL}
-                appName={this.state.meta.NAME}
+                logo={this.state.config.LOGO_URL}
+                appName={this.state.config.NAME}
               >
               </Footer>
             }

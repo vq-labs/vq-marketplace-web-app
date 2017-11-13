@@ -26,12 +26,7 @@ class Footer extends Component {
     }
     render() {
         return (
-                <div className="container" style={{
-                    verticalAlign: 'baseline',
-                    bottom: 0,
-                    width: '100%',
-                    minHeight: 50
-                }}>
+                <div id="vq-footer" className="container">
                 { this.state.config &&
                     <div className="row">
                         <div className="col-xs-12 text-center" style={{

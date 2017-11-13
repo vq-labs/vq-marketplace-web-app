@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfigEdit from '../Components/ConfigEdit';
+import ConfigEdit from './Components/ConfigEdit';
 
 const defaultConfigsFields = [
     {

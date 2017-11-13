@@ -28,10 +28,8 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-import '../App.css';
 
 const async = require("async");
-
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -239,7 +237,7 @@ class Task extends Component {
                                     }   
                                 </div>
                                 <div className="col-xs-12 col-sm-4">
-                                    <Card style={{'marginTop': 60}}>
+                                    <Card style={{ 'marginTop': 60 }}>
                                         <CardText>
                                             <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
                                                 {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}

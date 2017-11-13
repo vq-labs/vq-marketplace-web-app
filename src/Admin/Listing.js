@@ -1,5 +1,8 @@
 import React from 'react';
-import ConfigEdit from '../Components/ConfigEdit';
+import ConfigEdit from './Components/ConfigEdit';
+
+
+
 
 const browsingFields = [
     {
@@ -30,6 +33,12 @@ const browsingFields = [
 ];
 
 const newListingFields = [
+    {
+        key: 'LISTING_RESTRICTED_POSTAL_CODES',
+        type: "string",
+        label: "(beta) Restricted postal codes",
+        explanation: 'The 3-first digits of a postal code. If you would like to have many restricted postal codes, separate them with a comma.'
+    },
     {
         disabled: true,
         type: 'bool',

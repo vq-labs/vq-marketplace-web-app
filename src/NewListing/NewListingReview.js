@@ -52,7 +52,7 @@ export default class NewListingReview extends Component {
                             {
                                 this.state.listing.categories
                                 .map(category =>
-                                    <span>{this.state.categoryLabels[category]}</span>
+                                    <span key={category}>{this.state.categoryLabels[category]}</span>
                                 )
                             }
                         </div>

@@ -12,6 +12,7 @@ import SectionDesign from './Design';
 import SectionCustomScripts from './CustomScripts';
 import SectionLandingPage from './LandingPage';
 import SectionUsers from './Users';
+import SectionUserTypes from './UserTypes';
 import SectionPayments from './Payments';
 import SectionAnalytics from './Analytics';
 import SectionListingFilters from './Filters';
@@ -105,7 +106,7 @@ export default class AdminPage extends React.Component {
         return (
             <div className="container">
                 <button onTouchTap={() => this.handleToggle()}/>
-                <Drawer className="hidden-xs" docked={true} open={this.state.open} >
+                <Drawer docked={true} open={this.state.open} >
                     <div className="col-xs-12" style={{ marginBottom: 10 }}>
                             { menuPoints.map(menuGroup =>
                                  <Menu
@@ -174,6 +175,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
                                         { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                         { this.state.section === 'custom-pages' && <SectionCustomPages /> }
+                                        { this.state.section === 'user-types' && <SectionUserTypes /> }
                                         { this.state.section === 'categories' && <SectionCategories /> }
                                         { this.state.section === 'basics' && <SectionBasics /> }
                                         { this.state.section === 'seo' && <SectionSEO /> }

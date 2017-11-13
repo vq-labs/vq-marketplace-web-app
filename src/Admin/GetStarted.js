@@ -46,11 +46,11 @@ export default class SectionOverview extends React.Component {
                                 <StepContent>
                                     <div className="col-xs-12">
                                         <img alt={'Configure the slogan and description of the VQ-Marketplace'} src="/images/get-started-slogans.jpg" className="img-responsive" />
-                                        
+
                                         <p style={{ marginTop: 30 }}>
                                             The slogan and description help new visitors understand what your marketplace is about. They are the first thing visitors notice when they land on your site, so try to make them compact but descriptive.
                                         </p>
-                                    
+
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {

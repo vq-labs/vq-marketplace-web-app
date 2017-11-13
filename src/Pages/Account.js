@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -8,7 +7,6 @@ import MenuItem from 'material-ui/MenuItem';
 import Address from '../Components/Address';
 import EditableEntity from '../Components/EditableEntity';
 import apiUser from '../api/user';
-import apiPost from '../api/post';
 import * as apiTaskLocation from '../api/task-location';
 import apiBillingAddress from '../api/billing-address';
 import * as apiUserProperty from '../api/user-property';
@@ -18,7 +16,9 @@ import { translate, getLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import LANG_CODES from '../constants/LANG_CODES.js';
-import UserEmailPropsEdit from '../Components/UserEmailPropsEdit.js';
+import EmailSettings from './Account/EmailSettings.js';
+import StripePaymentConnector from '../Components/PaymentConnectors/Stripe.js';
+import { getConfigAsync } from '../core/config';
 
 export default class Account extends Component {
     constructor(props) {
@@ -27,6 +27,7 @@ export default class Account extends Component {
         const sector = props.params.sector || this.props.location.query.sector || 'profile';
 
         this.state = {
+            config: null,
             lang: getLang(),
             langDirty: false,
             billingAddressId: null,
@@ -45,167 +46,58 @@ export default class Account extends Component {
         };
     }
     componentDidMount() {
-        getUserAsync(user => {
-            if (!user) {
-                return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
-            }
+        getConfigAsync(config =>
+            getUserAsync(user => {
+                if (!user) {
+                    return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
+                }
 
-            const data = this.state.data;
-
-            this.setState({
-                user
-            });
-
-            /**
-                user.userProperties
-                .forEach(userProperty => {
-                    userProperty.propValue = userProperty.propValue === "1";
+                this.setState({
+                    user,
+                    config
                 });
-            */
 
+                apiUser
+                .getItem(user.id)
+                .then(profile => this.setState({
+                    profile
+                }));
 
-            apiUser
-            .getItem(user.id)
-            .then(profile => this.setState({
-                profile
-            }));
-
-            apiPost
-            .getItems({
-                type: 'email'
-            })
-            .then(emails => {
-                const emailCodes = emails
-                .filter(_ => {
-                    if (String(user.userType) === '1') {
-                        if ([
-                            "new-request-sent",
-                            "request-accepted",
-                            "request-marked-as-done",
-                            "request-completed",
-                            "request-declined",
-                            "request-cancelled",
-                            "request-closed",
-                            "new-task",
-                            "user-blocked"
-                        ].indexOf(_.code) !== -1) {
-                            return false;
-                        }
-                    }
-
-                    if (String(user.userType) === '2') {
-                        if ([
-                            "new-request-received",
-                            "new-order",
-                            "task-request-cancelled",
-                            "order-marked-as-done",
-                            "order-completed",
-                            "task-marked-spam",
-                            "user-blocked",
-                            "listing-cancelled",
-                            "order-closed",
-                        ].indexOf(_.code) !== -1) {
-                            return false;
-                        }
-                    }
-
-                    return [
-                        'welcome',
-                        'password-reset'
-                    ].indexOf(_.code) === -1;
+                apiTaskLocation
+                .getItems({
+                    userId: user.id
                 })
-                .map(_ => `EMAIL_${_.code}`)
-                
-
-                this.setState({
-                    emails: emailCodes
-                });
-                /**
-                const properties = emails;
-
-                properties.push('phone');
-                properties.push('emailNotifDisabled');
-                */
-
-                const propertyCodes = JSON.parse(JSON.stringify(emailCodes));
-
-                propertyCodes.push('phoneNo');
-                // propertyCodes.push('emailNotifDisabled');
-
-                propertyCodes.forEach(userPropertyKey => {
-                    let property = user.userProperties
-                    .find(_ => _.propKey === userPropertyKey);
-    
-                    if (!property) {
-                        property = {
-                            propKey: userPropertyKey,
-                            propValue: null
-                        };
-    
-                        user
-                        .userProperties
-                        .push(userPropertyKey);
-    
-                        data[userPropertyKey] = false;
-                    } else {
-                        if (userPropertyKey === 'phoneNo') {
-                            data[userPropertyKey] = property.propValue;
-                        } else {
-                            switch (property.propValue) {
-                                case '1':
-                                    data[userPropertyKey] = true;
-                                    break;
-                                case '0':
-                                    data[userPropertyKey] = false;
-                                    break;
-                                default:
-                                    data[userPropertyKey] = property.propValue;
-                            }
-                        }
+                .then(defaultListingLocation => {
+                    if (defaultListingLocation[0]) {
+                        this.setState({
+                            defaultListingLocationId: defaultListingLocation[0].id,
+                            defaultListingLocation: defaultListingLocation[0]
+                        });
                     }
                 });
-           
-                this.setState({
-                    data,
-                    isLoading: false
+
+                apiBillingAddress
+                .getItems({
+                    default: true
+                }).then(billingAddresses => {
+                    const billingAddress = billingAddresses
+                        .find(_ => _.default === true) ||
+                        billingAddresses[billingAddresses.length - 1];
+                    
+                    if (billingAddress) {
+                        this.setState({
+                            billingAddressId: billingAddress.id,
+                            billingAddressReady: true,
+                            billingAddress
+                        });
+                    } else {
+                        this.setState({
+                            billingAddressReady: true
+                        });
+                    }
                 });
-            });
-
-            apiTaskLocation
-            .getItems({
-                userId: user.id
-            })
-            .then(defaultListingLocation => {
-                if (defaultListingLocation[0]) {
-                    this.setState({
-                        defaultListingLocationId: defaultListingLocation[0].id,
-                        defaultListingLocation: defaultListingLocation[0]
-                    });
-                }
-            });
-
-            apiBillingAddress
-            .getItems({
-                default: true
-            })
-            .then(billingAddresses => {
-                const billingAddress = billingAddresses
-                    .find(_ => _.default === true) ||
-                    billingAddresses[billingAddresses.length - 1];
-                
-                if (billingAddress) {
-                    this.setState({
-                        billingAddressId: billingAddress.id,
-                        billingAddressReady: true,
-                        billingAddress
-                    });
-                } else {
-                    this.setState({
-                        billingAddressReady: true
-                    });
-                }
-            });
-        }, true);
+            }, true)
+        );
     }
 
     changeSectorFn = sector => () => {
@@ -242,7 +134,11 @@ export default class Account extends Component {
                                         <a href="#" onTouchTap={this.changeSectorFn('language')}>{translate('ACCOUNT_MENU_LANGUAGE')}</a>
                                     </li>
 
-                                    { this.state.user && this.state.user.userType === 1 &&
+                                    { this.state.user &&
+                                    (
+                                        this.state.user.userType === 1 ||
+                                        (this.state.config && this.state.config.PAYMENTS_ENABLED === '1')
+                                    ) &&
                                         <li className={this.state.sector === 'billing-address' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('billing-address')}>{translate('ACCOUNT_MENU_BILLING_ADDRESS')}</a>
                                         </li>
@@ -275,6 +171,12 @@ export default class Account extends Component {
                                     <li className={this.state.sector === 'notifications' && 'vq-account-sector-active'}>
                                         <a href="#" onTouchTap={this.changeSectorFn('notifications')}>{translate('ACCOUNT_MENU_NOTIFICATIONS')}</a>
                                     </li>
+
+                                    { this.state.config && this.state.config.PAYMENTS_ENABLED === '1' &&
+                                        <li className={this.state.sector === 'payments' && 'vq-account-sector-active'}>
+                                            <a href="#" onTouchTap={this.changeSectorFn('payments')}>{translate('ACCOUNT_MENU_PAYMENTS')}</a>
+                                        </li>
+                                    }
 
                                     <li className={this.state.sector === 'change-password' && 'vq-account-sector-active'}>
                                         <a href="#" onTouchTap={() => goTo('/change-password')}>{translate('CHANGE_PASSWORD')}</a>
@@ -579,39 +481,20 @@ export default class Account extends Component {
                             </div>
                             }
 
-                            { this.state.sector === 'notifications' &&
-                            <div className="row">
-                                <div className="col-xs-12">
-                                    <h2>{translate('ACCOUNT_NOTIFICATIONS_HEADER')}</h2>
-                                    <p className="text-muted">{translate('ACCOUNT_NOTIFICATIONS_DESC')}</p>
+                            { this.state.sector === 'notifications' && <EmailSettings /> }
+
+                            { this.state.config && this.state.config.PAYMENTS_ENABLED === '1' && this.state.sector === 'payments' &&
+                                 <div className="row">
+                                    <div className="col-xs-12">
+                                        <h2>{translate('PAYMENT_SETTINGS_HEADER')}</h2>
+                                        <p className="text-muted">{translate('PAYMENT_SETTINGS_DESC')}</p>
+                                    </div>
+                                    <div className="col-xs-12">
+                                        <StripePaymentConnector isMarketplaceOwner={false} />
+                                    </div>
                                 </div>
-
-                                { false && <div className="col-xs-12">
-                                        <Checkbox
-                                            checked={!this.state.data.emailNotifDisabled}
-                                            label={translate("EMAIL_NOTIFICATIONS")}
-                                            onCheck={() => {
-                                                const oldState = this.state;
-
-                                                oldState.data.emailNotifDisabled = !oldState.data.emailNotifDisabled;
-
-                                                this.setState(oldState);
-
-                                                apiUserProperty
-                                                        .createItem(
-                                                            this.state.user.id,
-                                                            'emailNotifDisabled',
-                                                            oldState.data.emailNotifDisabled
-                                                        )
-                                                        .then(_ => _, _ => _);
-                                            }}
-                                        />
-                                </div>
-                                }
-
-                            { this.state.emails && <UserEmailPropsEdit /> }
-                            </div>
                             }
+
                             { this.state.sector === 'delete-account' &&
                                 <div className="row">
                                     <div className="col-xs-12">
@@ -629,12 +512,12 @@ export default class Account extends Component {
                                                     confirmationLabel: translate('DELETE_YOUR_ACCOUNT_DESC')
                                                 }, () => {
                                                     apiUser
-                                                        .deleteItem(this.state.user.id)
-                                                        .then(_ => {
-                                                            goStartPage();
-                                                        }, err => {
-                                                            alert('Error');
-                                                        });
+                                                    .deleteItem(this.state.user.id)
+                                                    .then(_ => {
+                                                        goStartPage();
+                                                    }, err => {
+                                                        alert('Error');
+                                                    });
                                                 });
                                             }}
                                         />

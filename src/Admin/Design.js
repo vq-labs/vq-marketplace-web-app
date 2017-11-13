@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfigEdit from '../Components/ConfigEdit';
+import ConfigEdit from './Components/ConfigEdit';
 
 const defaultConfigsFields = [
     {
@@ -7,7 +7,12 @@ const defaultConfigsFields = [
         key: 'COLOR_PRIMARY',
         label: 'Primary color',
         explanation: 'You can change the main color of the user interface by entering a hex color value. ColorPicker.com can help you choose the color and give you the hex color code. You can then copy the code here.'
-    }, 
+    }, {
+        type: 'bool',
+        key: 'APP_FOOTER_VISIBLE',
+        label: 'App footer',
+        explanation: 'Should display footer? (It will only affect the marketplace, not the landing page)'
+    }
     /** @TODO {
         type: 'color',
         key: 'COLOR_SECONDARY',

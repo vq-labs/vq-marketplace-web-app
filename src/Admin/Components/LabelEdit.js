@@ -73,6 +73,7 @@ export default class LabelEdit extends React.Component {
                     <hr />
                     <div className="col-xs-12">
                         <EditableEntity
+                            saveLeft={true}
                             saveLabel="Save"
                             showCancelBtn={false}
                             value={this.state.labelsObj}

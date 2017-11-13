@@ -1,6 +1,6 @@
 import React from 'react';
 import * as apiConfig from '../api/config';
-import EditableEntity from '../Components/EditableEntity';
+import ConfigEdit from './Components/ConfigEdit';
 
 const geofilterFields = [
     {
@@ -23,6 +23,24 @@ const geofilterFields = [
         type: 'select',
         key: 'LISTING_GEOFILTER_MODE',
         label: 'Location filter mode (how exact should be the filtering?'
+    }
+];
+
+const priceFields = [
+    {
+        type: 'number',
+        key: 'LISTING_PRICE_FILTER_MIN',
+        label: 'Price filter (min. value)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_PRICE_FILTER_MAX',
+        label: 'Price filter (max. value)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_PRICE_FILTER_STEP',
+        label: 'By how much is the price to be incremented?',
     }
 ];
 
@@ -49,41 +67,16 @@ export default class SectionFilters extends React.Component {
 
     render() {
         return (
-            <div className="row">
-                    <div className="col-xs-12">
-                        <h1>Filters</h1>
-                        <p>
-                            Configure the filters for browsing listings.
-                        </p>
-                    </div>
-                    <div className="col-xs-12">
-                        <h3>Location filter</h3>
-                            <EditableEntity
-                                showCancelBtn={false}
-                                value={this.state.config} 
-                                fields={geofilterFields}
-                                onConfirm={
-                                    updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity).map(fieldKey => {
-                                            const mappedItem = {};
+            <div>
+                <ConfigEdit
+                    header={"Price filter"}
+                    fields={priceFields}
+                />
 
-                                            mappedItem.fieldKey = fieldKey;
-                                            mappedItem.fieldValue = updatedEntity[fieldKey];
-
-                                            return mappedItem;
-                                        });
-
-                                        apiConfig
-                                        .appConfig
-                                        .createItem(updatedData);
-
-                                        this.setState({
-                                            config: updatedEntity
-                                        });
-                                    }
-                                }
-                            />
-                </div>    
+                <ConfigEdit
+                    header={"Location filter"}
+                    fields={geofilterFields}
+                />
             </div>
         );
     }

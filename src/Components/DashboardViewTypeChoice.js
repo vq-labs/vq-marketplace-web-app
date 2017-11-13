@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ViewTypeChoice from '../Components/ViewTypeChoice';
-
+import { CONFIG } from '../core/config';
 export default class DashboardViewTypeChoice extends Component {
     constructor(props) {
         super(props);
@@ -28,15 +28,26 @@ export default class DashboardViewTypeChoice extends Component {
         const VIEW_TYPES = {};
 
         if (this.props.userType === 1) {
-            VIEW_TYPES.LISTINGS_POSTED = 'LISTINGS_POSTED';
-            VIEW_TYPES.ORDERS_IN_PROGRESS = 'ORDERS_IN_PROGRESS';
-            VIEW_TYPES.ORDERS_COMPLETED = 'ORDERS_COMPLETED';
+            if (CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED === "1") {
+                VIEW_TYPES.LISTINGS_POSTED = 'LISTINGS_POSTED';
+            }
+
+            if (CONFIG.USER_TYPE_OFFER_LISTING_ENABLED === "1") {
+                VIEW_TYPES.ORDERS_IN_PROGRESS = 'ORDERS_IN_PROGRESS';
+                VIEW_TYPES.ORDERS_COMPLETED = 'ORDERS_COMPLETED';
+            }
         }
 
         if (this.props.userType === 2) {
-            VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';
-            VIEW_TYPES.SENT_REQUESTS_ACCEPTED = 'SENT_REQUESTS_ACCEPTED';
-            VIEW_TYPES.SENT_REQUESTS_SETTLED= 'SENT_REQUESTS_SETTLED';
+            if (CONFIG.USER_TYPE_OFFER_LISTING_ENABLED === "1") {
+                VIEW_TYPES.OFFER_LISTINGS_POSTED = 'OFFER_LISTINGS_POSTED';
+            }
+
+            if (CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED === "1") {
+                VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';
+                VIEW_TYPES.SENT_REQUESTS_ACCEPTED = 'SENT_REQUESTS_ACCEPTED';
+                VIEW_TYPES.SENT_REQUESTS_SETTLED= 'SENT_REQUESTS_SETTLED';
+            }
         }
 
         return (

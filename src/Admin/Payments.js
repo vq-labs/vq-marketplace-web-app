@@ -3,71 +3,61 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { getUserAsync } from '../core/auth';
 import * as apiPayment from '../api/payment';
 import { displayErrorFactory } from '../core/error-handler';
+import StripePaymentConnector from '../Components/PaymentConnectors/Stripe';
+import ConfigEdit from './Components/ConfigEdit';
 
 export default class SectionPayments extends React.Component {
     constructor() {
         super();
+
         this.state = {
+            isLoading: true,
+            paymentAccount: null,
             activeStep: 0,
             user: null
         };
     }
     componentDidMount() {
         getUserAsync(user => {
-            this.setState({ user });
+            this.setState({
+                user
+            });
         });
     }
 
     render() {
             return (
                 <div className="row">
-                    <h1>Payment system</h1>
+                    <div style={{ marginBottom: 15 }}>
+                        <h1>Marketplace fees</h1>
+                        <hr />
+                        <ConfigEdit
+                            fields={[
+                                {
+                                    type: 'bool',
+                                    key: 'PAYMENTS_ENABLED',
+                                    label: 'Payments enabled',
+                                    explanation: 'Allow your users to connect to Stripe and receive payouts.'
+                                },
+                                {
+                                    type: 'number',
+                                    min: 0,
+                                    max: 100,
+                                    regex: '^([1-9]|[0-9][0-9])$',
+                                    key: 'MARKETPLACE_PROVISION',
+                                    label: 'Marketplace provision',
+                                    explanation: 'How many percent provision should your marketplace receive from every transaction?'
+                                }
+                            ]}
+                        />
+                    </div>
+                    <div style={{ marginTop: 15 }}>
+                        <h1>Payment systems</h1>
+                        <hr />
 
-                    <h2>Connect Stripe</h2>
-                    <p>
-                        You can get your API keys by creating an account <a href="https://dashboard.stripe.com/register" target="href">here</a>.
-                    </p>
-                
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            apiPayment
-                            .createAccount()
-                            .then(rAccount => {
-                                return alert("Account has been created. Check your email.");
-                            })
-                            .catch(displayErrorFactory());
-                        }}
-                        label="Connect Stripe"
-                    />
-
-                    <hr />
-
-                    <h2>Connect Mangopay</h2>
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            alert("This feature has been disabled for your account.");
-                        }}
-                        label="Connect Mangopay"
-                    />
-
-                    <hr />
-
-                    <h2>Connect Barion</h2>
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            alert("Contact support for connecting Barion. We are currently evaluating the possibility with this provider.");
-                        }}
-                        label="Connect Barion"
-                    />
+                        <h3>Connect Stripe</h3>
+                        <StripePaymentConnector isMarketplaceOwner={true}/>
+                    </div>
                 </div>
             );
     }

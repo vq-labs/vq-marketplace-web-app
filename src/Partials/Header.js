@@ -16,7 +16,8 @@ import * as coreAuth from '../core/auth';
 import { goTo, goStartPage } from '../core/navigation';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
-import { getMode, registerModeChange } from '../core/user-mode.js';
+import { getMode } from '../core/user-mode.js';
+import { CONFIG } from '../core/config';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -24,7 +25,6 @@ const headerBtnStyle = {
   'fontSize': '1',
   'borderRadius': '25px'
 };
-
 class Header extends Component {
   constructor(props) {
     super();
@@ -32,7 +32,6 @@ class Header extends Component {
     this.state = {
       userMode: getMode(),
       shouldDisplay: location.pathname.indexOf("admin") === -1,
-      homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
     };
@@ -43,7 +42,6 @@ class Header extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
       return this.setState({
-        homeLabel: nextProps.homeLabel,
         userId: nextProps.user.id,
         user: nextProps.user,
         logged: Boolean(nextProps.user)
@@ -51,7 +49,6 @@ class Header extends Component {
     }
 
     this.setState({
-      homeLabel: nextProps.homeLabel,
       logged: false,
       userId: undefined,
       user: undefined
@@ -93,8 +90,8 @@ class Header extends Component {
         <div >
           <Toolbar className="st-nav">
               <Logo
-                appName={this.props.appName}
-                logo={this.props.logo}
+                appName={CONFIG.NAME}
+                logo={CONFIG.LOGO_URL}
               />
 
               { !this.state.shouldDisplay &&
@@ -154,7 +151,12 @@ class Header extends Component {
                       </div>
                     }
 
-                    { this.state.logged && Number(this.state.userMode) === 1 &&
+                    { this.state.logged
+                      &&
+                      Number(this.state.userMode) === 1
+                      &&
+                      CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED === "1"
+                      &&
                       <a onClick={() => goTo('/new-listing')} target="_self">
                         {
                           translate('HEADER_ADD_LISTING') === 'HEADER_ADD_LISTING' ?
@@ -163,6 +165,26 @@ class Header extends Component {
                           </IconButton> :
                           <FlatButton 
                               label={translate('HEADER_ADD_LISTING')}
+                              style={headerBtnStyle}
+                          />
+                        }
+                      </a>
+                    }
+
+                    { this.state.logged
+                      &&
+                      Number(this.state.userMode) === 2
+                      &&
+                      CONFIG.USER_TYPE_OFFER_LISTING_ENABLED === "1"
+                      &&
+                      <a onClick={() => goTo('/new-listing')} target="_self">
+                        {
+                          translate('HEADER_ADD_OFFER_LISTING') === 'HEADER_ADD_OFFER_LISTING' ?
+                          <IconButton iconStyle={{ color: grey600 }}>
+                            <ContentAdd />
+                          </IconButton> :
+                          <FlatButton 
+                              label={translate('HEADER_ADD_OFFER_LISTING')}
                               style={headerBtnStyle}
                           />
                         }

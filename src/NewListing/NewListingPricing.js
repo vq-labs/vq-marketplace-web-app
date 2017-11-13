@@ -39,27 +39,7 @@ export default class NewListingPricing extends React.Component {
         })
     }
 
-    componentWillReceiveProps (nextProps) {
-        /**
-        this.setState({
-            price: nextProps.price,
-            priceType: nextProps.priceType,
-            minPrice: nextProps.minPrice,
-            price: nextProps.minPrice * 2
-        });
-        */
-    } 
-
-    getCurrencySign() {
-        const CURRENCY_SIGNS = {
-            EUR: '€',
-            USD: 'USD',
-            PLN: 'PLN',
-            HUF: 'Ft.'
-        };
-        
-        return CURRENCY_SIGNS[this.state.currency] || 'Unknown';
-    }
+    componentWillReceiveProps (nextProps) {} 
 
     handlePriceChange (price, priceType) {
         if (price) {
@@ -139,8 +119,8 @@ export default class NewListingPricing extends React.Component {
                             </h2>
                             <Slider
                                 min={this.state.minPrice}
-                                max={this.state.currency === "HUF" ? 10000 : 10000}
-                                step={this.state.currency === "HUF" ? 500 : 500}
+                                max={Number(this.state.config.LISTING_PRICE_FILTER_MAX)}
+                                step={Number(this.state.config.LISTING_PRICE_FILTER_STEP)}
                                 value={this.state.price}
                                 onChange={(ev, price) => this.handlePriceChange(price)}
                             />

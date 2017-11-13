@@ -19,14 +19,13 @@ import NewListingDate from './NewListingDate';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
 import NewListingDuration from './NewListingDuration';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
-import { validateAddress } from '../api/vq-services';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import { displayMessage } from '../helpers/display-message.js';
 import { openDialog } from '../helpers/open-message-dialog.js';
 
-const _chunk = require('lodash.chunk');
+const _ = require('underscore');
 
 const LISTING_VIEWS = {
     START: 1,
@@ -42,15 +41,9 @@ const LISTING_VIEWS = {
     LOGIN: 10
 };
 
-const PRICING_MODELS = {
-    TOTAL: 0,
-    HOURLY: 1,
-    REQUEST_QUOTE: 2
-};
-
 const TASK_TYPES = {
-    OFFERING: 1,
-    SEARCHING: 2
+    REQUESTING: 1,
+    OFFERING: 2
 };
 
 const TASK_STATUS = {
@@ -60,8 +53,9 @@ const TASK_STATUS = {
     BOOKED: '20'
 };
 
-const verifyPostalCode = postalCode => {
-    if ([
+let restrictedPostalCodes;
+/**
+ * [
         "113",
         "112",
         "111",
@@ -71,8 +65,15 @@ const verifyPostalCode = postalCode => {
         "105",
         "106",
         "107"
-    ].indexOf(String(postalCode).substring(0, 3))
-    === -1) {
+    ]
+ */
+
+const verifyPostalCode = postalCode => {
+    if (!restrictedPostalCodes.length) {
+        return true;
+    }
+
+    if (restrictedPostalCodes.indexOf(String(postalCode).substring(0, 3)) === -1) {
         return false;
     }
 
@@ -91,7 +92,6 @@ export default class NewListing extends Component {
             location: {},
             duration: 2,
             priceType: 1,
-            taskType: TASK_TYPES.OFFERING,
             categories: [],
             timing: [],
             images: [],
@@ -123,87 +123,96 @@ export default class NewListing extends Component {
     }
 
     componentDidMount() {
-        getConfigAsync(meta => {
-            getUserAsync(user => {
-                if (!user) {
-                    return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
-                }
-                
-                if (getMeOutFromHereIfAmNotAuthorized(user)) {
-                    return;
-                }
+        restrictedPostalCodes = CONFIG.LISTING_RESTRICTED_POSTAL_CODES ? CONFIG.LISTING_RESTRICTED_POSTAL_CODES.split(",") : [];
 
-                /**
-                 * Only buyers can access this page
-                 */
-                if (user.userType === 2) {
-                    return goTo('/');
-                }
-                
-                apiTaskLocation
-                .getItems({
-                    userId: user.id
-                })
-                .then(defaultLocations => {
-                    const defaultLocation = defaultLocations[0] || {};
-                    const task = this.state.task;
+        getUserAsync(user => {
+            if (!user) {
+                return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
+            }
+            
+            if (getMeOutFromHereIfAmNotAuthorized(user)) {
+                return;
+            }
 
-                    const mutableProps = [
-                        "locationQueryString",
-                        "countryCode",
-                        "street",
-                        "streetNumber",
-                        "addressAddition",
-                        "city",
-                        "postalCode",
-                        "lat",
-                        "lng"
-                    ];
+            if (user.userType === 0) {
+                goTo("/");
 
-                    task.location = task.location || {};
+                return alert("No support for user type 0 yet. Create supply or demand account.");
+            }
 
-                    mutableProps
-                    .forEach(mutalblePropKey => {
-                        task.location[mutalblePropKey] = defaultLocation[mutalblePropKey];
-                    });
-                    
-                    this.setState({
-                        task
-                    });
+            if (user.userType === 2 && CONFIG.USER_TYPE_OFFER_LISTING_ENABLED !== "1") {
+                return goTo('/');
+            }
+
+            if (user.userType === 1 && CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED !== "1") {
+                return goTo('/');
+            }
+
+            const task = this.state.task;
+
+            task.taskType = user.userType === 1 ? TASK_TYPES.REQUESTING : TASK_TYPES.OFFERING;
+
+            apiTaskLocation
+            .getItems({
+                userId: user.id
+            })
+            .then(defaultLocations => {
+                const defaultLocation = defaultLocations[0] || {};
+
+                const mutableProps = [
+                    "locationQueryString",
+                    "countryCode",
+                    "street",
+                    "streetNumber",
+                    "addressAddition",
+                    "city",
+                    "postalCode",
+                    "lat",
+                    "lng"
+                ];
+
+                task.location = task.location || {};
+
+                mutableProps
+                .forEach(mutalblePropKey => {
+                    task.location[mutalblePropKey] = defaultLocation[mutalblePropKey];
                 });
-
-                apiCategory
-                .getItems()
-                .then(listingCategories => {
-                    const currency = meta.PRICING_DEFAULT_CURRENCY || this.state.currency;
-                    const task = this.state.task;
-                    
-                    task.currency = currency;
-
-                    this.setState({
-                        appConfig: meta,
-                        ready: true,
-                        task,
-                        currency
-                    });
-                    
-                    const category = listingCategories
-                        .filter(
-                            _ => _.code === task.categories[0] || this.props.location.query.category
-                        )[0];
-                        
-                    const minPrice = category ? category.minPriceHour || 0 : 0;
-                    
-                    task.price = minPrice;
-
-                    this.setState({
-                        listingCategories,
-                        minPrice,
-                        task
-                    });
+                
+                this.setState({
+                    task
                 });
-            }, true);
-        });
+            });
+
+            apiCategory
+            .getItems()
+            .then(listingCategories => {
+                const currency = CONFIG.PRICING_DEFAULT_CURRENCY || this.state.currency;
+                const task = this.state.task;
+                
+                task.currency = currency;
+
+                this.setState({
+                    ready: true,
+                    task,
+                    currency
+                });
+                
+                const category = listingCategories
+                    .filter(
+                        _ => _.code === task.categories[0] || this.props.location.query.category
+                    )[0];
+                    
+                const minPrice = category ? category.minPriceHour || 0 : 0;
+                
+                task.price = minPrice;
+
+                this.setState({
+                    listingCategories,
+                    minPrice,
+                    task
+                });
+            });
+        }, true);
     }
 
     handlePricingChange (priceType, priceInCents) {
@@ -284,7 +293,7 @@ export default class NewListing extends Component {
                                 onSuccess={() => {
                                     let step = 6;
 
-                                    if (Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
+                                    if (Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
                                         step = step + 1;
                                     }
                                       
@@ -319,11 +328,11 @@ export default class NewListing extends Component {
                             }
                             { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics
-                                    title={{ value: this.state.task.title, mode: this.state.appConfig.LISTING_TITLE_MODE }}
-                                    description={{ value: this.state.task.description, mode: this.state.appConfig.LISTING_DESCRIPTION_MODE }}
+                                    title={{ value: this.state.task.title, mode: CONFIG.LISTING_TITLE_MODE }}
+                                    description={{ value: this.state.task.description, mode: CONFIG.LISTING_DESCRIPTION_MODE }}
                                     location={{
                                         value: this.state.task.location,
-                                        mode: this.state.appConfig.LISTING_LOCATION_MODE
+                                        mode: CONFIG.LISTING_LOCATION_MODE
                                     }}
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
                                     onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
@@ -336,7 +345,7 @@ export default class NewListing extends Component {
 
                             { this.state.ready && this.state.step === LISTING_VIEWS.LOCATION &&
                                 <NewListingLocation
-                                    countryRestriction={this.state.appConfig.COUNTRY_RESTRICTION}
+                                    countryRestriction={CONFIG.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
                                         if (verifyPostalCode(String(_.postalCode)) === -1) {
@@ -392,7 +401,7 @@ export default class NewListing extends Component {
                                 { this.state.step !== LISTING_VIEWS.SUCCESS && this.state.step !== LISTING_VIEWS.START &&
                                     <FlatButton
                                         style={{ 
-                                            color: this.state.appConfig.COLOR_PRIMARY,
+                                            color: CONFIG.COLOR_PRIMARY,
                                             float: 'left'
                                         }}
                                         label={translate("BACK")}
@@ -406,7 +415,7 @@ export default class NewListing extends Component {
                                             }
 
                                             if (nextStep === LISTING_VIEWS.IMAGES) {
-                                                if (Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
+                                                if (Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
                                                     nextStep -= 1;
                                                 }
                                             }
@@ -425,7 +434,7 @@ export default class NewListing extends Component {
                                             float: 'right'
                                         }}
                                         labelStyle={{color: 'white '}}
-                                        backgroundColor={this.state.appConfig.COLOR_PRIMARY}
+                                        backgroundColor={CONFIG.COLOR_PRIMARY}
                                         label={translate("CONTINUE")}
                                         disabled={false}
                                         onTouchTap={() => {
@@ -533,26 +542,26 @@ export default class NewListing extends Component {
                                             }
 
                                             if (currentStep === LISTING_VIEWS.BASICS) {
-                                                if (Number(this.state.appConfig.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
+                                                if (Number(CONFIG.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
                                                     return displayMessage({
                                                         label: translate("LISTING_TITLE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
-                                                if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && !this.state.task.description) {
+                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && !this.state.task.description) {
                                                     return displayMessage({
                                                         label: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
-                                                if (Number(this.state.appConfig.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
+                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
                                                     return displayMessage({
                                                         label: translate("LISTING_DESCRIPTION_TOO_SHORT")
                                                     });
                                                 }
 
                                                 /*
-                                                if (Number(this.state.appConfig.LISTING_LOCATION_MODE) === 1 && !this.state.task.location.formattedAddress) {
+                                                if (Number(CONFIG.LISTING_LOCATION_MODE) === 1 && !this.state.task.location.formattedAddress) {
                                                     return this.setState({
                                                         openSnackbar: true,
                                                         snackbarMessage: translate("LISTING_LOCATION") + " " + translate("IS_REQUIRED")
@@ -561,8 +570,8 @@ export default class NewListing extends Component {
                                                 */
                                             }
 
-                                            if (nextStep === LISTING_VIEWS.IMAGES && Number(this.state.appConfig.LISTING_IMAGES_MODE) === 0) {
-                                                nextStep = nextStep + 1;
+                                            if (nextStep === LISTING_VIEWS.IMAGES && Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
+                                                nextStep += 1;
                                             }
 
                                             this.setState({
@@ -576,8 +585,7 @@ export default class NewListing extends Component {
                                         style={{
                                             float: 'right'
                                         }}
-                                        labelStyle={{color: 'white '}}
-                                        backgroundColor={this.state.appConfig.COLOR_PRIMARY}
+                                        primary={true}
                                         label={translate("NEW_LISTING_CONFIRM_AND_POST")}
                                         disabled={this.state.isSubmitting}
                                         onTouchTap={() => {
@@ -585,18 +593,22 @@ export default class NewListing extends Component {
                                                 isSubmitting: true
                                             });
 
-                                            const task = this.state.task;
+                                            const task = _.clone(this.state.task);
 
-                                            if (task.currency === 'EUR' || task.currency === 'USD' || task.currency === 'PLN') {
-                                                task.price *= 100;
-                                            }
+                                            // for cent currencies, we multiply with 100
+                                            /**
+                                                if (task.currency !== 'HUF') {
+                                                    task.price *= 100;
+                                                }
+                                            */
 
                                             delete task.location.locationQueryString;
                                             delete task.location.countryRestriction;
                                             
                                             task.status = TASK_STATUS.ACTIVE;
 
-                                            apiTask.createItem({})
+                                            apiTask
+                                            .createItem({})
                                             .then(rTask => {
                                                 task.id = rTask.id;
 
@@ -608,13 +620,13 @@ export default class NewListing extends Component {
                                             .then(() => {
                                                 const localStart = task.timing[0].date;
                                                 const localEnd = task.timing[0].endDate;
-
                                                 const selectedDate = {
                                                     date: Date.UTC(localStart.getFullYear(), localStart.getMonth(), localStart.getDate(), 0, 0, 0, 0) / 1000,
                                                     endDate: Date.UTC(localEnd.getFullYear(), localEnd.getMonth(), localEnd.getDate(), 23, 59, 59, 0) / 1000
                                                 };
-                                           
-                                                apiTaskTiming.createItem(task.id, {
+
+                                                apiTaskTiming
+                                                .createItem(task.id, {
                                                     dates: [
                                                         selectedDate
                                                     ],

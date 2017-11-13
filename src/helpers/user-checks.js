@@ -1,4 +1,5 @@
 import { goTo, convertToAppPath } from '../core/navigation';
+import { CONFIG } from '../core/config';
 
 export const getMeOutFromHereIfAmNotAuthorized = user => {
     if (!user) {
@@ -31,18 +32,20 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
         return false;
     }
 
-    // users of type sellers are required to upload a document
-    if (!user.userProperties.find(_ => _.propKey === 'studentIdUrl')) {
-        goTo('/user-verifications');
+    if (CONFIG.USER_TYPE_SUPPLY_DOCUMENT_REQUIRED === "1") {
+        // users of type sellers are required to upload a document
+        if (!user.userProperties.find(_ => _.propKey === 'studentIdUrl')) {
+            goTo('/user-verifications');
 
-        return true;
-    }
+            return true;
+        }
 
-    // user has not preferences
-    if (!user.userPreferences.length) {
-        goTo('/user-preferences');
+        // user has not preferences
+        if (!user.userPreferences.length) {
+            goTo('/user-preferences');
 
-        return true;
+            return true;
+        }
     }
 
     return false;

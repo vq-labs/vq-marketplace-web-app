@@ -7,7 +7,7 @@ import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
 import RaisedButton from 'material-ui/RaisedButton';
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { goTo, setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js';
 import { switchMode, getMode } from '../core/user-mode.js';
@@ -16,9 +16,7 @@ import apiTask from '../api/task';
 import Loader from "../Components/Loader";
 import { openDialog } from '../helpers/open-message-dialog.js';
 
-/**
- * Dashboard depends on a user type
- */
+
 export default class Dashboard extends Component {
   constructor(props) {
       super();
@@ -36,7 +34,6 @@ export default class Dashboard extends Component {
   }
   
   componentDidMount() {
-    getConfigAsync(config => {
       getUserAsync(user => {
         if (getMeOutFromHereIfAmNotAuthorized(user)) {
           return;
@@ -48,7 +45,6 @@ export default class Dashboard extends Component {
           userMode,
           isLoading: true,
           ready: true,
-          config,
           userType: user.userType
         };
 
@@ -70,7 +66,6 @@ export default class Dashboard extends Component {
           isLoading: false
         }));
       }, true);
-    });
   }
 
   render() {
@@ -110,7 +105,7 @@ export default class Dashboard extends Component {
               }}
               />
             </div>
-            {this.state.viewType === 'LISTINGS_POSTED' &&
+            {(this.state.viewType === 'LISTINGS_POSTED' || this.state.viewType === 'OFFER_LISTINGS_POSTED' ) &&
                 <div className="row">
                   { this.state.isLoading &&
                     <Loader isLoading={true} />

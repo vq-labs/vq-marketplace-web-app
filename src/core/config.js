@@ -1,6 +1,6 @@
-let CONFIG = null;
-
 let listeners = [];
+
+export let CONFIG = {};
 
 export const set = config => {
     CONFIG = config;

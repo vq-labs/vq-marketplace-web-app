@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfigEdit from '../Components/ConfigEdit';
+import ConfigEdit from './Components/ConfigEdit';
 import LabelEdit from './Components/LabelEdit';
 import LANGUAGES from '../constants/LANGUAGES';
 

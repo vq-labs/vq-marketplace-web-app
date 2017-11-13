@@ -53,6 +53,7 @@ const menuPoints = [
             [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
             [ 'custom-pages', 'Custom Pages' ],
+            [ 'user-types', 'User types' ],
             [ 'listing', 'Listing' ],
             [ 'listing-filters', 'Listing filters' ],
             [ 'categories', 'Listing categories' ],
@@ -172,7 +173,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'payments' && <SectionPayments /> }
                                         { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }
-                                        { this.state.section === 'content' && <SectionContent /> }
+                                        { this.state.section === 'content' && <SectionPosts /> }
                                         { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
                                         { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                         { this.state.section === 'custom-pages' && <SectionCustomPages /> }

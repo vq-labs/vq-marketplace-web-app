@@ -32,6 +32,8 @@ export default class UserPropsEdit extends React.Component {
                 "request-marked-as-done",
                 "request-completed",
                 "request-declined",
+                "message-received",
+                "review-left",
                 "request-cancelled",
                 "request-closed",
                 "new-task",
@@ -41,6 +43,8 @@ export default class UserPropsEdit extends React.Component {
             const DEMAND_SIDE_EMAILS = [
                 "new-request-received",
                 "new-order",
+                "message-received",
+                "review-left",
                 "task-request-cancelled",
                 "order-marked-as-done",
                 "order-completed",
@@ -50,7 +54,7 @@ export default class UserPropsEdit extends React.Component {
                 "order-closed"
             ]
             
-            const EMAILS = user.userType === '1' ? DEMAND_SIDE_EMAILS : SUPPLY_SIDE_EMAILS;
+            const EMAILS = user.userType === 1 ? DEMAND_SIDE_EMAILS : SUPPLY_SIDE_EMAILS;
             const emailCodes = EMAILS.map(code => `EMAIL_${code}`);
             
             this.setState({

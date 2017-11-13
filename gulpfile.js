@@ -1,8 +1,7 @@
 const gulp = require('gulp');
 const replace = require('gulp-replace-task');
 const spawn = require('child_process').spawn;
-const args = require('yargs').argv;
-const concat = require('gulp-concat');
+const branch = require('git-branch');
 
 gulp.task('prepare', cb => {
     var VQ_API_URL = process.env.VQ_API_URL || 'http://localhost:8080/api';
@@ -46,7 +45,8 @@ gulp.task('build', [ "prepare" ], cb => {
 });
 
 gulp.task('deploy', [ 'build' ], cb => {
-    const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'vq-marketplace';
+    const defaultBucketName = branch.sync() === 'master' ? 'vq-marketplace' : 'vq-marketplace-dev';
+    const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || defaultBucketName;
     const AWS_REGION = process.env.AWS_REGION || 'eu-central-1';
     const VQ_TENANT_ID = process.env.VQ_TENANT_ID;
 
@@ -56,7 +56,7 @@ gulp.task('deploy', [ 'build' ], cb => {
 
     console.log(`AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}`);
     console.log(`AWS_REGION: ${AWS_REGION}`);
-
+    
     const args = [
         './**',
         '--region',

@@ -56,7 +56,7 @@ const menuPoints = [
             [ 'listing-filters', 'Listing filters' ],
             [ 'categories', 'Listing categories' ],
             [ 'pricing', 'Pricing' ],
-            [ 'content', 'Content' ]
+            [ 'posts', 'Content' ]
         ]
     ]
 ];
@@ -105,7 +105,7 @@ export default class AdminPage extends React.Component {
         return (
             <div className="container">
                 <button onTouchTap={() => this.handleToggle()}/>
-                <Drawer className="hidden-xs" docked={true} open={this.state.open} >
+                <Drawer docked={true} open={this.state.open} >
                     <div className="col-xs-12" style={{ marginBottom: 10 }}>
                             { menuPoints.map(menuGroup =>
                                  <Menu
@@ -171,6 +171,7 @@ export default class AdminPage extends React.Component {
                                         { this.state.section === 'payments' && <SectionPayments /> }
                                         { this.state.section === 'requests' && <SectionRequests /> } 
                                         { this.state.section === 'labels' && <SectionLabels /> }
+                                        { this.state.section === 'content' && <SectionContent /> }
                                         { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
                                         { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                         { this.state.section === 'custom-pages' && <SectionCustomPages /> }

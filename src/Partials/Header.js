@@ -7,6 +7,7 @@ import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
@@ -18,6 +19,7 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
 import { getMode } from '../core/user-mode.js';
 import { CONFIG } from '../core/config';
+import { switchMode } from '../core/user-mode.js';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -104,21 +106,28 @@ class Header extends Component {
               { this.state.shouldDisplay &&
                 <ToolbarGroup>
                           { this.state.logged &&
-                          <div onClick={ 
-                                () => { goTo('/dashboard'); 
-                          }}>
+                          <div>
                             <IconButton
                               className="visible-xs"
                               iconStyle={{ color: grey600 }}>
                               <DashboardIcon />
                             </IconButton>
 
-                            <FlatButton
-                              className="hidden-xs"
-                              label={translate("HEADER_DASHBOARD")}
-                              
-                              style={headerBtnStyle}
-                            />
+                            <IconMenu
+                              iconButtonElement={
+                                <FlatButton
+                                  className="hidden-xs"
+                                  label={translate("HEADER_DASHBOARD")}
+                                  
+                                  style={headerBtnStyle}
+                                />
+                              }
+                              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                            >
+                              <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
+                              <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
+                            </IconMenu>
                           </div>
                           }
                           { !this.state.logged &&
@@ -223,14 +232,29 @@ class Header extends Component {
                             })
                           }
                           primaryText={translate("PROFILE")}
-                        />                 
-                        
-                      
-                        <MenuItem 
+                        />
+
+                        <MenuItem
                             onClick={() => goTo(`/account`)}
                             primaryText={translate("ACCOUNT_SETTINGS")}
                         />     
-                    
+
+                        { this.state.user && this.state.user.userType === 0 &&
+                            <MenuItem
+                              primaryText={this.state.userMode === "1" ?
+                                translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :
+                                translate("SWITCH_USER_MODE_TO_DEMAND_SIDE")
+                              }
+                              onTouchTap={() => {
+                                const newUserMode = getMode() === "1" ? "2" : "1";
+
+                                switchMode(newUserMode);
+
+                                location.reload();
+                              }}
+                            />
+                        }
+
                         { coreAuth.isAdmin() &&
                           <MenuItem onClick={
                             () => goTo('/admin/overview', true)

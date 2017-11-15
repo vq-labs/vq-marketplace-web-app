@@ -38,13 +38,13 @@ const coverPhotoFields = [
     {
         type: 'single-image',
         key: 'PROMO_URL',
-        label: 'Marketplace promo for clients/buyers (1280px x 850px are supported)',
+        label: 'Marketplace promo for demand side (1280px x 850px)',
         imageResolution: [ 1280, 850 ]
     },
     {
         type: 'single-image',
         key: 'PROMO_URL_SELLERS',
-        label: 'Marketplace promo for providers/sellers (1280x850px are supported)',
+        label: 'Marketplace promo for supply side (1280x850px)',
         imageResolution: [ 1280, 850 ]
     }
 ];
@@ -55,13 +55,12 @@ export default class SectionBasics extends React.Component {
             <div>
                 <ConfigEdit
                     header={'Marketplace Colors'}
-                    desc={'Corporate identity of your marketplace.'}
+                    desc={'Change the color of the action buttons, headers etc.'}
                     fields={defaultConfigsFields}
                 />
-
                 <ConfigEdit
                     header={'Cover photos'}
-                    desc={'Corporate identity of your marketplace.'}
+                    desc={'The cover photos are shown in the homepage for non-logged-in users. Image size should be <b>1280px x 850px</b> pixels. Read more about <a target="_blank" href="https://vqlabs.freshdesk.com/solution/articles/33000212959-configure-the-cover-photos-and-logo">Cover photos</a>.'}
                     fields={coverPhotoFields}
                 />
             </div>

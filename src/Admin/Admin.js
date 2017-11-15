@@ -80,6 +80,7 @@ export default class AdminPage extends React.Component {
             goTo(`/admin/${section}`);
 
             this.setState({
+                lastSection: this.state.lastSection,
                 section
             });
         };
@@ -159,36 +160,42 @@ export default class AdminPage extends React.Component {
                     </div>
                 </Drawer>
 
-                <div className="row" style={{ marginBottom: 100, paddingLeft: '256px' }}>
-                        <div className="col-xs-12">
-                                <div className="row">
-                                    <div className="col-xs-12">
-                                        { this.state.section === 'get-started' && <SectionGetStarted /> } 
-                                        { this.state.section === 'overview' && <SectionOverview /> } 
-                                        { this.state.section === 'users' && <SectionUsers /> }
-                                        { this.state.section === 'listings' && <SectionListings /> }
-                                        { this.state.section === 'landing-page' && <SectionLandingPage /> }
-                                        { this.state.section === 'analytics' && <SectionAnalytics /> }
-                                        { this.state.section === 'orders' && <SectionOrders /> }
-                                        { this.state.section === 'payments' && <SectionPayments /> }
-                                        { this.state.section === 'requests' && <SectionRequests /> } 
-                                        { this.state.section === 'labels' && <SectionLabels /> }
-                                        { this.state.section === 'content' && <SectionPosts /> }
-                                        { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
-                                        { this.state.section === 'listing-filters' && <SectionListingFilters /> }
-                                        { this.state.section === 'custom-pages' && <SectionCustomPages /> }
-                                        { this.state.section === 'user-types' && <SectionUserTypes /> }
-                                        { this.state.section === 'categories' && <SectionCategories /> }
-                                        { this.state.section === 'basics' && <SectionBasics /> }
-                                        { this.state.section === 'seo' && <SectionSEO /> }
-                                        { this.state.section === 'design' && <SectionDesign /> }
-                                        { this.state.section === 'pricing' && <SectionPricing /> }
-                                        { this.state.section === 'listing' && <SectionListing /> }
-                                        { this.state.section === 'posts' && <SectionPosts /> }
-                                        { this.state.section === 'subscription-plan' && <SectionSubscriptionPlan /> }
-                                    </div> 
+                <div className="row" style={{
+                    marginBottom: 100,
+                    paddingLeft: '256px'
+                }}>
+                    { this.state.lastSection === 'get-started' &&
+                        <a href="#" onTouchTap={() => this.goToSection("get-started")}>‹ Back to Get Started</a>
+                    }
+                    <div className="col-xs-12">
+                            <div className="row">
+                                <div className="col-xs-12">
+                                    { this.state.section === 'get-started' && <SectionGetStarted /> } 
+                                    { this.state.section === 'overview' && <SectionOverview /> } 
+                                    { this.state.section === 'users' && <SectionUsers /> }
+                                    { this.state.section === 'listings' && <SectionListings /> }
+                                    { this.state.section === 'landing-page' && <SectionLandingPage /> }
+                                    { this.state.section === 'analytics' && <SectionAnalytics /> }
+                                    { this.state.section === 'orders' && <SectionOrders /> }
+                                    { this.state.section === 'payments' && <SectionPayments /> }
+                                    { this.state.section === 'requests' && <SectionRequests /> } 
+                                    { this.state.section === 'labels' && <SectionLabels /> }
+                                    { this.state.section === 'content' && <SectionPosts /> }
+                                    { this.state.section === 'custom-scripts' && <SectionCustomScripts /> }
+                                    { this.state.section === 'listing-filters' && <SectionListingFilters /> }
+                                    { this.state.section === 'custom-pages' && <SectionCustomPages /> }
+                                    { this.state.section === 'user-types' && <SectionUserTypes /> }
+                                    { this.state.section === 'categories' && <SectionCategories /> }
+                                    { this.state.section === 'basics' && <SectionBasics /> }
+                                    { this.state.section === 'seo' && <SectionSEO /> }
+                                    { this.state.section === 'design' && <SectionDesign /> }
+                                    { this.state.section === 'pricing' && <SectionPricing /> }
+                                    { this.state.section === 'listing' && <SectionListing /> }
+                                    { this.state.section === 'posts' && <SectionPosts /> }
+                                    { this.state.section === 'subscription-plan' && <SectionSubscriptionPlan /> }
                                 </div> 
-                        </div>    
+                            </div> 
+                    </div>    
                 </div>    
             </div>
         );

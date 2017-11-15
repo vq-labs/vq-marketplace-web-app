@@ -75,12 +75,12 @@ const otherFields = [
     },
     {   
         selection: [
-            { value: 'DD.MM.YYYY', label: 'DD.MM.YY' },
+            { value: 'DD.MM.YY', label: 'DD.MM.YY' },
             { value: 'DD.MM.YYYY', label: 'DD.MM.YYYY' },
             { value: 'YYYY.MM.DD', label: 'YYYY.MM.DD' },
-            { value: 'YYYY.MM.DD', label: 'YYYY.MM.DD.' },
-            { value: 'YYYY.MM.DD', label: 'YY.MM.DD' },
-            { value: 'YYYY.MM.DD', label: 'YY.MM.DD.' },
+            { value: 'YYYY.MM.DD.', label: 'YYYY.MM.DD.' },
+            { value: 'YY.MM.DD', label: 'YY.MM.DD' },
+            { value: 'YY.MM.DD.', label: 'YY.MM.DD.' },
             { value: 'YYYY/MM/DD', label: 'YYYY/MM/DD' },
             { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY' }
         ],

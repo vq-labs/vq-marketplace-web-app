@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import EditableEntity from '../../Components/EditableEntity';
 import { appConfig } from '../../api/config';
 
@@ -24,7 +25,13 @@ export default class ConfigEdit extends React.Component {
         return (
             <div className="row">
                     {this.props.header && <h1>{this.props.header}</h1> }
-                    {this.props.desc && <p className="text-muted">{this.props.desc}</p> }
+                    {this.props.desc &&
+                        <p className="text-muted">
+                            <div className="text-muted" dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(this.props.desc)
+                            }}></div>
+                        </p>
+                    }
                     {(this.props.header || this.props.desc) && <hr /> }
 
                     <div className="col-xs-12">

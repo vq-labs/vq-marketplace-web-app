@@ -164,11 +164,6 @@ export default class RequestDialog extends React.Component {
                 <CircularProgress size={80} thickness={5} />
             </div>
         }
-        { !this.state.isBeingPosted && 
-        <p>
-            Ihre Nachricht wird geschickt.
-        </p>
-        }
     </div>;
 
     const Success=<div>
@@ -181,8 +176,7 @@ export default class RequestDialog extends React.Component {
     return (
       <Dialog
           autoScrollBodyContent={true}
-          title={ this.getDialogTitle(this.state.mask) }
-          actions={ getActions(this.state.mask) }
+          actions={getActions(this.state.mask)}
           modal={ true }
           open={ this.state.open }
         >

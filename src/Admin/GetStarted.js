@@ -40,13 +40,35 @@ export default class SectionOverview extends React.Component {
                         <Stepper linear={false} activeStep={this.state.stepIndex} orientation="vertical">
                             <Step>
                                 <StepButton onClick={() => this.setState({stepIndex: 0})}>
+                                   Define the supply and demand side
+                                </StepButton>
+
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p style={{ marginTop: 30 }}>
+                                            In online marketplaces, there are two sides (supply & demand) who interact with one another. While on some Marketplace platforms a user can both act as the supply and demand, other marketplaces prefer to limit the user's role into one. The decision depends on the business model and use-case of the Marketplace.
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            VQ Marketplace allows you to configure it. Read more about the <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">Demand and Supply Model</a>.
+                                        </p>
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/basics?fromSection=get-started');
+                                                location.reload();
+                                            }}
+                                            label="Configure Demand and Supply"
+                                        />
+                                    </div>
+                                </ StepContent>
+                            </Step>
+                            <Step>
+                                <StepButton onClick={() => this.setState({stepIndex: 1})}>
                                    Add a slogan & description
                                 </StepButton>
 
                                 <StepContent>
                                     <div className="col-xs-12">
-                                        <img alt={'Configure the slogan and description of the VQ-Marketplace'} src="/images/get-started-slogans.jpg" className="img-responsive" />
-
                                         <p style={{ marginTop: 30 }}>
                                             The slogan and description help new visitors understand what your marketplace is about. They are the first thing visitors notice when they land on your site, so try to make them compact but descriptive.
                                         </p>
@@ -54,7 +76,7 @@ export default class SectionOverview extends React.Component {
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/basics');
+                                                goTo('/admin/basics?fromSection=get-started');
                                                 location.reload();
                                             }}
                                             label="Add Slogans and Descriptions"
@@ -63,49 +85,23 @@ export default class SectionOverview extends React.Component {
                                 </ StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({ stepIndex: 1 })}>
-                                    Upload a cover photo
-                                </StepButton>
-                                <StepContent>
-                                    <div className="col-xs-12">
-                                        <RaisedButton
-                                            primary={true}
-                                            onTouchTap={() => {
-                                                goTo('/admin/design');
-                                                location.reload();
-                                            }}
-                                            label="Define colors and upload cover photos"
-                                        />
-                                    </div>
-                                </StepContent>
-                            </Step>
-                            <Step>
-                                 <StepButton onClick={() => this.setState({stepIndex: 2})}>
-                                    Describe how it works
-                                </StepButton>
-                                <StepContent>
-                                    <div className="col-xs-12">
-                                        <RaisedButton
-                                            primary={true}
-                                            onTouchTap={() => {
-                                                goTo('/admin/labels');
-                                                location.reload();
-                                            }}
-                                            label="Define custom labels"
-                                        />
-                                    </div>
-                                </StepContent>
-                            </Step>
-                            <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 3})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 2})}>
                                     Add Listing Categories
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
+                                        <p>
+                                            Marketplaces have categories for different types of listings. You can define and manage these categories from the Admin panel.
+
+                                            When users add new listings, they have to choose what category it belongs to.
+
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166407-creating-new-listing-categories" target="_blank">Listing categories</a>.
+                                        </p>
+                                            
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/categories');
+                                                goTo('/admin/categories?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}
@@ -115,15 +111,65 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 4})}>
-                                    Connect your social media channels
+                                <StepButton onClick={() => this.setState({ stepIndex: 3 })}>
+                                    Upload a cover photo
+                                </StepButton>
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p>
+                                            You can add a cover photo by going to the Design Tab of the admin panel. The cover photo is shown in the homepage for non-logged-in users. Image size should be <b>1280px x 850px</b> pixels.
+                                        </p>
+                                        <p>
+                                            If you use a photo with any other size, it will be resized automatically and taller images will be cut in the middle (top and bottom will be cropped).
+                                            
+                                            To enjoy the best results, you should use the recommended size.
+                                        </p>
+                                        <p>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166407-creating-new-listing-categories" target="_blank">Cover photos</a>.
+                                        </p>
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/design?fromSection=get-started');
+
+                                                location.reload();
+                                            }}
+                                            label="Define colors and upload cover photos"
+                                        />
+                                    </div>
+                                </StepContent>
+                            </Step>
+                            <Step>
+                                 <StepButton onClick={() => this.setState({stepIndex: 4})}>
+                                    Describe how it works
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/seo');
+                                                goTo('/admin/labels?fromSection=get-started');
+                                                location.reload();
+                                            }}
+                                            label="Define custom labels"
+                                        />
+                                    </div>
+                                </StepContent>
+                            </Step>
+                            
+                            <Step>
+                                <StepButton onClick={() => this.setState({stepIndex: 5})}>
+                                    Connect your social media channels
+                                </StepButton>
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212962-configure-seo-and-social-media-channels" target="_blank">Social Media</a> configuration.
+                                        </p>
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/seo?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}
@@ -133,7 +179,7 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 5})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 6})}>
                                     Setup Analytics
                                 </StepButton>
                                 <StepContent>
@@ -141,7 +187,7 @@ export default class SectionOverview extends React.Component {
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/analytics');
+                                                goTo('/admin/analytics?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}
@@ -151,7 +197,7 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 6})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
                                     Connect to Stripe and setup payments
                                 </StepButton>
                                 <StepContent>
@@ -160,7 +206,7 @@ export default class SectionOverview extends React.Component {
                                             disabled={true}
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/analytics');
+                                                goTo('/admin/analytics?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}
@@ -170,7 +216,7 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 8})}>
                                     Invite your users
                                 </StepButton>
                                 <StepContent>
@@ -179,7 +225,7 @@ export default class SectionOverview extends React.Component {
                                             disabled={true}
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/analytics');
+                                                goTo('/admin/analytics?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}

@@ -35,13 +35,13 @@ const userTypeActions = [
         type: 'bool',
         key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
         label: 'Enable "Demand" listings',
-        explanation: 'Demand side will be able insert "I am searching for / Ill buy" and supply side would be able to send requests for those listings',
+        explanation: 'The Demand side will be able insert demand listings for which the supply side would be able to send requests.',
     },
     {
         type: 'bool',
         key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
         label: 'Enable "Supply" listings',
-        explanation: 'Supply side will be able to offer services / products / things to rent.',
+        explanation: 'The Supply side will be able to create supply listings that can by booked by demand side.',
     }
 ];
 
@@ -57,13 +57,8 @@ export default class SectionUserTypes extends React.Component {
         return (
             <div>
                 <ConfigEdit
-                    header={"Login for users"}
-                    fields={userTypeFields}
-                />
-
-                <ConfigEdit
-                    header={"Allowed actions"}
-                    desc={"There are two listings types: 'Request Listings' and 'Offer Listings'."}
+                    header={"Demand and Supply Model"}
+                    desc={`Users and listings can be of both types: 'Demand' and 'Supply'. Read more about the <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">Demand and Supply Model</a>.`}
                     fields={userTypeActions}
                 />
             </div>

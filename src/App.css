@@ -34,6 +34,10 @@ p {
   overflow-wrap: break-word;
 }
 
+.vq-margin-top-bottom {
+  margin-top: 15px
+}
+
 .vq-margin-top-xs {
   margin-top: 10px
 }

@@ -10,7 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 import HtmlTextField from './HtmlTextField';
 import ImageUploader from './ImageUploader';
 import FileUploader from './FileUploader';
-import DOMPurify from 'dompurify'
+import DOMPurify from 'dompurify';
 import * as coreNavigation from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';

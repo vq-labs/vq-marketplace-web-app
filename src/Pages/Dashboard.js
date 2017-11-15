@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
 import TaskListItem from '../Components/TaskListItem';
 import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
-import RaisedButton from 'material-ui/RaisedButton';
+import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
-import { goTo, setQueryParams } from '../core/navigation';
+import { setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js';
-import { switchMode, getMode } from '../core/user-mode.js';
+import { getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
-import Loader from "../Components/Loader";
 import { openDialog } from '../helpers/open-message-dialog.js';
-
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -33,6 +30,19 @@ export default class Dashboard extends Component {
       };
   }
   
+  componentWillReceiveProps (nextProps) {
+      const dashboardType = nextProps.params.type;
+      const defaultViewTypes = {
+        listings: "LISTINGS_POSTED",
+        requests: "SENT_REQUESTS_PENDING"
+      };
+
+      this.setState({
+        dashboardType,
+        viewType: defaultViewTypes[dashboardType]
+      });
+  }
+
   componentDidMount() {
       getUserAsync(user => {
         if (getMeOutFromHereIfAmNotAuthorized(user)) {
@@ -40,8 +50,9 @@ export default class Dashboard extends Component {
         }
 
         const userMode = user.userType === 0 ? getMode() : user.userType;
-
+        
         const newState = {
+          dashboardType: userMode === 1 ? 'listings' : 'requests',
           userMode,
           isLoading: true,
           ready: true,
@@ -77,40 +88,54 @@ export default class Dashboard extends Component {
         <div className="container vq-no-padding">
           {this.state.ready &&
           <div className="col-xs-12">
-            <div className="col-xs-12" style={{ marginBottom: 20 }}>
-              { this.state.userType === 0 &&
-                <RaisedButton
-                  primary={true}
-                  label={this.state.userMode === "1" ?
-                    translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :
-                    translate("SWITCH_USER_MODE_TO_DEMAND_SIDE")
-                  }
-                  onTouchTap={() => {
-                    const newUserMode = getMode() === "1" ? "2" : "1";
+            { this.state.dashboardType === "listings" &&
+              <div className="row vq-margin-top-bottom">
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                    <h2>My Listings</h2>
+                  </div>
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                    <DashboardViewTypeChoice
+                      userType={Number(this.state.userMode)}
+                      dashboardType={"listings"}
+                      halign="left"
+                      selected={this.state.viewType}
+                      onSelect={viewType => {
+                        const newState = { viewType };
 
-                    switchMode(newUserMode);
+                        setQueryParams(newState);
 
-                    location.reload();
-                  }}
-                />
-              }
-            </div>
-            <div className="col-xs-12" style={{ marginBottom: 20 }}>
-              <DashboardViewTypeChoice
-                userType={Number(this.state.userMode)}
-                halign="left"
-                selected={this.state.viewType}
-                onSelect={viewType => {
-                  const newState = { viewType };
+                        this.setState(newState);
+                    }}
+                    />
+                  </div>
+                </div>
+            }
 
-                  setQueryParams(newState);
+            {this.state.dashboardType === "requests" &&
+              <div className="row vq-margin-top-bottom">
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                    <h2>My Requests</h2>
+                  </div>
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                    <DashboardViewTypeChoice
+                      userType={Number(this.state.userMode)}
+                      dashboardType={"requests"}
+                      halign="left"
+                      selected={this.state.viewType}
+                      onSelect={viewType => {
+                        const newState = { viewType };
 
-                  this.setState(newState);
-              }}
-              />
-            </div>
+                        setQueryParams(newState);
+
+                        this.setState(newState);
+                    }}
+                    />
+                  </div>
+                </div>
+            }
+          
             {(this.state.viewType === 'LISTINGS_POSTED' || this.state.viewType === 'OFFER_LISTINGS_POSTED' ) &&
-                <div className="row">
+                <div className="row vq-margin-top-bottom">
                   { this.state.isLoading &&
                     <Loader isLoading={true} />
                   }
@@ -160,7 +185,7 @@ export default class Dashboard extends Component {
                 </div>
               }
               {this.state.viewType === 'ORDERS_IN_PROGRESS' &&
-                <div className="row">
+                <div className="row vq-margin-top-bottom">
                   <Bookings
                     showTitle={false}
                     view={"in_progress"}
@@ -170,7 +195,7 @@ export default class Dashboard extends Component {
               }
 
               {this.state.viewType === 'ORDERS_COMPLETED' &&
-                <div className="row">
+                <div className="row vq-margin-top-bottom">
                   <Bookings
                     showTitle={false}
                     view={"completed"}
@@ -180,31 +205,32 @@ export default class Dashboard extends Component {
               }
 
               {this.state.viewType === 'SENT_REQUESTS_PENDING' &&
-                <Requests
-                  view={"pending"}
-                  showTitle={false}
-                />
+                <div className="row vq-margin-top-bottom">
+                  <Requests
+                    view={"pending"}
+                    showTitle={false}
+                  />
+                </div>
               }
 
               {this.state.viewType === 'SENT_REQUESTS_ACCEPTED' &&
-                <Requests
-                  view={"in_progress"}
-                  showTitle={false}
-                />
+                <div className="row vq-margin-top-bottom">
+                  <Requests
+                    view={"in_progress"}
+                    showTitle={false}
+                  />
+                </div>
               }
 
               {this.state.viewType === 'SENT_REQUESTS_SETTLED' &&
-                <Requests
-                  view={"completed"}
-                  showTitle={false}
-                />
+                <div className="vq-margin-top-bottom">
+                  <Requests
+                    view={"completed"}
+                    showTitle={false}
+                  />
+                </div>
               }
             </div>
-            }
-            { false && !this.state.isLoading && Number(this.state.userType) === 1 &&
-              <NewListingCategory onSelected={listingCategoryCode => {
-                goTo(`/new-listing?category=${listingCategoryCode}`);
-              }}/>
             }
         </div>
       );

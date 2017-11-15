@@ -140,11 +140,11 @@ export default class NewListing extends Component {
                 return alert("No support for user type 0 yet. Create supply or demand account.");
             }
 
-            if (user.userType === 2 && CONFIG.USER_TYPE_OFFER_LISTING_ENABLED !== "1") {
+            if (user.userType === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                 return goTo('/');
             }
 
-            if (user.userType === 1 && CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED !== "1") {
+            if (user.userType === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
                 return goTo('/');
             }
 
@@ -309,14 +309,18 @@ export default class NewListing extends Component {
             return (
                     <div className="container">
                         { this.state.step === LISTING_VIEWS.CATEGORY && 
-                            <NewListingCategory onSelected={
-                                categoryCode => this.onCategoryChosen(categoryCode)
-                            } /> 
+                            <NewListingCategory
+                                listingType={this.state.task.taskType}
+                                onSelected={
+                                    categoryCode => this.onCategoryChosen(categoryCode)
+                                }
+                            /> 
                         }
                         { this.state.step > LISTING_VIEWS.CATEGORY &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
                             { this.state.ready && this.state.step === LISTING_VIEWS.PRICING &&
                                 <NewListingPricing
+                                    listingType={this.state.task.taskType}
                                     currency={this.state.currency}
                                     minPrice={this.state.minPrice}
                                     price={this.state.task.price}
@@ -328,6 +332,7 @@ export default class NewListing extends Component {
                             }
                             { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics
+                                    listingType={this.state.task.taskType}
                                     title={{ value: this.state.task.title, mode: CONFIG.LISTING_TITLE_MODE }}
                                     description={{ value: this.state.task.description, mode: CONFIG.LISTING_DESCRIPTION_MODE }}
                                     location={{
@@ -345,6 +350,7 @@ export default class NewListing extends Component {
 
                             { this.state.ready && this.state.step === LISTING_VIEWS.LOCATION &&
                                 <NewListingLocation
+                                    listingType={this.state.task.taskType}
                                     countryRestriction={CONFIG.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
@@ -362,7 +368,8 @@ export default class NewListing extends Component {
                             { this.state.step === LISTING_VIEWS.LOGIN && createAccountSection }
                             { this.state.step === LISTING_VIEWS.IMAGES && addImages }
                             { this.state.step === LISTING_VIEWS.CALENDAR &&
-                                <NewListingDate 
+                                <NewListingDate
+                                    listingType={this.state.task.taskType}
                                     selected={this.state.task.timing}
                                     onSelect={selectedDate => {
                                         const task = this.state.task;
@@ -376,7 +383,8 @@ export default class NewListing extends Component {
                                 /> 
                             }
                             { this.state.step === LISTING_VIEWS.DURATION &&
-                                <NewListingDuration 
+                                <NewListingDuration
+                                    listingType={this.state.task.taskType}
                                     duration={this.state.task.duration}
                                     handleDurationChange={duration => {
                                         const task = this.state.task;
@@ -391,6 +399,7 @@ export default class NewListing extends Component {
                             }
                             { this.state.step === LISTING_VIEWS.REVIEW &&
                                 <NewListingReview
+                                    listingType={this.state.task.taskType}
                                     listing={this.state.task}
                                     currency={this.state.currency}
                                 />
@@ -638,8 +647,12 @@ export default class NewListing extends Component {
                                             }))
                                             .then(task => {
                                                 openDialog({
-                                                    header: translate('NEW_LISTING_SUCCESS_HEADER'),
-                                                    desc: translate('NEW_LISTING_SUCCESS_DESC')
+                                                    header: this.state.task.taskType === 1 ?
+                                                        translate('NEW_LISTING_SUCCESS_HEADER') :
+                                                        translate('NEW_SUPPLY_LISTING_SUCCESS_HEADER'),
+                                                    desc: this.state.task.taskType === 1 ?
+                                                        translate('NEW_LISTING_SUCCESS_DESC') :
+                                                        translate('NEW_SUPPLY_LISTING_SUCCESS_DESC')
                                                 }, () => {
                                                     goTo(`/task/${task.id}`);
                                                 });

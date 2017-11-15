@@ -39,9 +39,9 @@ export default class NewListingCategory extends React.Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h1 style={{color: this.state.config.COLOR_PRIMARY}} className="text-left">
-                                    {translate("NEW_LISTING_CATEGORY_HEADER")}
+                                    {this.props.listingType === 1 ? translate("NEW_LISTING_CATEGORY_HEADER") : translate("NEW_SUPPLY_LISTING_CATEGORY_HEADER") }
                                 </h1>
-                                <p>{translate("NEW_LISTING_CATEGORY_DESC")}</p>
+                                <p>{this.props.listingType === 1 ? translate("NEW_LISTING_CATEGORY_DESC") : translate("NEW_SUPPLY_LISTING_CATEGORY_DESC") }</p>
                             </div>
                         </div>
                     }

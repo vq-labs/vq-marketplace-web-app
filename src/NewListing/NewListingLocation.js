@@ -33,8 +33,12 @@ export default class NewListingAddress extends Component {
                             <div className="col-xs-12">
                                 <h1 style={{
                                     color: this.state.config.COLOR_PRIMARY
-                                }}>{translate("NEW_LISTING_ADDRESS_HEADER")}</h1>
-                                <p>{translate("NEW_LISTING_ADDRESS_DESC")}</p>
+                                }}>
+                                    {this.props.listingType === 1 ? translate("NEW_LISTING_ADDRESS_HEADER") : translate("NEW_SUPPLY_LISTING_ADDRESS_HEADER")}
+                                </h1>
+                                <p>
+                                    {this.props.listingType === 1 ? translate("NEW_LISTING_ADDRESS_DESC") : translate("NEW_SUPPLY_LISTING_ADDRESS_DESC")}
+                                </p>
                             </div>
                         </div>
                         <hr />

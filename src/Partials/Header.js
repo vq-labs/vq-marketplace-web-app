@@ -133,7 +133,12 @@ class Header extends Component {
                           }
                     { this.state.logged && <ToolbarSeparator /> }
 
-                    { this.state.logged && Number(this.state.userMode) === 2 &&
+                    { this.state.logged &&
+                      (
+                        (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && Number(this.state.userMode) === 1) ||
+                        (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && Number(this.state.userMode) === 2) 
+                      )
+                    &&
                       <div onTouchTap={ 
                           () => goTo('/')
                       }>
@@ -145,7 +150,7 @@ class Header extends Component {
 
                         <FlatButton
                           className="hidden-xs"
-                          label={translate('HEADER_LISTINGS')} 
+                          label={Number(this.state.userMode) === 1 ? translate('HEADER_SUPPLY_LISTINGS') : translate('HEADER_DEMAND_LISTINGS')}
                           style={headerBtnStyle}
                         />
                       </div>
@@ -155,7 +160,7 @@ class Header extends Component {
                       &&
                       Number(this.state.userMode) === 1
                       &&
-                      CONFIG.USER_TYPE_REQUEST_LISTING_ENABLED === "1"
+                      CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                       &&
                       <a onClick={() => goTo('/new-listing')} target="_self">
                         {
@@ -175,7 +180,7 @@ class Header extends Component {
                       &&
                       Number(this.state.userMode) === 2
                       &&
-                      CONFIG.USER_TYPE_OFFER_LISTING_ENABLED === "1"
+                      CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
                       &&
                       <a onClick={() => goTo('/new-listing')} target="_self">
                         {

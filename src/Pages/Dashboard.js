@@ -49,7 +49,7 @@ export default class Dashboard extends Component {
         };
 
         if (!this.state.viewType) {
-          if (Number(userMode) === 2 && CONFIG.USER_TYPE_OFFER_LISTING_ENABLED === "1") {
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
             newState.viewType = "OFFER_LISTINGS_POSTED";
           } else {
             newState.viewType =  Number(userMode) === 1 ?

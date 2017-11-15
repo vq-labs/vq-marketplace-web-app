@@ -75,7 +75,7 @@ class Offers extends Component {
             /**
              * Only sellers can access this page
              */
-            if (user.userType === 1 && CONFIG.USER_TYPE_OFFER_LISTING_ENABLED !== "1") {
+            if (user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                 return goTo('/dashboard');
             } else {
                 listingType = 2;

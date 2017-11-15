@@ -33,14 +33,14 @@ const userTypeFields = [
 const userTypeActions = [
     {
         type: 'bool',
-        key: 'USER_TYPE_REQUEST_LISTING_ENABLED',
-        label: 'Enable "Request" listings',
+        key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+        label: 'Enable "Demand" listings',
         explanation: 'Demand side will be able insert "I am searching for / Ill buy" and supply side would be able to send requests for those listings',
     },
     {
         type: 'bool',
-        key: 'USER_TYPE_OFFER_LISTING_ENABLED',
-        label: 'Enable "Offering" listings',
+        key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+        label: 'Enable "Supply" listings',
         explanation: 'Supply side will be able to offer services / products / things to rent.',
     }
 ];

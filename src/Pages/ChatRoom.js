@@ -513,6 +513,8 @@ export default class ChatRoom extends React.Component {
                                     }
 
                                     { this.state.user &&
+                                      this.state.task &&
+                                      this.state.task.taskType === 1 &&
                                         <Stepper className="hidden-xs" activeStep={
                                             getActiveStep(this.state.request.status, getReviewFromState(this.state))
                                         } orientation="vertical">

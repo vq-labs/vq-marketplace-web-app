@@ -13,7 +13,7 @@ import { displayMessage } from '../helpers/display-message.js';
 
 const _ = require('underscore');
 
-export default class ApplicationDialog extends React.Component {
+export default class RequestDialog extends React.Component {
     constructor(props) {
         super(props);
 

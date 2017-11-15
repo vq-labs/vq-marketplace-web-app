@@ -69,9 +69,9 @@ export default class NewListingPricing extends React.Component {
                 <div className="row">
                     <div className="col-xs-12">
                         <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
-                            {translate("NEW_LISTING_PRICING_HEADER")}
+                            {this.props.listingType === 1 ? translate("NEW_LISTING_PRICING_HEADER") : translate("NEW_SUPPLY_LISTING_PRICING_HEADER")}
                         </h1>
-                        <p>{translate("NEW_LISTING_PRICING_DESC")}</p>
+                        <p>{this.props.listingType === 1 ? translate("NEW_LISTING_PRICING_DESC") : translate("NEW_SUPPLY_LISTING_PRICING_DESC")}</p>
                     </div>
                 </div>
                 <hr />

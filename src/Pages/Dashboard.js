@@ -14,14 +14,20 @@ import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 import { openDialog } from '../helpers/open-message-dialog.js';
 
+const defaultViewTypes = {
+  listings: "LISTINGS_POSTED",
+  requests: "SENT_REQUESTS_PENDING"
+};
 export default class Dashboard extends Component {
   constructor(props) {
       super();
   
       const viewType = getParams(location.search).viewType;
+      const dashboardType = props.params.type;
     
       this.state = {
-        viewType,
+        dashboardType,
+        viewType: defaultViewTypes[dashboardType],
         isLoading: false,
         tasks: [],
         selectedTask: {
@@ -32,10 +38,7 @@ export default class Dashboard extends Component {
   
   componentWillReceiveProps (nextProps) {
       const dashboardType = nextProps.params.type;
-      const defaultViewTypes = {
-        listings: "LISTINGS_POSTED",
-        requests: "SENT_REQUESTS_PENDING"
-      };
+      
 
       this.setState({
         dashboardType,
@@ -52,11 +55,11 @@ export default class Dashboard extends Component {
         const userMode = user.userType === 0 ? getMode() : user.userType;
         
         const newState = {
-          dashboardType: userMode === 1 ? 'listings' : 'requests',
           userMode,
           isLoading: true,
           ready: true,
-          userType: user.userType
+          userType: user.userType,
+          viewType: defaultViewTypes[this.state.dashboardType]
         };
 
         if (!this.state.viewType) {
@@ -65,7 +68,7 @@ export default class Dashboard extends Component {
           } else {
             newState.viewType =  Number(userMode) === 1 ?
               'ORDERS_IN_PROGRESS' :
-              'SENT_REQUESTS_ACCEPTED';
+              'SENT_REQUESTS_PENDING';
           }
         }
 
@@ -100,7 +103,9 @@ export default class Dashboard extends Component {
                       halign="left"
                       selected={this.state.viewType}
                       onSelect={viewType => {
-                        const newState = { viewType };
+                        const newState = {
+                          viewType
+                        };
 
                         setQueryParams(newState);
 

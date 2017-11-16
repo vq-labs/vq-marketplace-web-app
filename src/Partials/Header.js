@@ -105,30 +105,60 @@ class Header extends Component {
               }
               { this.state.shouldDisplay &&
                 <ToolbarGroup>
+                          { (
+                            this.state.logged &&
+                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                            ) &&
+                            <div>
+                              <IconButton
+                                className="visible-xs"
+                                iconStyle={{ color: grey600 }}>
+                                <DashboardIcon />
+                              </IconButton>
+                              
+                                <IconMenu
+                                  iconButtonElement={
+                                    <FlatButton
+                                      className="hidden-xs"
+                                      label={translate("HEADER_DASHBOARD")}
+                                      
+                                      style={headerBtnStyle}
+                                    />
+                                  }
+                                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                  targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                                >
+                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
+                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
+                                </IconMenu>
+                            </div>
+                          }
                           { this.state.logged &&
-                          <div>
-                            <IconButton
-                              className="visible-xs"
-                              iconStyle={{ color: grey600 }}>
-                              <DashboardIcon />
-                            </IconButton>
-
-                            <IconMenu
-                              iconButtonElement={
-                                <FlatButton
-                                  className="hidden-xs"
-                                  label={translate("HEADER_DASHBOARD")}
-                                  
-                                  style={headerBtnStyle}
-                                />
+                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
+                            <div onTouchTap={() => {
+                              if (
+                                CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
+                                this.state.userMode === "1"
+                              ) {
+                                goTo("/dashboard/requests");
                               }
-                              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            >
-                              <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
-                              <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
-                            </IconMenu>
-                          </div>
+                                
+                            }}>
+                              <IconButton
+                                className="visible-xs"
+                                iconStyle={{ color: grey600 }}>
+                                <DashboardIcon />
+                              </IconButton>
+
+                              <FlatButton
+                                className="hidden-xs"
+                                label={translate("HEADER_DASHBOARD")}
+                                
+                                style={headerBtnStyle}
+                              />
+                            </div>
                           }
                           { !this.state.logged &&
                           <FlatButton label={translate("SIGNUP")} onClick={ 
@@ -164,6 +194,8 @@ class Header extends Component {
                         />
                       </div>
                     }
+
+                    
 
                     { this.state.logged
                       &&

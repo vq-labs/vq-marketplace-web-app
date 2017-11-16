@@ -18,12 +18,12 @@ npm run start:local
 
 ## Integrating with an existing marketplace
 VQ MARKETPLACE enables you to work on your own marketplace storefront while still using the offical VQ web services.
-You can always connect to the marketplace you are running on VQ-MARKETPLACE. You just need to ajust the VQ_API_URL when you build the application.
+You can always connect to the marketplace that is hosted by VQ-LABS. You just need to ajust the VQ_API_URL when you build the application.
 ```
 VQ_API_URL=https://<yourMarketplaceId>.vqmarketplace.com npm run start:local
 ```
 
-To start up quickly and connect to an existing marketplace talentwand.de, enter:
+To try it out and start up quickly and connect to an existing marketplace talentwand.de, enter:
 ```
 npm run start:talentwand
 ```
@@ -35,6 +35,10 @@ npm install s3-deploy --g
 ```
 
 AWS credentials can be provided via environment variables, or in the ~/.aws/credentials file. More details here: http://docs.aws.amazon.com/cli/latest/topic/config-vars.html. Please make sure to define a default in your AWS credentials, this will help prevent a Missing Credentials error during deployment.
+Altenratively, you can use the wizard from aws:
+```
+aws configure
+```
 
 The following command will prepare, build and deploy the app to S3 bucket:
 ```
@@ -43,7 +47,6 @@ AWS_REGION=eu-central-1 \
 VQ_API_URL=yourMarketplaceId.vqmarketplace.com \ 
 gulp deploy
 ```
-
 ## Browser support
 ***Chrome*** (latest version)<br />
 ***Safari*** (latest version)<br />

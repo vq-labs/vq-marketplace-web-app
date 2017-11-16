@@ -98,11 +98,10 @@
     "yargs": "^6.6.0"
   },
   "scripts": {
+    "preparestart": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
     "start:local": "node ./node_modules/gulp/bin/gulp.js prepare --env local && node scripts/start.js",
-    "start:sercan": "VQ_API_URL=http://sercan.viciqloud.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
-    "start:talentwand": "VQ_API_URL=https://vq.vq-labs.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
-    "start:click4work": "VQ_API_URL=https://click4work.vq-labs.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
-    "start:adrian": "VQ_API_URL=https://adrian.viciqloud.com/api node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
+    "start:talentwand": "VQ_API_URL=https://talentwand.vqmarketplace.com/api npm run preparestart",
+    "start:click4work": "VQ_API_URL=https://click4work.vq-labs.com/api npm run preparestart",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js && npm run build-rename",
     "build-rename": "npm run build-rename-js && npm run build-rename-css",
     "build-rename-js": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.js' --replace 'main.js' build/static/js/*.js",

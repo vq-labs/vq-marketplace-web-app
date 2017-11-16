@@ -17,17 +17,19 @@ npm run start:local
 ```
 
 ## Integrating with an existing marketplace
-You can always connect to the marketplace your are running on VQ-MARKETPLACE. You just need ajust the VQ_API_URL when you start it up.
+VQ MARKETPLACE enables you to work on your own marketplace storefront while still using the offical VQ web services.
+You can always connect to the marketplace you are running on VQ-MARKETPLACE. You just need to ajust the VQ_API_URL when you build the application.
 ```
-VQ_API_URL=https://<yourMarketplaceId>.vq-labs.com npm run start:local
+VQ_API_URL=https://<yourMarketplaceId>.vqmarketplace.com npm run start:local
 ```
 
-In this way, you can work on your own marketplace storefront while still using the offical VQ web services.
-
-## Configuration
+To start up quickly and connect to an existing marketplace talentwand.de, enter:
+```
+npm run start:talentwand
+```
 
 ## Deployment
-Make sure that you have s3-deploy installed globally:
+You can host your files with Amazon S3. Make sure that you have s3-deploy installed globally:
 ```
 npm install s3-deploy --g
 ```
@@ -36,9 +38,9 @@ AWS credentials can be provided via environment variables, or in the ~/.aws/cred
 
 The following command will prepare, build and deploy the app to S3 bucket:
 ```
-AWS_BUCKET_NAME=xxx.vq-labs.com \
+AWS_BUCKET_NAME=xxx.vqmarketplace.com \
 AWS_REGION=eu-central-1 \
-VQ_API_URL=yourMarketplaceId.vq-labs.com \ 
+VQ_API_URL=yourMarketplaceId.vqmarketplace.com \ 
 gulp deploy
 ```
 
@@ -58,3 +60,4 @@ However, the web app aims to be work accross a range of mobile devices and scree
 https://vqlabs.freshdesk.com/support/home
 
 ## MIT License
+https://vqmarketplace.com

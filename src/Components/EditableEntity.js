@@ -169,7 +169,7 @@ export default class EditableEntity extends Component {
                                                             <TwitterPicker
                                                                 color={this.state.updatedEntity[field.key]}
                                                                 onChange={color => {
-                                                                    this.handleFieldChange(field.key)(undefined, color.hex);
+                                                                    this.handleFieldChange(field)(undefined, color.hex);
                                                                 }}
                                                             />
                                                         </div>

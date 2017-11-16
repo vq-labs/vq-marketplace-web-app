@@ -49,12 +49,12 @@ export default class SectionOverview extends React.Component {
                                             In online marketplaces, there are two sides (supply & demand) who interact with one another. While on some Marketplace platforms a user can both act as the supply and demand, other marketplaces prefer to limit the user's role into one. The decision depends on the business model and use-case of the Marketplace.
                                         </p>
                                         <p style={{ marginTop: 30 }}>
-                                            VQ Marketplace allows you to configure it. Read more about the <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">Demand and Supply Model</a>.
+                                            VQ Marketplace allows you to configure it. Read more about the <a target="_blank" href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" >Demand and Supply Model</a>.
                                         </p>
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/basics?fromSection=get-started');
+                                                goTo('/admin/user-types?fromSection=get-started');
                                                 location.reload();
                                             }}
                                             label="Configure Demand and Supply"

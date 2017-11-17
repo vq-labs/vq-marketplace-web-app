@@ -12,7 +12,7 @@ import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { getUtcUnixTimeNow } from '../core/util';
 import getUserProperty from '../helpers/get-user-property';
 import { factory as errorFactory } from '../core/error-handler';
@@ -31,7 +31,6 @@ export default class Requests extends Component {
   }
   
   componentDidMount() {
-    getConfigAsync(config => {
         const queryObj = {};
 
         if (this.state.view) {
@@ -42,7 +41,6 @@ export default class Requests extends Component {
             .getItems(queryObj)
             .then(requests => {
                 this.setState({
-                    config,
                     requests,
                     ready: true,
                     isLoading: false
@@ -50,7 +48,6 @@ export default class Requests extends Component {
 
                 this.props.onReady && this.props.onReady();
             });
-    });
   }
 
   markAsDone = request => {
@@ -140,7 +137,7 @@ export default class Requests extends Component {
                 <div className="row">
                     <div className="col-xs-12">
                     { this.props.showTitle &&
-                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                        <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                             {translate('YOUR_REQUESTS')}
                         </h1>
                     }
@@ -152,8 +149,9 @@ export default class Requests extends Component {
                         </div>
                     }
                     { !this.state.isLoading && this.state.requests
-                        .map(request =>
+                        .map((request, index) =>
                             <div
+                                key={index}
                                 className="col-xs-12"
                                 style={{ marginTop: 10 }}
                             >
@@ -161,7 +159,7 @@ export default class Requests extends Component {
                                     style={{ padding: 10 }}>
                                     <ListingHeader
                                         task={request.task}
-                                        config={this.state.config}
+                                        config={CONFIG}
                                     />
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 text-left"> 
@@ -177,7 +175,7 @@ export default class Requests extends Component {
 
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                                         <span>
-                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
+                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
                                                         </span>
                                                     }
 
@@ -232,21 +230,18 @@ export default class Requests extends Component {
                                             }
                                             { this.shouldAllowCancel(request) &&
                                                 <RaisedButton
-                                                    labelStyle={{color: 'white '}}
-                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    primary={true}
                                                     label={translate('CANCEL')}
                                                     onTouchTap={() => this.cancelRequest(request)}
                                                 />
                                             }
                                             { this.shouldAllowMarkingAsDone(request) &&
                                                 <RaisedButton
-                                                    labelStyle={{color: 'white '}}
-                                                    backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                    primary={true}
                                                     label={translate('REQUEST_ACTION_MARK_DONE')}
                                                     onTouchTap={() => this.markAsDone(request)}
                                                 />
                                             }
-
                                             {!request.review &&
                                                 (request.status === REQUEST_STATUS.SETTLED ||
                                                  request.status === REQUEST_STATUS.CLOSED) &&
@@ -255,12 +250,9 @@ export default class Requests extends Component {
                                                     padding: 10
                                                 }}>
                                                     <RaisedButton
-                                                        labelStyle={{color: 'white '}}
-                                                        backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                        primary={true}
                                                         label={translate('LEAVE_REVIEW')}
-                                                        onTouchTap={() => {
-                                                            goTo(`/request/${request.id}/review`);
-                                                        }}
+                                                        onTouchTap={() => goTo(`/request/${request.id}/review`)}
                                                     />
                                                 </div>
                                                 }

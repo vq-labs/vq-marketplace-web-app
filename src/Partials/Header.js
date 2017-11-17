@@ -134,17 +134,28 @@ class Header extends Component {
                             </div>
                           }
                           { this.state.logged &&
-                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
-                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
+                            ((
+                              CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                              CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                            ) || (
+                              CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                              CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                            )) &&
                             <div onTouchTap={() => {
                               if (
                                 CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
-                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
-                                this.state.userMode === "1"
+                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
                               ) {
-                                goTo("/dashboard/requests");
+                                return goTo(this.state.userMode === "1" ? "/dashboard/requests" : "/dashboard/listings");
                               }
-                                
+                              
+                              if (
+                                CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                              ) {
+                                return goTo(this.state.userMode === "1" ? "/dashboard/listings" : "/dashboard/requests");
+                              }
+
                             }}>
                               <IconButton
                                 className="visible-xs"
@@ -247,9 +258,7 @@ class Header extends Component {
                       <IconMenu
                             style={{ cursor: 'pointer' }}
                             iconButtonElement={
-                              <div>
-                                <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
-                              </div>
+                              <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
                             }
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >

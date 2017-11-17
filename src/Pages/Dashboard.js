@@ -27,23 +27,24 @@ export default class Dashboard extends Component {
     
       this.state = {
         dashboardType,
-        viewType: defaultViewTypes[dashboardType],
+        viewType,
         isLoading: false,
         tasks: [],
         selectedTask: {
           requests: []
         }
       };
+
+      this.onViewChange = this.onViewChange.bind(this);
   }
   
   componentWillReceiveProps (nextProps) {
-      const dashboardType = nextProps.params.type;
-      
-
-      this.setState({
-        dashboardType,
-        viewType: defaultViewTypes[dashboardType]
-      });
+    const dashboardType = nextProps.params.type;
+    
+    this.setState({
+      dashboardType,
+      // viewType: defaultViewTypes[dashboardType]
+    });
   }
 
   componentDidMount() {
@@ -59,16 +60,19 @@ export default class Dashboard extends Component {
           isLoading: true,
           ready: true,
           userType: user.userType,
-          viewType: defaultViewTypes[this.state.dashboardType]
         };
 
         if (!this.state.viewType) {
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            newState.viewType = this.state.dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            newState.viewType = this.state.dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
           if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = "OFFER_LISTINGS_POSTED";
-          } else {
-            newState.viewType =  Number(userMode) === 1 ?
-              'ORDERS_IN_PROGRESS' :
-              'SENT_REQUESTS_PENDING';
+            newState.viewType = this.state.dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
           }
         }
 
@@ -84,6 +88,16 @@ export default class Dashboard extends Component {
           isLoading: false
         }));
       }, true);
+  }
+
+  onViewChange(viewType) {
+      const newState = {
+        viewType
+      };
+
+      setQueryParams(newState);
+
+      this.setState(newState);
   }
 
   render() {
@@ -102,15 +116,7 @@ export default class Dashboard extends Component {
                       dashboardType={"listings"}
                       halign="left"
                       selected={this.state.viewType}
-                      onSelect={viewType => {
-                        const newState = {
-                          viewType
-                        };
-
-                        setQueryParams(newState);
-
-                        this.setState(newState);
-                    }}
+                      onSelect={this.onViewChange}
                     />
                   </div>
                 </div>
@@ -127,13 +133,7 @@ export default class Dashboard extends Component {
                       dashboardType={"requests"}
                       halign="left"
                       selected={this.state.viewType}
-                      onSelect={viewType => {
-                        const newState = { viewType };
-
-                        setQueryParams(newState);
-
-                        this.setState(newState);
-                    }}
+                      onSelect={this.onViewChange}
                     />
                   </div>
                 </div>
@@ -189,6 +189,7 @@ export default class Dashboard extends Component {
                   )}
                 </div>
               }
+
               {this.state.viewType === 'ORDERS_IN_PROGRESS' &&
                 <div className="row vq-margin-top-bottom">
                   <Bookings

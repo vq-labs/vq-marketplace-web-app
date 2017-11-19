@@ -2,7 +2,7 @@ import React from 'react';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Slider from 'material-ui/Slider';
 import { displayPrice } from '../core/format';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { translate } from '../core/i18n';
 
 const PRICING_MODELS = {
@@ -21,7 +21,6 @@ export default class NewListingPricing extends React.Component {
         super();
 
         this.state = {
-            config: null,
             currency: props.currency || 'EUR',
             priceEntryType: PRICE_ENTRY_TYPES.SLIDER,
             price: props.price,
@@ -30,14 +29,7 @@ export default class NewListingPricing extends React.Component {
         };
     }
 
-    componentDidMount() {
-        getConfigAsync(config => {
-            this.setState({
-                config,
-                ready: true
-            });
-        })
-    }
+    componentDidMount() { }
 
     componentWillReceiveProps (nextProps) {} 
 
@@ -64,11 +56,10 @@ export default class NewListingPricing extends React.Component {
 
     render() {
         return <div className="row">
-            { this.state.ready &&
             <div className="col-xs-12">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                        <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                             {this.props.listingType === 1 ? translate("NEW_LISTING_PRICING_HEADER") : translate("NEW_SUPPLY_LISTING_PRICING_HEADER")}
                         </h1>
                         <p>{this.props.listingType === 1 ? translate("NEW_LISTING_PRICING_DESC") : translate("NEW_SUPPLY_LISTING_PRICING_DESC")}</p>
@@ -77,7 +68,7 @@ export default class NewListingPricing extends React.Component {
                 <hr />
                 <div className="row">
                     <div className="col-xs-12">
-                        { false && this.state.config &&
+                        { false &&
                             <RadioButtonGroup
                                 checked={this.state.priceType}
                                 value={this.state.priceType}
@@ -91,14 +82,14 @@ export default class NewListingPricing extends React.Component {
                                         label={translate("PRICING_MODEL_HOURLY")}
                                     />
                             
-                                { false && this.state.config.PRICING_CONTRACT === "1" &&
+                                { false && CONFIG.PRICING_CONTRACT === "1" &&
                                     <RadioButton
                                         value={PRICING_MODELS.TOTAL}
                                         label={translate("PRICING_MODEL_TOTAL")}
                                     />
                                 }
                             
-                                { false && this.state.config.PRICING_REQUEST === "1" &&
+                                { false && CONFIG.PRICING_REQUEST === "1" &&
                                     <RadioButton
                                         value={PRICING_MODELS.REQUEST_QUOTE}
                                         label={translate("PRICING_MODEL_REQUEST_QUOTE")}
@@ -112,15 +103,15 @@ export default class NewListingPricing extends React.Component {
                     <div className="row">
                         <div className={"col-xs-12"}>
                             <h2 
-                                style={{ color: this.state.config.COLOR_PRIMARY }}
+                                style={{ color: CONFIG.COLOR_PRIMARY }}
                                 className="text-center"
                             >
                                 {displayPrice(this.state.price, this.state.currency, this.state.priceType)}
                             </h2>
                             <Slider
                                 min={this.state.minPrice}
-                                max={Number(this.state.config.LISTING_PRICE_FILTER_MAX)}
-                                step={Number(this.state.config.LISTING_PRICE_FILTER_STEP)}
+                                max={Number(CONFIG.LISTING_PRICE_FILTER_MAX)}
+                                step={Number(CONFIG.LISTING_PRICE_FILTER_STEP)}
                                 value={this.state.price}
                                 onChange={(ev, price) => this.handlePriceChange(price)}
                             />
@@ -128,7 +119,6 @@ export default class NewListingPricing extends React.Component {
                     </div>
                 } 
             </div>
-            }
         </div>
      }
 };

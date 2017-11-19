@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import LoginSignup from '../Components/LoginSignup';
-import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import * as apiTaskLocation from '../api/task-location';
@@ -12,6 +10,7 @@ import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
 import NewListingPricing from './NewListingPricing';
 import NewListingDate from './NewListingDate';
+import NewListingImages from './NewListingImages';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
 import NewListingDuration from './NewListingDuration';
@@ -263,45 +262,6 @@ export default class NewListing extends Component {
     }
 
     render() {
-              const addImages =
-                <div className="col-xs-12" style={{ marginTop: 10, marginBottom: 20 }}>
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <h1>{translate("STEP")} 4. {translate("NEW_LISTING_PHOTO_HEADER")}</h1>
-                                <p className="text-muted">{translate("NEW_LISTING_PHOTO_DESC")}</p>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className="row">
-                            <ImageUploader 
-                                images={this.state.task.images} 
-                                onChange={_ => {
-                                    this.handleListingFieldChange('images', _);
-                                }}
-                            />
-                        </div>
-                </div>;
-
-              const createAccountSection =
-                <div className="col-xs-12">
-                        <div className="row">
-                            <LoginSignup
-                                onSuccess={() => {
-                                    let step = 6;
-
-                                    if (Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
-                                        step = step + 1;
-                                    }
-                                      
-                                    this.setState({ 
-                                        auth: true,
-                                        step
-                                    })
-                                }}
-                            />
-                        </div>
-                </div>;
-
             return (
                     <div className="container">
                         { this.state.step === LISTING_VIEWS.CATEGORY && 
@@ -361,8 +321,12 @@ export default class NewListing extends Component {
                                 />
                             }
 
-                            { this.state.step === LISTING_VIEWS.LOGIN && createAccountSection }
-                            { this.state.step === LISTING_VIEWS.IMAGES && addImages }
+                            { this.state.step === LISTING_VIEWS.IMAGES &&
+                                <NewListingImages
+                                    images={this.task.images}
+                                    onChange={images => this.handleListingFieldChange('images', _)}
+                                />
+                            }
                             { this.state.step === LISTING_VIEWS.CALENDAR &&
                                 <NewListingDate
                                     listingType={this.state.task.taskType}

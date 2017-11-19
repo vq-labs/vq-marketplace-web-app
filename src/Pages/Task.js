@@ -27,9 +27,7 @@ import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
-import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 
-const async = require("async");
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -264,54 +262,11 @@ class Task extends Component {
                                                 style={{width: '100%'}}
                                                 label={this.state.task.taskType === 1 ? translate("SUPPLY_LISTING_CALL_TO_ACTION") : translate("DEMAND_LISTING_CALL_TO_ACTION")}
                                                 onClick={() => {
-                                                    const userRequests = this.state.userRequests;
-                                                    const taskStartDate = (new Date(this.state.task.timing[0].date)).getTime() / 1000;
-                                                    const taskEndDate = (new Date(this.state.task.timing[0].endDate)).getTime() / 1000;
-                                                    let alreadyAppliedSomewhere = false;
-
-                                                    if (false) {
-                                                        userRequests
-                                                        .forEach(userRequest => {
-                                                            const requestStartDate = (new Date(userRequest.task.taskTimings[0].date)).getTime() / 1000;
-                                                            
-                                                            if (requestStartDate >= taskStartDate && requestStartDate <= taskEndDate) {
-                                                                alreadyAppliedSomewhere = true;
-                                                            }
-                                                        });
-                                                    }
-
-                                                    if (false && alreadyAppliedSomewhere) {
-                                                        return openConfirmDialog({
-                                                            headerLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_HEADER"),
-                                                            confirmationLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_DESC")
-                                                        }, () => {
-                                                            async
-                                                            .eachSeries(userRequests, (userRequest, cb) => {
-                                                                apiRequest
-                                                                .updateItem(userRequest.id, {
-                                                                    status: REQUEST_STATUS.CANCELED
-                                                                })
-                                                                .then(_ => {
-                                                                    cb();
-                                                                }, cb);
-                                                            }, err => {
-                                                                if (err) {
-                                                                    return alert(err);
-                                                                }
-
-                                                                return this.setState({
-                                                                    shouldCancelOtherRequests: true,
-                                                                    applicationInProgress: true
-                                                                });
-                                                            });
-                                                        })
-                                                    } 
-
                                                     this.setState({
                                                         applicationInProgress: true
                                                     });
                                                 }
-                                            }/> 
+                                            }/>
                                        }
                                        { !this.state.isMyTask && this.state.sentRequestId &&
                                             <FlatButton

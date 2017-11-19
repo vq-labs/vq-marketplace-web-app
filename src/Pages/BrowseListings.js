@@ -185,7 +185,10 @@ class Offers extends Component {
             background: `url(${CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
-            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 25 }}>
+            <div
+                className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3"
+                style={{ marginTop: 25 }}
+            >
                 <div style={{
                     maxWidth: '850px',
                     margin: '0 auto'
@@ -208,6 +211,7 @@ class Offers extends Component {
                     }
                     
                     { CONFIG.LISTING_GEOFILTER_ENABLED === "1" &&
+                    <div style={{ marginTop: 30 }}>
                         <Autocomplete
                             value={this.state.locationQueryString}
                             onChange={ev => {
@@ -216,7 +220,6 @@ class Offers extends Component {
 
                                 if (locationQueryString === '') {
                                     const appliedFilter = this.state.appliedFilter;
-                                
 
                                     appliedFilter.lat = null;
                                     appliedFilter.lng = null;
@@ -264,31 +267,36 @@ class Offers extends Component {
                                     lng: appliedFilter.lng
                                 });
                             }}
-                            types={[ CONFIG.LISTING_GEOFILTER_MODE ? `(${CONFIG.LISTING_GEOFILTER_MODE})` : '(cities)' ]}
+                            types={[
+                                CONFIG.LISTING_GEOFILTER_MODE ?
+                                `(${CONFIG.LISTING_GEOFILTER_MODE})` :
+                                '(cities)'
+                            ]}
                             placeholder={translate('LISTING_FILTER_GEO')}
                         >
                         </Autocomplete>
-                    }
-                    { this.state.locationQueryString &&
-                        <button
-                            onTouchTap={() => {
-                                const appliedFilter = this.state.appliedFilter;
-                                const locationQueryString = '';
+                        { this.state.locationQueryString &&
+                            <button
+                                onTouchTap={() => {
+                                    const appliedFilter = this.state.appliedFilter;
+                                    const locationQueryString = '';
 
-                                delete appliedFilter.lat;
-                                delete appliedFilter.lng;
-                                delete appliedFilter.q;
+                                    delete appliedFilter.lat;
+                                    delete appliedFilter.lng;
+                                    delete appliedFilter.q;
 
-                                this.setState({
-                                    locationQueryString,
-                                    appliedFilter
-                                });
+                                    this.setState({
+                                        locationQueryString,
+                                        appliedFilter
+                                    });
 
-                                this.updateResults(appliedFilter);
-                            }}
-                            className="close-icon"
-                            type="reset"
-                        ></button>
+                                    this.updateResults(appliedFilter);
+                                }}
+                                className="close-icon"
+                                type="reset"
+                            ></button>
+                        }
+                    </div>
                     }
                 </div>
             </div>

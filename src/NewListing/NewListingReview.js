@@ -78,23 +78,28 @@ export default class NewListingReview extends Component {
                             <div>{this.state.listing.location.street} {this.state.listing.location.streetNumber}, {this.state.listing.location.postalCode} {this.state.listing.location.city}</div>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DATE")}</h4>
-                            <div>
-                                {displayTaskTiming(this.state.listing.timing, `${CONFIG.DATE_FORMAT}`)}
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DURATION")}</h4>
-                            <div>
-                                {this.state.listing.duration}h
+                    { CONFIG.LISTING_TIMING_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DATE")}</h4>
+                                <div>
+                                    {displayTaskTiming(this.state.listing.timing, `${CONFIG.DATE_FORMAT}`)}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+                    { CONFIG.LISTING_DURATION_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DURATION")}</h4>
+                                <div>
+                                    {this.state.listing.duration}h
+                                </div>
+                            </div>
+                        </div>
+                    }
 
                     <div className="row">
                         <div className="col-xs-12">

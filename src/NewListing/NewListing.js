@@ -4,12 +4,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import LoginSignup from '../Components/LoginSignup';
 import ImageUploader from '../Components/ImageUploader';
 import * as coreAuth from '../core/auth';
-import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
-import * as apiTaskImage from '../api/task-image';
 import * as apiTaskLocation from '../api/task-location';
-import * as apiTaskCategory from '../api/task-category';
-import * as apiTaskTiming from '../api/task-timing';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
 import NewListingBasics from './NewListingBasics';
@@ -24,6 +20,7 @@ import { getUserAsync } from '../core/auth';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import { displayMessage } from '../helpers/display-message.js';
 import { openDialog } from '../helpers/open-message-dialog.js';
+import { createListing } from '../helpers/create-listing.js';
 
 const _ = require('underscore');
 
@@ -79,7 +76,6 @@ const verifyPostalCode = postalCode => {
 
     return true;
 };
-
 export default class NewListing extends Component {
     constructor(props) {
         super();
@@ -318,7 +314,7 @@ export default class NewListing extends Component {
                         }
                         { this.state.step > LISTING_VIEWS.CATEGORY &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
-                            { this.state.ready && this.state.step === LISTING_VIEWS.PRICING &&
+                            { this.state.step === LISTING_VIEWS.PRICING &&
                                 <NewListingPricing
                                     listingType={this.state.task.taskType}
                                     currency={this.state.currency}
@@ -348,7 +344,7 @@ export default class NewListing extends Component {
                                 />
                             }
 
-                            { this.state.ready && this.state.step === LISTING_VIEWS.LOCATION &&
+                            { this.state.step === LISTING_VIEWS.LOCATION &&
                                 <NewListingLocation
                                     listingType={this.state.task.taskType}
                                     countryRestriction={CONFIG.COUNTRY_RESTRICTION}
@@ -419,6 +415,12 @@ export default class NewListing extends Component {
                                         onTouchTap={() => {
                                             let nextStep = this.state.step - 1;
 
+                                            if (nextStep === LISTING_VIEWS.CALENDAR) {
+                                                if (CONFIG.LISTING_TIMING_MODE !== "1") {
+                                                    nextStep -= 1;
+                                                }
+                                            }
+
                                             if (nextStep === LISTING_VIEWS.REVIEW && coreAuth.getUserId()) {
                                                 nextStep -= 1;
                                             }
@@ -427,6 +429,10 @@ export default class NewListing extends Component {
                                                 if (Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
                                                     nextStep -= 1;
                                                 }
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.DURATION && CONFIG.LISTING_DURATION_MODE !== "1") {
+                                                nextStep -= 1;
                                             }
 
                                             this.setState({ 
@@ -516,32 +522,6 @@ export default class NewListing extends Component {
                                                 }
                                             }
 
-                                            if (currentStep === LISTING_VIEWS.LOCATION) {
-                                                /**
-                                                this.setState({
-                                                    continueBtnDisabled: true
-                                                });
-
-                                                return validateAddress(task.location)
-                                                .then(data => {
-                                                    if (!data.length) {
-                                                        return alert('Incorrect address');
-                                                    }
-
-                                                    this.setState({
-                                                        continueBtnDisabled: false,
-                                                        step: nextStep
-                                                    })
-                                                }, err => {
-                                                    console.error(err);
-
-                                                    this.setState({
-                                                        continueBtnDisabled: false
-                                                    });
-                                                })
-                                                 */
-                                            }
-
                                             if (currentStep === LISTING_VIEWS.CALENDAR) {
                                                 if (!task.timing.length) {
                                                     return displayMessage({
@@ -579,7 +559,15 @@ export default class NewListing extends Component {
                                                 */
                                             }
 
-                                            if (nextStep === LISTING_VIEWS.IMAGES && Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
+                                            if (nextStep === LISTING_VIEWS.CALENDAR && CONFIG.LISTING_TIMING_MODE !== "1") {
+                                                nextStep += 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.DURATION && CONFIG.LISTING_DURATION_MODE !== "1") {
+                                                nextStep += 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.IMAGES && CONFIG.LISTING_IMAGES_MODE !== "1") {
                                                 nextStep += 1;
                                             }
 
@@ -616,36 +604,17 @@ export default class NewListing extends Component {
                                             
                                             task.status = TASK_STATUS.ACTIVE;
 
-                                            apiTask
-                                            .createItem({})
-                                            .then(rTask => {
-                                                task.id = rTask.id;
+                                            createListing(task, err => {
+                                                if (err) {
+                                                    alert(err);
+                                                    
+                                                    this.setState({
+                                                        isSubmitting: false
+                                                    });
 
-                                                return apiTaskCategory.createItem(task.id, task.categories);
-                                            })
-                                            .then(() => apiTask.updateItem(task.id, task))
-                                            .then(() => apiTaskLocation.createItem(task.id, task.location))
-                                            .then(() => apiTaskImage.createItem(task.id, task.images))
-                                            .then(() => {
-                                                const localStart = task.timing[0].date;
-                                                const localEnd = task.timing[0].endDate;
-                                                const selectedDate = {
-                                                    date: Date.UTC(localStart.getFullYear(), localStart.getMonth(), localStart.getDate(), 0, 0, 0, 0) / 1000,
-                                                    endDate: Date.UTC(localEnd.getFullYear(), localEnd.getMonth(), localEnd.getDate(), 23, 59, 59, 0) / 1000
-                                                };
+                                                    return;
+                                                }
 
-                                                apiTaskTiming
-                                                .createItem(task.id, {
-                                                    dates: [
-                                                        selectedDate
-                                                    ],
-                                                    duration: task.duration
-                                                })
-                                            })
-                                            .then(() => apiTask.updateItem(task.id, {
-                                                status: 0
-                                            }))
-                                            .then(task => {
                                                 openDialog({
                                                     header: this.state.task.taskType === 1 ?
                                                         translate('NEW_LISTING_SUCCESS_HEADER') :
@@ -656,14 +625,7 @@ export default class NewListing extends Component {
                                                 }, () => {
                                                     goTo(`/task/${task.id}`);
                                                 });
-                                            })
-                                            .catch(err => {
-                                                alert(err);
-
-                                                this.setState({
-                                                    isSubmitting: false
-                                                });
-                                            })
+                                            });
                                         } }
                                     />
                                 }

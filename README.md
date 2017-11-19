@@ -1,8 +1,5 @@
 # VQ Marketplace - Web App
-
-## Technology stack
-React
-
+Storefront for your Sharing Economy Marketplace (https://vqmarketplace.com).
 ## Installation
 ```
 git clone https://github.com/vq-labs/vq-marketplace-web-app
@@ -23,7 +20,7 @@ You can always connect to the marketplace that is hosted by VQ-LABS. You just ne
 VQ_API_URL=https://<yourMarketplaceId>.vqmarketplace.com npm run start:local
 ```
 
-To try it out and start up quickly and connect to an existing marketplace talentwand.de, enter:
+To try it out and start up quickly and connect to an existing marketplace https://talentwand.de, enter:
 ```
 npm run start:talentwand
 ```
@@ -47,6 +44,9 @@ AWS_REGION=eu-central-1 \
 VQ_API_URL=yourMarketplaceId.vqmarketplace.com \ 
 gulp deploy
 ```
+
+## Technology stack
+React
 ## Browser support
 ***Chrome*** (latest version)<br />
 ***Safari*** (latest version)<br />

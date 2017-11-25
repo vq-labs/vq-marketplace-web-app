@@ -55,7 +55,7 @@ export const Component = class MessageDialog extends React.Component {
                             >
                                 <div className="col-xs-12">
                                     <h1>{this.state.header}</h1>
-                                    <p>{this.state.desc}</p>
+                                    {this.state.desc}
                                 </div>
                             </Dialog>
                      </div>

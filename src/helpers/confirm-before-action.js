@@ -3,12 +3,14 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { translate } from '../core/i18n';
 
-var pendingCb;
-var onOpen;
+let finallyCb;
+let pendingCb;
+let onOpen;
 
-export const openConfirmDialog = (data, cb) => {
+export const openConfirmDialog = (data, cb, fCb) => {
     onOpen(data);
 
+    finallyCb = fCb;
     pendingCb = cb;
 };
 
@@ -43,6 +45,9 @@ export const Component = class ConfirmDialog extends React.Component {
                                             isOpen: false
                                         });
 
+                                        finallyCb && finallyCb();
+                                        
+                                        finallyCb = null;
                                         pendingCb = null;
                                     }}
                                 />,
@@ -51,8 +56,10 @@ export const Component = class ConfirmDialog extends React.Component {
                                     primary={true}
                                     onTouchTap={() => {
                                         pendingCb && pendingCb();
+                                        finallyCb && finallyCb();
 
                                         pendingCb = null;
+                                        finallyCb = null;
 
                                         this.setState({
                                             isOpen: false

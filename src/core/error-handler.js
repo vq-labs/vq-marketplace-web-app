@@ -21,5 +21,9 @@ export const displayErrorFactory = params => err => {
         return;
     }
 
+    if (params.onError && params.onError[err.code]) {
+        return params.onError[err.code](err);
+    }
+
     alert(translate(err.code));
 };

@@ -157,7 +157,7 @@ export default class RequestDialog extends React.Component {
                 </div>
         </div>;
 
-    const ApplicationConfirmation = 
+    const ApplicationConfirmation =
     <div>
         { this.state.isBeingPosted && 
             <div className="text-center" style={{ 'marginTop': '40px' }}>

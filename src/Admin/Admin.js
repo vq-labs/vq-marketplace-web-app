@@ -50,7 +50,7 @@ const menuPoints = [
             [ 'analytics', 'Analytics' ],
             [ 'landing-page', 'Landing Page (beta)' ],
             [ 'labels', 'Labels' ],
-            /**[ 'payments', 'Payments' ],*/
+            [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
             [ 'custom-pages', 'Custom Pages' ],
             [ 'user-types', 'User types' ],

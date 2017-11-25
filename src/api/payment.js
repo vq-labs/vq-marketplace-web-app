@@ -6,8 +6,8 @@ export const createUserAccount = networkId =>
 export const getUserAccount = networkId =>
     communication.doGet(`/user/payment/account/${networkId}`);
 
-export const createAccount = () =>
-    communication.doPost('/payment/account', {});
+export const createAccount = networkId =>
+    communication.doPost(`/payment/account/${networkId}`, {});
 
-export const getAccount = () =>
-    communication.doGet('/payment/account', {});
+export const getAccount = networkId =>
+    communication.doGet(`/payment/account/${networkId}`, {});

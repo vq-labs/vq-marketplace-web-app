@@ -24,10 +24,14 @@ export default class StripePaymentConnector extends React.Component {
                 paymentAccount: rAccount
             });
         })
-        .catch(displayErrorFactory({
-            self: this,
-            ignoreCodes: [ "NOT_FOUND" ]
-        }));
+        .catch(err => {
+            debugger;
+            
+            displayErrorFactory({
+                self: this,
+                ignoreCodes: [ "NOT_FOUND" ]
+            })
+        });
     }
 
     render() {

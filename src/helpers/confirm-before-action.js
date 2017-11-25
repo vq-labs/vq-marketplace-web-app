@@ -62,10 +62,10 @@ export const Component = class ConfirmDialog extends React.Component {
                             ]}
                             modal={false}
                             open={this.state.isOpen}
-                            >
-                                <h1>{this.state.headerLabel}</h1>
-                                {this.state.confirmationLabel || translate('ARE_YOUR_SURE')}
-                            </Dialog>
+                        >
+                            <h1>{this.state.headerLabel}</h1>
+                            {this.state.confirmationLabel || translate('ARE_YOUR_SURE')}
+                        </Dialog>
                      </div>
             );
     }

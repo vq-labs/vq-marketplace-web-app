@@ -29,7 +29,7 @@ export default class SectionPayments extends React.Component {
             return (
                 <div className="row">
                     <div style={{ marginBottom: 15 }}>
-                        <h1>Marketplace fees</h1>
+                        <h1>Setting a transaction fee (commission)</h1>
                         <hr />
                         <ConfigEdit
                             fields={[
@@ -37,16 +37,15 @@ export default class SectionPayments extends React.Component {
                                     type: 'bool',
                                     key: 'PAYMENTS_ENABLED',
                                     label: 'Payments enabled',
-                                    explanation: 'Allow your users to connect to Stripe and receive payouts.'
-                                },
-                                {
+                                    explanation: "You don't want or can't use the online payment system? You can simply disable it and post free listings in your marketplace. You can change your fee at any time."
+                                }, {
                                     type: 'number',
                                     min: 0,
                                     max: 100,
-                                    regex: '^([1-9]|[0-9][0-9])$',
+                                    regex: '^([0-9]|[0-9][0-9])$',
                                     key: 'MARKETPLACE_PROVISION',
                                     label: 'Marketplace provision',
-                                    explanation: 'How many percent provision should your marketplace receive from every transaction?'
+                                    explanation: "As a marketplace administrator, you can choose to charge a transaction fee from each paid transaction in your marketplace. You can change your fee at any time. However, if you do so, it is a very good idea to notify your users to not create any unexpected surprises for them." 
                                 }
                             ]}
                         />

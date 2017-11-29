@@ -39,7 +39,8 @@ const menuPoints = [
         [
             [ 'users', 'Users' ],
             [ 'listings', 'Listings' ],
-            [ 'requests', 'Requests' ]
+            [ 'requests', 'Requests' ],
+            [ 'orders', 'Transactions' ]
         ]
     ],
     [ 'Configuration',
@@ -49,11 +50,11 @@ const menuPoints = [
             [ 'seo', 'SEO' ],
             [ 'analytics', 'Analytics' ],
             [ 'landing-page', 'Landing Page (beta)' ],
+            [ 'user-types', 'Supply and Demand' ],
             [ 'labels', 'Labels' ],
             [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
             [ 'custom-pages', 'Custom Pages' ],
-            [ 'user-types', 'User types' ],
             [ 'listing', 'Listing' ],
             [ 'listing-filters', 'Listing filters' ],
             [ 'categories', 'Listing categories' ],
@@ -106,63 +107,62 @@ export default class AdminPage extends React.Component {
   
     render() {
         return (
-            <div className="container">
-                <button onTouchTap={() => this.handleToggle()}/>
-                <Drawer docked={true} open={this.state.open} >
-                    <div className="col-xs-12" style={{ marginBottom: 10 }}>
+            <div className="container-fluid">
+                    <div className="col-xs-12 col-sm-3" style={{
+                        marginBottom: 10,
+                    }}>
                             { menuPoints.map(menuGroup =>
-                                 <Menu
-                                 selectedMenuItemStyle={{ backgroundColor: 'rgb(0, 6, 57)', color: '#FFFFFF' }}
-                                 value={this.state.section}
-                             >
-                                    <h4>{menuGroup[0]}</h4>
-                                    { menuGroup[1].map(menuItem =>
-                                        <MenuItem
-                                            value={menuItem[0]}
-                                            onClick={() => this.goToSection(menuItem[0])}>
-                                            {menuItem[1]}
-                                        </MenuItem>
-                                    )}
-                                 </Menu>
+                                    <div className="col-xs-12">
+                                        <h4>{menuGroup[0]}</h4>
+                                        <ul className="list-unstyled vq-account-sector-list">
+                                            { menuGroup[1].map(menuItem =>
+                                                <li className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
+                                                    <a 
+                                                        href="#"
+                                                        onClick={() =>
+                                                            this.goToSection(menuItem[0])
+                                                        }
+                                                    >
+                                                        {menuItem[1]}
+                                                    </a>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </div>
                             )}
-                        <h4>Support</h4>
-                        <a className="vq-link" href="https://vqlabs.freshdesk.com/support/tickets/new" target="_blank">
-                            <MenuItem>
-                                Submit ticket
-                            </MenuItem>
-                        </a>
-
-                        <a className="vq-link" href="https://vqlabs.freshdesk.com/support/solutions" target="_blank">
-                            <MenuItem>
-                                Knowledge solutions
-                            </MenuItem>
-                        </a>
-
-                        <a className="vq-link" href="https://vq-labs.com" target="_blank">
-                            <MenuItem>
-                                VQ LABS - Company
-                            </MenuItem>
-                        </a>
-
-                        <hr />
-
-                        <a target="_self" href="https://vq-labs.com">
-                            <img
-                                alt="presentation"
-                                style={{
-                                    display: 'block',
-                                    margin: '0 auto',
-                                    width: 50
-                                }}
-                                src={"https://vq-labs.com/vq-labs-logo-xs-2.png"}
-                            />
-                        </a>
-                    </div>
-                </Drawer>
-
-                <div className="row" style={{
-                    marginBottom: 100,
-                    paddingLeft: '256px'
+                                <div className="col-xs-12">
+                                <h4>Support</h4>
+                                <ul className="list-unstyled vq-account-sector-list">
+                                        <li>
+                                            <a 
+                                                href="https://vqlabs.freshdesk.com/support/tickets/new"
+                                                target="_blank"
+                                            >
+                                                Submit ticket
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a 
+                                                href="https://vqlabs.freshdesk.com/support/solutions"
+                                                target="_blank"
+                                            >
+                                                Knowledge solutions
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a 
+                                                href="https://vq-labs.com"
+                                                target="_blank"
+                                            >
+                                                VQ LABS - Company
+                                            </a>
+                                        </li>
+                                </ul>
+                            </div>
+                </div>
+        
+                <div className="col-sm-9" style={{
+                    marginBottom: 100
                 }}>
                     { this.state.lastSection === 'get-started' &&
                         <a href="#" onTouchTap={() => this.goToSection("get-started")}>‹ Back to Get Started</a>

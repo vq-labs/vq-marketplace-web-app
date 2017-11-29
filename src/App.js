@@ -15,6 +15,7 @@ import * as coreCategories from './core/categories.js';
 import { Component as ConfirmDialog } from './helpers/confirm-before-action.js';
 import { Component as RequestDialog } from './helpers/open-requests-dialog';
 import { Component as MessageDialog } from './helpers/open-message-dialog';
+import { Component as AddPaymentMethodDialog } from './helpers/add-payment-method';
 import { Component as MessageSnackbar } from './helpers/display-message';
 import { fetchAndAddLang } from './helpers/i18n-helpers';
 import { setBase } from './core/navigation';
@@ -156,6 +157,7 @@ class App extends Component {
             <RequestDialog />
             <MessageDialog />
             <MessageSnackbar />
+            <AddPaymentMethodDialog />
           </div>
         </MuiThemeProvider> 
       );

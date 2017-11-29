@@ -9,6 +9,10 @@ html {
   box-sizing: inherit;
 }
 
+.vq-color-primary {
+  color: #000639
+}
+
 body, #root > div {
   height: 100%;
   position: relative;
@@ -368,4 +372,37 @@ width:172px;
 	font-weight: normal;
 	font-size: 20px;
 	cursor: pointer;
+}
+
+/**
+  STRIPE ELEMENTS STYLES
+*/
+.vq-checkout.stripe-checkout {
+  margin: 0 auto;
+  max-width: 800px;
+  box-sizing: border-box;
+  padding: 0 5px;
+}
+
+form {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 3px solid #e6ebf1;
+}
+.StripeElement {
+  display: block;
+  margin: 10px 0 20px 0;
+  max-width: 500px;
+  padding: 10px 14px;
+  box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+  border-radius: 4px;
+  background: white;
+}
+.StripeElement--focus {
+  box-shadow: rgba(50, 50, 93, 0.109804) 0px 4px 6px, rgba(0, 0, 0, 0.0784314) 0px 1px 3px;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+}
+.StripeElement.PaymentRequestButton {
+  padding: 0;
 }

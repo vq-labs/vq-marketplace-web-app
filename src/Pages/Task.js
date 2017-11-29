@@ -15,6 +15,7 @@ import * as coreAuth from '../core/auth';
 import displayTaskTiming from '../helpers/display-task-timing';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import * as apiPayment from '../api/payment';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
@@ -27,7 +28,7 @@ import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
-
+import { displayErrorFactory } from '../core/error-handler';
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -86,7 +87,19 @@ class Task extends Component {
                     return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
                 }
 
-                apiRequest.getItems({
+                apiPayment
+                .getUserAccount("stripe")
+                    .then(rAccount => {
+                        this.setState({
+                            paymentAccount: rAccount
+                        });
+                    }, displayErrorFactory({
+                        self: this,
+                        ignoreCodes: [ "STRIPE_NOT_CONNECTED" ]
+                    }));
+
+                apiRequest
+                .getItems({
                     userId: user.id
                 })
                 .then(userRequests => {
@@ -121,7 +134,6 @@ class Task extends Component {
                             pricingModels
                         }));
 
-                        
                         let sentRequest;
 
                         if (user) {
@@ -260,11 +272,23 @@ class Task extends Component {
                                             <RaisedButton
                                                 primary={true}
                                                 style={{width: '100%'}}
-                                                label={this.state.task.taskType === 1 ? translate("SUPPLY_LISTING_CALL_TO_ACTION") : translate("DEMAND_LISTING_CALL_TO_ACTION")}
+                                                label={
+                                                    this.state.task.taskType === 1 ?
+                                                    translate("SUPPLY_LISTING_CALL_TO_ACTION") :
+                                                    translate("DEMAND_LISTING_CALL_TO_ACTION")
+                                                }
                                                 onClick={() => {
-                                                    this.setState({
-                                                        applicationInProgress: true
-                                                    });
+                                                    if (
+                                                        this.state.task.taskType === 1 &&
+                                                        this.state.paymentAccount &&
+                                                        this.state.paymentAccount.accountId
+                                                    ) {
+                                                        this.setState({
+                                                            applicationInProgress: true
+                                                        });
+                                                    }
+                                                    
+                                                    goTo("/account/payments");
                                                 }
                                             }/>
                                        }
@@ -365,15 +389,15 @@ class Task extends Component {
                                         </div>
                                         }
                                         {this.state.task &&
-                                        <div className="row">
-                                            <div className="col-xs-12">
+                                            <div className="row">
+                                                <div className="col-xs-12">
                                                     <TaskComments
                                                         taskId={this.state.task.id}
                                                         canSubmit={this.state.task.status === TASK_STATUS.ACTIVE}
                                                         comments={this.state.task.comments}
                                                     />
+                                                </div>
                                             </div>
-                                        </div>
                                         }
                                     </div>
                                 </div>

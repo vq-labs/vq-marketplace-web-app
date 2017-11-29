@@ -5,28 +5,16 @@ import * as apiAdmin from '../api/admin';
 export default class SectionOverview extends React.Component {
     constructor() {
         super();
+        
         this.state = {
-            reports: [ ]
-        };
-
-        this.getStatusLabel = status => {
-            if (status === 0) {
-                return 'ACTIVE';
-            }
-
-            if (status === 10) {
-                return 'IN_EDIT';
-            }
-
-            if (status === 103) {
-                return 'DISABLED';
-            }
-                
-            return 'UNKNOWN';
+            reports: []
         };
     }
+
     componentDidMount() {
-        apiAdmin.report.overview()
+        apiAdmin
+        .report
+        .overview()
         .then(reports => this.setState({
             reports
         }));
@@ -41,16 +29,16 @@ export default class SectionOverview extends React.Component {
                     <hr />
                     <div className="col-xs-12">
                         <h3>Reports</h3>
+                        <p>
+                            Reports are refreshed every few hours.
+                        </p>
+
                         { this.state.reports.map(overviewItem => 
                             <div className="col-xs-6 col-sm-4 col-md-3 col-lg-2" style={{ padding: 3 }}>
-                                <Paper>
-                                    <div className="container" style={{ padding: 3 }}>
-                                        <div className="col-xs-12">
-                                            <h2>{overviewItem.reportValue}</h2>
-                                            <p className="text-muted">{overviewItem.reportName}</p>
-                                        </div>
-                                    </div>
-                                </Paper>
+                                <div style={{ padding: 3 }} className="col-xs-12 panel">
+                                    <h2>{overviewItem.reportValue}</h2>
+                                    <p className="text-muted">{overviewItem.reportName}</p>
+                                </div>
                             </div>  
                         )}
                     </div>

@@ -17,6 +17,9 @@ export const displayErrorFactory = params => err => {
         });
     }
 
+    if (params.finallyCb)
+        params.finallyCb();
+
     if (params.ignoreCodes.indexOf(err.code) > -1) {
         return;
     }

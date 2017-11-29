@@ -184,6 +184,8 @@ export default class SectionOverview extends React.Component {
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
+
+                                   
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
@@ -198,19 +200,21 @@ export default class SectionOverview extends React.Component {
                             </Step>
                             <Step>
                                 <StepButton onClick={() => this.setState({stepIndex: 7})}>
-                                    Connect to Stripe and setup payments
+                                    Setup payments
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
+                                        <p>
+                                            VQ Marketplace's Stripe-powered payment system helps your buyers (Demand side) purchase goods and services from your providers (Supply side). The buyers can pay with either their credit or debit card. As the administrator of the marketplace, you can easily charge a fee for each transaction.
+                                        </p>
                                         <RaisedButton
-                                            disabled={true}
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/analytics?fromSection=get-started');
+                                                goTo('/admin/payments?fromSection=get-started');
                                                 
                                                 location.reload();
                                             }}
-                                            label="Connect Stripe (disabled)"
+                                            label="Setup payments"
                                         />
                                     </div>
                                 </StepContent>

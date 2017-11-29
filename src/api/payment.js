@@ -11,3 +11,13 @@ export const createAccount = networkId =>
 
 export const getAccount = networkId =>
     communication.doGet(`/payment/account/${networkId}`, {});
+
+export const createItem = (provider, type, data) =>
+    communication.doPost(`/payment-object/${provider}/${type}`, {
+        obj: data.obj,
+        objId: data.objId,
+        orderId: data.orderId
+    });
+
+export const getItems = (provider, type) =>
+    communication.doGet(`/payment-object/${provider}/${type}`);

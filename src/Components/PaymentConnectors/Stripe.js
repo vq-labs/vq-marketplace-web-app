@@ -16,7 +16,7 @@ export default class StripePaymentConnector extends React.Component {
             paymentAccount: null
         };
     }
-    
+
     componentDidMount() {
         apiPayment[this.props.isMarketplaceOwner ? "getAccount" : "getUserAccount"]("stripe")
         .then(rAccount => {
@@ -94,7 +94,6 @@ export default class StripePaymentConnector extends React.Component {
                                     </p>
                                 </div>
                             }
-
                             {
                                 this.state.paymentAccount &&
                                 <div>

@@ -219,7 +219,11 @@ class Checkout extends React.Component {
 
 const StripeCheckout = (props) => {
   return (
-    <StripeProvider apiKey="pk_test_fMSAG5UGtdUzpt2F9huZj9V9">
+    <StripeProvider apiKey={
+        typeof window.TENANT_STRIPE_PUBLIC_KEY === "undefined" ?
+        "pk_test_fMSAG5UGtdUzpt2F9huZj9V9" :
+        window.TENANT_STRIPE_PUBLIC_KEY
+    }>
       <Checkout
         onSubmit={props.onSubmit}
         onCancel={props.onCancel}

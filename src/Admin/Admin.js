@@ -1,7 +1,4 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
 import SectionOverview from './Overview';
 import SectionCategories from './Categories';
 import SectionGetStarted from './GetStarted';

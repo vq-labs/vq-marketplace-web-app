@@ -63,8 +63,8 @@ export default class StripePaymentConnector extends React.Component {
                                             onError: {
                                                 "STRIPE_ERROR": (err) => {
                                                     openConfirmDialog({
-                                                        headerLabel: "You already have an account on Stripe.",
-                                                        confirmationLabel: "By confirming, you will be redirected to Stripe to connect your account"
+                                                        headerLabel: "Connect to Stripe",
+                                                        confirmationLabel: "By confirming, you will be redirected to Stripe to connect your account."
                                                     }, () => {
                                                         // clicked on OK
                                                         window.open(err.redirectUrl, "_blank");

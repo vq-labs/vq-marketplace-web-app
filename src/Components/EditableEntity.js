@@ -14,7 +14,6 @@ import DOMPurify from 'dompurify';
 import * as coreNavigation from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
-import '../App.css';
 
 const _ = require('underscore');
 
@@ -174,7 +173,12 @@ export default class EditableEntity extends Component {
                                                             />
                                                         </div>
                                                     }
-                                                    { (field.type === 'string' || field.type === 'number') &&
+                                                    {
+                                                        (
+                                                            field.type === 'string' ||
+                                                            field.type === 'number' ||
+                                                            field.type === 'secret'
+                                                        ) &&
                                                         <div style={{ marginBottom: 20 }}>
                                                             { field.title &&
                                                                 <div>
@@ -196,6 +200,21 @@ export default class EditableEntity extends Component {
                                                                         floatingLabelFixed={true}
                                                                     />
                                                                 }
+                                                                { field.type === 'secret' &&
+                                                                        <TextField
+                                                                            key={index}
+                                                                            type={"password"}
+                                                                            disabled={field.deriveValue}
+                                                                            onChange={this.handleFieldChange(field)}
+                                                                            value={this.state.updatedEntity[field.key]}
+                                                                            style={{width: '100%'}}
+                                                                            inputStyle={{width: '100%'}}
+                                                                            floatingLabelText={field.label}
+                                                                            hintText={field.hint}
+                                                                            floatingLabelFixed={true}
+                                                                        />
+                                                                }
+      
                                                                 { field.type === 'number' &&
                                                                     <TextField
                                                                         min={field.min}

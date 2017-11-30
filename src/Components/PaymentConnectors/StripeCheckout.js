@@ -2,6 +2,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import { CONFIG } from '../../core/config';
 
 import {
   CardNumberElement,
@@ -182,7 +183,6 @@ class _PaymentRequestForm extends React.Component {
     ) : null;
   }
 }
-const PaymentRequestForm = injectStripe(_PaymentRequestForm);
 
 class Checkout extends React.Component {
   constructor() {
@@ -219,11 +219,7 @@ class Checkout extends React.Component {
 
 const StripeCheckout = (props) => {
   return (
-    <StripeProvider apiKey={
-        typeof window.TENANT_STRIPE_PUBLIC_KEY === "undefined" ?
-        "pk_test_fMSAG5UGtdUzpt2F9huZj9V9" :
-        window.TENANT_STRIPE_PUBLIC_KEY
-    }>
+    <StripeProvider apiKey={CONFIG.STRIPE_PUBLIC_KEY}>
       <Checkout
         onSubmit={props.onSubmit}
         onCancel={props.onCancel}

@@ -72,6 +72,18 @@ export default class SectionPayments extends React.Component {
                                     key: 'STRIPE_CLIENT_ID',
                                     label: 'Stripe Client ID',
                                     explanation: "Get it under Stripe Connect -> Settings -> Production -> client_id"
+                                },
+                                {
+                                    type: 'string',
+                                    key: 'STRIPE_PUBLIC_KEY',
+                                    label: 'Stripe Public API Key',
+                                    explanation: "You will find it under Stripe -> API -> Public Key"
+                                },
+                                {
+                                    type: 'secret',
+                                    key: 'STRIPE_PRIVATE_KEY',
+                                    label: 'Stripe Private API Key',
+                                    explanation: "You will find it under Stripe -> API -> Private Key"
                                 }
                             ]}
                         />

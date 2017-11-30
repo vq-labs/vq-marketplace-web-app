@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -18,7 +17,7 @@ import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import LANG_CODES from '../constants/LANG_CODES.js';
 import EmailSettings from './Account/EmailSettings.js';
 import StripePaymentConnector from '../Components/PaymentConnectors/Stripe.js';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 
 export default class Account extends Component {
     constructor(props) {
@@ -27,7 +26,6 @@ export default class Account extends Component {
         const sector = props.params.sector || this.props.location.query.sector || 'profile';
 
         this.state = {
-            config: null,
             lang: getLang(),
             langDirty: false,
             billingAddressId: null,
@@ -46,58 +44,55 @@ export default class Account extends Component {
         };
     }
     componentDidMount() {
-        getConfigAsync(config =>
-            getUserAsync(user => {
-                if (!user) {
-                    return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
+        getUserAsync(user => {
+            if (!user) {
+                return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
+            }
+
+            this.setState({
+                user
+            });
+
+            apiUser
+            .getItem(user.id)
+            .then(profile => this.setState({
+                profile
+            }));
+
+            apiTaskLocation
+            .getItems({
+                userId: user.id
+            })
+            .then(defaultListingLocation => {
+                if (defaultListingLocation[0]) {
+                    this.setState({
+                        defaultListingLocationId: defaultListingLocation[0].id,
+                        defaultListingLocation: defaultListingLocation[0]
+                    });
                 }
+            });
 
-                this.setState({
-                    user,
-                    config
-                });
-
-                apiUser
-                .getItem(user.id)
-                .then(profile => this.setState({
-                    profile
-                }));
-
-                apiTaskLocation
-                .getItems({
-                    userId: user.id
-                })
-                .then(defaultListingLocation => {
-                    if (defaultListingLocation[0]) {
-                        this.setState({
-                            defaultListingLocationId: defaultListingLocation[0].id,
-                            defaultListingLocation: defaultListingLocation[0]
-                        });
-                    }
-                });
-
-                apiBillingAddress
-                .getItems({
-                    default: true
-                }).then(billingAddresses => {
-                    const billingAddress = billingAddresses
-                        .find(_ => _.default === true) ||
-                        billingAddresses[billingAddresses.length - 1];
-                    
-                    if (billingAddress) {
-                        this.setState({
-                            billingAddressId: billingAddress.id,
-                            billingAddressReady: true,
-                            billingAddress
-                        });
-                    } else {
-                        this.setState({
-                            billingAddressReady: true
-                        });
-                    }
-                });
-            }, true)
-        );
+            apiBillingAddress
+            .getItems({
+                default: true
+            }).then(billingAddresses => {
+                const billingAddress = billingAddresses
+                    .find(_ => _.default === true) ||
+                    billingAddresses[billingAddresses.length - 1];
+                
+                if (billingAddress) {
+                    this.setState({
+                        billingAddressId: billingAddress.id,
+                        billingAddressReady: true,
+                        billingAddress
+                    });
+                } else {
+                    this.setState({
+                        billingAddressReady: true
+                    });
+                }
+            });
+        }, true);
     }
 
     changeSectorFn = sector => () => {
@@ -137,7 +132,7 @@ export default class Account extends Component {
                                     { this.state.user &&
                                     (
                                         this.state.user.userType === 1 ||
-                                        (this.state.config && this.state.config.PAYMENTS_ENABLED === '1')
+                                        (CONFIG && CONFIG.PAYMENTS_ENABLED === '1')
                                     ) &&
                                         <li className={this.state.sector === 'billing-address' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('billing-address')}>{translate('ACCOUNT_MENU_BILLING_ADDRESS')}</a>
@@ -172,7 +167,7 @@ export default class Account extends Component {
                                         <a href="#" onTouchTap={this.changeSectorFn('notifications')}>{translate('ACCOUNT_MENU_NOTIFICATIONS')}</a>
                                     </li>
 
-                                    { this.state.config && this.state.config.PAYMENTS_ENABLED === '1' &&
+                                    { CONFIG && CONFIG.PAYMENTS_ENABLED === '1' &&
                                         <li className={this.state.sector === 'payments' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('payments')}>{translate('ACCOUNT_MENU_PAYMENTS')}</a>
                                         </li>
@@ -483,7 +478,7 @@ export default class Account extends Component {
 
                             { this.state.sector === 'notifications' && <EmailSettings /> }
 
-                            { this.state.config && this.state.config.PAYMENTS_ENABLED === '1' && this.state.sector === 'payments' &&
+                            { CONFIG && CONFIG.PAYMENTS_ENABLED === '1' && this.state.sector === 'payments' &&
                                  <div className="row">
                                     <div className="col-xs-12">
                                         <h2>{translate('PAYMENT_SETTINGS_HEADER')}</h2>

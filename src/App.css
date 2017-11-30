@@ -3,6 +3,10 @@ html {
   min-height: 100% !important;
 }
 
+.vq-row-option {
+  margin-left: 4px;
+}
+
 *,
 *:before,
 *:after {

@@ -62,7 +62,7 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                             <h1>Users</h1>
                             <p className="text-muted">
-                                Each User can be either a Client, Provider or both Client/Provider. Read more about user types <a href="https://vqlabs.freshdesk.com/solution/articles/33000208637-clients-and-providers-user-types" target="_blank">here</a>.
+                                Each User can be either a Demand, Supply or both Demand/Supply. Read more about user types <a href="https://vqlabs.freshdesk.com/solution/articles/33000208637-clients-and-providers-user-types" target="_blank">here</a>.
                             </p>
                     </div>
                     <div className="col-xs-12">
@@ -84,15 +84,15 @@ export default class SectionUsers extends React.Component {
                                     />
                                     <MenuItem
                                         value={1}
-                                        primaryText={'Clients (User Type 1)'}
+                                        primaryText={'Demand (User Type 1)'}
                                     />
                                     <MenuItem
                                         value={2}
-                                        primaryText={'Providers (User Type 2)'}
+                                        primaryText={'Supply (User Type 2)'}
                                     />
                                     <MenuItem
                                         value={3}
-                                        primaryText={'Client/Provider (User Type 3)'}
+                                        primaryText={'Demand&Supply (User Type 3)'}
                                     />
                             </DropDownMenu>
                         </div>
@@ -128,7 +128,19 @@ export default class SectionUsers extends React.Component {
                         </div>
                     </div>
                     <div className="col-xs-12">
-                        <List>
+                        <table className="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Joined</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             { this.state.users
                             .filter(user => {
                                 if (!this.state.statusFilter && this.state.userTypeFilter) {
@@ -147,129 +159,66 @@ export default class SectionUsers extends React.Component {
                                 return true;
                             })
                             .map(user => 
-                                <ListItem
-                                    leftAvatar={
-                                        <Avatar src={ user ? user.imageUrl : '' } />
-                                    } 
-                                    primaryText={
-                                        <p>
-                                            {user.firstName} {user.lastName} (#{user.id})<br />
-                                            Status: <strong>{INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}</strong><br/>
-                                            UserType: <strong>{String(user.userType) === '1' ? 'CLIENT' : 'PROVIDER'}</strong>
-                                        </p>
-                                    }
-                                    secondaryText={
-                                        <p>
-                                            Created at: <Moment format={`DD.MM.YYYY, HH.mm`}>{user.createdAt}</Moment>{user.deletedAt ? '* DELETED' : ''}
-                                        </p>
-                                    }
-                                    rightIcon={
-                                        <IconMenu
-                                            iconButtonElement={
-                                                <IconButton>
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                            }
-                                            anchorOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            targetOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            >
-
-                                            { false &&
-                                                <MenuItem
-                                                    primaryText="Details (New)"
-                                                    onClick={() => goTo(`/admin/user/${user.id}`)}
-                                                />
-                                            }
-                                            <MenuItem
-                                                primaryText="Show Email"
-                                                onClick={() => {
-                                                    apiAdmin.users
-                                                        .getUserEmail(user.id)
-                                                        .then(userEmails => {
-                                                            this.setState({
-                                                                showDetails: true,
-                                                                selectedUser: userEmails
-                                                            })
-                                                        });
-                                                }}
-                                            />
-                                            <MenuItem
-                                                primaryText="Show full information"
-                                                onClick={() => {
+                                <tr>
+                                   <td>
+                                        <a href="#" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
+                                   </td>
+                                   <td>
+                                        <a href="#" onClick={() => {
+                                            apiAdmin.users
+                                                .getUserEmail(user.id)
+                                                .then(userEmails => {
                                                     this.setState({
                                                         showDetails: true,
-                                                        selectedUser: user
+                                                        selectedUser: userEmails
                                                     })
-                                                }}
-                                            />
-                                  
-                                            <MenuItem
-                                                primaryText="Verifications"
-                                                onClick={() => {
-                                                    apiAdmin
-                                                    .users
-                                                    .getUserProperties(user.id)
-                                                    .then(userProperties => {
-                                                        this.setState({
-                                                            userProperties,
-                                                            showProperty: true,
-                                                            selectedUser: user
-                                                        });
-                                                    })
-                                                }}
-                                            />
+                                                });
+                                        }}>Email</a>
+                                    </td>
+                                    <td>
+                                        {user.firstName} {user.lastName}
+                                    </td>
+                                    <td>
+                                        {String(user.userType) === '1' ? 'DEMAND' : 'SUPPLY'}
+                                    </td>
+                                    <td>
+                                        {INVERSE_USER_STATUS[String(user.status)] || 'UNVERIFIED'}
+                                    </td>
+                                    <td>
+                                        <Moment format={`DD.MM.YYYY, HH.mm`}>{user.createdAt}</Moment>
+                                    </td>
+                                    <td>
+                                        <a className="vq-row-option" href="#" onClick={() => {
+                                            apiAdmin
+                                            .users
+                                            .getUserProperties(user.id)
+                                            .then(userProperties => {
+                                                this.setState({
+                                                    userProperties,
+                                                    showProperty: true,
+                                                    selectedUser: user
+                                                });
+                                            })
+                                        }}>Verifications</a>
 
-                                            { false && <MenuItem
-                                                    primaryText="Documents"
-                                                    onClick={() => {
-                                                        apiAdmin
-                                                        .users
-                                                        .getUserProperties(user.id)
-                                                        .then(userProperties => {
-                                                            this.setState({
-                                                                userProperties,
-                                                                showProperty: true,
-                                                                selectedUser: user
-                                                            });
-                                                        })
-                                                    }}
-                                                />
-                                            }
-                                       
-                                            <MenuItem
-                                                primaryText="Go to profile page"
-                                                onClick={() => goTo(`/profile/${user.id}`)}
-                                            />
-                                            { String(user.status) !== '20' &&
-                                                <MenuItem
-                                                    onClick={() => this.setState({
-                                                        isBlockingUser: true,
-                                                        selectedUserId: user.id
-                                                    })}
-                                                    primaryText="Block"
-                                                />
-                                            }
-                                            { String(user.status) === '20' &&
-                                                <MenuItem
-                                                    onClick={() => this.setState({
-                                                        isUnblockingUser: true,
-                                                        selectedUserId: user.id
-                                                    })}
-                                                    primaryText="Unblock"
-                                                />
-                                            }
-                                        </IconMenu>
-                                    }
-                                >
-                                </ListItem>
+                                        <a className="vq-row-option" href="#" onClick={() => {
+                                            this.setState({
+                                                isUnblockingUser: true,
+                                                selectedUserId: user.id
+                                            })
+                                        }}>Block</a>
+
+                                        <a className="vq-row-option" href="#" onClick={() => {
+                                            this.setState({
+                                                showDetails: true,
+                                                selectedUser: user
+                                            })
+                                        }}>More</a>
+                                    </td>
+                                </tr>
                             )}
-                        </List>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div>

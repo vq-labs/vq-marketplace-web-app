@@ -1,14 +1,9 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import { List, ListItem } from 'material-ui/List';
 import Moment from 'react-moment';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import * as apiAdmin from '../api/admin';
 import { goTo } from '../core/navigation';
@@ -19,6 +14,7 @@ import USER_STATUS from '../constants/USER_STATUS';
 
 const USER_TYPES = {
     CLIENT: 1, // client
+    
     STUDENT: 2 // student
 };
 
@@ -62,7 +58,7 @@ export default class SectionUsers extends React.Component {
                     <div className="col-xs-12">
                             <h1>Users</h1>
                             <p className="text-muted">
-                                Each User can be either a Demand, Supply or both Demand/Supply. Read more about user types <a href="https://vqlabs.freshdesk.com/solution/articles/33000208637-clients-and-providers-user-types" target="_blank">here</a>.
+                                Each User can be either a Demand, Supply or both Demand/Supply. Read more about user types <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">here</a>.
                             </p>
                     </div>
                     <div className="col-xs-12">

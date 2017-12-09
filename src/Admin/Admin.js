@@ -105,7 +105,7 @@ export default class AdminPage extends React.Component {
     render() {
         return (
             <div className="container-fluid">
-                    <div className="col-xs-12 col-sm-3" style={{
+                    <div className="col-xs-12 col-sm-3 col-md-2" style={{
                         marginBottom: 10,
                     }}>
                             { menuPoints.map(menuGroup =>
@@ -158,7 +158,7 @@ export default class AdminPage extends React.Component {
                             </div>
                 </div>
         
-                <div className="col-sm-9" style={{
+                <div className="col-sm-9 col-md-10" style={{
                     marginBottom: 100
                 }}>
                     { this.state.lastSection === 'get-started' &&

@@ -286,6 +286,8 @@ class Task extends Component {
                                                         this.setState({
                                                             applicationInProgress: true
                                                         });
+
+                                                        return;
                                                     }
                                                     
                                                     goTo("/account/payments");

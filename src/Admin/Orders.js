@@ -1,7 +1,8 @@
 import React from 'react';
-import * as apiAdmin from '../api/admin';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Moment from 'react-moment';
+import * as apiAdmin from '../api/admin';
 import { translate } from '../core/i18n';
 
 export default class SectionUsers extends React.Component {
@@ -47,7 +48,6 @@ export default class SectionUsers extends React.Component {
                                    <td>
                                         {order.id}
                                    </td>
-                                  
                                    <td>
                                         {order.amount} {order.currency}
                                    </td>
@@ -58,7 +58,7 @@ export default class SectionUsers extends React.Component {
                                         {order.user.firstName} {order.user.lastName} (#{order.user.id})
                                    </td>
                                    <td>
-                                        {order.createdAt}
+                                        <Moment format={`DD.MM.DD, HH:mm`}>{order.createdAt}</Moment>
                                    </td>
                                 </tr>
                             )}

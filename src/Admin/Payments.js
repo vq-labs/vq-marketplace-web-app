@@ -52,7 +52,7 @@ export default class SectionPayments extends React.Component {
 
                         <h3>Connect Stripe</h3>
                         <p>
-                            Marketplaces and platforms use Stripe Connect to accept money and pay out to third parties. Connect provides a complete set of building blocks to support virtually any business model, including Sharing Economy businesses, e‑commerce, crowdfunding, fintech, and travel and events.<br />
+                            Marketplaces and platforms use "Stripe Connect" to accept money and pay out to third parties. "Stripe Connect" provides a complete set of building blocks to support virtually any business model, including Sharing Economy businesses, e‑commerce, crowdfunding, fintech, and travel and events.<br />
 
                             Read more about it <a href="https://stripe.com/connect" target="_self">here</a>. You will find a more technical documentation <a href="https://stripe.com/docs/connect">here</a>.
                         </p>

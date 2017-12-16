@@ -8,7 +8,7 @@ import * as apiAuth from '../api/auth';
 import * as coreAuth from '../core/auth';
 import { getAppPath } from '../core/navigation';
 import { translate } from '../core/i18n';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 
 const USER_TYPES = {
   BUYER: 1, // client
@@ -28,13 +28,11 @@ class Signup extends Component {
   }
 
   componentDidMount() {
-    getConfigAsync(config => appUserProperty
+    appUserProperty
       .getItems()
       .then(userProperties => this.setState({
-        config,
         userProperties
-      })
-    ))
+      }));
   }
 
   handleLogin(event) {
@@ -76,10 +74,9 @@ class Signup extends Component {
   render() {
     return (
       <div className="row">
-      {this.state.config &&
         <div className="col-xs-12">
         <h1 
-          style={{color: this.state.config.COLOR_PRIMARY}}
+          style={{color: CONFIG.COLOR_PRIMARY}}
         >
           {translate('SIGNUP_PAGE_TITLE')}
         </h1>
@@ -167,15 +164,15 @@ class Signup extends Component {
                               <FlatButton
                                 className="btn-block"
                                 onClick={() => this.setState({ userType: USER_TYPES.SELLER })}
-                                label={translate('FIND_TASKS')}
+                                label={translate('SIGNUP_SUPPLY_USER_TYPE')}
                                 fullWidth={true}
                               />
                             }
                             { this.state.userType === USER_TYPES.SELLER &&
                               <RaisedButton
-                                label={translate('FIND_TASKS')}
+                                label={translate('SIGNUP_SUPPLY_USER_TYPE')}
                                 labelStyle={{color: 'white '}}
-                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                backgroundColor={CONFIG.COLOR_PRIMARY}
                                 fullWidth={true}
                               />
                             }
@@ -185,15 +182,15 @@ class Signup extends Component {
                               <FlatButton
                                 className="btn-block"
                                 onClick={() => this.setState({ userType: USER_TYPES.BUYER })}
-                                label={translate('POST_TASKS')}
+                                label={translate('SIGNUP_DEMAND_USER_TYPE')}
                                 fullWidth={true}
                               />
                             }
                             { this.state.userType === USER_TYPES.BUYER &&
                               <RaisedButton
-                                label={translate('POST_TASKS')}
+                                label={translate('SIGNUP_DEMAND_USER_TYPE')}
                                 labelStyle={{color: 'white '}}
-                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                backgroundColor={CONFIG.COLOR_PRIMARY}
                                 fullWidth={true}
                               />
                             }
@@ -243,7 +240,6 @@ class Signup extends Component {
                   </div>
             </div>
         </div>
-      }
       </div>
     );
   }

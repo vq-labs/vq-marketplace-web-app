@@ -1,31 +1,32 @@
 import React, { Component } from 'react';
-import NewListingCategory from '../NewListing/NewListingCategory';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
 import TaskListItem from '../Components/TaskListItem';
 import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
-import RaisedButton from 'material-ui/RaisedButton';
+import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
-import { getConfigAsync } from '../core/config';
-import { goTo, setQueryParams } from '../core/navigation';
+import { CONFIG } from '../core/config';
+import { setQueryParams, goTo } from '../core/navigation';
 import { getParams } from '../core/util.js';
-import { switchMode, getMode } from '../core/user-mode.js';
+import { getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
-import Loader from "../Components/Loader";
 import { openDialog } from '../helpers/open-message-dialog.js';
 
-/**
- * Dashboard depends on a user type
- */
+const defaultViewTypes = {
+  listings: "LISTINGS_POSTED",
+  requests: "SENT_REQUESTS_PENDING"
+};
 export default class Dashboard extends Component {
   constructor(props) {
       super();
   
       const viewType = getParams(location.search).viewType;
-    
+      const dashboardType = props.params.type;
+
       this.state = {
+        dashboardType,
         viewType,
         isLoading: false,
         tasks: [],
@@ -33,29 +34,61 @@ export default class Dashboard extends Component {
           requests: []
         }
       };
+
+      this.onViewChange = this.onViewChange.bind(this);
   }
-  
+
   componentDidMount() {
-    getConfigAsync(config => {
       getUserAsync(user => {
         if (getMeOutFromHereIfAmNotAuthorized(user)) {
           return;
         }
 
         const userMode = user.userType === 0 ? getMode() : user.userType;
+        let dashboardType = this.state.dashboardType;
+
+        if (!dashboardType) {
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            dashboardType = 'listings';
+          }
+  
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            dashboardType = 'requests';
+          }
+  
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            dashboardType = 'listings';
+          }
+  
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            dashboardType = 'requests';
+          }
+        }
 
         const newState = {
           userMode,
           isLoading: true,
           ready: true,
-          config,
-          userType: user.userType
+          userType: user.userType,
+          dashboardType
         };
 
         if (!this.state.viewType) {
-          newState.viewType =  Number(userMode) === 1 ?
-            'ORDERS_IN_PROGRESS' :
-            'SENT_REQUESTS_ACCEPTED';
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            newState.viewType = dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            newState.viewType = this.state.dashboardType === "requests" ? "SENT_REQUESTS_PENDING" : "SENT_REQUESTS_PENDING";
+          }
         }
 
         this.setState(newState);
@@ -64,13 +97,21 @@ export default class Dashboard extends Component {
         .getItems({
           status: '0',
           userId: user.id,
-        })
-        .then(tasks => this.setState({
+        }).then(tasks => this.setState({
           tasks,
           isLoading: false
         }));
       }, true);
-    });
+  }
+
+  onViewChange(viewType) {
+      const newState = {
+        viewType
+      };
+
+      setQueryParams(newState);
+
+      this.setState(newState);
   }
 
   render() {
@@ -78,40 +119,36 @@ export default class Dashboard extends Component {
         <div className="container vq-no-padding">
           {this.state.ready &&
           <div className="col-xs-12">
-            <div className="col-xs-12" style={{ marginBottom: 20 }}>
-              { this.state.userType === 0 &&
-                <RaisedButton
-                  primary={true}
-                  label={this.state.userMode === "1" ?
-                    translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :
-                    translate("SWITCH_USER_MODE_TO_DEMAND_SIDE")
-                  }
-                  onTouchTap={() => {
-                    const newUserMode = getMode() === "1" ? "2" : "1";
+            { this.state.dashboardType === "listings" &&
+              <div className="row vq-margin-top-bottom">
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                    <DashboardViewTypeChoice
+                      userType={Number(this.state.userMode)}
+                      dashboardType={"listings"}
+                      halign="left"
+                      selected={this.state.viewType}
+                      onSelect={this.onViewChange}
+                    />
+                  </div>
+                </div>
+            }
 
-                    switchMode(newUserMode);
-
-                    location.reload();
-                  }}
-                />
-              }
-            </div>
-            <div className="col-xs-12" style={{ marginBottom: 20 }}>
-              <DashboardViewTypeChoice
-                userType={Number(this.state.userMode)}
-                halign="left"
-                selected={this.state.viewType}
-                onSelect={viewType => {
-                  const newState = { viewType };
-
-                  setQueryParams(newState);
-
-                  this.setState(newState);
-              }}
-              />
-            </div>
-            {this.state.viewType === 'LISTINGS_POSTED' &&
-                <div className="row">
+            {this.state.dashboardType === "requests" &&
+              <div className="row vq-margin-top-bottom">
+                  <div className="col-xs-12 vq-margin-top-bottom">
+                      <DashboardViewTypeChoice
+                        userType={Number(this.state.userMode)}
+                        dashboardType={"requests"}
+                        halign="left"
+                        selected={this.state.viewType}
+                        onSelect={this.onViewChange}
+                      />
+                  </div>
+                </div>
+            }
+          
+            {(this.state.viewType === 'LISTINGS_POSTED' || this.state.viewType === 'OFFER_LISTINGS_POSTED' ) &&
+                <div className="row vq-margin-top-bottom">
                   { this.state.isLoading &&
                     <Loader isLoading={true} />
                   }
@@ -160,8 +197,9 @@ export default class Dashboard extends Component {
                   )}
                 </div>
               }
+
               {this.state.viewType === 'ORDERS_IN_PROGRESS' &&
-                <div className="row">
+                <div className="row vq-margin-top-bottom">
                   <Bookings
                     showTitle={false}
                     view={"in_progress"}
@@ -171,7 +209,7 @@ export default class Dashboard extends Component {
               }
 
               {this.state.viewType === 'ORDERS_COMPLETED' &&
-                <div className="row">
+                <div className="row vq-margin-top-bottom">
                   <Bookings
                     showTitle={false}
                     view={"completed"}
@@ -181,31 +219,32 @@ export default class Dashboard extends Component {
               }
 
               {this.state.viewType === 'SENT_REQUESTS_PENDING' &&
-                <Requests
-                  view={"pending"}
-                  showTitle={false}
-                />
+                <div className="row vq-margin-top-bottom">
+                  <Requests
+                    view={"pending"}
+                    showTitle={false}
+                  />
+                </div>
               }
 
               {this.state.viewType === 'SENT_REQUESTS_ACCEPTED' &&
-                <Requests
-                  view={"in_progress"}
-                  showTitle={false}
-                />
+                <div className="row vq-margin-top-bottom">
+                  <Requests
+                    view={"in_progress"}
+                    showTitle={false}
+                  />
+                </div>
               }
 
               {this.state.viewType === 'SENT_REQUESTS_SETTLED' &&
-                <Requests
-                  view={"completed"}
-                  showTitle={false}
-                />
+                <div className="vq-margin-top-bottom">
+                  <Requests
+                    view={"completed"}
+                    showTitle={false}
+                  />
+                </div>
               }
             </div>
-            }
-            { false && !this.state.isLoading && Number(this.state.userType) === 1 &&
-              <NewListingCategory onSelected={listingCategoryCode => {
-                goTo(`/new-listing?category=${listingCategoryCode}`);
-              }}/>
             }
         </div>
       );

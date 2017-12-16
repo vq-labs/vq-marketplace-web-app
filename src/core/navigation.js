@@ -16,11 +16,12 @@ export const goTo = (url, shouldReload) => {
         typeof TENANT_ID !== 'undefined'
         && newUrl.indexOf('admin') > -1
         && location.hostname !== 'localhost'
+        && location.hostname.indexOf('vqmarketplace.com') === -1
         && location.hostname.indexOf('viciqloud.com') === -1
         && location.hostname.indexOf('vq-labs.com') === -1) {
         // Production env. Note the https protocol.
         // eslint-disable-next-line
-        return location.href = `https://${TENANT_ID}.vq-labs.com/app/admin`;
+        return location.href = `https://${TENANT_ID}.vqmarketplace.com/app/admin`;
     }
 
     if (typeof shouldReload === 'function') {

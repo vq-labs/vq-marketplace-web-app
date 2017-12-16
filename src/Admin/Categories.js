@@ -55,7 +55,7 @@ export default class SectionCategories extends React.Component {
                                 key: 'minPriceHour',
                                 type: 'number',
                                 label: 'Min. price per hour',
-                                explanation: 'Enter the minimum price per hourin the smallest possible nomination of the supported currency. Example: 100 cents for 1€.'
+                                explanation: 'Enter the minimum price per hour in the supported currency.'
                             },
                             { key: 'imageUrl', type: 'single-image', label: 'Add category image', hint: 'Category image will be used on the category selection page.' }
                         ]}

@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify'
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import ApplicationDialog from '../Application/ApplicationDialog';
+import RequestDialog from '../Components/RequestDialog';
 import TaskCategories from '../Partials/TaskCategories';
 import TaskComments from '../Components/TaskComments';
 import Avatar from 'material-ui/Avatar';
@@ -15,23 +15,20 @@ import * as coreAuth from '../core/auth';
 import displayTaskTiming from '../helpers/display-task-timing';
 import * as pricingModelProvider from '../core/pricing-model-provider';
 import apiTask from '../api/task';
+import * as apiPayment from '../api/payment';
 import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
 import { getCategoriesAsync } from '../core/categories.js';
 import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
-import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-import '../App.css';
-
-const async = require("async");
-
+import { displayErrorFactory } from '../core/error-handler';
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -44,6 +41,7 @@ class Task extends Component {
             isLoading: true,
             isMyTask: false,
             taskOwner: {},
+            comments: [],
             task: {
                 images: [],
                 categories: [],
@@ -85,68 +83,78 @@ class Task extends Component {
                 categoryLabels
             });
 
-            getConfigAsync(config => {
-                getUserAsync(user => {
-                    if (!user) {
-                        return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
-                    }
+            getUserAsync(user => {
+                if (!user) {
+                    return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
+                }
 
-                    apiRequest.getItems({
-                        userId: user.id
-                    })
-                    .then(userRequests => {
+                apiPayment
+                .getUserAccount("stripe")
+                    .then(rAccount => {
                         this.setState({
-                            userRequests
+                            paymentAccount: rAccount
                         });
+                    }, displayErrorFactory({
+                        self: this,
+                        ignoreCodes: [ "STRIPE_NOT_CONNECTED" ]
+                    }));
+
+                apiRequest
+                .getItems({
+                    userId: user.id
+                })
+                .then(userRequests => {
+                    this.setState({
+                        userRequests
                     });
+                });
 
-                    let taskId = this.props.params.taskId;
-                    
-                    apiTask
-                        .getItem(taskId)
-                        .then(task => {
-                            const isMyTask = task.userId === user.id;
+                let taskId = this.props.params.taskId;
+                
+                apiTask
+                    .getItem(taskId)
+                    .then(task => {
+                        const isMyTask = task.userId === user.id;
 
-                            if (String(user.userType) === '1' && !isMyTask) {
+                        if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
+                            if (user.userType === 1 && !isMyTask) {
                                 goTo('/');
-
+    
                                 return alert('You cannot access this page.');
                             }
+                        }
 
-                            this.setState({
-                                configReady: true,
-                                config,
-                                user
-                            });
+                        this.setState({
+                            configReady: true,
+                            user,
+                            task
+                        });
 
-                            pricingModelProvider.get()
-                            .then(pricingModels => this.setState({
-                                pricingModels
-                            }));
+                        pricingModelProvider.get()
+                        .then(pricingModels => this.setState({
+                            pricingModels
+                        }));
 
-                            
-                            let sentRequest;
+                        let sentRequest;
 
-                            if (user) {
-                                sentRequest = task.requests
-                                    .filter(
-                                        _ => _.status !== REQUEST_STATUS.CANCELED
-                                    )
-                                    .find(
-                                        _ => _.fromUserId === user.id
-                                    );
-                            }
-                            
-                            this.setState({
-                                taskOwner: task.user,
-                                sentRequestId: sentRequest ? sentRequest.id : null,
-                                isLoading: false,
-                                task,
-                                isMyTask: task.userId === coreAuth.getUserId()
-                            });
-                    });
-                }, true);
-            });
+                        if (user) {
+                            sentRequest = task.requests
+                                .filter(
+                                    _ => _.status !== REQUEST_STATUS.CANCELED
+                                )
+                                .find(
+                                    _ => _.fromUserId === user.id
+                                );
+                        }
+                        
+                        this.setState({
+                            taskOwner: task.user,
+                            sentRequestId: sentRequest ? sentRequest.id : null,
+                            isLoading: false,
+                            isMyTask: task.userId === coreAuth.getUserId()
+                        });
+                });
+            }, true);
         });
     }
 
@@ -171,12 +179,12 @@ class Task extends Component {
 
         return (
             <div>
-              { this.state.isLoading && 
+              { this.state.isLoading &&
                 <div className="text-center" style={{ 'marginTop': '40px' }}>
                     <CircularProgress size={80} thickness={5} />
                 </div>
               }
-              { !this.state.isLoading && this.state.config &&  
+              { !this.state.isLoading &&
                     <div className="container-fluid" >
                         { this.state.task && this.state.task.status === '103' &&
                             <div className="row">
@@ -198,7 +206,7 @@ class Task extends Component {
                             <div className="col-sm-offset-1 col-xs-12 col-sm-10">
                                 <div className="col-xs-12 col-sm-8">
                                     <div className="row">
-                                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                        <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                                             {this.state.task.title}
                                         </h1>
                                     </div>
@@ -229,7 +237,7 @@ class Task extends Component {
                                                                 </strong>
                                                                 
                                                                 <p className="text-muted">
-                                                                    <Moment format={`${this.state.config.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
+                                                                    <Moment format={`${CONFIG.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
                                                                 </p>
                                                             
                                                         </li>
@@ -239,81 +247,56 @@ class Task extends Component {
                                     }   
                                 </div>
                                 <div className="col-xs-12 col-sm-4">
-                                    <Card style={{'marginTop': 60}}>
+                                    <Card style={{ 'marginTop': 60 }}>
                                         <CardText>
-                                            <h2 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                            <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
                                                 {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
                                             </h2>
                                         </CardText>
                                         { !this.state.user &&
                                             <RaisedButton
-                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                backgroundColor={CONFIG.COLOR_PRIMARY}
                                                 labelColor={"white"}
                                                 style={{width: '100%'}}
                                                 label={translate("REGISTER_TO_APPLY")} 
                                                 onClick={ () => goTo('/signup') }
                                             /> 
                                        }>
-                                        { 
+                                        {   
                                             this.state.user &&
-                                            String(this.state.user.userType) === '2' &&
+                                            (   this.state.user.userType === 2 ||
+                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1")
+                                            ) &&
                                             !this.state.isMyTask &&
                                             !this.state.sentRequestId &&
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
-                                                backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                labelColor={"white"}
+                                                primary={true}
                                                 style={{width: '100%'}}
-                                                label={translate("SEND_REQUEST")} 
-                                                onClick={() => {
-                                                    const userRequests = this.state.userRequests;
-                                                    const taskStartDate = (new Date(this.state.task.timing[0].date)).getTime() / 1000;
-                                                    const taskEndDate = (new Date(this.state.task.timing[0].endDate)).getTime() / 1000;
-                                                    let alreadyAppliedSomewhere = false;
-
-                                                    if (false) {
-                                                        userRequests
-                                                        .forEach(userRequest => {
-                                                            const requestStartDate = (new Date(userRequest.task.taskTimings[0].date)).getTime() / 1000;
-                                                            
-                                                            if (requestStartDate >= taskStartDate && requestStartDate <= taskEndDate) {
-                                                                alreadyAppliedSomewhere = true;
-                                                            }
-                                                        });
-                                                    }
-
-                                                    if (false && alreadyAppliedSomewhere) {
-                                                        return openConfirmDialog({
-                                                            headerLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_HEADER"),
-                                                            confirmationLabel: translate("ALREADY_APPLIED_REQUEST_ACTION_DESC")
-                                                        }, () => {
-                                                            async
-                                                            .eachSeries(userRequests, (userRequest, cb) => {
-                                                                apiRequest
-                                                                .updateItem(userRequest.id, {
-                                                                    status: REQUEST_STATUS.CANCELED
-                                                                })
-                                                                .then(_ => {
-                                                                    cb();
-                                                                }, cb);
-                                                            }, err => {
-                                                                if (err) {
-                                                                    return alert(err);
-                                                                }
-
-                                                                return this.setState({
-                                                                    shouldCancelOtherRequests: true,
-                                                                    applicationInProgress: true
-                                                                });
-                                                            });
-                                                        })
-                                                    } 
-
-                                                    this.setState({
-                                                        applicationInProgress: true
-                                                    });
+                                                label={
+                                                    this.state.task.taskType === 1 ?
+                                                    translate("DEMAND_LISTING_CALL_TO_ACTION") :
+                                                    translate("SUPPLY_LISTING_CALL_TO_ACTION")
                                                 }
-                                            }/> 
+                                                onClick={() => {
+                                                    if (
+                                                        CONFIG.PAYMENTS_ENABLED !== "1" ||
+                                                        (
+                                                            this.state.task.taskType === 1 &&
+                                                            this.state.paymentAccount &&
+                                                            this.state.paymentAccount.accountId
+                                                        )
+                                                    ) {
+                                                        this.setState({
+                                                            applicationInProgress: true
+                                                        });
+
+                                                        return;
+                                                    }
+                                                    
+                                                    goTo("/account/payments");
+                                                }
+                                            }/>
                                        }
                                        { !this.state.isMyTask && this.state.sentRequestId &&
                                             <FlatButton
@@ -328,23 +311,7 @@ class Task extends Component {
                                          this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 style={{width: '100%'}}
-                                                labelStyle={{color: 'white '}}
-                                                backgroundColor={this.state.config.COLOR_PRIMARY}
-                                                label={`${this.state.task.requests
-                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                                    .length} ${translate('REQUESTS')}`}
-                                                onTouchTap={() => {
-                                                    openRequestDialog(this.state.task.requests);
-                                                }}
-                                            />
-                                       }
-
-                                       { false && this.state.isMyTask &&
-                                         this.state.task.status === TASK_STATUS.BOOKED &&
-                                            <RaisedButton
-                                                style={{width: '100%'}}
-                                                labelStyle={{color: 'white '}}
-                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                primary={true}
                                                 label={`${this.state.task.requests
                                                     .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                                     .length} ${translate('REQUESTS')}`}
@@ -397,7 +364,7 @@ class Task extends Component {
                                                 <h3 className="text-left">{translate("LISTING_DATE")}</h3>
                                                 <div className="row">
                                                     <div className="col-xs-12">
-                                                        {displayTaskTiming(this.state.task.timing, `${this.state.config.DATE_FORMAT}`)}
+                                                        {displayTaskTiming(this.state.task.timing, `${CONFIG.DATE_FORMAT}`)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -427,16 +394,16 @@ class Task extends Component {
                                             }
                                         </div>
                                         }
-                                        {this.state.task &&
-                                        <div className="row">
-                                            <div className="col-xs-12">
+                                        {this.state.task && this.state.task.comments &&
+                                            <div className="row">
+                                                <div className="col-xs-12">
                                                     <TaskComments
                                                         taskId={this.state.task.id}
                                                         canSubmit={this.state.task.status === TASK_STATUS.ACTIVE}
                                                         comments={this.state.task.comments}
                                                     />
+                                                </div>
                                             </div>
-                                        </div>
                                         }
                                     </div>
                                 </div>
@@ -446,7 +413,8 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <ApplicationDialog
+                  <RequestDialog
+                    listing={this.state.task}
                     toUserId={this.state.task.userId}
                     taskId={this.state.task.id}
                     open={this.state.applicationInProgress}

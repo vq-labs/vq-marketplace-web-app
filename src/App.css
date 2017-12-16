@@ -1,10 +1,49 @@
+html {
+  box-sizing: border-box;
+  min-height: 100% !important;
+}
+
+.vq-row-option {
+  margin-left: 4px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.vq-color-primary {
+  color: #000639
+}
+
+body, #root > div {
+  height: 100%;
+  position: relative;
+}
+
 body {
+  padding-bottom: 6rem;
+  margin: 0;
   line-height: 1.5em;
   overflow-wrap: break-word;
 }
 
+#vq-footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding-top: 5rem;
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
 p {
   overflow-wrap: break-word;
+}
+
+.vq-margin-top-bottom {
+  margin-top: 15px
 }
 
 .vq-margin-top-xs {
@@ -92,8 +131,6 @@ p {
 .vq-account-sector-list > li.vq-account-sector-active {
   font-weight: bold;
 }
-
-
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
@@ -328,8 +365,8 @@ width:172px;
 	height: 30px;
 	position: absolute;
 	z-index:1;
-  right: 35px;
-	top: -15px;
+  right: 18px;
+	top: 20px;
 	bottom: 0;
 	margin: auto;
 	padding: 2px;
@@ -339,4 +376,36 @@ width:172px;
 	font-weight: normal;
 	font-size: 20px;
 	cursor: pointer;
+}
+
+/**
+  STRIPE ELEMENTS STYLES
+*/
+.vq-checkout.stripe-checkout {
+  margin: 0 auto;
+  max-width: 800px;
+  box-sizing: border-box;
+  padding: 0 5px;
+}
+
+form.vq-payment-form {
+  margin-bottom: 5px;
+}
+
+.StripeElement {
+  display: block;
+  margin: 10px 0 20px 0;
+  max-width: 500px;
+  padding: 10px 14px;
+  box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+  border-radius: 4px;
+  background: white;
+}
+.StripeElement--focus {
+  box-shadow: rgba(50, 50, 93, 0.109804) 0px 4px 6px, rgba(0, 0, 0, 0.0784314) 0px 1px 3px;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+}
+.StripeElement.PaymentRequestButton {
+  padding: 0;
 }

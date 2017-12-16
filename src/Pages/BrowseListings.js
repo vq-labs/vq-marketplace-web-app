@@ -1,25 +1,21 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
-import RaisedButton from 'material-ui/RaisedButton';
 import InputRange from 'react-input-range';
 import Loader from "../Components/Loader";
 import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
 import VIEW_TYPES from '../Components/VIEW_TYPES';
 import { displayPrice }  from '../core/format';
-import * as apiConfig from '../api/config';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
 import TaskMap from "../Components/TaskMap";
-import TextField from 'material-ui/TextField';
 import Autocomplete from 'react-google-autocomplete';
 import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
-import { stripHtml, formatGeoResults, serializeQueryObj } from '../core/util';
+import { formatGeoResults } from '../core/util';
 import { goTo, setQueryParams } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { translate } from '../core/i18n';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 
@@ -43,15 +39,14 @@ class Offers extends Component {
             offers: [],
             offerMarkers: [],
             queryCity: null,
-            config: {},
             autoCompleteText: '',
             isLoading: false,
             locationQueryString,
             appliedFilter: {
                 viewType: Number(query.viewType),
                 q: locationQueryString,
-                minPrice: query.minPrice || 500,
-                maxPrice: query.maxPrice || 10000,
+                minPrice: query.minPrice,
+                maxPrice: query.maxPrice,
                 category: query.category,
                 lat: query.lat,
                 lng: query.lng
@@ -63,43 +58,44 @@ class Offers extends Component {
     }
 
     componentDidMount() {
-        getConfigAsync(config => {
-            const appliedFilter = this.state.appliedFilter;
-            
-            appliedFilter.viewType = appliedFilter.viewType || Number(config.LISTINGS_DEFAULT_VIEW);
+        const appliedFilter = this.state.appliedFilter;
+        
+        appliedFilter.viewType = appliedFilter.viewType || Number(CONFIG.LISTINGS_DEFAULT_VIEW);
+
+        this.setState({
+            appliedFilter
+        });
+
+        getUserAsync(user => {
+            if (getMeOutFromHereIfAmNotAuthorized(user)) {
+                return;
+            }
+
+            let listingType = 1;
+            /**
+             * Only sellers can access this page
+             */
+            if (user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
+                return goTo('/dashboard');
+            } else {
+                listingType = 2;
+            }
 
             this.setState({
-                config,
-                appliedFilter
+                listingType, 
+                isLoading: true
             });
 
-            getUserAsync(user => {
-                if (getMeOutFromHereIfAmNotAuthorized(user)) {
-                    return;
-                }
-
-                /**
-                 * Only sellers can access this page
-                 */
-                if (user.userType === 1) {
-                    return goTo('/dashboard');
-                }
-
+            apiCategory
+            .getItems()
+            .then(categories =>
                 this.setState({
-                    isLoading: true
-                });
+                    categories
+                })
+            );
 
-                apiCategory
-                .getItems()
-                .then(categories => 
-                    this.setState({
-                        categories
-                    })
-                );
-
-                this.updateResults(this.state.appliedFilter);
-            }, true);
-        });
+            this.updateResults(this.state.appliedFilter);
+        }, true);
     }
     
     displayIconElement (offer) {
@@ -117,10 +113,10 @@ class Offers extends Component {
         
         apiTask
         .getItems({
-            untilNow: this.state.config.LISTING_TIMING_MODE === '1' ? 1 : undefined,
+            untilNow: CONFIG.LISTING_TIMING_MODE === '1' ? 1 : undefined,
             minPrice: query.minPrice,
             maxPrice: query.maxPrice,
-            taskType: 1,
+            taskType: this.state.listingType,
             status: '0',
             lat: query.lat,
             lng: query.lng,
@@ -167,11 +163,13 @@ class Offers extends Component {
 
     updateResults (query) {
         const appliedFilter = this.state.appliedFilter;
-
+        
         appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
-        
+        appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
+        appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+
         setQueryParams(appliedFilter);
 
         this.setState({
@@ -184,34 +182,36 @@ class Offers extends Component {
     render() {
         const Intro = 
         <div className="vq-listings-intro text-center" style={{ 
-            background: `url(${this.state.config.PROMO_URL_SELLERS || this.state.config.PROMO_URL}) no-repeat center center fixed`,
+            background: `url(${CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
-            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style={{ marginTop: 50 }}>
+            <div
+                className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3"
+                style={{ marginTop: 25 }}
+            >
                 <div style={{
-                    padding: 10,
                     maxWidth: '850px',
                     margin: '0 auto'
                 }}>
-                    
-                    { false && <h1 style={{
-                        color: "white",
-                        fontSize: 25
-                    }}>
-                        {translate('LISTINGS_PROMO_HEADER')}
-                    </h1>
+                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                        <h1 style={{
+                            color: "white",
+                            fontSize: 25
+                        }}>
+                            {translate('START_PAGE_HEADER')}
+                        </h1>
                     }
-                    { false && <h2 style={{ 
-                        color: "white",
-                        fontSize: 18
-                    }}>
-                        {translate('LISTINGS_PROMO_DESC')}
-                    </h2>
+                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                        <h2 style={{ 
+                            color: "white",
+                            fontSize: 18
+                        }}>
+                            {translate('START_PAGE_DESC')}
+                        </h2>
                     }
                     
-                    { this.state.config &&
-                      this.state.config.LISTING_GEOFILTER_COUNTRY_RESTRICTION &&
-                      this.state.config.LISTING_GEOFILTER_MODE &&
+                    { CONFIG.LISTING_GEOFILTER_ENABLED === "1" &&
+                    <div style={{ marginTop: 30 }}>
                         <Autocomplete
                             value={this.state.locationQueryString}
                             onChange={ev => {
@@ -220,7 +220,6 @@ class Offers extends Component {
 
                                 if (locationQueryString === '') {
                                     const appliedFilter = this.state.appliedFilter;
-                                
 
                                     appliedFilter.lat = null;
                                     appliedFilter.lng = null;
@@ -244,7 +243,7 @@ class Offers extends Component {
                                 height: 50
                             }}
                             componentRestrictions={{
-                                country: this.state.config.LISTING_GEOFILTER_COUNTRY_RESTRICTION
+                                country: CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION
                             }}
                             onPlaceSelected={place => {
                                 const locationQueryString = place.formatted_address;
@@ -268,31 +267,36 @@ class Offers extends Component {
                                     lng: appliedFilter.lng
                                 });
                             }}
-                            types={[ this.state.config.LISTING_GEOFILTER_MODE ? `(${this.state.config.LISTING_GEOFILTER_MODE})` : '(cities)' ]}
+                            types={[
+                                CONFIG.LISTING_GEOFILTER_MODE ?
+                                `(${CONFIG.LISTING_GEOFILTER_MODE})` :
+                                '(cities)'
+                            ]}
                             placeholder={translate('LISTING_FILTER_GEO')}
                         >
                         </Autocomplete>
-                    }
-                    { this.state.locationQueryString &&
-                        <button
-                            onTouchTap={() => {
-                                const appliedFilter = this.state.appliedFilter;
-                                const locationQueryString = '';
+                        { this.state.locationQueryString &&
+                            <button
+                                onTouchTap={() => {
+                                    const appliedFilter = this.state.appliedFilter;
+                                    const locationQueryString = '';
 
-                                delete appliedFilter.lat;
-                                delete appliedFilter.lng;
-                                delete appliedFilter.q;
+                                    delete appliedFilter.lat;
+                                    delete appliedFilter.lng;
+                                    delete appliedFilter.q;
 
-                                this.setState({
-                                    locationQueryString,
-                                    appliedFilter
-                                });
+                                    this.setState({
+                                        locationQueryString,
+                                        appliedFilter
+                                    });
 
-                                this.updateResults(appliedFilter);
-                            }}
-                            className="close-icon"
-                            type="reset"
-                        ></button>
+                                    this.updateResults(appliedFilter);
+                                }}
+                                className="close-icon"
+                                type="reset"
+                            ></button>
+                        }
+                    </div>
                     }
                 </div>
             </div>
@@ -300,6 +304,7 @@ class Offers extends Component {
 
         const SidebarContent =
         <div className="row hidden-xs">
+            
             <div className="col-xs-12"> 
             <div>
                 <span style={{
@@ -341,40 +346,42 @@ class Offers extends Component {
                 <hr style={{
                     marginTop: '5px'
                 }}/>
+                {CONFIG &&
                 <div style={{ width: '100%' }}>
-                    <h4 style={{ fontSize: '14px' }}>{this.state.appliedFilter.minPrice}-{this.state.appliedFilter.maxPrice} {displayPrice(undefined, 'HUF', 1)}</h4>
-                    <InputRange
-                        formatLabel={value => displayPrice(value, 'HUF', 1)}
-                        maxValue={10000}
-                        step={500}
-                        minValue={500}
-                        value={{
-                            min: this.state.appliedFilter.minPrice,
-                            max: this.state.appliedFilter.maxPrice
-                        }}
-                        onChange={value => {
-                            const appliedFilter = this.state.appliedFilter;
-                            
-                            appliedFilter.minPrice = value.min;
-                            appliedFilter.maxPrice = value.max;
+                    <h4 style={{ fontSize: '14px' }}>{this.state.appliedFilter.minPrice}-{this.state.appliedFilter.maxPrice} {displayPrice(undefined, CONFIG.PRICING_DEFAULT_CURRENCY, 1)}</h4>
+                        <InputRange
+                            formatLabel={value => displayPrice(value, CONFIG.PRICING_DEFAULT_CURRENCY, 1)}
+                            maxValue={Number(CONFIG.LISTING_PRICE_FILTER_MAX)}
+                            minValue={Number(CONFIG.LISTING_PRICE_FILTER_MIN)}
+                            step={Number(CONFIG.LISTING_PRICE_FILTER_STEP)}
+                            value={{
+                                min: this.state.appliedFilter.minPrice,
+                                max: this.state.appliedFilter.maxPrice
+                            }}
+                            onChange={value => {
+                                const appliedFilter = this.state.appliedFilter;
+                                
+                                appliedFilter.minPrice = value.min;
+                                appliedFilter.maxPrice = value.max;
 
-                            if (!updatingResults) {
-                                updatingResults = setTimeout(() => {
-                                    updatingResults = null;
-                                    
-                                    this.updateResults({
-                                        minPrice: value.min,
-                                        maxPrice: value.max
-                                    });
-                                }, 1000);
-                            }
+                                if (!updatingResults) {
+                                    updatingResults = setTimeout(() => {
+                                        updatingResults = null;
+                                        
+                                        this.updateResults({
+                                            minPrice: value.min,
+                                            maxPrice: value.max
+                                        });
+                                    }, 1000);
+                                }
 
-                            return this.setState({
-                                appliedFilter
-                            });
-                        }}
-                    />
+                                return this.setState({
+                                    appliedFilter
+                                });
+                            }}
+                        />
                 </div>
+                }
             </div>
         </div>;
 

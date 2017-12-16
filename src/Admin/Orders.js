@@ -1,16 +1,9 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
-
-import * as apiAdmin from '../api/admin';
-import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import { List, ListItem } from 'material-ui/List';
+import Moment from 'react-moment';
+import * as apiAdmin from '../api/admin';
 import { translate } from '../core/i18n';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 export default class SectionUsers extends React.Component {
     constructor() {
@@ -18,15 +11,16 @@ export default class SectionUsers extends React.Component {
         this.state = {
             selectedUserId: null,
             isBlockingUser: false,
-            users: []
+            orders: []
         };
     }
     componentDidMount() {
-        apiAdmin.users
+        apiAdmin
+        .order
         .getItems()
-        .then(users => {
+        .then(orders => {
             this.setState({ 
-                users
+                orders
             });
         });
     }
@@ -34,65 +28,42 @@ export default class SectionUsers extends React.Component {
             return (
                 <div className="row">
                     <div className="col-xs-12">
-                            <h1>Users</h1>
+                            <h1>Transactions</h1>
                     </div>
                     <div className="col-xs-12">
-                        <List>
-                            { this.state.users
-                            .map(user => 
-                                <ListItem
-                                    leftAvatar={
-                                        <Avatar src={ user ? user.imageUrl : '' } />
-                                    } 
-                                    primaryText={
-                                        user
-                                        &&
-                                        `${user.firstName} ${user.lastName} (#${user.id}) ${String(user.status) === '20' ? ' (Blocked)' : ''}`
-                                    }
-                                    rightIcon={
-                                        <IconMenu
-                                            iconButtonElement={
-                                                <IconButton>
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                            }
-                                            anchorOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            targetOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            >
-                                            <MenuItem
-                                                primaryText="Go to profile page"
-                                                onClick={() => coreNavigation.goTo(`/profile/${user.id}`)}
-                                            />
-                                            { String(user.status) !== '20' &&
-                                                <MenuItem
-                                                    onClick={() => this.setState({
-                                                        isBlockingUser: true,
-                                                        selectedUserId: user.id
-                                                    })}
-                                                    primaryText="Block"
-                                                />
-                                            }
-                                            { String(user.status) === '20' &&
-                                                <MenuItem
-                                                    onClick={() => this.setState({
-                                                        isUnblockingUser: true,
-                                                        selectedUserId: user.id
-                                                    })}
-                                                    primaryText="Unblock"
-                                                />
-                                            }
-                                        </IconMenu>
-                                    }
-                                >
-                                </ListItem>
+                        <table className="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Client</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            { this.state.orders
+                            .map(order => 
+                               <tr>
+                                   <td>
+                                        {order.id}
+                                   </td>
+                                   <td>
+                                        {order.amount} {order.currency}
+                                   </td>
+                                   <td>
+                                        {order.task.title}
+                                   </td>
+                                   <td>
+                                        {order.user.firstName} {order.user.lastName} (#{order.user.id})
+                                   </td>
+                                   <td>
+                                        <Moment format={`DD.MM.DD, HH:mm`}>{order.createdAt}</Moment>
+                                   </td>
+                                </tr>
                             )}
-                        </List>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div>

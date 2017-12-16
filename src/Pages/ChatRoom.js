@@ -7,7 +7,7 @@ import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
 import * as apiOrderActions from '../api/orderActions';
 import { translate } from '../core/i18n';
-import { goTo, tryGoBack } from '../core/navigation';
+import { goTo } from '../core/navigation';
 import displayTaskTiming from '../helpers/display-task-timing';
 import DOMPurify from 'dompurify'
 import Loader from "../Components/Loader";
@@ -20,6 +20,7 @@ import { getConfigAsync } from '../core/config';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import ORDER_STATUS from '../constants/ORDER_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
+import USER_TYPES from '../constants/USER_TYPES';
 import { getUserAsync } from '../core/auth';
 import { displayPrice, displayLocation } from '../core/format';
 import { stripHtml, purifyHtmlMessage } from '../core/util';
@@ -72,7 +73,7 @@ const getActiveStep = (requestStatus, isReviewed) => {
 
 const getReviewFromState = state => {
     try {
-        return state.user.userType === 1 ?
+        return state.user.userType === USER_TYPES.DEMAND ?
             state.request.order.review : state.request.review
     } catch (err) {
         return undefined;
@@ -389,15 +390,26 @@ export default class ChatRoom extends React.Component {
                                     </Paper>
                                     { this.state.isUserOwner &&
                                       String(this.state.request.status) === '0' &&
-                                        <RaisedButton
-                                            labelStyle={{color: 'white'}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
-                                            style={actionBtnStyle}
-                                            label={translate("ORDER_CREATE")} 
-                                            onClick={
-                                                () => goTo(`/request/${this.state.requestId}/book`)
+                                        <div>
+                                            { this.state.user.userType === USER_TYPES.DEMAND &&
+                                                <RaisedButton
+                                                    primary={true}
+                                                    style={actionBtnStyle}
+                                                    label={translate("ORDER_CREATE")} 
+                                                    onClick={
+                                                        () => goTo(`/request/${this.state.requestId}/book`)
+                                                    }
+                                                />
                                             }
-                                        />
+                                            { false && this.state.user.userType === USER_TYPES.SUPPLY &&
+                                                <RaisedButton
+                                                    primary={true}
+                                                    style={actionBtnStyle}
+                                                    label={translate("ACCEPT_REQUEST")} 
+                                                    onClick={() => {}}
+                                                />
+                                            }
+                                        </div>
                                     }
 
                                     { this.state.request.order &&
@@ -513,6 +525,8 @@ export default class ChatRoom extends React.Component {
                                     }
 
                                     { this.state.user &&
+                                      this.state.task &&
+                                      this.state.task.taskType === 1 &&
                                         <Stepper className="hidden-xs" activeStep={
                                             getActiveStep(this.state.request.status, getReviewFromState(this.state))
                                         } orientation="vertical">

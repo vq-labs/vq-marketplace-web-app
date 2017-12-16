@@ -137,13 +137,11 @@ export default class Bookings extends Component {
                                                     <strong>{translate("ORDER_IN_PROGRESS")}</strong>
                                                 </p>
                                             }
-
                                             { order.status === ORDER_STATUS.SETTLED &&
                                                 <p className="text-muted">
                                                     <strong>{translate("ORDER_SETTLED")} {order.review ? `, ${translate("REVIEWED")}` : ''}</strong> 
                                                 </p>
                                             }
-
                                             { false && order.status === ORDER_STATUS.MARKED_DONE && order.autoSettlementStartedAt &&
                                                 <p className="text-muted">
                                                     <strong>{translate("ORDER_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{(new Date(order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)</strong>
@@ -177,7 +175,6 @@ export default class Bookings extends Component {
                                                     </a>
                                                 </p>
                                             }
-
                                             { order.status === ORDER_STATUS.MARKED_DONE &&
                                                 <p className="text-muted">
                                                     <strong>{translate("ORDER_MARKED_DONE")}</strong>
@@ -216,7 +213,6 @@ export default class Bookings extends Component {
                                                     </a>
                                                 </p>
                                             }
-
                                             { order.status === ORDER_STATUS.CLOSED &&
                                                 <p className="text-muted">
                                                     <strong>{translate("ORDER_CLOSED")} {order.review ? `, ${translate("REQUEST_REVIEWED")}` : ''}</strong>

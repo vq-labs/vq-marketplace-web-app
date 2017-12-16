@@ -10,11 +10,10 @@ import MenuItem from 'material-ui/MenuItem';
 import HtmlTextField from './HtmlTextField';
 import ImageUploader from './ImageUploader';
 import FileUploader from './FileUploader';
-import DOMPurify from 'dompurify'
+import DOMPurify from 'dompurify';
 import * as coreNavigation from '../core/navigation';
 import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
-import '../App.css';
 
 const _ = require('underscore');
 
@@ -42,6 +41,8 @@ export default class EditableEntity extends Component {
         });
         
         this.state = {
+            valid: true,
+            validationErrors: {},
             canSave: props.canSave,
             showCancelBtn: props.showCancelBtn,
             isLoading: false,
@@ -65,7 +66,8 @@ export default class EditableEntity extends Component {
     componentWillReceiveProps (nextProps) {
         const updatedEntity = _.clone(nextProps.value) || {};
 
-        this.props.fields.forEach(field => {
+        this.props.fields
+        .forEach(field => {
             if (field.type === 'bool') {
                 updatedEntity[field.key] = updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
 
@@ -91,9 +93,18 @@ export default class EditableEntity extends Component {
         });
     } 
   
-    updateField(fieldKey, fieldValue, transform, isArray) {
+    updateField(field, fieldKey, fieldValue, transform, isArray) {
         const updatedEntity = this.state.updatedEntity;
+        const validationErrors = this.state.validationErrors;
+
+        if (field.regex) {
+            validationErrors[fieldKey] = !fieldValue.match(field.regex);
+        }
         
+        const valid = !(Object.keys(validationErrors)
+            .filter(fieldKey => validationErrors[fieldKey])
+            .length)
+
         updatedEntity[fieldKey] = transform ? transform(fieldValue) : fieldValue;
         
         this.state.fields
@@ -106,20 +117,21 @@ export default class EditableEntity extends Component {
         
         this.setState({
             updatedEntity,
+            valid,
             dirty: true
         });
     }
 
-    handleFieldChange (fieldKey, transform) {
-        return (_, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
+    handleFieldChange (field, transform) {
+        return (_, fieldValue) => this.updateField(field, field.key, fieldValue, transform);
     }
     
-    handleFieldSelections (fieldKey, transform) {
-        return (_, _2, values) => this.updateField(fieldKey, values.filter(_ => _.length === 2), transform);
+    handleFieldSelections (field, transform) {
+        return (_, _2, values) => this.updateField(field, field.key, values.filter(_ => _.length === 2), transform);
     }
 
-    handleFieldSelection (fieldKey, transform) {
-        return (_, _2, fieldValue) => this.updateField(fieldKey, fieldValue, transform);
+    handleFieldSelection (field, transform) {
+        return (_, _2, fieldValue) => this.updateField(field, field.key, fieldValue, transform);
     }
 
     handleUpdate () {
@@ -146,49 +158,87 @@ export default class EditableEntity extends Component {
                                         .map((field, index) =>
                                             <div className="col-xs-12" key={field.key}>
                                                     { field.type === 'color' &&
-                                                        <div>
-                                                        <TextField
-                                                            floatingLabelFixed={true}
-                                                            floatingLabelText={field.label}
-                                                            disabled={true}
-                                                            value={this.state.updatedEntity[field.key]}
-                                                        />
-                                                        <TwitterPicker
-                                                            color={this.state.updatedEntity[field.key]}
-                                                            onChange={color => {
-                                                                this.handleFieldChange(field.key)(undefined, color.hex);
-                                                            }}
-                                                        />
+                                                        <div style={{ marginBottom: 20 }}>
+                                                            <TextField
+                                                                floatingLabelFixed={true}
+                                                                floatingLabelText={field.label}
+                                                                disabled={true}
+                                                                value={this.state.updatedEntity[field.key]}
+                                                            />
+                                                            <TwitterPicker
+                                                                color={this.state.updatedEntity[field.key]}
+                                                                onChange={color => {
+                                                                    this.handleFieldChange(field)(undefined, color.hex);
+                                                                }}
+                                                            />
                                                         </div>
                                                     }
-                                                    { (field.type === 'string' || field.type === 'number') &&
-                                                        <div className="row">
+                                                    {
+                                                        (
+                                                            field.type === 'string' ||
+                                                            field.type === 'number' ||
+                                                            field.type === 'secret'
+                                                        ) &&
+                                                        <div style={{ marginBottom: 20 }}>
                                                             { field.title &&
-                                                                <div className="col-xs-12">
+                                                                <div>
                                                                     <h3>{field.title}</h3>
                                                                 </div>
                                                             }
-                                                            <div className="col-xs-12">
-                                                                <TextField
-                                                                    key={index}
-                                                                    type={field.type}
-                                                                    disabled={field.deriveValue}
-                                                                    onChange={this.handleFieldChange(field.key)}
-                                                                    value={this.state.updatedEntity[field.key]}
-                                                                    style={{width: '100%'}}
-                                                                    inputStyle={{width: '100%'}}
-                                                                    floatingLabelText={field.label}
-                                                                    hintText={field.hint}
-                                                                    floatingLabelFixed={true}
-                                                                />
+                                                            <div>
+                                                                { field.type === 'string' &&
+                                                                    <TextField
+                                                                        key={index}
+                                                                        type={field.type}
+                                                                        disabled={field.deriveValue}
+                                                                        onChange={this.handleFieldChange(field)}
+                                                                        value={this.state.updatedEntity[field.key]}
+                                                                        style={{width: '100%'}}
+                                                                        inputStyle={{width: '100%'}}
+                                                                        floatingLabelText={field.label}
+                                                                        hintText={field.hint}
+                                                                        floatingLabelFixed={true}
+                                                                    />
+                                                                }
+                                                                { field.type === 'secret' &&
+                                                                        <TextField
+                                                                            key={index}
+                                                                            type={"password"}
+                                                                            disabled={field.deriveValue}
+                                                                            onChange={this.handleFieldChange(field)}
+                                                                            value={this.state.updatedEntity[field.key]}
+                                                                            style={{width: '100%'}}
+                                                                            inputStyle={{width: '100%'}}
+                                                                            floatingLabelText={field.label}
+                                                                            hintText={field.hint}
+                                                                            floatingLabelFixed={true}
+                                                                        />
+                                                                }
+      
+                                                                { field.type === 'number' &&
+                                                                    <TextField
+                                                                        min={field.min}
+                                                                        max={field.max}
+                                                                        key={index}
+                                                                        type={field.type}
+                                                                        disabled={field.deriveValue}
+                                                                        onChange={this.handleFieldChange(field)}
+                                                                        errorText={this.state.validationErrors[field.key] && 'Invalid value'}
+                                                                        value={this.state.updatedEntity[field.key]}
+                                                                        style={{width: '100%'}}
+                                                                        inputStyle={{width: '100%'}}
+                                                                        floatingLabelText={field.label}
+                                                                        hintText={field.hint}
+                                                                        floatingLabelFixed={true}
+                                                                    />
+                                                                }
+                                                                { field.explanation &&
+                                                                    <div>
+                                                                        <div className="text-muted" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(field.explanation)}}>
+                                                                        </div>
+                                                                    </div>
+                                                                }
                                                             </div>
-                                                            { field.explanation &&
-                                                                <div className="col-xs-12">
-                                                                    <div dangerouslySetInnerHTML={{
-                                                                        __html: DOMPurify.sanitize(field.explanation)
-                                                                    }}></div>
-                                                                </div>
-                                                            }
                                                         </div>
                                                     }
                                                     { field.type === 'select' && field.multiple &&
@@ -198,7 +248,7 @@ export default class EditableEntity extends Component {
                                                         multiple={field.multiple}
                                                         floatingLabelText={field.label}
                                                         value={this.state.updatedEntity[field.key]}
-                                                        onChange={this.handleFieldSelections(field.key)}
+                                                        onChange={this.handleFieldSelections(field)}
                                                     >
                                                         {field.selection.map((selectionItem, index) =>
                                                             <MenuItem
@@ -221,7 +271,7 @@ export default class EditableEntity extends Component {
                                                         multiple={field.multiple}
                                                         floatingLabelText={field.label}
                                                         value={this.state.updatedEntity[field.key]}
-                                                        onChange={this.handleFieldSelection(field.key)}
+                                                        onChange={this.handleFieldSelection(field)}
                                                     >
                                                         {field.selection.map((selectionItem, index) => 
                                                             <MenuItem key={index} value={selectionItem.value} primaryText={selectionItem.label} />
@@ -239,7 +289,7 @@ export default class EditableEntity extends Component {
                                                             <div className="col-xs-12">
                                                                 <HtmlTextField
                                                                     value={this.state.updatedEntity[field.key]}
-                                                                    onChange={this.handleFieldChange(field.key)}
+                                                                    onChange={this.handleFieldChange(field)}
                                                                 >
                                                                 </HtmlTextField>
                                                             </div>
@@ -247,19 +297,19 @@ export default class EditableEntity extends Component {
                                                     }
                                                     
                                                     { field.type === 'bool' &&
-                                                        <div className="col-xs-12">
+                                                        <div style={{ marginTop: 15 }}>
                                                             <Checkbox
                                                                 disabled={field.disabled}
                                                                 label={field.label}
                                                                 checked={
                                                                     this.state.updatedEntity[field.key] === "1" || this.state.updatedEntity[field.key] === true
                                                                 }
-                                                                onCheck={this.handleFieldChange(field.key)}
+                                                                onCheck={this.handleFieldChange(field)}
                                                             />
                                                             
                                                             { field.explanation &&
-                                                                <div className="col-xs-12">
-                                                                    <div dangerouslySetInnerHTML={{
+                                                                <div>
+                                                                    <div className="text-muted" dangerouslySetInnerHTML={{
                                                                         __html: DOMPurify.sanitize(field.explanation)
                                                                     }}></div>
                                                                 </div>
@@ -275,7 +325,7 @@ export default class EditableEntity extends Component {
                                                                 []
                                                             } 
                                                             onChange={images => {
-                                                                this.handleFieldChange(field.key)(null, images[0] ? images[0].imageUrl : undefined)
+                                                                this.handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
                                                             }}
                                                         />
                                                     }
@@ -292,7 +342,7 @@ export default class EditableEntity extends Component {
                                                                     []
                                                                 } 
                                                                 onChange={images => {
-                                                                    this.handleFieldChange(field.key)(null, images[0] ? images[0].imageUrl : undefined)
+                                                                    this.handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
                                                                 }}
                                                             />
                                                         </div>
@@ -309,7 +359,7 @@ export default class EditableEntity extends Component {
                                                                     []
                                                                 } 
                                                                 onChange={files => {
-                                                                    this.handleFieldChange(field.key)(null, files[0] ? files[0].fileUrl : undefined)
+                                                                    this.handleFieldChange(field)(null, files[0] ? files[0].fileUrl : undefined)
                                                                 }}
                                                             />
                                                         </div>
@@ -332,10 +382,10 @@ export default class EditableEntity extends Component {
                                             { this.state.config &&
                                                 <RaisedButton
                                                     primary={true}
-                                                    disabled={!this.props.enableSkip ? !this.state.dirty : false}
-                                                    style={{ float: this.props.saveLeft ? 'left' : 'right' }}
+                                                    disabled={!this.state.valid || (!this.props.enableSkip ? !this.state.dirty : false)}
+                                                    style={{float: this.props.saveLeft ? 'left' : 'right'}}
                                                     label={this.props.saveLabel || translate("SAVE")}
-                                                    onTouchTap={ this.handleUpdate }
+                                                    onTouchTap={this.handleUpdate}
                                                 />
                                             }
                                         </div>

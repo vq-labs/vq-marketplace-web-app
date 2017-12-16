@@ -42,7 +42,7 @@ const AppRoutes = (
         <Route path="/app">
             <IndexRoute component={BrowseListings}/>
             <Route path="account(/:sector)" component={Account}></Route>
-            <Route path="dashboard" component={Dashboard}></Route>
+            <Route path="dashboard(/:type)" component={Dashboard}></Route>
             <Route path="change-password" component={ChangePasswordPage}></Route>
             <Route path="my-listings" component={MyListings}></Route>
             <Route path="listings" component={BrowseListings}></Route>

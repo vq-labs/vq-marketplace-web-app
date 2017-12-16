@@ -13,7 +13,7 @@ import { displayMessage } from '../helpers/display-message.js';
 
 const _ = require('underscore');
 
-export default class ApplicationDialog extends React.Component {
+export default class RequestDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -157,17 +157,12 @@ export default class ApplicationDialog extends React.Component {
                 </div>
         </div>;
 
-    const ApplicationConfirmation = 
+    const ApplicationConfirmation =
     <div>
         { this.state.isBeingPosted && 
             <div className="text-center" style={{ 'marginTop': '40px' }}>
                 <CircularProgress size={80} thickness={5} />
             </div>
-        }
-        { !this.state.isBeingPosted && 
-        <p>
-            Ihre Nachricht wird geschickt.
-        </p>
         }
     </div>;
 
@@ -181,8 +176,7 @@ export default class ApplicationDialog extends React.Component {
     return (
       <Dialog
           autoScrollBodyContent={true}
-          title={ this.getDialogTitle(this.state.mask) }
-          actions={ getActions(this.state.mask) }
+          actions={getActions(this.state.mask)}
           modal={ true }
           open={ this.state.open }
         >

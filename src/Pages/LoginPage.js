@@ -6,6 +6,7 @@ import Snackbar from 'material-ui/Snackbar';
 import { getParams } from '../core/util.js'
 import { getUserAsync } from '../core/auth';
 import { init as initUserMode } from '../core/user-mode.js';
+import { CONFIG } from '../core/config';
 
 const getOutOfHere = (user, redirectTo) => {
   if (redirectTo) {
@@ -46,22 +47,34 @@ export default class LoginPage extends Component {
 
                 initUserMode(user.userType);
 
-                setTimeout(() => {
-                  if (this.state.redirectTo) {
-                    return goTo(this.state.redirectTo, this.state.redirectTo.indexOf("admin") > -1);
-                  }
+                if (this.state.redirectTo) {
+                  return goTo(this.state.redirectTo, this.state.redirectTo.indexOf("admin") > -1);
+                }
 
-                  switch (Number(user.userType)) {
-                    case 1:
-                      goTo(`/dashboard?userType=${user.userType}`);
-                      break;
-                    case 2:
-                      goTo(`/`);
-                      break;
-                    default:
-                      goTo(`/`);
-                  }
-                }, 1000);
+                switch (Number(user.userType)) {
+                  case 1: // demand user
+                    if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+                      return goTo(`/`);
+                    }
+
+                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                      return goTo(`/dashboard/listings`);
+                    }
+
+                    break;
+                  case 2:
+                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                      return goTo(`/`);
+                    }
+
+                    if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+                      return goTo(`/dashboard/listings`);
+                    }
+
+                    break;
+                  default:
+                    goTo(`/`);
+                }
               }}
               onNotVerified={() => {
                 return goTo('/email-not-verified');

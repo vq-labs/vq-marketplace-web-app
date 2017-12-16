@@ -98,104 +98,103 @@ export default class SectionUsers extends React.Component {
                 
 
                     <div className="col-xs-12">
-                        <List>
-                            { this.state.requests
-                            .filter(request => {
-                                if (!request.fromUser) {
-                                    return false;
-                                }
+                    <table className="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">From user</th>
+                                    <th scope="col">Listing</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Reviews</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.requests
+                                .filter(request => {
+                                    if (!request.fromUser) {
+                                        return false;
+                                    }
 
-                                if (!this.state.statusFilter && !this.state.listingIdSearchValue) {
-                                    return true;
-                                }
+                                    if (!this.state.statusFilter && !this.state.listingIdSearchValue) {
+                                        return true;
+                                    }
 
-                                if (!this.state.statusFilter && this.state.listingIdSearchValue) {
-                                    return String(this.state.listingIdSearchValue) === String(request.taskId);
-                                }
+                                    if (!this.state.statusFilter && this.state.listingIdSearchValue) {
+                                        return String(this.state.listingIdSearchValue) === String(request.taskId);
+                                    }
 
-                                if (this.state.statusFilter && !this.state.listingIdSearchValue) {
-                                    return this.state.statusFilter === request.status;
-                                }
+                                    if (this.state.statusFilter && !this.state.listingIdSearchValue) {
+                                        return this.state.statusFilter === request.status;
+                                    }
 
-                                return this.state.statusFilter === request.status && String(request.taskId) === String(this.state.listingIdSearchValue);
-                            })
-                            .map(request => 
-                                <div className="row">
-                                    <div class="col-xs-12">
-                                    <div className="row">
-                                            <div class="col-xs-12">
-                                                <strong>ID: {request.id}, Status: {REQUEST_STATUS_LABEL[request.status]} {request.review ? 'Reviewed by Provider' : ''} {request.order && request.order.review ? 'Reviewed by Client' : ''}</strong>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div class="col-xs-12">
-                                                From user: <a href="#" style={{ padding: 5 }} onTouchTap={() => goTo(`/profile/${request.fromUser.id}`)}>#{request.fromUser.id} {request.fromUser.firstName} {request.fromUser.lastName}</a>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div class="col-xs-12">
-                                                ListingId: <a href="#" style={{ padding: 5 }} onTouchTap={() => goTo(`/task/${request.task.id}`)}>(id: {request.task.id}) {request.task.title}</a>
-                                            </div>
-                                        </div>
+                                    return this.state.statusFilter === request.status && String(request.taskId) === String(this.state.listingIdSearchValue);
+                                })
+                                .map(request =>
+                                <tr>
+                                   <td>
+                                        {request.id}
+                                   </td>
+                                   <td>
+                                        (#{request.fromUser.id}) {request.fromUser.firstName} {request.fromUser.lastName}
+                                    </td>
+                                    <td>
+                                        (#{request.task.id}) {request.task.title}
+                                    </td>
+                                    
+                                    <td>
+                                        {REQUEST_STATUS_LABEL[request.status]}
+                                    </td>
+                                    <td>
+                                        Provider: {request.review ? 'Yes' : 'No'}<br />
+                                        Client: {request.order && request.order.review ? 'Yes' : 'No'}
+                                    </td>
+                                    <td>
+                                        <Moment format={`DD.MM.DD, HH:mm`}>{request.createdAt}</Moment>
+                                    </td>
+                                    <td>
+                                        <a
+                                        className="vq-row-option"
+                                        href="#"
+                                        onTouchTap={() => {
+                                            apiAdmin.users
+                                            .getUserEmail(request.fromUserId)
+                                            .then(userEmails => {
+                                                this.setState({
+                                                    showDetails: true,
+                                                    selectedRequest: userEmails
+                                                });
+                                            });
+                                        }}>Email</a>
 
-                                        <div className="row">
-                                            <div class="col-xs-12">
-                                                Created: <Moment format={`DD.MM.DD, HH:mm`}>{request.createdAt}</Moment>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
+                                        <a className="vq-row-option" href="#" onTouchTap={() => {
+                                            this.setState({
+                                                showDetails: true,
+                                                selectedRequest: request
+                                            })
+                                        }}>Details</a>
 
-                                    <div class="col-xs-12" style={{'marginBottom': '10px'}}>
-                                        <div className="row">
-                                            <a  href="#"
-                                                onTouchTap={() => {
-                                                    this.setState({
-                                                        showDetails: true,
-                                                        selectedRequest: request
-                                                    })
-                                                }}>
-                                                <strong>
-                                                    Show full information
-                                                </strong>
-                                            </a>
-                                            <a 
-                                                href="#"
-                                                style={{ marginLeft: 10 }}
-                                                onTouchTap={() => {
-                                                    this.setState({
-                                                        isShowingRequestMessages: true
-                                                    });
+                                        <a className="vq-row-option" href="#" onTouchTap={() => {
+                                           this.setState({
+                                                isShowingRequestMessages: true
+                                            });
 
-                                                    apiAdmin
-                                                    .request
-                                                    .getRequestMessages(request.id)
-                                                    .then(messages => {
-                                                        this.setState({
-                                                            requestMessages: messages
-                                                        });
-                                                    });
-                                                }}>
-                                                <strong>
-                                                    Messages
-                                                </strong>
-                                            </a>
-                                            <a
-                                                className="hidden"
-                                                style={{ marginLeft: 10 }} 
-                                                onTouchTap={() => alert('@TODO')}>
-                                                <strong>
-                                                    Mark as spam
-                                                </strong>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <hr />
-                                    </div>
-                                </div>
+                                            apiAdmin
+                                            .request
+                                            .getRequestMessages(request.id)
+                                            .then(messages => {
+                                                this.setState({
+                                                    requestMessages: messages
+                                                });
+                                            });
+                                        }}>Messages</a>
+                                    </td>
+                                </tr>
                             )}
-                        </List>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div>

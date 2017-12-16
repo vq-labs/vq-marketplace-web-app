@@ -7,6 +7,7 @@ import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
@@ -16,7 +17,9 @@ import * as coreAuth from '../core/auth';
 import { goTo, goStartPage } from '../core/navigation';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
-import { getMode, registerModeChange } from '../core/user-mode.js';
+import { getMode } from '../core/user-mode.js';
+import { CONFIG } from '../core/config';
+import { switchMode } from '../core/user-mode.js';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -24,7 +27,6 @@ const headerBtnStyle = {
   'fontSize': '1',
   'borderRadius': '25px'
 };
-
 class Header extends Component {
   constructor(props) {
     super();
@@ -32,7 +34,6 @@ class Header extends Component {
     this.state = {
       userMode: getMode(),
       shouldDisplay: location.pathname.indexOf("admin") === -1,
-      homeLabel: props.homeLabel,
       logged: Boolean(props.user),
       user: props.user
     };
@@ -43,7 +44,6 @@ class Header extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
       return this.setState({
-        homeLabel: nextProps.homeLabel,
         userId: nextProps.user.id,
         user: nextProps.user,
         logged: Boolean(nextProps.user)
@@ -51,7 +51,6 @@ class Header extends Component {
     }
 
     this.setState({
-      homeLabel: nextProps.homeLabel,
       logged: false,
       userId: undefined,
       user: undefined
@@ -93,8 +92,8 @@ class Header extends Component {
         <div >
           <Toolbar className="st-nav">
               <Logo
-                appName={this.props.appName}
-                logo={this.props.logo}
+                appName={CONFIG.NAME}
+                logo={CONFIG.LOGO_URL}
               />
 
               { !this.state.shouldDisplay &&
@@ -106,23 +105,71 @@ class Header extends Component {
               }
               { this.state.shouldDisplay &&
                 <ToolbarGroup>
-                          { this.state.logged &&
-                          <div onClick={ 
-                                () => { goTo('/dashboard'); 
-                          }}>
-                            <IconButton
-                              className="visible-xs"
-                              iconStyle={{ color: grey600 }}>
-                              <DashboardIcon />
-                            </IconButton>
-
-                            <FlatButton
-                              className="hidden-xs"
-                              label={translate("HEADER_DASHBOARD")}
+                          { (
+                            this.state.logged &&
+                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                            ) &&
+                            <div>
+                              <IconButton
+                                className="visible-xs"
+                                iconStyle={{ color: grey600 }}>
+                                <DashboardIcon />
+                              </IconButton>
                               
-                              style={headerBtnStyle}
-                            />
-                          </div>
+                                <IconMenu
+                                  iconButtonElement={
+                                    <FlatButton
+                                      className="hidden-xs"
+                                      label={translate("HEADER_DASHBOARD")}
+                                      
+                                      style={headerBtnStyle}
+                                    />
+                                  }
+                                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                  targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                                >
+                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
+                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
+                                </IconMenu>
+                            </div>
+                          }
+                          { this.state.logged &&
+                            ((
+                              CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                              CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                            ) || (
+                              CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                              CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                            )) &&
+                            <div onTouchTap={() => {
+                              if (
+                                CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                              ) {
+                                return goTo(this.state.userMode === "1" ? "/dashboard/requests" : "/dashboard/listings");
+                              }
+                              
+                              if (
+                                CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                              ) {
+                                return goTo(this.state.userMode === "1" ? "/dashboard/listings" : "/dashboard/requests");
+                              }
+
+                            }}>
+                              <IconButton
+                                className="visible-xs"
+                                iconStyle={{ color: grey600 }}>
+                                <DashboardIcon />
+                              </IconButton>
+
+                              <FlatButton
+                                className="hidden-xs"
+                                label={translate("HEADER_DASHBOARD")}
+                                
+                                style={headerBtnStyle}
+                              />
+                            </div>
                           }
                           { !this.state.logged &&
                           <FlatButton label={translate("SIGNUP")} onClick={ 
@@ -136,7 +183,12 @@ class Header extends Component {
                           }
                     { this.state.logged && <ToolbarSeparator /> }
 
-                    { this.state.logged && Number(this.state.userMode) === 2 &&
+                    { this.state.logged &&
+                      (
+                        (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && Number(this.state.userMode) === 1) ||
+                        (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && Number(this.state.userMode) === 2) 
+                      )
+                    &&
                       <div onTouchTap={ 
                           () => goTo('/')
                       }>
@@ -148,13 +200,18 @@ class Header extends Component {
 
                         <FlatButton
                           className="hidden-xs"
-                          label={translate('HEADER_LISTINGS')} 
+                          label={Number(this.state.userMode) === 1 ? translate('HEADER_SUPPLY_LISTINGS') : translate('HEADER_DEMAND_LISTINGS')}
                           style={headerBtnStyle}
                         />
                       </div>
                     }
 
-                    { this.state.logged && Number(this.state.userMode) === 1 &&
+                    { this.state.logged
+                      &&
+                      Number(this.state.userMode) === 1
+                      &&
+                      CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                      &&
                       <a onClick={() => goTo('/new-listing')} target="_self">
                         {
                           translate('HEADER_ADD_LISTING') === 'HEADER_ADD_LISTING' ?
@@ -163,6 +220,26 @@ class Header extends Component {
                           </IconButton> :
                           <FlatButton 
                               label={translate('HEADER_ADD_LISTING')}
+                              style={headerBtnStyle}
+                          />
+                        }
+                      </a>
+                    }
+
+                    { this.state.logged
+                      &&
+                      Number(this.state.userMode) === 2
+                      &&
+                      CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+                      &&
+                      <a onClick={() => goTo('/new-listing')} target="_self">
+                        {
+                          translate('HEADER_ADD_OFFER_LISTING') === 'HEADER_ADD_OFFER_LISTING' ?
+                          <IconButton iconStyle={{ color: grey600 }}>
+                            <ContentAdd />
+                          </IconButton> :
+                          <FlatButton 
+                              label={translate('HEADER_ADD_OFFER_LISTING')}
                               style={headerBtnStyle}
                           />
                         }
@@ -179,9 +256,7 @@ class Header extends Component {
                       <IconMenu
                             style={{ cursor: 'pointer' }}
                             iconButtonElement={
-                              <div>
-                                <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
-                              </div>
+                              <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
                             }
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
@@ -196,14 +271,29 @@ class Header extends Component {
                             })
                           }
                           primaryText={translate("PROFILE")}
-                        />                 
-                        
-                      
-                        <MenuItem 
+                        />
+
+                        <MenuItem
                             onClick={() => goTo(`/account`)}
                             primaryText={translate("ACCOUNT_SETTINGS")}
                         />     
-                    
+
+                        { this.state.user && this.state.user.userType === 0 &&
+                            <MenuItem
+                              primaryText={this.state.userMode === "1" ?
+                                translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :
+                                translate("SWITCH_USER_MODE_TO_DEMAND_SIDE")
+                              }
+                              onTouchTap={() => {
+                                const newUserMode = getMode() === "1" ? "2" : "1";
+
+                                switchMode(newUserMode);
+
+                                location.reload();
+                              }}
+                            />
+                        }
+
                         { coreAuth.isAdmin() &&
                           <MenuItem onClick={
                             () => goTo('/admin/overview', true)

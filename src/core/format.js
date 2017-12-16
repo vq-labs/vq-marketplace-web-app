@@ -64,11 +64,7 @@ export const displayLocation = (location, showDetails) => {
 };
 
 export const displayPrice = (amount, currencyCode, pricingModel) => {
-    if (CENT_CURRENCIES.indexOf(currencyCode) !== -1) {
-        amount = amount ? (amount / 100).toFixed(2) : '';
-    } else {
-        amount = amount || '';
-    }
+    amount = amount || '';
 
     if (pricingModel === 1) {
         return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;

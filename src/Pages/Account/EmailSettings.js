@@ -1,11 +1,11 @@
 import React from 'react';
 import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
-import Loader from "../Components/Loader";
-import { translate } from '../core/i18n';
-import { getUserAsync } from '../core/auth';
-import { goTo, convertToAppPath } from '../core/navigation';
-import * as apiUserProperty from '../api/user-property';
+import Loader from "../../Components/Loader";
+import { translate } from '../../core/i18n';
+import { getUserAsync } from '../../core/auth';
+import { goTo, convertToAppPath } from '../../core/navigation';
+import * as apiUserProperty from '../../api/user-property';
 
 export default class UserPropsEdit extends React.Component {
     constructor() {
@@ -29,6 +29,8 @@ export default class UserPropsEdit extends React.Component {
             const SUPPLY_SIDE_EMAILS = [
                 "new-request-sent",
                 "request-accepted",
+                "new-message",
+                "review-left",
                 "request-marked-as-done",
                 "request-completed",
                 "request-declined",

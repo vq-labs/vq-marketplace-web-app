@@ -45,8 +45,7 @@ export default class UserVerifications extends React.Component {
                 type: 'string',
                 title: translate('USER_VERIFICATION_FACEBOOK_TITLE'),
                 key: this.VERIFICATIONS[2],
-                label: translate('USER_VERIFICATION_FACEBOOK_LABEL'),
-                imageResolution: [ null, null ]
+                label: translate('USER_VERIFICATION_FACEBOOK_LABEL')
             }
         ];
 

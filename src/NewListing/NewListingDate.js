@@ -5,7 +5,7 @@ import InfiniteCalendar, {
 } from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
 import { translate } from '../core/i18n';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 
 const WithRangeCalendar = withRange(Calendar);
 
@@ -36,21 +36,19 @@ export default class NewListingDate extends Component {
         };
     }
     
-    componentDidMount() {
-       getConfigAsync(config => this.setState({
-           config,
-           ready: true
-       }))
-    }
+    componentDidMount() { }
     
     render() {
      return <div className="row">
-            { this.state.ready &&
              <div className="col-xs-12">
                 <div className="row">
                     <div className="col-xs-12">
-                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>{translate('NEW_LISTING_DATE_HEADER')}</h1>
-                        <p>{translate('NEW_LISTING_DATE_DESC')}</p>
+                        <h1 style={{ color: CONFIG.COLOR_PRIMARY }}>
+                            {this.props.listingType === 1 ? translate("NEW_LISTING_DATE_HEADER") : translate("NEW_SUPPLY_LISTING_DATE_HEADER")}
+                        </h1>
+                        <p>
+                            {this.props.listingType === 1 ? translate("NEW_LISTING_DATE_DESC") : translate("NEW_SUPPLY_LISTING_DATE_DESC")}
+                        </p>
                     </div>
                 </div>
                 <hr />
@@ -62,12 +60,12 @@ export default class NewListingDate extends Component {
                                 theme={{
                                     accentColor: '#448AFF',
                                     floatingNav: {
-                                        background: this.state.config.COLOR_PRIMARY,
+                                        background: CONFIG.COLOR_PRIMARY,
                                         chevron: '#FFA726',
                                         color: '#FFF',
                                     },
                                     headerColor: '#448AFF',
-                                    selectionColor: this.state.config.COLOR_PRIMARY,
+                                    selectionColor: CONFIG.COLOR_PRIMARY,
                                     textColor: {
                                         active: '#FFF',
                                         default: '#333',
@@ -109,8 +107,6 @@ export default class NewListingDate extends Component {
                                     }
                                     */
 
-
-                     
                                     const localStart = selectedEvent.start;
                                     const localEnd = selectedEvent.end;
                                     
@@ -135,7 +131,6 @@ export default class NewListingDate extends Component {
                     </div>
                 </div>
             </div>
-            }
         </div>
     }
 }

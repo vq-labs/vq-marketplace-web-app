@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfigEdit from '../Components/ConfigEdit';
+import ConfigEdit from './Components/ConfigEdit';
 import LabelEdit from './Components/LabelEdit';
 import LANGUAGES from '../constants/LANGUAGES';
 
@@ -43,26 +43,26 @@ const sloganFields = [
     {
         type: 'string',
         key: 'START_PAGE_HEADER',
-        label: 'Slogan for Clients/Buyers',
+        label: 'Slogan for Demand Side',
         explanation: 'Use the slogan to quickly tell visitors what your marketplace is about. "Buy food from locals" or "Get guitar lessons from a pro" are good examples.'
     },
     {
         type: 'string',
         key: 'START_PAGE_DESC',
-        label: 'Description for Clients/Buyers',
+        label: 'Description for Demand Side',
         explanation: 'Use the description to share your main value proposition. "FoodMarket is the easiest way to order directly from local providers" or "GuitarPro is the best place to find music teachers" are good examples.'
     },
     {
         type: 'string',
         key: 'START_PAGE_HEADER_SELLERS',
-        label: 'Slogan for Providers/Sellers',
+        label: 'Slogan for Supply Side',
         explanation: 'Use the slogan to quickly tell what your marketplace is about to the Providers/Sellers of your marketplace. "Share your food with locals" or "Offer your skills in Music" are good examples.'
     },
     {
         type: 'string',
         key: 'START_PAGE_DESC_SELLERS',
-        label: 'Description for Providers/Sellers',
-        explanation: 'Use the description to specify what Providers/Sellers can get from your Marketplace. "Share your food with locals and build your personal food business" or "Offer your specific skill and start earning extra money" are good examples.'
+        label: 'Description for Supply',
+        explanation: 'Use the description to specify what the Providers can get from the Marketplace. "Share your food with locals and build your personal food business" or "Offer your specific skill and start earning extra money" are good examples.'
     }
 ];
 
@@ -75,12 +75,12 @@ const otherFields = [
     },
     {   
         selection: [
-            { value: 'DD.MM.YYYY', label: 'DD.MM.YY' },
+            { value: 'DD.MM.YY', label: 'DD.MM.YY' },
             { value: 'DD.MM.YYYY', label: 'DD.MM.YYYY' },
             { value: 'YYYY.MM.DD', label: 'YYYY.MM.DD' },
-            { value: 'YYYY.MM.DD', label: 'YYYY.MM.DD.' },
-            { value: 'YYYY.MM.DD', label: 'YY.MM.DD' },
-            { value: 'YYYY.MM.DD', label: 'YY.MM.DD.' },
+            { value: 'YYYY.MM.DD.', label: 'YYYY.MM.DD.' },
+            { value: 'YY.MM.DD', label: 'YY.MM.DD' },
+            { value: 'YY.MM.DD.', label: 'YY.MM.DD.' },
             { value: 'YYYY/MM/DD', label: 'YYYY/MM/DD' },
             { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY' }
         ],
@@ -141,6 +141,18 @@ export default class SectionBasics extends React.Component {
                     header={'Other details'}
                     desc={'Make it your own.'}
                     fields={otherFields}
+                />
+
+                <ConfigEdit
+                    header={'Emails'}
+                    desc={''}
+                    fields={[
+                        {
+                            type: 'bool',
+                            key: 'EMAILS_ENABLED',
+                            label: 'Should the e-mails be sent to your users? (does not affect the welcome e-mail)'
+                        }
+                    ]}
                 />
             </div>
         );

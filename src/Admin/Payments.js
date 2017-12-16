@@ -1,74 +1,95 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import { getUserAsync } from '../core/auth';
-import * as apiPayment from '../api/payment';
-import { displayErrorFactory } from '../core/error-handler';
+import ConfigEdit from './Components/ConfigEdit';
 
 export default class SectionPayments extends React.Component {
     constructor() {
         super();
+
         this.state = {
+            isLoading: true,
+            paymentAccount: null,
             activeStep: 0,
             user: null
         };
     }
     componentDidMount() {
         getUserAsync(user => {
-            this.setState({ user });
+            this.setState({
+                user
+            });
         });
     }
 
     render() {
             return (
                 <div className="row">
-                    <h1>Payment system</h1>
+                    <div style={{ marginBottom: 15 }}>
+                        <h1>Setting a transaction fee (commission)</h1>
+                        <hr />
+                        <ConfigEdit
+                            fields={[
+                                {
+                                    type: 'bool',
+                                    key: 'PAYMENTS_ENABLED',
+                                    label: 'Payments enabled',
+                                    explanation: "You don't want or can't use the online payment system? You can simply disable it and let your users post free listings in your marketplace."
+                                }, {
+                                    type: 'number',
+                                    min: 0,
+                                    max: 100,
+                                    regex: '^([0-9]|[0-9][0-9])$',
+                                    key: 'MARKETPLACE_PROVISION',
+                                    label: 'Marketplace provision',
+                                    explanation: "As a marketplace administrator, you can choose to charge a transaction fee from each paid transaction in your marketplace. You can change your fee at any time. However, if you do so, it is a very good idea to notify your users to not create any unexpected surprises for them." 
+                                }
+                            ]}
+                        />
+                    </div>
+                    <div style={{ marginTop: 15 }}>
+                        <h1>Payment systems</h1>
+                        <hr />
 
-                    <h2>Connect Stripe</h2>
-                    <p>
-                        You can get your API keys by creating an account <a href="https://dashboard.stripe.com/register" target="href">here</a>.
-                    </p>
-                
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            apiPayment
-                            .createAccount()
-                            .then(rAccount => {
-                                return alert("Account has been created. Check your email.");
-                            })
-                            .catch(displayErrorFactory());
-                        }}
-                        label="Connect Stripe"
-                    />
+                        <h3>Connect Stripe</h3>
+                        <p>
+                            Marketplaces and platforms use "Stripe Connect" to accept money and pay out to third parties. "Stripe Connect" provides a complete set of building blocks to support virtually any business model, including Sharing Economy businesses, e‑commerce, crowdfunding, fintech, and travel and events.<br />
 
-                    <hr />
+                            Read more about it <a href="https://stripe.com/connect" target="_self">here</a>. You will find a more technical documentation <a href="https://stripe.com/docs/connect">here</a>.
+                        </p>
 
-                    <h2>Connect Mangopay</h2>
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            alert("This feature has been disabled for your account.");
-                        }}
-                        label="Connect Mangopay"
-                    />
+                        <p>
+                            After launching your Stripe Connect Account, you will have to configure the Redirect URL in the settings:
+                            <br />
+                            <code>
+                                https://vqmarketplace.vqmarketplace.com/cb/stripe
+                            </code>
+                        </p>
 
-                    <hr />
-
-                    <h2>Connect Barion</h2>
-                    <RaisedButton
-                        disabled={true}
-                        style={{ marginLeft: 30 }}
-                        primary={true}
-                        onClick={() => {
-                            alert("Contact support for connecting Barion. We are currently evaluating the possibility with this provider.");
-                        }}
-                        label="Connect Barion"
-                    />
+                        <ConfigEdit
+                            fields={[
+                                {
+                                    type: 'string',
+                                    key: 'STRIPE_CLIENT_ID',
+                                    label: 'Stripe Client ID',
+                                    explanation: "Get it under Stripe Connect -> Settings -> Production -> client_id"
+                                },
+                                {
+                                    type: 'string',
+                                    key: 'STRIPE_PUBLIC_KEY',
+                                    label: 'Stripe Public API Key',
+                                    explanation: "You will find it under Stripe -> API -> Public Key"
+                                },
+                                {
+                                    type: 'secret',
+                                    key: 'STRIPE_PRIVATE_KEY',
+                                    label: 'Stripe Private API Key',
+                                    explanation: "You will find it under Stripe -> API -> Private Key"
+                                }
+                            ]}
+                        />
+                    </div>
                 </div>
             );
     }
 };
+// <StripePaymentConnector isMarketplaceOwner={true}/>

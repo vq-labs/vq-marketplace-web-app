@@ -39,9 +39,9 @@ export default class NewListingCategory extends React.Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h1 style={{color: this.state.config.COLOR_PRIMARY}} className="text-left">
-                                    {translate("NEW_LISTING_CATEGORY_HEADER")}
+                                    {this.props.listingType === 1 ? translate("NEW_LISTING_CATEGORY_HEADER") : translate("NEW_SUPPLY_LISTING_CATEGORY_HEADER") }
                                 </h1>
-                                <p>{translate("NEW_LISTING_CATEGORY_DESC")}</p>
+                                <p>{this.props.listingType === 1 ? translate("NEW_LISTING_CATEGORY_DESC") : translate("NEW_SUPPLY_LISTING_CATEGORY_DESC") }</p>
                             </div>
                         </div>
                     }
@@ -54,10 +54,11 @@ export default class NewListingCategory extends React.Component {
                     <div className="row">
                         <div className="col-xs-12">
                             { this.state.categories && this.state.categories
-                                .map(row => (
-                                    <div className="row">
+                                .map((row, rowIndex) => (
+                                    <div key={rowIndex} className="row">
                                         { row.map(tile =>
                                             <div
+                                                key={tile.code}
                                                 className="col-xs-12 col-sm-4"
                                                 style={{ marginBottom: 10 }}
                                             >

@@ -1,6 +1,7 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
-import EditableEntity from '../Components/EditableEntity';
+import DOMPurify from 'dompurify';
+import EditableEntity from '../../Components/EditableEntity';
+import { appConfig } from '../../api/config';
 
 export default class ConfigEdit extends React.Component {
     constructor() {
@@ -11,7 +12,7 @@ export default class ConfigEdit extends React.Component {
     }
 
     componentDidMount() {
-        apiConfig.appConfig
+        appConfig
             .getItems()
             .then(meta => {
                 return this.setState({
@@ -23,12 +24,20 @@ export default class ConfigEdit extends React.Component {
     render() {
         return (
             <div className="row">
-                    <h1>{this.props.header}</h1>
-                    <p className="text-muted">{this.props.desc}</p>
-                    <hr />
+                    {this.props.header && <h1>{this.props.header}</h1> }
+                    {this.props.desc &&
+                        <p className="text-muted">
+                            <div className="text-muted" dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(this.props.desc)
+                            }}></div>
+                        </p>
+                    }
+                    {(this.props.header || this.props.desc) && <hr /> }
+
                     <div className="col-xs-12">
                         { this.state.meta &&
                             <EditableEntity
+                                saveLeft={true}
                                 showCancelBtn={false}
                                 value={this.state.meta} 
                                 fields={this.props.fields}
@@ -59,9 +68,8 @@ export default class ConfigEdit extends React.Component {
                                             return mappedItem;
                                         });
 
-                                        apiConfig
-                                            .appConfig
-                                            .createItem(updatedData);
+                                        appConfig
+                                        .createItem(updatedData);
 
                                         this.setState({
                                             meta: updatedEntity

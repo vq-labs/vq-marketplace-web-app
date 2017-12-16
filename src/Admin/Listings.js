@@ -1,19 +1,14 @@
 import React from 'react';
 import * as apiAdmin from '../api/admin';
-import * as coreNavigation from '../core/navigation';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import { List, ListItem } from 'material-ui/List';
 import { translate } from '../core/i18n';
 import { displayTaskStatus } from '../core/format';
 import displayObject from '../helpers/display-object';
 import getProperty from '../helpers/get-user-property';
 import Moment from 'react-moment';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import TASK_STATUS from '../constants/TASK_STATUS';
@@ -91,8 +86,19 @@ export default class SectionUsers extends React.Component {
                         </div>
                     </div>
                     <div className="col-xs-12">
-                        <List>
-                            { this.state.tasks
+                        <table className="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Created at</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {
+                            this.state.tasks
                             .filter(task => {
                                 if (!this.state.statusFilter) {
                                     return true;
@@ -106,102 +112,76 @@ export default class SectionUsers extends React.Component {
                                     true;
                             })
                             .map(task => 
-                                <ListItem
-                                    primaryText={
-                                        <p>
-                                            ID: {task.id}<br/>
-                                            {task.title}<br/>
-                                            Status: <strong>{displayTaskStatus(task.status)}</strong>
-                                        </p>
-                                    }
-                                    secondaryText={
-                                        <p>
-                                            Created at: <Moment format={`DD.MM.DD, HH:mm`}>{task.createdAt}</Moment>
-                                        </p>
-                                    }
-                                    rightIcon={
-                                        <IconMenu
-                                            iconButtonElement={
-                                                <IconButton>
-                                                    <MoreVertIcon />
-                                                </IconButton>
-                                            }
-                                            anchorOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            targetOrigin={{
-                                                horizontal: 'left',
-                                                vertical: 'top'
-                                            }}
-                                            >
-                                            <MenuItem
-                                                primaryText="Show Owner Email"
-                                                onClick={() => {
-                                                    apiAdmin.users
-                                                        .getUserEmail(task.userId)
-                                                        .then(userEmails => {
-                                                            this.setState({
-                                                                showDetails: true,
-                                                                selectedUser: userEmails
-                                                            });
-                                                        });
-                                                }}
-                                            />
-                                            <MenuItem
-                                                primaryText="Details"
-                                                onClick={() => {
+                                <tr>
+                                   <td>
+                                        {task.id}
+                                   </td>
+                                    <td>
+                                        {task.title}
+                                    </td>
+                                    <td>
+                                        {displayTaskStatus(task.status)}
+                                    </td>
+                                    <td>
+                                        <Moment format={`DD.MM.DD, HH:mm`}>{task.createdAt}</Moment>
+                                    </td>
+
+                                    <td>
+                                        <a
+                                        className="vq-row-option"
+                                        href="#"
+                                        onTouchTap={() => {
+                                            apiAdmin.users
+                                            .getUserEmail(task.userId)
+                                            .then(userEmails => {
+                                                this.setState({
+                                                    showDetails: true,
+                                                    selectedUser: userEmails
+                                                });
+                                            });
+                                        }}>Owner email</a>
+
+                                        <a className="vq-row-option" href="#" onTouchTap={() => {
+                                            this.setState({
+                                                showDetails: true,
+                                                selectedUser: task
+                                            })
+                                        }}>Details</a>
+
+                                        <a className="vq-row-option" href="#" onTouchTap={() => {
+                                            openConfirmDialog({
+                                                headerLabel: 'Mark the listing as spam',
+                                                confirmationLabel: `Listing "${task.title}" (id: ${task.id}) will be marked as spam, the owner will be notified and the listing will disapear from the "Browse" page. It is only possible to mark unassigned tasks as spam. Beware that once a task are marked as spam, this process cannot be reversed. Are you sure?`
+                                            }, () => {
+                                                apiAdmin.task
+                                                .markAsSpam(task.id)
+                                                .then(_ => {
+                                                    const tasks = this.state.tasks;
+
+                                                    const taskRef = tasks
+                                                        .find(_ => _.id === task.id);
+
+                                                    taskRef.status = '99';
+
                                                     this.setState({
-                                                        showDetails: true,
-                                                        selectedUser: task
-                                                    })
-                                                }}
-                                            />
-                                            
-                                            <MenuItem
-                                                primaryText="Go to listing page"
-                                                onClick={() => coreNavigation.goTo(`/task/${task.id}`)}
-                                            />
-                                            { String(task.status) !== '99' &&
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        openConfirmDialog({
-                                                            headerLabel: 'Mark the listing as spam',
-                                                            confirmationLabel: `Listing "${task.title}" (id: ${task.id}) will be marked as spam, the owner will be notified and the listing will disapear from the "Browse" page. It is only possible to mark unassigned tasks as spam. Beware that once a task are marked as spam, this process cannot be reversed. Are you sure?`
-                                                        }, () => {
-                                                            apiAdmin.task
-                                                            .markAsSpam(task.id)
-                                                            .then(_ => {
-                                                                const tasks = this.state.tasks;
+                                                        tasks
+                                                    });
 
-                                                                const taskRef = tasks
-                                                                    .find(_ => _.id === task.id);
-
-                                                                taskRef.status = '99';
-
-                                                                this.setState({
-                                                                    tasks
-                                                                });
-
-                                                                alert('OK! Task has been marked as spam.');
-                                                            }, err => {
-                                                                if (err.code === "TASK_IS_NOT_ACTIVE") {
-                                                                    return alert('TASK_IS_NOT_ACTIVE: You can only mark active tasks as spam.');
-                                                                }
-                                                                
-                                                                return alert(`Unknown error occured ${err}`);
-                                                            })
-                                                        })
-                                                    }}
-                                                    primaryText="Mark as spam"
-                                                />
-                                            }
-                                        </IconMenu>
-                                    }
-                                >
-                                </ListItem>
+                                                    alert('OK! Task has been marked as spam.');
+                                                }, err => {
+                                                    if (err.code === "TASK_IS_NOT_ACTIVE") {
+                                                        return alert('TASK_IS_NOT_ACTIVE: You can only mark active tasks as spam.');
+                                                    }
+                                                    
+                                                    return alert(`Unknown error occured ${err}`);
+                                                })
+                                            })
+                                        }}>Spam</a>
+                                    </td>
+                                </tr>
                             )}
-                        </List>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div>

@@ -182,7 +182,7 @@ class Offers extends Component {
     render() {
         const Intro = 
         <div className="vq-listings-intro text-center" style={{ 
-            background: `url(${CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
+            background: `url(${CONFIG.PROMO_URL_MARKETPLACE_BROWSE || CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
             backgroundSize: 'cover' 
         }}>
             <div

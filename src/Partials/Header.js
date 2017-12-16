@@ -206,8 +206,6 @@ class Header extends Component {
                       </div>
                     }
 
-                    
-
                     { this.state.logged
                       &&
                       Number(this.state.userMode) === 1

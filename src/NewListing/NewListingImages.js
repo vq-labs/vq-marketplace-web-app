@@ -6,9 +6,11 @@ import { translate } from '../core/i18n';
 export default class NewListingImages extends Component {
     constructor(props) {
         super();
+        
+        debugger;
 
         this.state = {
-            location: props.images || []
+            images: props.images || []
         };
     }
 
@@ -33,6 +35,10 @@ export default class NewListingImages extends Component {
                 <ImageUploader 
                     images={this.state.images} 
                     onChange={images => {
+                        this.setState({
+                            images
+                        });
+
                         this.props.onChange(images);
                     }}
                 />

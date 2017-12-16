@@ -180,18 +180,7 @@ class BookRequest extends Component {
                 { this.state.ready &&
                 <div className="row">
                     <div className="col-xs-12">
-                        <Stepper activeStep={0}>
-                            <Step>
-                                <StepLabel>Billing address</StepLabel>
-                            </Step>
-                            <Step>
-                                <StepLabel>Payment method</StepLabel>
-                            </Step>
-                            <Step>
-                                <StepLabel>Confirmation</StepLabel>
-                            </Step>
-                        </Stepper>
-
+                        <h2>{translate('CONFIRM_BOOKING_HEADER')}</h2>
                         <p>{translate('CONFIRM_BOOKING_DESC')}</p>
                     </div>
                 </div>
@@ -204,7 +193,7 @@ class BookRequest extends Component {
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
-                        {this.state.requestDetails.task.taskLocations.length &&
+                        { Boolean(this.state.requestDetails.task.taskLocations.length) &&
                             <div className="col-xs-12" style={{
                                 marginTop: 10,
                                 marginBottom: 10
@@ -289,9 +278,13 @@ class BookRequest extends Component {
                                     primary={true}
                                     label={translate("CONFIRM_BOOKING")} 
                                     onClick={() => {
-                                        openAddPaymentMethodDialog({}, () => {
+                                        if (CONFIG.PAYMENTS_ENABLED !== "1") {
                                             this.confirmBooking();
-                                        });
+
+                                            return;
+                                        }
+
+                                        openAddPaymentMethodDialog({}, () => this.confirmBooking());
                                     }}
                                 />
                             }

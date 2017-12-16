@@ -389,10 +389,9 @@ width:172px;
 }
 
 form.vq-payment-form {
-  margin-bottom: 40px;
-  padding-bottom: 40px;
-
+  margin-bottom: 5px;
 }
+
 .StripeElement {
   display: block;
   margin: 10px 0 20px 0;

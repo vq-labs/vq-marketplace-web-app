@@ -21,7 +21,7 @@ import { displayMessage } from '../helpers/display-message.js';
 import { openDialog } from '../helpers/open-message-dialog.js';
 import { createListing } from '../helpers/create-listing.js';
 
-const _ = require('underscore');
+const _underscore = require('underscore');
 
 const LISTING_VIEWS = {
     START: 1,
@@ -323,10 +323,11 @@ export default class NewListing extends Component {
 
                             { this.state.step === LISTING_VIEWS.IMAGES &&
                                 <NewListingImages
-                                    images={this.task.images}
-                                    onChange={images => this.handleListingFieldChange('images', _)}
+                                    images={this.state.task.images}
+                                    onChange={images => this.handleListingFieldChange('images', images)}
                                 />
                             }
+
                             { this.state.step === LISTING_VIEWS.CALENDAR &&
                                 <NewListingDate
                                     listingType={this.state.task.taskType}
@@ -342,6 +343,7 @@ export default class NewListing extends Component {
                                     }}
                                 /> 
                             }
+
                             { this.state.step === LISTING_VIEWS.DURATION &&
                                 <NewListingDuration
                                     listingType={this.state.task.taskType}
@@ -554,7 +556,7 @@ export default class NewListing extends Component {
                                                 isSubmitting: true
                                             });
 
-                                            const task = _.clone(this.state.task);
+                                            const task = _underscore.clone(this.state.task);
 
                                             // for cent currencies, we multiply with 100
                                             /**

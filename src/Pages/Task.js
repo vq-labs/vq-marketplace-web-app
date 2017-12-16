@@ -41,6 +41,7 @@ class Task extends Component {
             isLoading: true,
             isMyTask: false,
             taskOwner: {},
+            comments: [],
             task: {
                 images: [],
                 categories: [],
@@ -274,14 +275,17 @@ class Task extends Component {
                                                 style={{width: '100%'}}
                                                 label={
                                                     this.state.task.taskType === 1 ?
-                                                    translate("SUPPLY_LISTING_CALL_TO_ACTION") :
-                                                    translate("DEMAND_LISTING_CALL_TO_ACTION")
+                                                    translate("DEMAND_LISTING_CALL_TO_ACTION") :
+                                                    translate("SUPPLY_LISTING_CALL_TO_ACTION")
                                                 }
                                                 onClick={() => {
                                                     if (
-                                                        this.state.task.taskType === 1 &&
-                                                        this.state.paymentAccount &&
-                                                        this.state.paymentAccount.accountId
+                                                        CONFIG.PAYMENTS_ENABLED !== "1" ||
+                                                        (
+                                                            this.state.task.taskType === 1 &&
+                                                            this.state.paymentAccount &&
+                                                            this.state.paymentAccount.accountId
+                                                        )
                                                     ) {
                                                         this.setState({
                                                             applicationInProgress: true
@@ -390,7 +394,7 @@ class Task extends Component {
                                             }
                                         </div>
                                         }
-                                        {this.state.task &&
+                                        {this.state.task && this.state.task.comments &&
                                             <div className="row">
                                                 <div className="col-xs-12">
                                                     <TaskComments

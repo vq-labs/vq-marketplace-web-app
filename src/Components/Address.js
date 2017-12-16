@@ -117,7 +117,7 @@ export default class Address extends Component {
                                     <h4>
                                         {translate("LOCATION_STREET") + '*'}
                                     </h4>
-                                    <TextField id={'listing_location'} name="location" style={{width: '100%'}}>
+                                    <TextField style={{width: '100%'}}>
                                         <Autocomplete
                                             value={this.state.street}
                                             onChange={(ev) => {
@@ -164,11 +164,11 @@ export default class Address extends Component {
                                     </TextField>
                                 </div>
                                 <div className="col-xs-12 col-sm-4">
-                                        <h4 >{translate("LOCATION_STREET_NUMBER")}</h4>
+                                        <h4 style={{ height: 20 }}>{translate("LOCATION_STREET_NUMBER")}</h4>
                                         <TextField
                                             name="streetNumber"
                                             onChange={this.onAddressFieldChange('streetNumber')}
-                                            style={{width: '100%'}}
+                                            style={{width: '100%', bottom: 0}}
                                             inputStyle={{width: '100%'}}
                                             value={this.state.streetNumber}
                                         />
@@ -176,7 +176,7 @@ export default class Address extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">
-                                        <h4 >{translate("LOCATION_ADDRESS_ADDITION")}</h4>
+                                        <h4>{translate("LOCATION_ADDRESS_ADDITION")}</h4>
                                         <TextField
                                             name="addressAddition"
                                             onChange={this.onAddressFieldChange('addressAddition')}
@@ -211,7 +211,7 @@ export default class Address extends Component {
                             </div>
                             <div className="row">
                                 <div className="col-xs-12">
-                                        <h4 >{translate("LOCATION_COUNTRY") + '*'}</h4>
+                                        <h4>{translate("LOCATION_COUNTRY") + '*'}</h4>
                                         <TextField
                                             disabled={true}
                                             name="countryCode"

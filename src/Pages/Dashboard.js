@@ -7,7 +7,7 @@ import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
-import { setQueryParams } from '../core/navigation';
+import { setQueryParams, goTo } from '../core/navigation';
 import { getParams } from '../core/util.js';
 import { getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
@@ -24,7 +24,7 @@ export default class Dashboard extends Component {
   
       const viewType = getParams(location.search).viewType;
       const dashboardType = props.params.type;
-    
+
       this.state = {
         dashboardType,
         viewType,
@@ -37,15 +37,6 @@ export default class Dashboard extends Component {
 
       this.onViewChange = this.onViewChange.bind(this);
   }
-  
-  componentWillReceiveProps (nextProps) {
-    const dashboardType = nextProps.params.type;
-    
-    this.setState({
-      dashboardType,
-      // viewType: defaultViewTypes[dashboardType]
-    });
-  }
 
   componentDidMount() {
       getUserAsync(user => {
@@ -54,25 +45,49 @@ export default class Dashboard extends Component {
         }
 
         const userMode = user.userType === 0 ? getMode() : user.userType;
-        
+        let dashboardType = this.state.dashboardType;
+
+        if (!dashboardType) {
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            dashboardType = 'listings';
+          }
+  
+          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            dashboardType = 'requests';
+          }
+  
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+            dashboardType = 'listings';
+          }
+  
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            dashboardType = 'requests';
+          }
+        }
+
         const newState = {
           userMode,
           isLoading: true,
           ready: true,
           userType: user.userType,
+          dashboardType
         };
 
         if (!this.state.viewType) {
           if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            newState.viewType = this.state.dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
           }
 
           if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = this.state.dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
           }
 
           if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = this.state.dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+          }
+
+          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            newState.viewType = this.state.dashboardType === "requests" ? "SENT_REQUESTS_PENDING" : "SENT_REQUESTS_PENDING";
           }
         }
 
@@ -82,8 +97,7 @@ export default class Dashboard extends Component {
         .getItems({
           status: '0',
           userId: user.id,
-        })
-        .then(tasks => this.setState({
+        }).then(tasks => this.setState({
           tasks,
           isLoading: false
         }));
@@ -108,9 +122,6 @@ export default class Dashboard extends Component {
             { this.state.dashboardType === "listings" &&
               <div className="row vq-margin-top-bottom">
                   <div className="col-xs-12 vq-margin-top-bottom">
-                    <h2>My Listings</h2>
-                  </div>
-                  <div className="col-xs-12 vq-margin-top-bottom">
                     <DashboardViewTypeChoice
                       userType={Number(this.state.userMode)}
                       dashboardType={"listings"}
@@ -125,16 +136,13 @@ export default class Dashboard extends Component {
             {this.state.dashboardType === "requests" &&
               <div className="row vq-margin-top-bottom">
                   <div className="col-xs-12 vq-margin-top-bottom">
-                    <h2>My Requests</h2>
-                  </div>
-                  <div className="col-xs-12 vq-margin-top-bottom">
-                    <DashboardViewTypeChoice
-                      userType={Number(this.state.userMode)}
-                      dashboardType={"requests"}
-                      halign="left"
-                      selected={this.state.viewType}
-                      onSelect={this.onViewChange}
-                    />
+                      <DashboardViewTypeChoice
+                        userType={Number(this.state.userMode)}
+                        dashboardType={"requests"}
+                        halign="left"
+                        selected={this.state.viewType}
+                        onSelect={this.onViewChange}
+                      />
                   </div>
                 </div>
             }

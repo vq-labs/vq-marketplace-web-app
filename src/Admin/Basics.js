@@ -142,6 +142,18 @@ export default class SectionBasics extends React.Component {
                     desc={'Make it your own.'}
                     fields={otherFields}
                 />
+
+                <ConfigEdit
+                    header={'Emails'}
+                    desc={''}
+                    fields={[
+                        {
+                            type: 'bool',
+                            key: 'EMAILS_ENABLED',
+                            label: 'Should the e-mails be sent to your users? (does not affect the welcome e-mail)'
+                        }
+                    ]}
+                />
             </div>
         );
     }

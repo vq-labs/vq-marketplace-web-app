@@ -13,6 +13,7 @@ import { CONFIG } from '../core/config';
 import { openDialog } from '../helpers/open-message-dialog.js';
 import { openDialog as openAddPaymentMethodDialog } from '../helpers/add-payment-method.js';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
+import { Component as AddPaymentMethodDialog } from '../helpers/add-payment-method';
 import '../App.css';
 import {
     Step,
@@ -299,6 +300,7 @@ class BookRequest extends Component {
                         </div>
                     </div>
                 }
+            <AddPaymentMethodDialog />
             </div>
         );
     }

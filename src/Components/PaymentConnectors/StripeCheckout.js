@@ -71,7 +71,7 @@ class _SplitForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="vq-payment-form" onSubmit={this.handleSubmit}>
         <div className="row">
           Card number
           <CardNumberElement

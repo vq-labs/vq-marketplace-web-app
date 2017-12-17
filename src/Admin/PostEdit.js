@@ -3,6 +3,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import HtmlTextField from '../Components/HtmlTextField';
+import WYSIWYGEditor from './Components/WYSIWYGEditor';
 import apiPost from '../api/post';
 
 export default class SectionPostEdit extends React.Component {
@@ -97,10 +98,11 @@ export default class SectionPostEdit extends React.Component {
                 
                     <div className="row" style={{ marginTop: 30 }}>
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
-                            <HtmlTextField 
+                            <WYSIWYGEditor
+                                value={this.state.post.body} 
                                 onChange={(ev, body) => {
                                     const post = this.state.post;
-
+                                    
                                     if (post.body === body) {
                                         return;
                                     }
@@ -116,7 +118,6 @@ export default class SectionPostEdit extends React.Component {
                                         dirty: true
                                     });
                                 }}
-                                value={this.state.post.body} 
                             />
                         </div>
                     </div>
@@ -130,8 +131,12 @@ export default class SectionPostEdit extends React.Component {
                     <div className="row" style={{ marginTop: 30 }}>
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
                             <RaisedButton
-                                disabled={!this.state.dirty}
-                                onTouchTap={() => {
+                                disabled={!this.state.dirty || this.state.isSaving}
+                                onClick={() => {
+                                    this.setState({
+                                        isSaving: true
+                                    });
+
                                     const post = this.state.post;
 
                                     apiPost
@@ -140,10 +145,11 @@ export default class SectionPostEdit extends React.Component {
                                         body: post.body
                                     }, 3000)
                                     .then(() => this.setState({
+                                        isSaving: false,
                                         dirty: false
                                     }));
                                 }}
-                                label={'Save'}
+                                label={this.state.isSaving ? 'Saving...' : 'Save'}
                             />
                         </div>
                     </div>

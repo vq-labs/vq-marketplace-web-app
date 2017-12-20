@@ -83,6 +83,17 @@ const newListingFields = [
         key: 'LISTING_GEOLOCATION_MODE',
         label: 'Enable Listing Geo-Location',
         explanation: 'Users will be able to specify the location of the listing'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_EDIT_ENABLED',
+        label: 'Enable editing of listings after they have been published.'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_TASK_WORKFLOW_ENABLED',
+        label: 'Enable task workflow of the listings',
+        explanation: 'Request received -> Request booked -> Market as done -> Done & Paid -> Reviewed'
     }
 ];
 

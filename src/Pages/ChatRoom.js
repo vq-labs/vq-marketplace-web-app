@@ -201,7 +201,7 @@ export default class ChatRoom extends React.Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-8">
                                     <div className="col-xs-12">
-                                        <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                        <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                                             {translate("CHAT_PAGE_HEADER")}
                                         </h1>
                                         <p>{translate("CHAT_PAGE_DESC")}</p>
@@ -225,7 +225,7 @@ export default class ChatRoom extends React.Component {
                                                     { CONFIG.LISTING_TIMING_MODE === "1" &&
                                                         <div className="col-xs-12 col-sm-4">
                                                             <p className="text-muted">
-                                                                {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`)}
+                                                                {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${CONFIG.DATE_FORMAT}`)}
                                                             </p>
                                                         </div>
                                                     }
@@ -306,7 +306,7 @@ export default class ChatRoom extends React.Component {
 
                                             const firstName = sender.firstName;
                                             const lastName = sender.lastName;
-                                            const profileImageUrl = sender.imageUrl || defaultProfileImageUrl;
+                                            const profileImageUrl = sender.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || defaultProfileImageUrl;
 
                                             return <div className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
                                                         <div className="col-xs-12" style={{ marginBottom: '20px'}}>
@@ -343,7 +343,7 @@ export default class ChatRoom extends React.Component {
                                                                         </strong>
                                                                     <br />
                                                                     <p className="text-muted">
-                                                                        <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{message.createdAt}</Moment>
+                                                                        <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{message.createdAt}</Moment>
                                                                     </p>
                                                                 </div>
                                                             </div>   
@@ -375,7 +375,7 @@ export default class ChatRoom extends React.Component {
                                                     const user = this.state.users[userId];
                                                     const firstName = user.firstName;
                                                     const lastName = user.lastName;
-                                                    const profileImageUrl = user.imageUrl || defaultProfileImageUrl;
+                                                    const profileImageUrl = user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || defaultProfileImageUrl;
                                                     const name = `${firstName} ${lastName}`;
                                                     const profileBio = stripHtml(user.bio, 50);
 
@@ -438,7 +438,7 @@ export default class ChatRoom extends React.Component {
                                         <RaisedButton
                                             label={translate('REQUEST_ACTION_MARK_DONE')}
                                             labelStyle={{color: 'white'}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            backgroundColor={CONFIG.COLOR_PRIMARY}
                                             style={actionBtnStyle}
                                             onTouchTap={() => {
                                                 const request = this.state.request;
@@ -476,7 +476,7 @@ export default class ChatRoom extends React.Component {
                                         <RaisedButton
                                             label={translate('SETTLE_ORDER')}
                                             labelStyle={{color: 'white'}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            backgroundColor={CONFIG.COLOR_PRIMARY}
                                             style={actionBtnStyle}
                                             onTouchTap={() => {
                                                 const request = this.state.request;
@@ -516,7 +516,7 @@ export default class ChatRoom extends React.Component {
                                         <RaisedButton
                                             label={translate('LEAVE_REVIEW')}
                                             labelStyle={{color: 'white'}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            backgroundColor={CONFIG.COLOR_PRIMARY}
                                             style={actionBtnStyle}
                                             onTouchTap={() => goTo(`/order/${this.state.request.order.id}/review`)}
                                         />
@@ -534,13 +534,14 @@ export default class ChatRoom extends React.Component {
                                         <RaisedButton
                                             label={translate('LEAVE_REVIEW')}
                                             labelStyle={{color: 'white'}}
-                                            backgroundColor={this.state.config.COLOR_PRIMARY}
+                                            backgroundColor={CONFIG.COLOR_PRIMARY}
                                             style={actionBtnStyle}
                                             onTouchTap={() => goTo(`/request/${this.state.request.id}/review`)}
                                         />
                                     }
 
-                                    { this.state.user &&
+                                    { CONFIG.LISTING_TASK_WORKFLOW_ENABLED === "1" &&
+                                      this.state.user &&
                                       this.state.task &&
                                       this.state.task.taskType === 1 &&
                                         <Stepper className="hidden-xs" activeStep={

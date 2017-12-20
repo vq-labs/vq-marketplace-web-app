@@ -8,6 +8,7 @@ export default class NewListingQuantity extends React.Component {
         super();
 
         this.state = {
+            listingType: props.listingType,
             quantity: props.quantity || 0 ,
             unitOfMeasure: props.unitOfMeasure,
             minQuantity: props.minQuantity,
@@ -28,8 +29,6 @@ export default class NewListingQuantity extends React.Component {
     }
 
     getSlider = (state) => {
-        debugger;
-
         return <Slider
             min={state.minQuantity}
             max={state.maxQuantity}
@@ -41,22 +40,22 @@ export default class NewListingQuantity extends React.Component {
 
     render() {
         const state = this.state;
-
+        debugger;
         return <div className="row">
             <div className="col-xs-12">
                 <div className="row">
                     <div className="col-xs-12">
                         <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                             {
-                                this.props.listingType === 1 ?
-                                translate("NEW_LISTING_QUANTITY_HEADER") :
+                                this.state.listingType === 1 ?
+                                translate("NEW_DEMAND_LISTING_QUANTITY_HEADER") :
                                 translate("NEW_SUPPLY_LISTING_QUANTITY_HEADER")
                             }
                         </h1>
                         <p>
                             {
-                                this.props.listingType === 1 ?
-                                translate("NEW_LISTING_QUANTITY_DESC") :
+                                this.state.listingType === 1 ?
+                                translate("NEW_DEMAND_LISTING_QUANTITY_DESC") :
                                 translate("NEW_SUPPLY_LISTING_QUANTITY_DESC")
                             }
                         </p>

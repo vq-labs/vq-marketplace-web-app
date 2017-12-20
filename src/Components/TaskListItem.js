@@ -5,7 +5,7 @@ import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import apiTask from '../api/task';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import ListingHeader from '../Components/ListingHeader';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
@@ -21,12 +21,9 @@ export default class TaskListItem extends Component {
   }
 
   componentDidMount() {
-    getConfigAsync(config => {
       this.setState({
-        ready: true,
-        config
+        ready: true
       });
-    });
   }
 
   getTaskListItem(task) {
@@ -56,7 +53,7 @@ export default class TaskListItem extends Component {
                           <div className="col-xs-12">
                             <div className="row">
                               <div className="col-xs-12 col-sm-6">
-                                  { this.state.task &&
+                                  { CONFIG.LISTING_EDIT_ENABLED === "1" && this.state.task &&
                                     this.state.task.requests &&
                                     this.state.task.status === TASK_STATUS.ACTIVE &&
                                     !this.state.task.requests
@@ -70,7 +67,7 @@ export default class TaskListItem extends Component {
                                         <a
                                             className="vq-link"
                                             label={`${translate('EDIT_LISTING')}`}
-                                            labelStyle={{color: this.state.config.COLOR_PRIMARY}}
+                                            labelStyle={{color: CONFIG.COLOR_PRIMARY}}
                                             onTouchTap={() => goTo(`/task/${task.id}/edit`)}
                                         >
                                             {translate('EDIT')}
@@ -87,7 +84,7 @@ export default class TaskListItem extends Component {
                                       <a  
                                           className="vq-link"
                                           label={`${translate('CANCEL_LISTING_ACTION_HEADER')}`}
-                                          labelStyle={{color: this.state.config.COLOR_PRIMARY}}
+                                          labelStyle={{color: CONFIG.COLOR_PRIMARY}}
                                           onTouchTap={() => {
                                             openConfirmDialog({
                                               headerLabel: translate("CANCEL_LISTING_ACTION_HEADER"),
@@ -128,7 +125,7 @@ export default class TaskListItem extends Component {
                                             .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                             .length} ${translate('REQUESTS')}`}
                                           labelStyle={{color: 'white '}}
-                                          backgroundColor={this.state.config.COLOR_PRIMARY}
+                                          backgroundColor={CONFIG.COLOR_PRIMARY}
                                           onTouchTap={() => {
                                             openRequestDialog(task.requests);
                                           }}

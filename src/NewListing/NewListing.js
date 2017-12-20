@@ -337,7 +337,7 @@ export default class NewListing extends Component {
                                 </div>
                             </div> 
                         }
-                        { this.state.step === LISTING_VIEWS.CATEGORY && 
+                        { this.state.step === LISTING_VIEWS.CATEGORY &&
                             <NewListingCategory
                                 listingType={this.state.task.taskType}
                                 onSelected={
@@ -350,6 +350,7 @@ export default class NewListing extends Component {
 
                             { this.state.step === LISTING_VIEWS.QUANTITY &&
                                 <NewListingQuantity
+                                    listingType={this.state.task.taskType}
                                     minQuantity={this.state.minQuantity}
                                     maxQuantity={this.state.maxQuantity}
                                     unitOfMeasure={this.state.unitOfMeasure}
@@ -461,7 +462,6 @@ export default class NewListing extends Component {
                                 { this.state.step !== LISTING_VIEWS.SUCCESS && this.state.step !== LISTING_VIEWS.START &&
                                     <FlatButton
                                         style={{ 
-                                            color: CONFIG.COLOR_PRIMARY,
                                             float: 'left'
                                         }}
                                         label={translate("BACK")}
@@ -469,24 +469,20 @@ export default class NewListing extends Component {
                                         disabled={false}
                                         onTouchTap={() => {
                                             let nextStep = this.state.step - 1;
+                                            
+                                            /**
+                                             * The order does matter here! From the last step to the first one!
+                                             */
 
-                                            if (nextStep === LISTING_VIEWS.CALENDAR) {
-                                                if (CONFIG.LISTING_TIMING_MODE !== "1") {
-                                                    nextStep -= 1;
-                                                }
-                                            }
-
-                                            if (nextStep === LISTING_VIEWS.REVIEW && coreAuth.getUserId()) {
+                                            if (nextStep === LISTING_VIEWS.IMAGES && CONFIG.LISTING_IMAGES_MODE !== "1") {
                                                 nextStep -= 1;
                                             }
 
-                                            if (nextStep === LISTING_VIEWS.IMAGES) {
-                                                if (Number(CONFIG.LISTING_IMAGES_MODE) === 0) {
-                                                    nextStep -= 1;
-                                                }
+                                            if (nextStep === LISTING_VIEWS.DURATION && CONFIG.LISTING_DURATION_MODE !== "1") {
+                                                nextStep -= 1;
                                             }
 
-                                            if (nextStep === LISTING_VIEWS.DURATION && CONFIG.LISTING_DURATION_MODE !== "1") {
+                                            if (nextStep === LISTING_VIEWS.CALENDAR && CONFIG.LISTING_TIMING_MODE !== "1") {
                                                 nextStep -= 1;
                                             }
 
@@ -523,6 +519,7 @@ export default class NewListing extends Component {
                                             let nextStep = currentStep + 1;
                                             const task = this.state.task;
 
+                                            debugger;
                                             // CHECKS
                                             if (currentStep === LISTING_VIEWS.PRICING) {
                                                 if (typeof task.priceType === 'undefined') {
@@ -624,8 +621,6 @@ export default class NewListing extends Component {
                                                 }
                                                 */
                                             }
-
-                                            debugger;
 
                                             if (nextStep === LISTING_VIEWS.QUANTITY && CONFIG.LISTING_QUANTITY_MODE !== "1") {
                                                 nextStep += 1;

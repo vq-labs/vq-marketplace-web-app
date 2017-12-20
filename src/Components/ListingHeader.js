@@ -76,7 +76,7 @@ class ListingHeader extends Component {
                     { this.state.task.taskTimings &&
                         Boolean(this.state.task.taskTimings.length) &&
                         <p className="text-muted">
-                            { displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`) }
+                            { displayTaskTiming(this.state.task.taskTimings, `${CONFIG.DATE_FORMAT}`) }
                         </p>
                     }
 
@@ -91,7 +91,7 @@ class ListingHeader extends Component {
                         <div>
                             <h1 style={{
                                 marginTop: this.props.noPaddings ? 5 : 30,
-                                color: this.state.config.COLOR_PRIMARY
+                                color: CONFIG.COLOR_PRIMARY
                             }}>
                                 {   CONFIG.LISTING_PRICING_MODE === "1" &&
                                     (Boolean(this.state.task.taskTimings.length) ?
@@ -115,7 +115,7 @@ class ListingHeader extends Component {
                         <div>
                             <h1 style={{
                                 marginTop: this.props.noPaddings ? 5 : 30,
-                                color: this.state.config.COLOR_PRIMARY
+                                color: CONFIG.COLOR_PRIMARY
                             }}>
                                 {`${this.state.task.quantity} ${this.state.task.unitOfMeasure}`}
                             </h1>

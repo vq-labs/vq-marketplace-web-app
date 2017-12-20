@@ -221,6 +221,7 @@ export default class Dashboard extends Component {
               {this.state.viewType === 'SENT_REQUESTS_PENDING' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
+                    showOutgoing={this.state.dashboardType === "requests"}
                     view={"pending"}
                     showTitle={false}
                   />

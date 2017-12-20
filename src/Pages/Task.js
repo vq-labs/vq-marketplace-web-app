@@ -221,7 +221,7 @@ class Task extends Component {
                                                     <ul className="list-unstyled list-inline">
                                                         <li>
                                                             <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                                <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
+                                                                <Avatar src={this.state.taskOwner.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL || DEFAULTS.PROFILE_IMG_URL }/>
                                                             </a>
                                                         </li>
                                                         <li style={{
@@ -245,8 +245,9 @@ class Task extends Component {
                                         </div>
                                     }   
                                 </div>
+                                <hr />
                                 <div className="col-xs-12 col-sm-4">
-                                    <Card style={{ 'marginTop': 60 }}>
+                                    <Card style={{ 'marginTop': 50 }}>
                                         <CardText>
                                             { CONFIG.LISTING_PRICING_MODE === "1" &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
@@ -272,7 +273,8 @@ class Task extends Component {
                                         {   
                                             this.state.user &&
                                             (   this.state.user.userType === 2 ||
-                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1")
+                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
+                                                this.state.user.userType === 0
                                             ) &&
                                             !this.state.isMyTask &&
                                             !this.state.sentRequestId &&
@@ -343,7 +345,7 @@ class Task extends Component {
                                                         <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
                                                     </div>
                                                     <div>
-                                                        { this.state.task.taskType === 1 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                                                        { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
                                                     </div>
                                                 </div>
                                             </div>

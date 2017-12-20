@@ -128,8 +128,16 @@ class Header extends Component {
                                   anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                   targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                 >
-                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
-                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
+                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => {
+                                    goTo("/dashboard/listings");
+
+                                    location.reload();
+                                  }}/>
+                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => {
+                                    goTo("/dashboard/requests");
+
+                                    location.reload();
+                                  }} />
                                 </IconMenu>
                             </div>
                           }

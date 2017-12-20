@@ -56,8 +56,31 @@ export default class SectionCategories extends React.Component {
                                 type: 'number',
                                 label: 'Min. price per hour',
                                 explanation: 'Enter the minimum price per hour in the supported currency.'
-                            },
-                            { key: 'imageUrl', type: 'single-image', label: 'Add category image', hint: 'Category image will be used on the category selection page.' }
+                            }, {
+                                key: 'unitOfMeasure',
+                                type: 'string',
+                                label: 'Unit of Measure',
+                            }, {
+                                key: 'minQuantity',
+                                type: 'number',
+                                label: 'Min. Quantity',
+                                explanation: 'Enter the minimum quantity'
+                            }, {
+                                key: 'maxQuantity',
+                                type: 'number',
+                                label: 'Max. Quantity',
+                                explanation: 'Enter the maximum quantity'
+                            }, {
+                                key: 'quantityStep',
+                                type: 'number',
+                                label: 'Quantity step',
+                                explanation: 'Enter the quantity step'
+                            }, {
+                                key: 'imageUrl',
+                                type: 'single-image',
+                                label: 'Add category image',
+                                hint: 'Category image will be used on the category selection page.'
+                            }
                         ]}
                         value={values}
                         showCancelBtn={true}

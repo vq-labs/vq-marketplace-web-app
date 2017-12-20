@@ -20,7 +20,7 @@ class Signup extends Component {
     super(props);
     
     this.state = {
-      userType: USER_TYPES.BUYER,
+      userType: 0,
       userProperties: []
     };
 
@@ -125,7 +125,7 @@ class Signup extends Component {
                       floatingLabelText={`${translate('REPEAT_PASSWORD')} *`}
                       type="password"/>
                     <br />
-                    { this.state.userProperties
+                    { CONFIG.USER_REQUIRE_PHONE_NUMBER === "1" && this.state.userProperties
                       .map(userProperty =>
                         <TextField
                           floatingLabelFixed={true}
@@ -156,9 +156,11 @@ class Signup extends Component {
                         />
                       )
                     }
+                    
                     <div className="row">
-                      <h4>{translate('FIND_OR_POST_TASKS')}</h4>
+                      { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                       <div class="col-xs-12">
+                          <h4>{translate('FIND_OR_POST_TASKS')}</h4>
                           <div className="col-xs-6">
                             { this.state.userType === USER_TYPES.BUYER &&
                               <FlatButton
@@ -195,6 +197,10 @@ class Signup extends Component {
                               />
                             }
                           </div>
+                      </div>
+                      }
+                         
+                          <div class="col-xs-12">
                           <div className="col-xs-12" style={{
                             marginTop: 20
                           }}>

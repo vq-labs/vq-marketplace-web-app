@@ -26,6 +26,7 @@ import { displayPrice, displayLocation } from '../core/format';
 import { stripHtml, purifyHtmlMessage } from '../core/util';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
+import { CONFIG } from '../core/config';
 
 import '../Chat.css';
 
@@ -221,26 +222,41 @@ export default class ChatRoom extends React.Component {
                                                 </div>
                                             </div>
                                             <div className="col-xs-12">
-                                                    <div className="col-xs-12 col-sm-4">
-                                                        <p className="text-muted">
-                                                            {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`)}
-                                                        </p>
-                                                    </div>
-                                                    <div className="col-xs-12 col-sm-4">
-                                                        <p className="text-muted">
-                                                            {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0], [
-                                                                REQUEST_STATUS.PENDING,
-                                                                REQUEST_STATUS.DECLINED,
-                                                                REQUEST_STATUS.CANCELED,
-                                                                REQUEST_STATUS.SETTLED
-                                                            ].indexOf(this.state.request.status) === -1)}
-                                                        </p>
-                                                    </div>
-                                                    <div className="col-xs-12 col-sm-4">
-                                                        <p className="text-muted">
-                                                            {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
-                                                        </p>
-                                                    </div>
+                                                    { CONFIG.LISTING_TIMING_MODE === "1" &&
+                                                        <div className="col-xs-12 col-sm-4">
+                                                            <p className="text-muted">
+                                                                {translate('LISTING_DATE')}:<br />{displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`)}
+                                                            </p>
+                                                        </div>
+                                                    }
+                                                    { CONFIG.LISTING_GEOLOCATION_MODE === "1" &&
+                                                        <div className="col-xs-12 col-sm-4">
+                                                            <p className="text-muted">
+                                                                {translate('LISTING_LOCATION')}:<br />{displayLocation(this.state.task.taskLocations[0], [
+                                                                    REQUEST_STATUS.PENDING,
+                                                                    REQUEST_STATUS.DECLINED,
+                                                                    REQUEST_STATUS.CANCELED,
+                                                                    REQUEST_STATUS.SETTLED
+                                                                ].indexOf(this.state.request.status) === -1)}
+                                                            </p>
+                                                        </div>
+                                                    }
+
+                                                    { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                                        <div className="col-xs-12 col-sm-4">
+                                                            <p className="text-muted">
+                                                                {translate('PRICE')}:<br />{displayPrice(this.state.task.price, this.state.task.currency)}/h
+                                                            </p>
+                                                        </div>
+                                                    }
+
+                                                    { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                                        <div className="col-xs-12 col-sm-4">
+                                                            <p className="text-muted">
+                                                                {translate('LISTING_QUANTITY')}:<br /> {`${this.state.task.quantity} ${this.state.task.unitOfMeasure}`}
+                                                            </p>
+                                                        </div>
+                                                    }
                                             </div>
                                             <div className="col-xs-12">
                                                     <Divider />

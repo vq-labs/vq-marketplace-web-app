@@ -256,7 +256,7 @@ class Header extends Component {
                       <IconMenu
                             style={{ cursor: 'pointer' }}
                             iconButtonElement={
-                              <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
+                              <Avatar src={this.state.user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL} size={40} />
                             }
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >

@@ -106,6 +106,7 @@
     "start:talentwand": "VQ_API_URL=https://talentwand.vqmarketplace.com/api npm run preparestart",
     "start:ani": "VQ_API_URL=https://ani.vqmarketplace.com/api npm run preparestart",
     "start:click4work": "VQ_API_URL=https://click4work.vqmarketplace.com/api npm run preparestart",
+    "start:bitcoinmeetup": "VQ_API_URL=https://bitcoinmeetup.vqmarketplace.com/api npm run preparestart",
     "start:yogaat": "VQ_API_URL=https://yogaat.vqmarketplace.com/api npm run preparestart",
     "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js && npm run build-rename",
     "build-rename": "npm run build-rename-js && npm run build-rename-css",

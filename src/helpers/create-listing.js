@@ -33,7 +33,7 @@ export const createListing = (task, cb) => async
             .then(() => cb(), cb),
         // will connect it to the chosen location
         cb => {
-            if (CONFIG.LISTING_LOCATION_MODE !== "1") {
+            if (CONFIG.LISTING_GEOLOCATION_MODE !== "1") {
                 return cb();
             }
 

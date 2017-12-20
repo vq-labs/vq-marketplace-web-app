@@ -38,6 +38,12 @@ const newListingFields = [
         type: "string",
         label: "(beta) Restricted postal codes",
         explanation: 'The 3-first digits of a postal code. If you would like to have many restricted postal codes, separate them with a comma.'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_DESC_MODE',
+        label: 'Enable Listing Basic details',
+        explanation: 'This option will add a new section to a listing creation page and will allow to specify the title and description.'
     }, {
         type: 'bool',
         key: 'LISTING_TIMING_MODE',
@@ -53,6 +59,30 @@ const newListingFields = [
         key: 'LISTING_IMAGES_MODE',
         label: 'Enable Listing Images',
         explanation: 'This option will add a new section to a listing creation page and will allow to upload images for a listing.'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_PRICING_MODE',
+        label: 'Enable Listing pricing',
+        explanation: 'This option will add a new section to a listing creation page and will allow to specify the the price for a listing'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_QUANTITY_MODE',
+        label: 'Enable Listing quantity',
+        explanation: 'This option will add a new section to a listing creation page and will allow to specify the wholesale quantity'
+    },
+    {
+        type: 'bool',
+        key: 'LISTING_DISCUSSION_MODE',
+        label: 'Enable Listing comments',
+        explanation: 'Users will be able to comment under listings'
+    }, 
+    {
+        type: 'bool',
+        key: 'LISTING_GEOLOCATION_MODE',
+        label: 'Enable Listing Geo-Location',
+        explanation: 'Users will be able to specify the location of the listing'
     }
 ];
 

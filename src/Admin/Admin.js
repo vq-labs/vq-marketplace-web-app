@@ -11,6 +11,7 @@ import SectionLandingPage from './LandingPage';
 import SectionUsers from './Users';
 import SectionUserTypes from './UserTypes';
 import SectionPayments from './Payments';
+import SectionUserConfig from './UserConfig';
 import SectionAnalytics from './Analytics';
 import SectionListingFilters from './Filters';
 import SectionListings from './Listings';
@@ -53,6 +54,7 @@ const menuPoints = [
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
             [ 'custom-pages', 'Custom Pages' ],
             [ 'listing', 'Listing' ],
+            [ 'user-config', 'User' ],
             [ 'listing-filters', 'Listing filters' ],
             [ 'categories', 'Listing categories' ],
             [ 'pricing', 'Pricing' ],
@@ -182,6 +184,7 @@ export default class AdminPage extends React.Component {
                                     { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                     { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                     { this.state.section === 'user-types' && <SectionUserTypes /> }
+                                    { this.state.section === 'user-config' && <SectionUserConfig /> }
                                     { this.state.section === 'categories' && <SectionCategories /> }
                                     { this.state.section === 'basics' && <SectionBasics /> }
                                     { this.state.section === 'seo' && <SectionSEO /> }

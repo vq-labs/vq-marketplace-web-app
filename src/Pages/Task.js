@@ -239,7 +239,6 @@ class Task extends Component {
                                                                 <p className="text-muted">
                                                                     <Moment format={`${CONFIG.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
                                                                 </p>
-                                                            
                                                         </li>
                                                    </ul>
                                             </div>
@@ -249,9 +248,17 @@ class Task extends Component {
                                 <div className="col-xs-12 col-sm-4">
                                     <Card style={{ 'marginTop': 60 }}>
                                         <CardText>
-                                            <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
-                                                {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
-                                            </h2>
+                                            { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                                <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
+                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                                                </h2>
+                                            }
+
+                                            { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                                <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
+                                                    {this.state.task.quantity} {this.state.task.unitOfMeasure}
+                                                </h2>
+                                            }
                                         </CardText>
                                         { !this.state.user &&
                                             <RaisedButton
@@ -329,23 +336,38 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
+                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                                            <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                <div style={{width: '100%', marginBottom: '20px'}}>
+                                                    <div>
+                                                        <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
+                                                    </div>
+                                                    <div>
+                                                        { this.state.task.taskType === 1 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       }
+
+                                       { CONFIG.LISTING_DESC_MODE === "1" &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
                                                     <h3 className="text-left">{translate('LISTING_DESCRIPTION')}</h3>
-                                                    <p className="text-muted">
-                                                        <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
-                                                    </p>
                                                 </div>
                                                 <div>
                                                     <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
                                                 </div>
                                             </div>
                                         </div>
-
-                                       { this.state.task.location &&
+                                       }
+                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
+                                            <p className="text-muted">
+                                                <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
+                                            </p>
+
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
                                                 lng={this.state.task.location.lng}
@@ -394,7 +416,7 @@ class Task extends Component {
                                             }
                                         </div>
                                         }
-                                        {this.state.task && this.state.task.comments &&
+                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task && this.state.task.comments &&
                                             <div className="row">
                                                 <div className="col-xs-12">
                                                     <TaskComments

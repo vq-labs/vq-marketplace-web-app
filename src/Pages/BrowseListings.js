@@ -43,10 +43,8 @@ class Offers extends Component {
             isLoading: false,
             locationQueryString,
             appliedFilter: {
-                viewType: Number(query.viewType),
+                viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
                 q: locationQueryString,
-                minPrice: query.minPrice,
-                maxPrice: query.maxPrice,
                 category: query.category,
                 lat: query.lat,
                 lng: query.lng
@@ -58,14 +56,6 @@ class Offers extends Component {
     }
 
     componentDidMount() {
-        const appliedFilter = this.state.appliedFilter;
-        
-        appliedFilter.viewType = appliedFilter.viewType || Number(CONFIG.LISTINGS_DEFAULT_VIEW);
-
-        this.setState({
-            appliedFilter
-        });
-
         getUserAsync(user => {
             if (getMeOutFromHereIfAmNotAuthorized(user)) {
                 return;
@@ -116,7 +106,7 @@ class Offers extends Component {
             untilNow: CONFIG.LISTING_TIMING_MODE === '1' ? 1 : undefined,
             minPrice: query.minPrice,
             maxPrice: query.maxPrice,
-            taskType: this.state.listingType,
+            taskType: query.listingType || this.state.listingType,
             status: '0',
             lat: query.lat,
             lng: query.lng,
@@ -167,8 +157,13 @@ class Offers extends Component {
         appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
-        appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
-        appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+
+        if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
+            appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
+            appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+        }
+
+        appliedFilter.listingType = query.listingType || 1;
 
         setQueryParams(appliedFilter);
 
@@ -304,18 +299,43 @@ class Offers extends Component {
 
         const SidebarContent =
         <div className="row hidden-xs">
-            
             <div className="col-xs-12"> 
-            <div>
                 <span style={{
-                    fontWeight: !this.state.appliedFilter.category ? 'bold' : 'normal'
+                    fontWeight: this.state.appliedFilter.listingType === 1 ?
+                        'bold' :
+                        'normal'
                 }}    
                 className="vq-uppercase with-pointer" onClick={
-                    () => this.updateResults({ category: null })
+                    () => this.updateResults({ listingType: 1 })
                 }>
-                    { translate('ALL_CATEGORIES') }
+                    { translate('DEMAND_LISTING_FILTER') }
                 </span>
             </div>
+
+            <div className="col-xs-12"> 
+                <span style={{
+                    fontWeight: this.state.appliedFilter.listingType === 2 ?
+                    'bold' :
+                    'normal'
+                }}    
+                className="vq-uppercase with-pointer" onClick={
+                    () => this.updateResults({ listingType: 2 })
+                }>
+                    { translate('SUPPLY_LISTING_FILTER') }
+                </span>
+            </div>
+
+            <div className="col-xs-12" style={{ marginTop: 25 }}>
+                <div>
+                    <span style={{
+                        fontWeight: !this.state.appliedFilter.category ? 'bold' : 'normal'
+                    }}    
+                    className="vq-uppercase with-pointer" onClick={
+                        () => this.updateResults({ category: null })
+                    }>
+                        { translate('ALL_CATEGORIES') }
+                    </span>
+                </div>
             {  
             this.state.categories &&
             this.state.categories
@@ -337,16 +357,19 @@ class Offers extends Component {
             )
             }
             </div>
-            <div className="col-xs-12" style={{
-                marginTop: 50,
-            }}>
+            { CONFIG.LISTING_PRICE_FILTER_ENABLED === "1" &&
+            <div
+                className="col-xs-12"
+                style={{
+                    marginTop: 50
+                }}
+            >
                 <span className="vq-uppercase vq-bold">
                     <strong>{translate('PRICE')}</strong>
                 </span>
                 <hr style={{
                     marginTop: '5px'
                 }}/>
-                {CONFIG &&
                 <div style={{ width: '100%' }}>
                     <h4 style={{ fontSize: '14px' }}>{this.state.appliedFilter.minPrice}-{this.state.appliedFilter.maxPrice} {displayPrice(undefined, CONFIG.PRICING_DEFAULT_CURRENCY, 1)}</h4>
                         <InputRange
@@ -381,8 +404,8 @@ class Offers extends Component {
                             }}
                         />
                 </div>
-                }
             </div>
+            }
         </div>;
 
         return (
@@ -400,7 +423,7 @@ class Offers extends Component {
                         </div>
                         <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
                             <div className="col-xs-12" style={{ marginBottom: 5 }}>
-                                {this.state.appliedFilter.viewType &&
+                                {Boolean(this.state.appliedFilter.viewType) &&
                                     <OfferViewTypeChoice
                                         className="pull-right"
                                         selected={this.state.appliedFilter.viewType}

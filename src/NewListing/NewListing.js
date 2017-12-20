@@ -11,6 +11,7 @@ import NewListingCategory from './NewListingCategory';
 import NewListingPricing from './NewListingPricing';
 import NewListingDate from './NewListingDate';
 import NewListingImages from './NewListingImages';
+import NewListingQuantity from './NewListingQuantity';
 import NewListingReview from './NewListingReview';
 import NewListingLocation from './NewListingLocation';
 import NewListingDuration from './NewListingDuration';
@@ -24,17 +25,18 @@ import { createListing } from '../helpers/create-listing.js';
 const _underscore = require('underscore');
 
 const LISTING_VIEWS = {
-    START: 1,
+    START: 0,
     CATEGORY: 1,
-    PRICING: 2,
-    BASICS: 3,
-    LOCATION: 4,
-    CALENDAR: 5,
-    DURATION: 6,
-    IMAGES: 7,
-    REVIEW: 8,
-    SUCCESS: 9,
-    LOGIN: 10
+    QUANTITY: 2,
+    PRICING: 3,
+    BASICS: 4,
+    LOCATION: 5,
+    CALENDAR: 6,
+    DURATION: 7,
+    IMAGES: 8,
+    REVIEW: 9,
+    SUCCESS: 10,
+    LOGIN: 11
 };
 
 const TASK_TYPES = {
@@ -117,6 +119,40 @@ export default class NewListing extends Component {
         };
     }
 
+    updateCurrentCategoryConfig = (listingCategories) => {
+        const task = this.state.task;
+
+        const category = listingCategories
+        .filter(
+            _ => _.code === task.categories[0] || this.props.location.query.category
+        )[0];
+        
+        const minPrice = category ? category.minPriceHour || 0 : 0;
+        const minQuantity = category ? category.minQuantity || 0 : 0;
+        const maxQuantity = category ? category.maxQuantity || 0 : 0;
+        const quantityStep = category ? category.quantityStep || 0 : 0;
+        const unitOfMeasure = category ? category.unitOfMeasure : "Unit";
+        
+        if (CONFIG.LISTING_QUANTITY_MODE === "1") {
+            task.quantity = minQuantity;
+            task.unitOfMeasure = unitOfMeasure;
+        }
+
+        if (CONFIG.LISTING_PRICING_MODE === "1") {
+            task.price = minPrice;
+        }
+
+        this.setState({
+            minQuantity,
+            maxQuantity,
+            quantityStep,
+            unitOfMeasure,
+            listingCategories,
+            minPrice,
+            task
+        });
+    }
+
     componentDidMount() {
         restrictedPostalCodes = CONFIG.LISTING_RESTRICTED_POSTAL_CODES ? CONFIG.LISTING_RESTRICTED_POSTAL_CODES.split(",") : [];
 
@@ -130,9 +166,9 @@ export default class NewListing extends Component {
             }
 
             if (user.userType === 0) {
-                goTo("/");
-
-                return alert("No support for user type 0 yet. Create supply or demand account.");
+                this.setState({
+                    step: LISTING_VIEWS.START
+                })
             }
 
             if (user.userType === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
@@ -187,25 +223,13 @@ export default class NewListing extends Component {
                 task.currency = currency;
 
                 this.setState({
+                    listingCategories,
                     ready: true,
                     task,
                     currency
                 });
                 
-                const category = listingCategories
-                    .filter(
-                        _ => _.code === task.categories[0] || this.props.location.query.category
-                    )[0];
-                    
-                const minPrice = category ? category.minPriceHour || 0 : 0;
-                
-                task.price = minPrice;
-
-                this.setState({
-                    listingCategories,
-                    minPrice,
-                    task
-                });
+                this.updateCurrentCategoryConfig(listingCategories);
             });
         }, true);
     }
@@ -238,17 +262,22 @@ export default class NewListing extends Component {
 
         task.categories = categories;    
 
-        const category = listingCategories
-            .filter(
-                _ => _.code === categoryCode
-            )[0];
-        const minPrice = category.minPriceHour || 0;
-        
-        task.price = minPrice;
+        this.updateCurrentCategoryConfig(listingCategories);
+
+        let firstStep;
+
+        if (CONFIG.LISTING_QUANTITY_MODE === "1") {
+            firstStep = LISTING_VIEWS.QUANTITY;
+        } else if (CONFIG.LISTING_PRICING_MODE === "1") {
+            firstStep = LISTING_VIEWS.PRICING;
+        } else if (CONFIG.LISTING_DESC_MODE === "1") {
+            firstStep = LISTING_VIEWS.BASICS;
+        } else {
+            firstStep = LISTING_VIEWS.CALENDAR;
+        }
 
         this.setState({
-            minPrice,
-            step: LISTING_VIEWS.PRICING, 
+            step: firstStep, 
             task
         });
     }
@@ -261,9 +290,53 @@ export default class NewListing extends Component {
         this.setState({ task });
     }
 
+    selectListingType(listingType) {
+        const task = this.state.task;
+
+        task.taskType = listingType;
+
+        this.setState({
+            task,
+            step: this.state.step + 1
+        });
+    }
+
     render() {
             return (
                     <div className="container">
+                        { this.state.step === LISTING_VIEWS.START && 
+                            <div className="col-xs-12">
+                                <div className="col-xs-12">
+                                    <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
+                                        {translate("NEW_LISTING_TYPE_HEADER")}
+                                    </h1>
+                                    <p>
+                                        {translate("NEW_LISTING_TYPE_DESC")}
+                                    </p>
+                                </div>
+                                <hr />
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6">
+                                        <RaisedButton
+                                            fullWidth={true}
+                                            primary={true}
+                                            label={translate("NEW_DEMAND_LISTING")}
+                                            onTouchTap={() => this.selectListingType(1)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6" style={{ marginTop: 25 }}>
+                                        <RaisedButton
+                                            fullWidth={true}
+                                            primary={true}
+                                            label={translate("NEW_SUPPLY_LISTING")}
+                                            onTouchTap={() => this.selectListingType(2)}
+                                        />
+                                    </div>
+                                </div>
+                            </div> 
+                        }
                         { this.state.step === LISTING_VIEWS.CATEGORY && 
                             <NewListingCategory
                                 listingType={this.state.task.taskType}
@@ -274,6 +347,22 @@ export default class NewListing extends Component {
                         }
                         { this.state.step > LISTING_VIEWS.CATEGORY &&
                         <div className="col-xs-12 col-sm-8 col-md-6">
+
+                            { this.state.step === LISTING_VIEWS.QUANTITY &&
+                                <NewListingQuantity
+                                    minQuantity={this.state.minQuantity}
+                                    maxQuantity={this.state.maxQuantity}
+                                    unitOfMeasure={this.state.unitOfMeasure}
+                                    quantityStep={this.state.quantityStep}
+                                    quantity={this.state.task.quantity}
+                                    onQuantityChange={
+                                        (quantity) => {
+                                            this.handleListingFieldChange("quantity", quantity);
+                                        }
+                                    } 
+                                />
+                            }
+
                             { this.state.step === LISTING_VIEWS.PRICING &&
                                 <NewListingPricing
                                     listingType={this.state.task.taskType}
@@ -401,6 +490,18 @@ export default class NewListing extends Component {
                                                 nextStep -= 1;
                                             }
 
+                                            if (nextStep === LISTING_VIEWS.BASICS && CONFIG.LISTING_DESC_MODE !== "1") {
+                                                nextStep -= 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.PRICING && CONFIG.LISTING_PRICING_MODE !== "1") {
+                                                nextStep -= 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.QUANTITY && CONFIG.LISTING_QUANTITY_MODE !== "1") {
+                                                nextStep -= 1;
+                                            }
+
                                             this.setState({ 
                                                 step: nextStep
                                             });
@@ -414,8 +515,7 @@ export default class NewListing extends Component {
                                         style={{
                                             float: 'right'
                                         }}
-                                        labelStyle={{color: 'white '}}
-                                        backgroundColor={CONFIG.COLOR_PRIMARY}
+                                        primary={true}
                                         label={translate("CONTINUE")}
                                         disabled={false}
                                         onTouchTap={() => {
@@ -523,6 +623,20 @@ export default class NewListing extends Component {
                                                     });
                                                 }
                                                 */
+                                            }
+
+                                            debugger;
+
+                                            if (nextStep === LISTING_VIEWS.QUANTITY && CONFIG.LISTING_QUANTITY_MODE !== "1") {
+                                                nextStep += 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.PRICING && CONFIG.LISTING_PRICING_MODE !== "1") {
+                                                nextStep += 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.BASICS && CONFIG.LISTING_DESC_MODE !== "1") {
+                                                nextStep += 1;
                                             }
 
                                             if (nextStep === LISTING_VIEWS.CALENDAR && CONFIG.LISTING_TIMING_MODE !== "1") {

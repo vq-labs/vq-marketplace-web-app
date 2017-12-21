@@ -12,7 +12,8 @@ export default class NewListingQuantity extends React.Component {
             quantity: props.quantity || 0 ,
             unitOfMeasure: props.unitOfMeasure,
             minQuantity: props.minQuantity,
-            maxQuantity: props.maxQuantity
+            maxQuantity: props.maxQuantity,
+            quantityStep: props.quantityStep
         };
     }
 

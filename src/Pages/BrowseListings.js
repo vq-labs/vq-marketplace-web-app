@@ -18,6 +18,7 @@ import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
 import { translate } from '../core/i18n';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
+import { getMode } from '../core/user-mode.js';
 
 const _chunk = require('lodash.chunk');
 
@@ -61,18 +62,24 @@ class Offers extends Component {
                 return;
             }
 
-            let listingType = 1;
+            const appliedFilter = this.state.appliedFilter;
+
             /**
              * Only sellers can access this page
              */
             if (user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                 return goTo('/dashboard');
             } else {
-                listingType = 2;
+                appliedFilter.listingType = 2;
+            }
+
+            if (user.userType === 0) {
+                appliedFilter.listingType = Number(getMode()) === 1 ? 2 : 1;
             }
 
             this.setState({
-                listingType, 
+                appliedFilter,
+                listingType: appliedFilter.listingType,
                 isLoading: true
             });
 
@@ -163,7 +170,7 @@ class Offers extends Component {
             appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
         }
 
-        appliedFilter.listingType = query.listingType || 1;
+        appliedFilter.listingType = query.listingType || 2;
 
         setQueryParams(appliedFilter);
 
@@ -299,31 +306,35 @@ class Offers extends Component {
 
         const SidebarContent =
         <div className="row hidden-xs">
-            <div className="col-xs-12"> 
-                <span style={{
-                    fontWeight: this.state.appliedFilter.listingType === 1 ?
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                <div className="col-xs-12"> 
+                    <span style={{
+                        fontWeight: this.state.appliedFilter.listingType === 1 ?
+                            'bold' :
+                            'normal'
+                    }}    
+                    className="vq-uppercase with-pointer" onClick={
+                        () => this.updateResults({ listingType: 1 })
+                    }>
+                        { translate('DEMAND_LISTING_FILTER') }
+                    </span>
+                </div>
+            }
+
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                <div className="col-xs-12"> 
+                    <span style={{
+                        fontWeight: this.state.appliedFilter.listingType === 2 ?
                         'bold' :
                         'normal'
-                }}    
-                className="vq-uppercase with-pointer" onClick={
-                    () => this.updateResults({ listingType: 1 })
-                }>
-                    { translate('DEMAND_LISTING_FILTER') }
-                </span>
-            </div>
-
-            <div className="col-xs-12"> 
-                <span style={{
-                    fontWeight: this.state.appliedFilter.listingType === 2 ?
-                    'bold' :
-                    'normal'
-                }}    
-                className="vq-uppercase with-pointer" onClick={
-                    () => this.updateResults({ listingType: 2 })
-                }>
-                    { translate('SUPPLY_LISTING_FILTER') }
-                </span>
-            </div>
+                    }}    
+                    className="vq-uppercase with-pointer" onClick={
+                        () => this.updateResults({ listingType: 2 })
+                    }>
+                        { translate('SUPPLY_LISTING_FILTER') }
+                    </span>
+                </div>
+            }
 
             <div className="col-xs-12" style={{ marginTop: 25 }}>
                 <div>
@@ -331,7 +342,10 @@ class Offers extends Component {
                         fontWeight: !this.state.appliedFilter.category ? 'bold' : 'normal'
                     }}    
                     className="vq-uppercase with-pointer" onClick={
-                        () => this.updateResults({ category: null })
+                        () => this.updateResults({
+                            listingType: this.state.appliedFilter.listingType,
+                            category: null
+                        })
                     }>
                         { translate('ALL_CATEGORIES') }
                     </span>
@@ -346,6 +360,7 @@ class Offers extends Component {
                     }} className="vq-uppercase with-pointer" onClick={
                     () => {
                         this.updateResults({
+                            listingType: this.state.appliedFilter.listingType,
                             category: category.code
                         }); 
                     }
@@ -391,10 +406,7 @@ class Offers extends Component {
                                     updatingResults = setTimeout(() => {
                                         updatingResults = null;
                                         
-                                        this.updateResults({
-                                            minPrice: value.min,
-                                            maxPrice: value.max
-                                        });
+                                        this.updateResults(appliedFilter);
                                     }, 1000);
                                 }
 

@@ -351,6 +351,26 @@ class Task extends Component {
                                             </div>
                                        }
 
+                                       { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
+                                            { this.state.task.images && this.state.task.images.map(img =>
+                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
+                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
+                                                </div>
+                                            )}
+                                            { ( !this.state.task.images || !this.state.task.images.length) &&
+                                                <div className="col-xs-12 text-left">
+                                                    <div className="row">
+                                                        <p className="text-muted">
+                                                            { translate('NO_LISTING_IMAGES') }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        }
+
                                        { CONFIG.LISTING_DESC_MODE === "1" &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
@@ -399,25 +419,7 @@ class Task extends Component {
                                             {this.state.task.timing[0].duration}h
                                         </div>
                                         }
-                                        { false &&
-                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
-                                            { this.state.task.images && this.state.task.images.map(img =>
-                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
-                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
-                                                </div>
-                                            )}
-                                            { ( !this.state.task.images || !this.state.task.images.length) &&
-                                                <div className="col-xs-12 text-left">
-                                                    <div className="row">
-                                                        <p className="text-muted">
-                                                            { translate('NO_LISTING_IMAGES') }
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        }
+                                        
                                         { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task && this.state.task.comments &&
                                             <div className="row">
                                                 <div className="col-xs-12">

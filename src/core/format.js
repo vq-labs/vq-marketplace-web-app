@@ -66,8 +66,14 @@ export const displayLocation = (location, showDetails) => {
 export const displayPrice = (amount, currencyCode, pricingModel) => {
     amount = amount || '';
 
+    // per hour
     if (pricingModel === 1) {
         return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
+    }
+
+    // per unit
+    if (pricingModel === 3) {
+        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
     }
 
     return `${amount} ${CURRENCY_LABELS[currencyCode]}`;

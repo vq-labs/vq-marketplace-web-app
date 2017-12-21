@@ -3,25 +3,15 @@ import ConfigEdit from './Components/ConfigEdit';
 
 const defaultConfigsFields = [
     {
-        disabled: true,
-        type: 'bool',
-        key: 'PRICING_HOURLY',
-        label: 'Hourly pricing'
-    }, {
-        disabled: true,
-        type: 'bool',
-        key: 'PRICING_CONTRACT',
-        label: 'Pricing per listing'
-    }, {
-        disabled: true,
-        type: 'bool',
-        key: 'PRICING_REQUEST',
-        label: 'Pricing on request'
-    }, {
-        disabled: true,
-        type: 'bool',
-        key: 'PRICING_FREE',
-        label: 'Free'
+        type: 'select',
+        key: 'DEFAULT_PRICING_MODE',
+        label: 'Default listing pricing',
+        selection: [
+            { value: "1", label: 'Price per Hour' },
+            { value: "2", label: 'Price per Listing' },
+            { value: "3", label: "Price per Unit" },
+            { value: "4", label: 'Price on Request' }
+        ]
     }
 ];
 

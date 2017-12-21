@@ -88,7 +88,7 @@ export default class NewListing extends Component {
             description: '',
             location: {},
             duration: 2,
-            priceType: 1,
+            priceType: Number(CONFIG.DEFAULT_PRICING_MODE) || 1,
             categories: [],
             timing: [],
             images: [],
@@ -165,10 +165,18 @@ export default class NewListing extends Component {
                 return;
             }
 
+            debugger;
+
             if (user.userType === 0) {
-                this.setState({
-                    step: LISTING_VIEWS.START
-                })
+                if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                    this.setState({
+                        step: LISTING_VIEWS.START
+                    });
+                } else {
+                    this.setState({
+                        step: LISTING_VIEWS.CATEGORY
+                    });
+                }
             }
 
             if (user.userType === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
@@ -486,6 +494,10 @@ export default class NewListing extends Component {
                                                 nextStep -= 1;
                                             }
 
+                                            if (nextStep === LISTING_VIEWS.LOCATION && CONFIG.LISTING_GEOLOCATION_MODE !== "1") {
+                                                nextStep -= 1;
+                                            }
+
                                             if (nextStep === LISTING_VIEWS.BASICS && CONFIG.LISTING_DESC_MODE !== "1") {
                                                 nextStep -= 1;
                                             }
@@ -631,6 +643,10 @@ export default class NewListing extends Component {
                                             }
 
                                             if (nextStep === LISTING_VIEWS.BASICS && CONFIG.LISTING_DESC_MODE !== "1") {
+                                                nextStep += 1;
+                                            }
+
+                                            if (nextStep === LISTING_VIEWS.LOCATION && CONFIG.LISTING_GEOLOCATION_MODE !== "1") {
                                                 nextStep += 1;
                                             }
 

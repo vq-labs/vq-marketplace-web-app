@@ -80,7 +80,7 @@ class ListingHeader extends Component {
                         </p>
                     }
 
-                    { CONFIG.LISTING_IMAGES_MODE === "1" && !this.props.hideDesc &&
+                    { CONFIG.LISTING_DESC_MODE === "1" && !this.props.hideDesc &&
                     <p>
                         { displayListingDesc(this.state.task.description) }
                     </p>
@@ -98,7 +98,6 @@ class ListingHeader extends Component {
                                         displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency) :
                                         displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType))
                                 }
-
                                 {   CONFIG.LISTING_QUANTITY_MODE === "1" &&
                                        `${this.state.task.quantity} ${this.state.task.unitOfMeasure}`
                                 }
@@ -111,7 +110,7 @@ class ListingHeader extends Component {
                         </div>
                     }
 
-                    {CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                    { CONFIG.LISTING_QUANTITY_MODE === "1" &&
                         <div>
                             <h1 style={{
                                 marginTop: this.props.noPaddings ? 5 : 30,

@@ -20,7 +20,7 @@ class Signup extends Component {
     super(props);
     
     this.state = {
-      userType: 0,
+      userType: CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" ? USER_TYPES.BUYER : 0,
       userProperties: []
     };
 
@@ -200,7 +200,7 @@ class Signup extends Component {
                       </div>
                       }
                          
-                          <div class="col-xs-12">
+                          <div className="col-xs-12">
                           <div className="col-xs-12" style={{
                             marginTop: 20
                           }}>

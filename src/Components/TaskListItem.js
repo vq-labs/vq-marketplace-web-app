@@ -10,7 +10,6 @@ import ListingHeader from '../Components/ListingHeader';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
-
 export default class TaskListItem extends Component {
   constructor(props) {
       super(props);

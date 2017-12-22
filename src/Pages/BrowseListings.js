@@ -69,9 +69,9 @@ class Offers extends Component {
              */
             if (user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                 return goTo('/dashboard');
-            } else {
-                appliedFilter.listingType = 2;
             }
+
+            appliedFilter.listingType = CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" ? 1 : 2;
 
             if (user.userType === 0) {
                 appliedFilter.listingType = Number(getMode()) === 1 ? 2 : 1;

@@ -351,7 +351,7 @@ class Task extends Component {
                                             </div>
                                        }
 
-                                       { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                       { CONFIG.LISTING_IMAGES_MODE === "1" &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
                                             { this.state.task.images && this.state.task.images.map(img =>

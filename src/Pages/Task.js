@@ -245,7 +245,7 @@ class Task extends Component {
                                         </div>
                                     }   
                                 </div>
-                                <hr />
+                    
                                 <div className="col-xs-12 col-sm-4">
                                     <Card style={{ 'marginTop': 50 }}>
                                         <CardText>

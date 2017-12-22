@@ -13,6 +13,7 @@ import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 import { CONFIG } from '../core/config';
+import { getUserAsync } from '../core/auth';
 import { getUtcUnixTimeNow } from '../core/util';
 import getUserProperty from '../helpers/get-user-property';
 import { factory as errorFactory } from '../core/error-handler';
@@ -31,10 +32,15 @@ export default class Requests extends Component {
   }
   
   componentDidMount() {
+    getUserAsync(user => {
         const queryObj = {};
-
+        
         if (this.state.view) {
             queryObj.view = this.state.view;
+
+            if (this.props.showOutgoing) {
+                queryObj.fromUserId = user.id;
+            }
         }
 
         apiRequest
@@ -48,6 +54,7 @@ export default class Requests extends Component {
 
                 this.props.onReady && this.props.onReady();
             });
+    });
   }
 
   markAsDone = request => {
@@ -206,7 +213,7 @@ export default class Requests extends Component {
                                                     `${request.toUser.firstName} ${request.toUser.lastName}`
                                                 }
                                             >
-                                                <Avatar src={request.toUser.imageUrl || '/images/avatar.png'} />
+                                                <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
                                             </IconButton>
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton

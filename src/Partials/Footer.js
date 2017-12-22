@@ -39,22 +39,19 @@ class Footer extends Component {
                         </div>
                         <div className="col-xs-12 text-center">
                             <ul className="list-unstyled list-inline text-center">
-                                <li>
-                                    <a  
-                                        style={linkStyle}
-                                        onClick={() => goTo('/privacy')}
-                                    >
-                                        {translate('PRIVACY_POLICY')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a 
-                                        style={linkStyle}
-                                        onClick={() => goTo('/terms')}
-                                    >
-                                        {translate('TERMS_OF_SERVICE')}
-                                    </a>
-                                </li>
+                                
+
+                                { this.state.config.CUSTOM_HOW_IT_WORKS_URL &&
+                                    <li>
+                                        <a
+                                            style={linkStyle}
+                                            href={this.state.config.CUSTOM_HOW_IT_WORKS_URL}
+                                            target="_blank"
+                                        >
+                                            {translate("HOMEPAGE_FOOTER_HOW_IT_WORKS")}
+                                        </a>
+                                    </li>
+                                }
 
                                 { this.state.config.CUSTOM_BLOG_PAGE_URL &&
                                     <li>
@@ -79,6 +76,24 @@ class Footer extends Component {
                                         </a>
                                     </li>
                                 }
+
+                                <li>
+                                    <a  
+                                        style={linkStyle}
+                                        onClick={() => goTo('/privacy')}
+                                    >
+                                        {translate('PRIVACY_POLICY')}
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a 
+                                        style={linkStyle}
+                                        onClick={() => goTo('/terms')}
+                                    >
+                                        {translate('TERMS_OF_SERVICE')}
+                                    </a>
+                                </li>
 
                                 <li>
                                     <a

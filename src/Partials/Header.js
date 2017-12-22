@@ -128,8 +128,16 @@ class Header extends Component {
                                   anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                   targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                 >
-                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => goTo("/dashboard/listings")} />
-                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => goTo("/dashboard/requests")} />
+                                  <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => {
+                                    goTo("/dashboard/listings");
+
+                                    location.reload();
+                                  }}/>
+                                  <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => {
+                                    goTo("/dashboard/requests");
+
+                                    location.reload();
+                                  }} />
                                 </IconMenu>
                             </div>
                           }
@@ -256,7 +264,7 @@ class Header extends Component {
                       <IconMenu
                             style={{ cursor: 'pointer' }}
                             iconButtonElement={
-                              <Avatar src={this.state.user.imageUrl || DEFAULTS.PROFILE_IMG_URL} size={40} />
+                              <Avatar src={this.state.user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL} size={40} />
                             }
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                               targetOrigin={{horizontal: 'left', vertical: 'top'}}  >

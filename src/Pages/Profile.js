@@ -25,7 +25,7 @@ import USER_TYPES from '../Components/USER_TYPES';
 import { translate } from '../core/i18n';
 import { displayErrorFactory } from '../core/error-handler';
 import { getCategoriesAsync } from '../core/categories.js';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
 import getUserProperty from '../helpers/get-user-property';
@@ -73,11 +73,11 @@ class Profile extends React.Component {
         );
     }
 
-    loadData(config) {
+    loadData() {
+        const config = CONFIG;
         let userId = this.props.params.profileId;
 
         this.setState({
-            config,
             ready: true
         });
 
@@ -130,9 +130,7 @@ class Profile extends React.Component {
                     categoryLabels
                 });
 
-                getConfigAsync(config => {
-                    this.loadData(config);
-                });
+                this.loadData();
             });
         }, true);
     }
@@ -142,9 +140,7 @@ class Profile extends React.Component {
             isLoading: true
         });
 
-        getConfigAsync(config => {
-            this.loadData(config);
-        });
+        this.loadData();
     }
 
     onDrop(files) {
@@ -214,7 +210,7 @@ class Profile extends React.Component {
         }
 
         render() {
-            const profileImageUrl = this.state.profile && this.state.profile.imageUrl || '/images/avatar.png';
+            const profileImageUrl = this.state.profile && this.state.profile.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png';
 
             const ProfileHeader =
                 <div className="row" style={{ 'marginTop': 30 }}>
@@ -230,7 +226,7 @@ class Profile extends React.Component {
                         <div className="row">  
                             <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                                 { this.state.ready && this.state.profile && 
-                                    <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                    <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                                         { this.showProfileName() }
                                     </h1>
                                 }
@@ -394,7 +390,7 @@ class Profile extends React.Component {
                         <div className="col-xs-12 col-sm-12">
                             <div className="row">
                                 <div className="col-xs-12 col-sm-11">
-                                    <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                                    <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                                         {translate("PROFILE_PREFERENCES_HEADER")}
                                     </h1>
                                     <p className="text-muted">
@@ -445,7 +441,7 @@ class Profile extends React.Component {
                                 marginTop: 20
                             }}
                         >
-                            <h1 style={{color: this.state.config.COLOR_PRIMARY}}>
+                            <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
                                 {translate("PROFILE_REVIEWS_HEADER")}
                             </h1>
                             <p className="text-muted">
@@ -487,7 +483,7 @@ class Profile extends React.Component {
                                                                 `${review.fromUser.firstName} ${review.fromUser.lastName}`
                                                             }
                                                         >
-                                                            <Avatar src={review.fromUser.imageUrl || '/images/avatar.png'} />
+                                                            <Avatar src={review.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
                                                         </IconButton>
                                                     </div>
                                                     <div className="col-xs-8 col-sm-12" style={{ paddingLeft: 0, paddingRight: 0}}>
@@ -509,7 +505,7 @@ class Profile extends React.Component {
                                                         <div className="col-xs-12" style={{ marginTop: 5 }}>
                                                             <RaisedButton
                                                                 labelStyle={{color: 'white '}}
-                                                                backgroundColor={this.state.config.COLOR_PRIMARY}
+                                                                backgroundColor={CONFIG.COLOR_PRIMARY}
                                                                 label={translate('LEAVE_REVIEW')}
                                                                 onTouchTap={() => {
                                                                     if (review.orderId) {
@@ -560,7 +556,7 @@ class Profile extends React.Component {
                                             }
                                             <div className="row" style={{ marginTop: 15 }}>
                                                 <div className="col-xs-12 text-muted">
-                                                        <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{review.createdAt}</Moment>
+                                                        <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
                                                         <span> </span>
                                                         <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
                                                             {review.task.title}

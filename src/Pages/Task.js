@@ -221,7 +221,7 @@ class Task extends Component {
                                                     <ul className="list-unstyled list-inline">
                                                         <li>
                                                             <a href={ '/app/profile/' + this.state.taskOwner.id }>
-                                                                <Avatar src={this.state.taskOwner.imageUrl || DEFAULTS.PROFILE_IMG_URL }/>
+                                                                <Avatar src={this.state.taskOwner.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL || DEFAULTS.PROFILE_IMG_URL }/>
                                                             </a>
                                                         </li>
                                                         <li style={{
@@ -239,19 +239,27 @@ class Task extends Component {
                                                                 <p className="text-muted">
                                                                     <Moment format={`${CONFIG.DATE_FORMAT}`}>{this.state.task.createdAt}</Moment>
                                                                 </p>
-                                                            
                                                         </li>
                                                    </ul>
                                             </div>
                                         </div>
                                     }   
                                 </div>
+                                <hr />
                                 <div className="col-xs-12 col-sm-4">
-                                    <Card style={{ 'marginTop': 60 }}>
+                                    <Card style={{ 'marginTop': 50 }}>
                                         <CardText>
-                                            <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
-                                                {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
-                                            </h2>
+                                            { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                                <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
+                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                                                </h2>
+                                            }
+
+                                            { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                                <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
+                                                    {this.state.task.quantity} {this.state.task.unitOfMeasure}
+                                                </h2>
+                                            }
                                         </CardText>
                                         { !this.state.user &&
                                             <RaisedButton
@@ -265,7 +273,8 @@ class Task extends Component {
                                         {   
                                             this.state.user &&
                                             (   this.state.user.userType === 2 ||
-                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1")
+                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
+                                                this.state.user.userType === 0
                                             ) &&
                                             !this.state.isMyTask &&
                                             !this.state.sentRequestId &&
@@ -329,23 +338,58 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
+                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                                            <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                <div style={{width: '100%', marginBottom: '20px'}}>
+                                                    <div>
+                                                        <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
+                                                    </div>
+                                                    <div>
+                                                        { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       }
+
+                                       { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
+                                            { this.state.task.images && this.state.task.images.map(img =>
+                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
+                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
+                                                </div>
+                                            )}
+                                            { ( !this.state.task.images || !this.state.task.images.length) &&
+                                                <div className="col-xs-12 text-left">
+                                                    <div className="row">
+                                                        <p className="text-muted">
+                                                            { translate('NO_LISTING_IMAGES') }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        }
+
+                                       { CONFIG.LISTING_DESC_MODE === "1" &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
                                                     <h3 className="text-left">{translate('LISTING_DESCRIPTION')}</h3>
-                                                    <p className="text-muted">
-                                                        <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
-                                                    </p>
                                                 </div>
                                                 <div>
                                                     <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
                                                 </div>
                                             </div>
                                         </div>
-
-                                       { this.state.task.location &&
+                                       }
+                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
+                                            <p className="text-muted">
+                                                <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
+                                            </p>
+
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
                                                 lng={this.state.task.location.lng}
@@ -375,26 +419,8 @@ class Task extends Component {
                                             {this.state.task.timing[0].duration}h
                                         </div>
                                         }
-                                        { false &&
-                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
-                                            { this.state.task.images && this.state.task.images.map(img =>
-                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
-                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
-                                                </div>
-                                            )}
-                                            { ( !this.state.task.images || !this.state.task.images.length) &&
-                                                <div className="col-xs-12 text-left">
-                                                    <div className="row">
-                                                        <p className="text-muted">
-                                                            { translate('NO_LISTING_IMAGES') }
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        }
-                                        {this.state.task && this.state.task.comments &&
+                                        
+                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task && this.state.task.comments &&
                                             <div className="row">
                                                 <div className="col-xs-12">
                                                     <TaskComments

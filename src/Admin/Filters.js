@@ -32,6 +32,11 @@ const geofilterFields = [
 ];
 
 const priceFields = [
+    {   
+        type: 'bool',
+        key: 'LISTING_PRICE_FILTER_ENABLED',
+        label: 'Enable price filtering?'
+    },
     {
         type: 'number',
         key: 'LISTING_PRICE_FILTER_MIN',

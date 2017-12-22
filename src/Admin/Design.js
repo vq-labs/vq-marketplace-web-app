@@ -46,7 +46,18 @@ const coverPhotoFields = [
         key: 'PROMO_URL_SELLERS',
         label: 'Marketplace promo for supply side (1280x850px)',
         imageResolution: [ 1280, 850 ]
-    }
+    }, {
+        type: 'single-image',
+        key: 'PROMO_URL_MARKETPLACE_BROWSE',
+        label: 'Cover image for the marketplace browsing page (1280x140px)',
+        imageResolution: [ 1280, 850 ]
+    },
+    {
+        type: 'single-image',
+        key: 'USER_PROFILE_IMAGE_URL',
+        label: 'Marketplace logo (150px x 150px)',
+        imageResolution: [ 150, 150 ]
+    },
 ];
 
 export default class SectionBasics extends React.Component {

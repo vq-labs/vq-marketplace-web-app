@@ -173,21 +173,23 @@ export default class TaskEdit extends Component {
                                         />
                                     <hr />
                                 </div>
-                                <div className="col-xs-12">
-                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
-                                    <RadioButtonGroup 
-                                        name="priceType" 
-                                        onChange={ this.handleFieldChange('priceType', value => Number(value))} 
-                                        ref="priceType"
-                                        style={{width: '100%'}}
-                                        inputStyle={{width: '100%'}}
-                                        defaultSelected={this.state.task.priceType}>
-                                            <RadioButton
-                                                value={1}
-                                                label={translate("PRICING_MODEL_HOURLY")}
-                                            />
-                                    </RadioButtonGroup>
-                                </div>
+                                { false &&
+                                    <div className="col-xs-12">
+                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
+                                        <RadioButtonGroup 
+                                            name="priceType" 
+                                            onChange={ this.handleFieldChange('priceType', value => Number(value))} 
+                                            ref="priceType"
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                            defaultSelected={this.state.task.priceType}>
+                                                <RadioButton
+                                                    value={1}
+                                                    label={translate("PRICING_MODEL_HOURLY")}
+                                                />
+                                        </RadioButtonGroup>
+                                    </div>
+                                }
                                 { this.state.task.priceType !== 2 &&
                                     <div className={"col-xs-12"}>
                                         <h2 

@@ -7,7 +7,7 @@ import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
-import { setQueryParams, goTo } from '../core/navigation';
+import { setQueryParams } from '../core/navigation';
 import { getParams } from '../core/util.js';
 import { getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
@@ -221,6 +221,7 @@ export default class Dashboard extends Component {
               {this.state.viewType === 'SENT_REQUESTS_PENDING' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
+                    showOutgoing={this.state.dashboardType === "requests"}
                     view={"pending"}
                     showTitle={false}
                   />

@@ -47,6 +47,15 @@ export default class NewListingReview extends Component {
                     </div>
 
                 <div className="col-xs-12">
+                    { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TYPE")}</h4>
+                                { this.state.listing.taskType === 1 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                            </div>
+                        </div>
+                    }
+
                     <div className="row">
                         <div className="col-xs-12">
                             <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("CATEGORY")}</h4>
@@ -59,19 +68,24 @@ export default class NewListingReview extends Component {
                         </div>
                     </div>
 
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TITLE")}</h4>
-                            {this.state.listing.title}
+                    { CONFIG.LISTING_DESC_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TITLE")}</h4>
+                                {this.state.listing.title}
+                            </div>
                         </div>
-                    </div>
-                   
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
-                            <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description)}}></div>
+                    }
+
+                    { CONFIG.LISTING_DESC_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
+                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description)}}></div>
+                            </div>
                         </div>
-                    </div>
+                    }
+
                     <div className="row">
                         <div className="col-xs-12">
                             <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_LOCATION")}</h4>
@@ -101,18 +115,29 @@ export default class NewListingReview extends Component {
                         </div>
                     }
 
-                    <div className="row">
-                        <div className="col-xs-12">
-                            <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("PRICING")}</h4>
-                            { this.state.listing.priceType === 1 ? translate("PRICING_MODEL_HOURLY") : this.state.listing.priceType === 0 ? translate("PRICING_MODEL_TOTAL") : translate("PRICING_MODEL_REQUEST_QUOTE") }
+                    { CONFIG.LISTING_PRICING_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("PRICING")}</h4>
+                                { this.state.listing.priceType === 1 ? translate("PRICING_MODEL_HOURLY") : this.state.listing.priceType === 0 ? translate("PRICING_MODEL_TOTAL") : translate("PRICING_MODEL_REQUEST_QUOTE") }
+                            </div>
                         </div>
-                    </div>
+                    }
 
-                    { this.state.listing.priceType !== 2 && 
+                    { CONFIG.LISTING_PRICING_MODE === "1" && this.state.listing.priceType !== 2 && 
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("PRICE")}</h4>
                                 {displayPrice(this.state.listing.price, this.state.currency, this.state.listing.priceType)}
+                            </div>
+                        </div>
+                    }
+
+                    { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_QUANTITY")}</h4>
+                                { this.state.listing.quantity } { this.state.listing.unitOfMeasure }
                             </div>
                         </div>
                     }

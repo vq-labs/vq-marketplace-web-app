@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { displayPrice, displayLocation, displayListingDesc, displayTotalPrice }  from '../core/format';
 import { goTo } from '../core/navigation';
+import { CONFIG } from '../core/config';
 import displayTaskTiming from '../helpers/display-task-timing';
 import TaskCategories from '../Partials/TaskCategories';
 
@@ -75,27 +76,30 @@ class ListingHeader extends Component {
                     { this.state.task.taskTimings &&
                         Boolean(this.state.task.taskTimings.length) &&
                         <p className="text-muted">
-                            { displayTaskTiming(this.state.task.taskTimings, `${this.state.config.DATE_FORMAT}`) }
+                            { displayTaskTiming(this.state.task.taskTimings, `${CONFIG.DATE_FORMAT}`) }
                         </p>
                     }
 
-                    { !this.props.hideDesc &&
+                    { CONFIG.LISTING_DESC_MODE === "1" && !this.props.hideDesc &&
                     <p>
                         { displayListingDesc(this.state.task.description) }
                     </p>
                     }
                 </div>
                 <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} >
-                    {this.state.task.priceType === PRICE_TYPE.PER_HOUR &&
+                    {CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.priceType === PRICE_TYPE.PER_HOUR &&
                         <div>
                             <h1 style={{
                                 marginTop: this.props.noPaddings ? 5 : 30,
-                                color: this.state.config.COLOR_PRIMARY
+                                color: CONFIG.COLOR_PRIMARY
                             }}>
-                                {
-                                    Boolean(this.state.task.taskTimings.length) ?
+                                {   CONFIG.LISTING_PRICING_MODE === "1" &&
+                                    (Boolean(this.state.task.taskTimings.length) ?
                                         displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency) :
-                                        displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)
+                                        displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType))
+                                }
+                                {   CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                       `${this.state.task.quantity} ${this.state.task.unitOfMeasure}`
                                 }
                             </h1>
                             <br />
@@ -103,6 +107,17 @@ class ListingHeader extends Component {
                                 Boolean(this.state.task.taskTimings.length) &&
                                 <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
                             }
+                        </div>
+                    }
+
+                    { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                        <div>
+                            <h1 style={{
+                                marginTop: this.props.noPaddings ? 5 : 30,
+                                color: CONFIG.COLOR_PRIMARY
+                            }}>
+                                {`${this.state.task.quantity} ${this.state.task.unitOfMeasure}`}
+                            </h1>
                         </div>
                     }
                 </div>

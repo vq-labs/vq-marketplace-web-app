@@ -21,6 +21,11 @@ export const goTo = (url, shouldReload) => {
         && location.hostname.indexOf('vq-labs.com') === -1) {
         // Production env. Note the https protocol.
         // eslint-disable-next-line
+
+        if (location.hostname === "clickforwork.hu" || location.hostname === "www.clickforwork.hu") {
+            return location.href = `https://${TENANT_ID}.vq-labs.com/app/admin`;
+        }
+
         return location.href = `https://${TENANT_ID}.vqmarketplace.com/app/admin`;
     }
 

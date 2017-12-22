@@ -11,9 +11,11 @@ export const goTo = (url, shouldReload) => {
     const newUrl = `${BASE}${url}`;
     const oldUrl = location.pathname;
     
+    const TENANT_ID = typeof TENANT_ID !== "undefined" ? TENANT_ID : undefined;
+
     // in production env. we want the admin to always access via https
     if (
-        typeof TENANT_ID !== 'undefined'
+        TENANT_ID
         && newUrl.indexOf('admin') > -1
         && location.hostname !== 'localhost'
         && location.hostname.indexOf('vqmarketplace.com') === -1

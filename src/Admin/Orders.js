@@ -58,7 +58,7 @@ export default class SectionUsers extends React.Component {
                                         {order.user.firstName} {order.user.lastName} (#{order.user.id})
                                    </td>
                                    <td>
-                                        <Moment format={`DD.MM.DD, HH:mm`}>{order.createdAt}</Moment>
+                                        <Moment format={`DD.MM.YYYY, HH:mm`}>{order.createdAt}</Moment>
                                    </td>
                                 </tr>
                             )}

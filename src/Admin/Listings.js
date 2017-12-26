@@ -123,7 +123,7 @@ export default class SectionUsers extends React.Component {
                                         {displayTaskStatus(task.status)}
                                     </td>
                                     <td>
-                                        <Moment format={`DD.MM.DD, HH:mm`}>{task.createdAt}</Moment>
+                                        <Moment format={`DD.MM.YYYY, HH:mm`}>{task.createdAt}</Moment>
                                     </td>
 
                                     <td>

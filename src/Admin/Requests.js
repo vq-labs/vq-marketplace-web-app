@@ -152,7 +152,7 @@ export default class SectionUsers extends React.Component {
                                         Client: {request.order && request.order.review ? 'Yes' : 'No'}
                                     </td>
                                     <td>
-                                        <Moment format={`DD.MM.DD, HH:mm`}>{request.createdAt}</Moment>
+                                        <Moment format={`DD.MM.YYYY, HH:mm`}>{request.createdAt}</Moment>
                                     </td>
                                     <td>
                                         <a

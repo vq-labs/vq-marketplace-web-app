@@ -7,7 +7,6 @@ import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Logo from './Logo';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import Avatar from 'material-ui/Avatar';
@@ -17,9 +16,8 @@ import * as coreAuth from '../core/auth';
 import { goTo, goStartPage } from '../core/navigation';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import { browserHistory } from 'react-router';
-import { getMode } from '../core/user-mode.js';
 import { CONFIG } from '../core/config';
-import { switchMode } from '../core/user-mode.js';
+import { switchMode, getMode } from '../core/user-mode.js';
 
 const headerBtnStyle = {
   'marginRight': '0px',
@@ -286,7 +284,7 @@ class Header extends Component {
                             primaryText={translate("ACCOUNT_SETTINGS")}
                         />     
 
-                        { this.state.user && this.state.user.userType === 0 &&
+                        { CONFIG.this.state.user && this.state.user.userType === 0 &&
                             <MenuItem
                               primaryText={this.state.userMode === "1" ?
                                 translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :

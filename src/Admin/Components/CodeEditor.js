@@ -8,8 +8,6 @@ const CodeMirror = require('react-codemirror');
 require('codemirror/lib/codemirror.css');
 require('codemirror/mode/javascript/javascript');
 
-
-
 export default class CodeEditor extends React.Component {
 	constructor(props) {
 		super(props);

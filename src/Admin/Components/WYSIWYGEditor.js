@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import draftToHtml from 'draftjs-to-html';
 
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';

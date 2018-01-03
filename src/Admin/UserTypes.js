@@ -1,5 +1,4 @@
 import React from 'react';
-import * as apiConfig from '../api/config';
 import ConfigEdit from './Components/ConfigEdit';
 
 const userTypeFields = [

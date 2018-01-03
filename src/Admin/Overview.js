@@ -1,5 +1,4 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
 import * as apiAdmin from '../api/admin';
 
 export default class SectionOverview extends React.Component {

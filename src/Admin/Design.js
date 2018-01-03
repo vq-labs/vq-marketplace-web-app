@@ -32,8 +32,9 @@ const coverPhotoFields = [
     {
         type: 'single-image',
         key: 'LOGO_URL',
-        label: 'Marketplace logo (284px x 100px)',
-        imageResolution: [ 100 * 2.84, 100 ]
+        label: 'Marketplace logo (recommended size: 284px x 100px)',
+        // any logo size is supported now as every marketplace owner has different logo and they all open ticket requests
+        // imageResolution: [ 100 * 2.84, 100 ]
     },
     {
         type: 'single-image',
@@ -55,7 +56,7 @@ const coverPhotoFields = [
     {
         type: 'single-image',
         key: 'USER_PROFILE_IMAGE_URL',
-        label: 'Marketplace logo (150px x 150px)',
+        label: 'Default user profile image (150px x 150px)',
         imageResolution: [ 150, 150 ]
     },
 ];

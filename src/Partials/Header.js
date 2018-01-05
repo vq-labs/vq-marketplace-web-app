@@ -284,7 +284,7 @@ class Header extends Component {
                             primaryText={translate("ACCOUNT_SETTINGS")}
                         />     
 
-                        { CONFIG.this.state.user && this.state.user.userType === 0 &&
+                        { this.state.user && this.state.user.userType === 0 &&
                             <MenuItem
                               primaryText={this.state.userMode === "1" ?
                                 translate("SWITCH_USER_MODE_TO_SUPPLY_SIDE") :

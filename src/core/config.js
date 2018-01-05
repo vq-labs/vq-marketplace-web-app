@@ -1,9 +1,11 @@
 let listeners = [];
 
+export let ready = false;
 export let CONFIG = {};
 
 export const set = config => {
     CONFIG = config;
+    ready = true;
 
     listeners
         .forEach(fn => fn(config));
@@ -12,7 +14,7 @@ export const set = config => {
 };
 
 export const getConfigAsync = cb => {
-    if (CONFIG) {
+    if (CONFIG && ready) {
         return cb(CONFIG);
     }
 

@@ -1,19 +1,20 @@
 import ReactGA from 'react-ga';
-import CONFIG from '../generated/ConfigProvider.js'
 import { getConfigAsync } from '../core/config';
 
 let ready = false;
 
 getConfigAsync(config => {
+    debugger;
     ready = true;
-    ReactGA.initialize(CONFIG.GOOGLE_ANALYTICS_ID);
-});
+    ReactGA.initialize(config.GOOGLE_ANALYTICS_ID);
+}, true);
 
 
 export const pageView = () => {
     if (!ready) {
         return;
     }
+    debugger;
 
     return ReactGA.pageview(window.location.pathname);
 };

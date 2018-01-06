@@ -41,7 +41,7 @@ export default class NewListingQuantity extends React.Component {
 
     render() {
         const state = this.state;
-        debugger;
+
         return <div className="row">
             <div className="col-xs-12">
                 <div className="row">

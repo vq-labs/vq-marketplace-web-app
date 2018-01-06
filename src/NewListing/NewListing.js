@@ -165,8 +165,6 @@ export default class NewListing extends Component {
                 return;
             }
 
-            debugger;
-
             if (user.userType === 0) {
                 if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
                     this.setState({
@@ -531,7 +529,6 @@ export default class NewListing extends Component {
                                             let nextStep = currentStep + 1;
                                             const task = this.state.task;
 
-                                            debugger;
                                             // CHECKS
                                             if (currentStep === LISTING_VIEWS.PRICING) {
                                                 if (typeof task.priceType === 'undefined') {

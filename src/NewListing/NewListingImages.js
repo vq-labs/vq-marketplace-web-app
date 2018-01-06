@@ -7,8 +7,6 @@ export default class NewListingImages extends Component {
     constructor(props) {
         super();
         
-        debugger;
-
         this.state = {
             images: props.images || []
         };

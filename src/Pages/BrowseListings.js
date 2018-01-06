@@ -182,128 +182,6 @@ class Offers extends Component {
     }
 
     render() {
-        const Intro = 
-        <div className="vq-listings-intro text-center" style={{ 
-            background: `url(${CONFIG.PROMO_URL_MARKETPLACE_BROWSE || CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) no-repeat center center fixed`,
-            backgroundSize: 'cover' 
-        }}>
-            <div
-                className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3"
-                style={{ marginTop: 25 }}
-            >
-                <div style={{
-                    maxWidth: '850px',
-                    margin: '0 auto'
-                }}>
-                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
-                        <h1 style={{
-                            color: "white",
-                            fontSize: 25
-                        }}>
-                            {translate('START_PAGE_HEADER')}
-                        </h1>
-                    }
-                    { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
-                        <h2 style={{ 
-                            color: "white",
-                            fontSize: 18
-                        }}>
-                            {translate('START_PAGE_DESC')}
-                        </h2>
-                    }
-                    
-                    { CONFIG.LISTING_GEOFILTER_ENABLED === "1" &&
-                    <div style={{ marginTop: 30 }}>
-                        <Autocomplete
-                            value={this.state.locationQueryString}
-                            onChange={ev => {
-                                const locationQueryString = ev.target.value;
-                                const newState = {};
-
-                                if (locationQueryString === '') {
-                                    const appliedFilter = this.state.appliedFilter;
-
-                                    appliedFilter.lat = null;
-                                    appliedFilter.lng = null;
-                                    appliedFilter.q = null;
-
-                                    newState.appliedFilter = appliedFilter;
-
-                                    this.updateResults(appliedFilter);
-                                }
-
-                                newState.locationQueryString = locationQueryString;
-
-                                this.setState(newState);
-                            }}
-                            style={{
-                                padding: 5,
-                                fontSize: 20,
-                                border: 0,
-                                borderRadius: 5,
-                                width: '100%',
-                                height: 50
-                            }}
-                            componentRestrictions={{
-                                country: CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION
-                            }}
-                            onPlaceSelected={place => {
-                                const locationQueryString = place.formatted_address;
-                                const locationValue = formatGeoResults([
-                                    place
-                                ])[0];
-                                const appliedFilter = this.state.appliedFilter;
-                                
-                                appliedFilter.lat = locationValue.lat;
-                                appliedFilter.lng = locationValue.lng;
-                                appliedFilter.q = locationQueryString;
-
-                                this.setState({
-                                    locationQueryString,
-                                    appliedFilter
-                                });
-
-                                this.updateResults({
-                                    q: locationQueryString,
-                                    lat: appliedFilter.lat,
-                                    lng: appliedFilter.lng
-                                });
-                            }}
-                            types={[
-                                CONFIG.LISTING_GEOFILTER_MODE ?
-                                `(${CONFIG.LISTING_GEOFILTER_MODE})` :
-                                '(cities)'
-                            ]}
-                            placeholder={translate('LISTING_FILTER_GEO')}
-                        >
-                        </Autocomplete>
-                        { this.state.locationQueryString &&
-                            <button
-                                onTouchTap={() => {
-                                    const appliedFilter = this.state.appliedFilter;
-                                    const locationQueryString = '';
-
-                                    delete appliedFilter.lat;
-                                    delete appliedFilter.lng;
-                                    delete appliedFilter.q;
-
-                                    this.setState({
-                                        locationQueryString,
-                                        appliedFilter
-                                    });
-
-                                    this.updateResults(appliedFilter);
-                                }}
-                                className="close-icon"
-                                type="reset"
-                            ></button>
-                        }
-                    </div>
-                    }
-                </div>
-            </div>
-        </div>;
-
         const SidebarContent =
         <div className="row hidden-xs">
             { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
@@ -422,125 +300,243 @@ class Offers extends Component {
 
         return (
             <div>
+                <div className="vq-listings-intro text-center" style={{ 
+                    background: `url(${CONFIG.PROMO_URL_MARKETPLACE_BROWSE || CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) ${CONFIG.PROMO_URL_MARKETPLACE_BROWSE ? "" : "no-repeat center center fixed"}`,
+                    backgroundSize: 'cover' 
+                }}>
+                    <div
+                        className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3"
+                        style={{ marginTop: 25 }}
+                    >
+                        <div style={{
+                            maxWidth: '850px',
+                            margin: '0 auto'
+                        }}>
+                            { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                                <h1 style={{
+                                    color: "white",
+                                    fontSize: 25
+                                }}>
+                                    {translate('START_PAGE_HEADER')}
+                                </h1>
+                            }
+                            { CONFIG.LISTING_GEOFILTER_ENABLED !== "1" &&
+                                <h2 style={{ 
+                                    color: "white",
+                                    fontSize: 18
+                                }}>
+                                    {translate('START_PAGE_DESC')}
+                                </h2>
+                            }
+                            
+                            { CONFIG.LISTING_GEOFILTER_ENABLED === "1" &&
+                            <div style={{ marginTop: 30 }}>
+                                <Autocomplete
+                                    value={this.state.locationQueryString}
+                                    onChange={ev => {
+                                        const locationQueryString = ev.target.value;
+                                        const newState = {};
 
-            {Intro}
-
-            <div className="container custom-xs-style" style={{ marginTop: 10 }}>
-                        <div className="col-sm-4 col-md-3 col-lg-2">
-                            <div className="row">
-                                {SidebarContent}
-                            </div>
-                        </div>
-                        <div className="col-lg-2 visible-lg">
-                        </div>
-                        <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
-                            <div className="col-xs-12" style={{ marginBottom: 5 }}>
-                                {Boolean(this.state.appliedFilter.viewType) &&
-                                    <OfferViewTypeChoice
-                                        className="pull-right"
-                                        selected={this.state.appliedFilter.viewType}
-                                        onSelect={viewType => {
+                                        if (locationQueryString === '') {
                                             const appliedFilter = this.state.appliedFilter;
 
-                                            appliedFilter.viewType = viewType;
-                                            
-                                            setQueryParams(appliedFilter);
+                                            appliedFilter.lat = null;
+                                            appliedFilter.lng = null;
+                                            appliedFilter.q = null;
+
+                                            newState.appliedFilter = appliedFilter;
+
+                                            this.updateResults(appliedFilter);
+                                        }
+
+                                        newState.locationQueryString = locationQueryString;
+
+                                        this.setState(newState);
+                                    }}
+                                    style={{
+                                        padding: 5,
+                                        fontSize: 20,
+                                        border: 0,
+                                        borderRadius: 5,
+                                        width: '100%',
+                                        height: 50
+                                    }}
+                                    componentRestrictions={{
+                                        country: CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION
+                                    }}
+                                    onPlaceSelected={place => {
+                                        const locationQueryString = place.formatted_address;
+                                        const locationValue = formatGeoResults([
+                                            place
+                                        ])[0];
+                                        const appliedFilter = this.state.appliedFilter;
+                                        
+                                        appliedFilter.lat = locationValue.lat;
+                                        appliedFilter.lng = locationValue.lng;
+                                        appliedFilter.q = locationQueryString;
+
+                                        this.setState({
+                                            locationQueryString,
+                                            appliedFilter
+                                        });
+
+                                        this.updateResults({
+                                            q: locationQueryString,
+                                            lat: appliedFilter.lat,
+                                            lng: appliedFilter.lng
+                                        });
+                                    }}
+                                    types={[
+                                        CONFIG.LISTING_GEOFILTER_MODE ?
+                                        `(${CONFIG.LISTING_GEOFILTER_MODE})` :
+                                        '(cities)'
+                                    ]}
+                                    placeholder={translate('LISTING_FILTER_GEO')}
+                                >
+                                </Autocomplete>
+                                { this.state.locationQueryString &&
+                                    <button
+                                        onTouchTap={() => {
+                                            const appliedFilter = this.state.appliedFilter;
+                                            const locationQueryString = '';
+
+                                            delete appliedFilter.lat;
+                                            delete appliedFilter.lng;
+                                            delete appliedFilter.q;
 
                                             this.setState({
+                                                locationQueryString,
                                                 appliedFilter
                                             });
+
+                                            this.updateResults(appliedFilter);
                                         }}
-                                    />
+                                        className="close-icon"
+                                        type="reset"
+                                    ></button>
                                 }
                             </div>
-                            { this.state.isLoading && 
-                                <Loader isLoading={true} />
-                            }
-                            { !this.state.isLoading &&
-                            <div className="col-xs-12">
-                                    {!this.state.offers.length &&
-                                    this.state.appliedFilter.viewType !== VIEW_TYPES.MAP &&
-                                        <div 
-                                            className="text-center text-muted col-xs-12"
-                                            style={{ marginBottom: 10} }
-                                        >
-                                                {translate('NO_LISTINGS')}
-                                            <div className="row"><hr /></div>
-                                        </div>
-                                    }
-
-
-                                    { this.state.appliedFilter.viewType === VIEW_TYPES.LIST &&
-                                            this.state.offers.map(offer =>
-                                                <div 
-                                                    className="col-xs-12"
-                                                    style={{ marginBottom: 10} }
-                                                >
-                                                    <TaskListItem
-                                                        key={offer.id}
-                                                        task={offer}
-                                                        displayPrice={true}
-                                                    />
-                                                   <div className="row"><hr /></div>
-                                                </div>
-                                            )
-                                    }
-                                    { this.state.appliedFilter.viewType === VIEW_TYPES.MAP &&
-                                        <div className="row">
-                                            <div
-                                                style={{
-                                                    height: '400px',
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {this.state.offers &&
-                                                    <TaskMap
-                                                        listings={this.state.offers}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                    {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
-                                        <div className="row visible-xs visible-sm" >
-                                            { this.state.offersChunksXS && 
-                                                this.state.offersChunksXS.map((offerRow, index) =>
-                                                    <div className="row" key={index}>
-                                                        { this.state.offersChunksXS[index]
-                                                            .map(offer =>
-                                                                <div 
-                                                                    className="col-xs-12 col-sm-6"
-                                                                    style={{ marginBottom: 10} }
-                                                                >
-                                                                    <TaskCard
-                                                                        key={offer.id}
-                                                                        task={offer}
-                                                                        displayPrice={true}
-                                                                    />
-                                                                </div>
-                                                            )
-                                                        }
-                                                    </div>
-                                            )}
-                                        </div>
-                                    }
-                                    {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
-                                        <div className="row hidden-xs hidden-sm" >
-                                            { this.state.offersChunksMD && 
-                                                this.state.offersChunksMD.map((offerRow, index) =>
-                                                    <div className="row" key={index}>
-                                                        { this.state.offersChunksMD[index].map(offer =>
-                                                            <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                                <TaskCard task={offer} displayPrice={true} key={offer.id}  />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                            )}
-                                        </div>
-                                    }
-                                </div>
                             }
                         </div>
+                    </div>
+                </div>
+
+                <div className="container custom-xs-style" style={{ marginTop: 10 }}>
+                    <div className="col-sm-4 col-md-3 col-lg-2">
+                        <div className="row">
+                            {SidebarContent}
+                        </div>
+                    </div>
+                    <div className="col-lg-2 visible-lg">
+                    </div>
+                    <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
+                        <div className="col-xs-12" style={{ marginBottom: 5 }}>
+                            {Boolean(this.state.appliedFilter.viewType) &&
+                                <OfferViewTypeChoice
+                                    className="pull-right"
+                                    selected={this.state.appliedFilter.viewType}
+                                    onSelect={viewType => {
+                                        const appliedFilter = this.state.appliedFilter;
+
+                                        appliedFilter.viewType = viewType;
+                                        
+                                        setQueryParams(appliedFilter);
+
+                                        this.setState({
+                                            appliedFilter
+                                        });
+                                    }}
+                                />
+                            }
+                        </div>
+                        { this.state.isLoading && 
+                            <Loader isLoading={true} />
+                        }
+                        { !this.state.isLoading &&
+                        <div className="col-xs-12">
+                                {!this.state.offers.length &&
+                                this.state.appliedFilter.viewType !== VIEW_TYPES.MAP &&
+                                    <div 
+                                        className="text-center text-muted col-xs-12"
+                                        style={{ marginBottom: 10} }
+                                    >
+                                            {translate('NO_LISTINGS')}
+                                        <div className="row"><hr /></div>
+                                    </div>
+                                }
+
+
+                                { this.state.appliedFilter.viewType === VIEW_TYPES.LIST &&
+                                        this.state.offers.map(offer =>
+                                            <div 
+                                                className="col-xs-12"
+                                                style={{ marginBottom: 10} }
+                                            >
+                                                <TaskListItem
+                                                    key={offer.id}
+                                                    task={offer}
+                                                    displayPrice={true}
+                                                />
+                                                <div className="row"><hr /></div>
+                                            </div>
+                                        )
+                                }
+                                { this.state.appliedFilter.viewType === VIEW_TYPES.MAP &&
+                                    <div className="row">
+                                        <div
+                                            style={{
+                                                height: '400px',
+                                                width: '100%'
+                                            }}
+                                        >
+                                            {this.state.offers &&
+                                                <TaskMap
+                                                    listings={this.state.offers}
+                                                />
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
+                                    <div className="row visible-xs visible-sm" >
+                                        { this.state.offersChunksXS && 
+                                            this.state.offersChunksXS.map((offerRow, index) =>
+                                                <div className="row" key={index}>
+                                                    { this.state.offersChunksXS[index]
+                                                        .map(offer =>
+                                                            <div 
+                                                                className="col-xs-12 col-sm-6"
+                                                                style={{ marginBottom: 10} }
+                                                            >
+                                                                <TaskCard
+                                                                    key={offer.id}
+                                                                    task={offer}
+                                                                    displayPrice={true}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
+                                        )}
+                                    </div>
+                                }
+                                {this.state.appliedFilter.viewType === VIEW_TYPES.GRID &&
+                                    <div className="row hidden-xs hidden-sm" >
+                                        { this.state.offersChunksMD && 
+                                            this.state.offersChunksMD.map((offerRow, index) =>
+                                                <div className="row" key={index}>
+                                                    { this.state.offersChunksMD[index].map(offer =>
+                                                        <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
+                                                            <TaskCard task={offer} displayPrice={true} key={offer.id}  />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                        )}
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         );

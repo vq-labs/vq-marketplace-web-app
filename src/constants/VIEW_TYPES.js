@@ -1,5 +1,5 @@
 const VIEW_TYPES = {
-    // GRID: 1,
+    GRID: 1,
     LIST: 2,
     MAP: 3
 };

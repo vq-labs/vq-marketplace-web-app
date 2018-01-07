@@ -87,7 +87,8 @@ class ListingHeader extends Component {
                     }
                 </div>
                 <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} >
-                    {CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.priceType === PRICE_TYPE.PER_HOUR &&
+                    {
+                        CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.priceType === PRICE_TYPE.PER_HOUR &&
                         <div>
                             <h1 style={{
                                 marginTop: this.props.noPaddings ? 5 : 30,

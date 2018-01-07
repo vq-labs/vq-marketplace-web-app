@@ -12,6 +12,7 @@ export default class AdminPage extends React.Component {
         const userId = this.props.params.userId;
 
         this.state = {
+            isLoading: true,
             userId,
             user: null
         };

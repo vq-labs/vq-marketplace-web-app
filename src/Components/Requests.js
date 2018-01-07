@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
+import Loader from "../Components/Loader";
 import IconCall from 'material-ui/svg-icons/communication/call';
 import IconChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Avatar from 'material-ui/Avatar';
@@ -48,7 +49,6 @@ export default class Requests extends Component {
             .then(requests => {
                 this.setState({
                     requests,
-                    ready: true,
                     isLoading: false
                 });
 
@@ -92,14 +92,14 @@ export default class Requests extends Component {
         confirmationLabel: translate('CANCEL_REQUEST_ACTION_DESC')
     }, () => {
         const requests = this.state.requests;
-        
+
         apiRequest.updateItem(request.id, {
             status: REQUEST_STATUS.CANCELED
         }).then(_ => {
             requests
                 .find(_ => _.id === request.id)
                 .status = REQUEST_STATUS.CANCELED;
-    
+
             this.setState({
                 requests
             });
@@ -140,7 +140,11 @@ export default class Requests extends Component {
   render() {
     return (
         <div className="container">
-            { this.state.ready &&
+            { this.state.isLoading &&
+                <Loader isLoading={true} />
+            }
+
+            { !this.state.isLoading &&
                 <div className="row">
                     <div className="col-xs-12">
                     { this.props.showTitle &&

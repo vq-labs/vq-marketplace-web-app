@@ -5,7 +5,7 @@ import InputRange from 'react-input-range';
 import Loader from "../Components/Loader";
 import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
-import VIEW_TYPES from '../Components/VIEW_TYPES';
+import VIEW_TYPES from '../constants/VIEW_TYPES';
 import { displayPrice }  from '../core/format';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
@@ -511,6 +511,7 @@ class Offers extends Component {
                                                                 <TaskCard
                                                                     key={offer.id}
                                                                     task={offer}
+                                                                    displayDesc={false}
                                                                     displayPrice={true}
                                                                 />
                                                             </div>
@@ -526,8 +527,16 @@ class Offers extends Component {
                                             this.state.offersChunksMD.map((offerRow, index) =>
                                                 <div className="row" key={index}>
                                                     { this.state.offersChunksMD[index].map(offer =>
-                                                        <div className="col-xs-12 col-sm-4" style={ { marginBottom: 10} }>
-                                                            <TaskCard task={offer} displayPrice={true} key={offer.id}  />
+                                                        <div
+                                                            key={offer.id}
+                                                            className="col-xs-12 col-sm-4 col-md-4"
+                                                            style={{ marginBottom: 10 }}
+                                                        >
+                                                            <TaskCard
+                                                                task={offer}
+                                                                displayPrice={true}
+                                                                displayDesc={false}
+                                                            />
                                                         </div>
                                                     )}
                                                 </div>

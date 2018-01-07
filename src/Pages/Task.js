@@ -9,6 +9,7 @@ import TaskCategories from '../Partials/TaskCategories';
 import TaskComments from '../Components/TaskComments';
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
+import ImageGallery from 'react-image-gallery';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import * as coreAuth from '../core/auth';
@@ -29,6 +30,9 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import { displayErrorFactory } from '../core/error-handler';
+
+import "react-image-gallery/styles/css/image-gallery.css";
+
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -202,6 +206,18 @@ class Task extends Component {
                             </div>
                         }
 
+                        { CONFIG.LISTING_IMAGES_MODE === "1" && this.state.task.images.length &&
+                            <div className="row listing-gallery-section">
+                                <ImageGallery
+                                    style={{ height: 50, maxHeight: "100%" }}
+                                    showPlayButton={false}
+                                    useBrowserFullscreen={false}
+                                    showFullscreenButton={false}
+                                    items={this.state.task.images.map(_ => ({ original: _.imageUrl, thumbnail: _.imageUrl }))}
+                                />
+                            </div>
+                        }
+
                         <div className="row">
                             <div className="col-sm-offset-1 col-xs-12 col-sm-10">
                                 <div className="col-xs-12 col-sm-8">
@@ -276,8 +292,10 @@ class Task extends Component {
                                                 (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
                                                 this.state.user.userType === 0
                                             ) &&
-                                            !this.state.isMyTask &&
-                                            !this.state.sentRequestId &&
+                                            (
+                                                (!this.state.isMyTask && !this.state.sentRequestId) ||
+                                                CONFIG.MULTIPLE_REQUESTS_ENABLED === "1"
+                                            ) &&
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 primary={true}
@@ -307,7 +325,10 @@ class Task extends Component {
                                                 }
                                             }/>
                                        }
-                                       { !this.state.isMyTask && this.state.sentRequestId &&
+
+                                       { CONFIG.MULTIPLE_REQUESTS_ENABLED !== "1" &&
+                                         !this.state.isMyTask &&
+                                         this.state.sentRequestId &&
                                             <FlatButton
                                                 style={{width: '100%'}}
                                                 label={translate("REQUEST_ALREADY_SENT")}
@@ -316,6 +337,7 @@ class Task extends Component {
                                                 }}
                                             /> 
                                        }
+
                                        { this.state.isMyTask &&
                                          this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
@@ -350,26 +372,6 @@ class Task extends Component {
                                                 </div>
                                             </div>
                                        }
-
-                                       { CONFIG.LISTING_IMAGES_MODE === "1" &&
-                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
-                                            { this.state.task.images && this.state.task.images.map(img =>
-                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
-                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
-                                                </div>
-                                            )}
-                                            { ( !this.state.task.images || !this.state.task.images.length) &&
-                                                <div className="col-xs-12 text-left">
-                                                    <div className="row">
-                                                        <p className="text-muted">
-                                                            { translate('NO_LISTING_IMAGES') }
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        }
 
                                        { CONFIG.LISTING_DESC_MODE === "1" &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>

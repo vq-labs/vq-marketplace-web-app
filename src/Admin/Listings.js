@@ -3,12 +3,13 @@ import * as apiAdmin from '../api/admin';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import Moment from 'react-moment';
+import MenuItem from 'material-ui/MenuItem';
+import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { displayTaskStatus } from '../core/format';
 import displayObject from '../helpers/display-object';
 import getProperty from '../helpers/get-user-property';
-import Moment from 'react-moment';
-import MenuItem from 'material-ui/MenuItem';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import TASK_STATUS from '../constants/TASK_STATUS';
@@ -18,6 +19,7 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             showProperty: false,
             showDetails: false,
             selectedUserId: null,
@@ -29,7 +31,8 @@ export default class SectionUsers extends React.Component {
         apiAdmin.task
             .getItems()
             .then(tasks => {
-                this.setState({ 
+                this.setState({
+                    isLoading: false,
                     tasks
                 });
             });
@@ -85,6 +88,7 @@ export default class SectionUsers extends React.Component {
                             }} label="Export" />
                         </div>
                     </div>
+
                     <div className="col-xs-12">
                         <table className="table">
                             <thead class="thead-dark">
@@ -182,6 +186,16 @@ export default class SectionUsers extends React.Component {
                             )}
                             </tbody>
                         </table>
+
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && !this.state.tasks.length &&
+                            <p className="text-center">
+                                No Listings
+                            </p>
+                        }
                     </div>
 
                     <div>

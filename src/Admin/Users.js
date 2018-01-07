@@ -5,6 +5,7 @@ import Moment from 'react-moment';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import Loader from "../Components/Loader";
 import * as apiAdmin from '../api/admin';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
@@ -36,6 +37,7 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             showProperty: false,
             showDetails: false,
             selectedUserId: null,
@@ -43,15 +45,18 @@ export default class SectionUsers extends React.Component {
             users: []
         };
     }
+
     componentDidMount() {
         apiAdmin.users
         .getItems()
         .then(users => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 users
             });
         });
     }
+
     render() {
             return (
                 <div className="row">
@@ -216,6 +221,10 @@ export default class SectionUsers extends React.Component {
                             </tbody>
                         </table>
                     </div>
+                   
+                    { this.state.isLoading &&
+                        <Loader isLoading={true} />
+                    }
 
                     <div>
                         <Dialog

@@ -2,11 +2,12 @@ import React from 'react';
 import DOMPurify from 'dompurify';
 import EditableEntity from '../../Components/EditableEntity';
 import { appConfig } from '../../api/config';
-
+import Loader from "../../Components/Loader";
 export default class ConfigEdit extends React.Component {
     constructor() {
         super();
         this.state = { 
+            isLoading: true,
             meta: {} 
         };
     }
@@ -16,6 +17,7 @@ export default class ConfigEdit extends React.Component {
             .getItems()
             .then(meta => {
                 return this.setState({
+                    isLoading: false,
                     meta
                 });
             });
@@ -24,6 +26,10 @@ export default class ConfigEdit extends React.Component {
     render() {
         return (
             <div className="row">
+                    { this.state.isLoading &&
+                        <Loader isLoading={true} />
+                    }
+
                     {this.props.header && <h1>{this.props.header}</h1> }
                     {this.props.desc &&
                         <p className="text-muted">

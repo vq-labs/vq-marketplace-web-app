@@ -409,3 +409,10 @@ form.vq-payment-form {
 .StripeElement.PaymentRequestButton {
   padding: 0;
 }
+
+/**
+  CSS overwrites to react-image-gallery
+*/
+.listing-gallery-section .image-gallery-image {
+  height: 441.6px !important;
+}

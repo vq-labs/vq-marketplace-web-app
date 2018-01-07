@@ -2,6 +2,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
+import Loader from "../Components/Loader";
 import * as apiAdmin from '../api/admin';
 import { translate } from '../core/i18n';
 
@@ -9,6 +10,7 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             selectedUserId: null,
             isBlockingUser: false,
             orders: []
@@ -19,7 +21,8 @@ export default class SectionUsers extends React.Component {
         .order
         .getItems()
         .then(orders => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 orders
             });
         });
@@ -64,6 +67,16 @@ export default class SectionUsers extends React.Component {
                             )}
                             </tbody>
                         </table>
+
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && !this.state.orders.length &&
+                            <p className="text-center">
+                                No Orders
+                            </p>
+                        }
                     </div>
 
                     <div>

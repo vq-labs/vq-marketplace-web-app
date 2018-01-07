@@ -10,6 +10,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isSubmitting: false,
       authMode: 'login'
     };
 
@@ -17,7 +18,11 @@ export default class Login extends Component {
   }
   handleLogin(event) {
       event.preventDefault()
-       
+      
+      this.setState({
+        isSubmitting: true
+      });
+
       const data = {
         email: this.refs.email.getValue()
       };
@@ -46,6 +51,10 @@ export default class Login extends Component {
           }
         })
         .catch(err => {
+          this.setState({
+            isSubmitting: false
+          });
+
           if (err.code === 'USER_NOT_VERIFIED' || (err && err.err && err.err.code && err.err.code === 'USER_NOT_VERIFIED')) {
             if (this.props.onNotVerified) {
               coreAuth.setUserId(err.user.id);
@@ -96,7 +105,8 @@ export default class Login extends Component {
                   />
                 }  
                   <br />
-                  <RaisedButton 
+                  <RaisedButton
+                    disabled={this.state.isSubmitting}
                     type="submit" 
                     label={translate('SUBMIT')}
                     fullWidth={true} 

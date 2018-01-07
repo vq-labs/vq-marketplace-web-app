@@ -20,11 +20,11 @@ Object
         REQUEST_STATUS_LABEL[REQUEST_STATUS[STATUS_CODE]] = STATUS_CODE;
     });
 
-
 export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             statusFilter: undefined,
             requests: []
         };
@@ -34,7 +34,8 @@ export default class SectionUsers extends React.Component {
         apiAdmin.request
         .getItems()
         .then(requests => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 requests
             });
         });
@@ -93,10 +94,8 @@ export default class SectionUsers extends React.Component {
                         </div>
                     </div>
 
-                
-
                     <div className="col-xs-12">
-                    <table className="table">
+                        <table className="table">
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
@@ -193,6 +192,16 @@ export default class SectionUsers extends React.Component {
                             )}
                             </tbody>
                         </table>
+
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && !this.state.requests.length &&
+                            <p className="text-center">
+                                No Requests
+                            </p>
+                        }
                     </div>
 
                     <div>

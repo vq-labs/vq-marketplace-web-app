@@ -1,9 +1,6 @@
 import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
 
-
-
-
 const browsingFields = [
     {
         type: 'bool',
@@ -11,7 +8,6 @@ const browsingFields = [
         label: 'List'
     },
     {
-        disabled: true,
         type: 'bool',
         key: 'LISTINGS_VIEW_GRID',
         label: 'Grid'
@@ -23,6 +19,7 @@ const browsingFields = [
     },
     {
         selection: [
+            { value: '1', label: 'Grid' },
             { value: '2', label: 'List' },
             { value: '3', label: 'Map' }
         ],
@@ -88,6 +85,11 @@ const newListingFields = [
         type: 'bool',
         key: 'LISTING_EDIT_ENABLED',
         label: 'Enable editing of listings after they have been published.'
+    },
+    {
+        type: 'bool',
+        key: 'MULTIPLE_REQUESTS_ENABLED',
+        label: 'User can send multiple requests for the same listing.'
     },
     {
         type: 'bool',

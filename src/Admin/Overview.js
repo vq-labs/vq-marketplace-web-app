@@ -1,11 +1,12 @@
 import React from 'react';
+import Loader from "../Components/Loader";
 import * as apiAdmin from '../api/admin';
-
 export default class SectionOverview extends React.Component {
     constructor() {
         super();
         
         this.state = {
+            isLoading: true,
             reports: []
         };
     }
@@ -15,6 +16,7 @@ export default class SectionOverview extends React.Component {
         .report
         .overview()
         .then(reports => this.setState({
+            isLoading: false,
             reports
         }));
     }
@@ -32,7 +34,11 @@ export default class SectionOverview extends React.Component {
                             Reports are refreshed every few hours.
                         </p>
 
-                        { this.state.reports.map(overviewItem => 
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && this.state.reports.map(overviewItem => 
                             <div className="col-xs-6 col-sm-4 col-md-3 col-lg-2" style={{ padding: 3 }}>
                                 <div style={{ padding: 3 }} className="col-xs-12 panel">
                                     <h2>{overviewItem.reportValue}</h2>

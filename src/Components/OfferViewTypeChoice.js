@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import VIEW_TYPES from '../Components/VIEW_TYPES';
+import VIEW_TYPES from '../constants/VIEW_TYPES';
 import ViewTypeChoice from '../Components/ViewTypeChoice';
 import { getConfigAsync } from '../core/config';
 

@@ -87,6 +87,7 @@
     "react-ga": "^2.4.0",
     "react-google-autocomplete": "^1.0.11",
     "react-google-maps": "^8.5.0",
+    "react-image-gallery": "^0.8.6",
     "react-infinite-calendar": "^2.3.1",
     "react-input-range": "^1.2.1",
     "react-moment": "^0.1.2",

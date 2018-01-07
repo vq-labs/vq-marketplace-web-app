@@ -61,9 +61,9 @@ export default class TaskCard extends Component {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
                 { task.images.length &&
-                <CardMedia onClick={() => this.handleGoToTask(task.id) }>
-                  <img src={task.images[0].imageUrl} alt="Listing image" />
-                </CardMedia>
+                  <CardMedia style={{ minHeight: 130, maxHeight: 130, overflow: "hidden" }} onClick={() => this.handleGoToTask(task.id) }>
+                    <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
+                  </CardMedia>
                 }
                 <CardText 
                   onClick={() => this.handleGoToTask(task.id)}
@@ -93,6 +93,7 @@ export default class TaskCard extends Component {
                     { this.formatDesc(this.state.task.description) }
                   </CardText>
                 }
+
                 { this.props.displayPrice && 
                   <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
                       height: '53px',

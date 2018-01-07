@@ -292,9 +292,9 @@ class Task extends Component {
                                                 (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
                                                 this.state.user.userType === 0
                                             ) &&
+                                            !this.state.isMyTask &&
                                             (
-                                                (!this.state.isMyTask && !this.state.sentRequestId) ||
-                                                CONFIG.MULTIPLE_REQUESTS_ENABLED === "1"
+                                                !this.state.sentRequestId || CONFIG.MULTIPLE_REQUESTS_ENABLED === "1"
                                             ) &&
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton

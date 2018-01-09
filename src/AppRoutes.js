@@ -22,6 +22,7 @@ import PremiumPage from './Pages/PremiumPage';
 import AdminPage from './Admin/Admin';
 import AdminUserPage from './Admin/User';
 import PostEdit from './Admin/PostEdit';
+import NewPost from './Admin/NewPost';
 import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
@@ -62,11 +63,12 @@ const AppRoutes = (
             <Route path="order/:orderId/review" component={Review}></Route>
             <Route path="signup" component={SignupPage}></Route>
             <Route path="login" component={LoginPage}></Route>
-            <Route path="post/:postId" component={Post}></Route>
             <Route path="terms" component={PostTermsOfService}></Route>
             <Route path="privacy" component={PostPrivacyPolicy}></Route>
             <Route path="imprint" component={Imprint}></Route>
             <Route path="email-not-verified" component={EmailNotVerified}></Route>
+            <Route path="post/:postId" component={Post}></Route>
+            <Route path="post" component={NewPost}></Route>
             <Route path="post/:postId/edit" component={PostEdit}></Route>
             <Route path="task/:taskId" component={Task}></Route>
             <Route path="task/:taskId/edit" component={TaskEdit}></Route>

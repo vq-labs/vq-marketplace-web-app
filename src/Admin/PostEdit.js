@@ -4,6 +4,10 @@ import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import HtmlTextField from '../Components/HtmlTextField';
 import WYSIWYGEditor from './Components/WYSIWYGEditor';
+const CodeMirror = require('react-codemirror');
+
+require('codemirror/lib/codemirror.css');
+require('codemirror/mode/javascript/javascript');
 import apiPost from '../api/post';
 
 export default class SectionPostEdit extends React.Component {
@@ -98,11 +102,36 @@ export default class SectionPostEdit extends React.Component {
                 
                     <div className="row" style={{ marginTop: 30 }}>
                         <div className="col-xs-12 col-md-8 col-md-offset-2">
-                            <WYSIWYGEditor
-                                value={this.state.post.body} 
+                          {
+                            this.state.post.type === 'page' && (
+                              <CodeMirror
+                value={this.state.post.body}
+                onChange={newCode => {
+                  if (newCode !== this.state.post.body) {
+                    const post = this.state.post;
+
+                    post.body = newCode;
+
+                    this.setState({
+                      post,
+                      dirty: true
+                    });
+                  }
+                }}
+                options={{
+                  lineNumbers: true,
+                  mode: 'javascript'
+                }}
+              />
+                            )
+                          }
+                          {
+                            this.state.post.type !== 'page' && (
+                              <WYSIWYGEditor
+                                value={this.state.post.body}
                                 onChange={(ev, body) => {
                                     const post = this.state.post;
-                                    
+
                                     if (post.body === body) {
                                         return;
                                     }
@@ -119,6 +148,8 @@ export default class SectionPostEdit extends React.Component {
                                     });
                                 }}
                             />
+                            )
+                          }
                         </div>
                     </div>
                     { false &&

@@ -1,4 +1,30 @@
-process.env.NODE_ENV = 'development';
+const fs = require('fs');
+const args = require('yargs').argv;
+
+const generateConfig = () => {
+  if (!args.config) {
+    console.log("ERROR: Please provide a config file as an argument!")
+  }
+
+  if (!args.env) {
+    console.log("ERROR: Please provide an environment as an argument!")
+  }
+
+  if(!fs.existsSync(__dirname + args.config)) {
+    console.log("Config file was not found at ", __dirname + args.config);
+    return null;
+  } else {
+   return fs.readFileSync(__dirname + args.config, "utf8");
+  }
+}
+
+if (!generateConfig()) {
+  return;
+}
+
+const config = JSON.parse(generateConfig());
+
+process.env.NODE_ENV = args.env;
 
 // Load environment variables from .env file. Suppress warnings using silent
 // if this file is missing. dotenv will never modify any environment variables
@@ -26,7 +52,7 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
 }
 
 // Tools like Cloud9 rely on this.
-var DEFAULT_PORT = process.env.PORT || 3000;
+var DEFAULT_PORT = args.port || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["PORT"];
 var compiler;
 var handleCompile;
 
@@ -241,8 +267,8 @@ function runDevServer(host, port, protocol) {
 }
 
 function run(port) {
-  var protocol = process.env.HTTPS === 'true' ? "https" : "http";
-  var host = process.env.HOST || 'localhost';
+  var protocol = args.protocol || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["PROTOCOL"];
+  var host = args.host || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["HOST"];
   setupCompiler(host, port, protocol);
   runDevServer(host, port, protocol);
 }

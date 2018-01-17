@@ -1,5 +1,31 @@
+const fs = require('fs');
+const args = require('yargs').argv;
+
+const generateConfig = () => {
+  if (!args.config) {
+    console.log("ERROR: Please provide a config file as an argument!")
+  }
+
+  if (!args.env) {
+    console.log("ERROR: Please provide an environment as an argument!")
+  }
+
+  if(!fs.existsSync(__dirname + args.config)) {
+    console.log("Config file was not found at ", __dirname + args.config);
+    return null;
+  } else {
+   return fs.readFileSync(__dirname + args.config, "utf8");
+  }
+}
+
+if (!generateConfig()) {
+  return;
+}
+
+const config = JSON.parse(generateConfig());
+
 // Do this as the first thing so that any code reading it knows the right env.
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = args.env;
 
 // Load environment variables from .env file. Suppress warnings using silent
 // if this file is missing. dotenv will never modify any environment variables

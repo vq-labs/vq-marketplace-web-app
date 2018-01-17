@@ -1,37 +1,7 @@
-const fs = require('fs');
-const args = require('yargs').argv;
-
-const generateConfig = () => {
-  if (!args.config) {
-    console.log("ERROR: Please provide a config file as an argument!")
-  }
-
-  if (!args.env) {
-    console.log("ERROR: Please provide an environment as an argument!")
-  }
-
-  if(!fs.existsSync(__dirname + args.config)) {
-    console.log("Config file was not found at ", __dirname + args.config);
-    return null;
-  } else {
-   return fs.readFileSync(__dirname + args.config, "utf8");
-  }
-}
-
-if (!generateConfig()) {
-  return;
-}
-
-const config = JSON.parse(generateConfig());
-
-process.env.NODE_ENV = args.env;
-
-// Load environment variables from .env file. Suppress warnings using silent
-// if this file is missing. dotenv will never modify any environment variables
-// that have already been set.
-// https://github.com/motdotla/dotenv
-require('dotenv').config({silent: true});
-
+var fs = require('fs');
+var args = require('yargs').argv;
+var path = require('path');
+var appRoot = require('app-root-path').path;
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -43,8 +13,37 @@ var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 var formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 var openBrowser = require('react-dev-utils/openBrowser');
 var prompt = require('react-dev-utils/prompt');
-var config = require('../config/webpack.config.dev');
+var webpackConfig = require('../config/webpack.config.dev');
 var paths = require('../config/paths');
+
+const generateConfig = () => {
+  if (!args.config) {
+    console.log("ERROR: Please provide a config file as an argument!")
+  }
+
+  if (!args.env) {
+    console.log("ERROR: Please provide an environment as an argument!")
+  }
+
+  if(!fs.existsSync(path.join(appRoot, args.config))) {
+    console.log("Config file was not found at ", path.join(appRoot, args.config));
+    return null;
+  } else {
+   return fs.readFileSync(path.join(appRoot, args.config), "utf8");
+  }
+}
+
+if (!generateConfig()) {
+  return;
+}
+
+process.env.NODE_ENV = args.env;
+
+// Load environment variables from .env file. Suppress warnings using silent
+// if this file is missing. dotenv will never modify any environment variables
+// that have already been set.
+// https://github.com/motdotla/dotenv
+require('dotenv').config({silent: true});
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
@@ -72,7 +71,7 @@ if (isSmokeTest) {
 function setupCompiler(host, port, protocol) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
-  compiler = webpack(config, handleCompile);
+  compiler = webpack(webpackConfig, handleCompile);
 
   // "invalid" event fires when you have changed a file, and Webpack is
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
@@ -236,7 +235,7 @@ function runDevServer(host, port, protocol) {
     hot: true,
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
-    publicPath: config.output.publicPath,
+    publicPath: webpackConfig.output.publicPath,
     // WebpackDevServer is noisy by default so we emit custom message instead
     // by listening to the compiler events with `compiler.plugin` calls above.
     quiet: true,

@@ -3,6 +3,8 @@ const replace = require('gulp-replace-task');
 const spawn = require('child_process').spawn;
 const branch = require('git-branch');
 const fs = require('fs');
+const path = require('path');
+const appRoot = require('app-root-path').path;
 const args = require('yargs').argv;
 
 const generateConfig = () => {
@@ -14,11 +16,11 @@ const generateConfig = () => {
     console.log("ERROR: Please provide an environment as an argument!")
   }
 
-  if(!fs.existsSync(__dirname + args.config)) {
-    console.log("Config file was not found at ", __dirname + args.config);
+  if(!fs.existsSync(path.join(appRoot, args.config))) {
+    console.log("Config file was not found at ", path.join(appRoot, args.config));
     return null;
   } else {
-   return fs.readFileSync(__dirname + args.config, "utf8");
+   return fs.readFileSync(path.join(appRoot, args.config), "utf8");
   }
 }
 

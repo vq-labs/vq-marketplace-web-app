@@ -37,6 +37,8 @@ if (!generateConfig()) {
   return;
 }
 
+var config = JSON.parse(generateConfig());
+
 process.env.NODE_ENV = args.env;
 
 // Load environment variables from .env file. Suppress warnings using silent

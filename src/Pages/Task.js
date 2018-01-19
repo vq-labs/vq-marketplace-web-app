@@ -267,7 +267,11 @@ class Task extends Component {
                                         <CardText>
                                             { CONFIG.LISTING_PRICING_MODE === "1" &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
-                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                                                    {displayPrice(
+                                                        this.state.task.price,
+                                                        this.state.task.currency,
+                                                        this.state.task.priceType
+                                                    )}
                                                 </h2>
                                             }
 

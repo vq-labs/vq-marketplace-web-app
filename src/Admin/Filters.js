@@ -9,7 +9,25 @@ const geofilterFields = [
         label: 'Enable geolocation of listings?'
     },
     {
-        selection: [ "AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB" ].map(_ => {
+        selection: [
+            "AT",
+            "BE",
+            "BG",
+            "CA",
+            "CY",
+            "CZ",
+            "DK",
+            "EE",
+            "FI",
+            "FR",
+            "DE",
+            "GR",
+            "HU", "IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI",
+            "ES",
+            "SE",
+            "GB",
+            "US"
+        ].map(_ => {
             _ = _.toLowerCase();
 
             return { value: _, label: _ };

@@ -68,13 +68,13 @@ export const displayPrice = (amount, currencyCode, pricingModel) => {
 
     // per hour
     if (pricingModel === 1) {
-        return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
+        return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}/h`;
     }
 
     // per unit
     if (pricingModel === 3) {
-        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+        return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
     }
 
-    return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+    return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
 };

@@ -39,7 +39,7 @@ export default class NewListingAddress extends Component {
                     <div className="row">
                         <div className="col-xs-12">
                             <Address
-                                deriveOnly={true}
+                                deriveOnly={CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION === "hu"}
                                 countryRestriction={CONFIG.LISTING_GEOFILTER_COUNTRY_RESTRICTION}
                                 location={this.state.location}
                                 onLocationChange={this.props.onLocationChange}

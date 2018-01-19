@@ -394,7 +394,6 @@ export default class NewListing extends Component {
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
                                     onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
                                     onLocationChange={_ => {
-                                        
                                         return this.handleListingFieldChange('location', _);
                                     }}
                                 />
@@ -403,7 +402,6 @@ export default class NewListing extends Component {
                             { this.state.step === LISTING_VIEWS.LOCATION &&
                                 <NewListingLocation
                                     listingType={this.state.task.taskType}
-                                    countryRestriction={CONFIG.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
                                         if (verifyPostalCode(String(_.postalCode)) === -1) {

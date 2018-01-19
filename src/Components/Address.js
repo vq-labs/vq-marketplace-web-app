@@ -3,8 +3,7 @@ import TextField from 'material-ui/TextField';
 import Autocomplete from 'react-google-autocomplete';
 import { translate } from '../core/i18n';
 import { formatGeoResults } from '../core/util';
-import { getConfigAsync } from '../core/config';
-
+import { CONFIG } from '../core/config';
 export default class Address extends Component {
     constructor(props) {
         super();
@@ -34,12 +33,7 @@ export default class Address extends Component {
         };
     }
 
-    componentDidMount() {
-        getConfigAsync(config => this.setState({
-            config,
-            ready: true
-        }));
-    }
+    componentDidMount() {}
 
     componentWillReceiveProps(nextProps) {
         const newState = {};
@@ -108,7 +102,6 @@ export default class Address extends Component {
     
     render() {
      return <div className="row">
-                { this.state.ready &&
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-12">
@@ -239,7 +232,6 @@ export default class Address extends Component {
                         </div>
                     </div>
                 </div>
-                }
             </div>
     }
 }

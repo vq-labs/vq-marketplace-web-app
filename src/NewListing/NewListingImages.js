@@ -12,7 +12,9 @@ export default class NewListingImages extends Component {
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+
+    }
 
     componentWillReceiveProps(nextProps) {
         this.setState({

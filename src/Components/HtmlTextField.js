@@ -16,7 +16,7 @@ export default class HtmlTextField extends Component {
 
     this.onChange = changedEditorState => {
         let html = stateToHTML(changedEditorState.getCurrentContent());
-        
+        const rawText = changedEditorState.getCurrentContent().getPlainText().replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
         /*
             html = striptags(html, [
                 'p',
@@ -24,7 +24,7 @@ export default class HtmlTextField extends Component {
             ]);
         */
 
-        this.props.onChange(null, html);
+        this.props.onChange(null, html, rawText);
 
         this.setState({ 
             editorState: changedEditorState 

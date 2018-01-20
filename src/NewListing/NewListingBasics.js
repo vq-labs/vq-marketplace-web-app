@@ -75,7 +75,7 @@ export default class NewListingBasics extends Component {
                                         {translate("LISTING_DESCRIPTION") + this.getRequiredStar(this.state.description.mode)}
                                     </h4>
                                     <HtmlTextField 
-                                        onChange={(ev, descriptionValue) => {
+                                        onChange={(ev, descriptionValue, rawText) => {
                                             const description = this.state.description;
 
                                             description.value = descriptionValue;
@@ -84,7 +84,7 @@ export default class NewListingBasics extends Component {
                                                 description
                                             });
 
-                                            this.props.onDescriptionChange(descriptionValue);
+                                            this.props.onDescriptionChange(descriptionValue, rawText);
                                         }}
                                         value={this.state.description.value} 
                                     />

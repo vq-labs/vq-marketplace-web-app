@@ -29,6 +29,9 @@ export const translate = fieldKey => {
         return '';
     }
 
+    TRANSLATIONS[LANG]["RANGE"] = "Range";
+
+
     if (typeof TRANSLATIONS[LANG][fieldKey.toUpperCase()] === 'undefined') {
         return fieldKey;
     }

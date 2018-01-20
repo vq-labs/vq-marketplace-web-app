@@ -78,3 +78,8 @@ export const displayPrice = (amount, currencyCode, pricingModel) => {
 
     return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
 };
+
+export const displayUnit = (amount, unit) => {
+    amount = amount || '';
+      return `${amount} ${unit}`;
+};

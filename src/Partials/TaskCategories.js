@@ -62,7 +62,7 @@ export default class TaskCategories extends Component {
         return (
              <div style={styles.wrapper}>
                     {   this.state.categoryLabels &&
-                        this.props.categories &&
+                        this.props.categories.length > 0 &&
                         this.props.categories.map(
                         (category, i) => this.getChip(category)
                     )}

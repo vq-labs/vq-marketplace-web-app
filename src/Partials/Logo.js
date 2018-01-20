@@ -26,7 +26,6 @@ class Logo extends Component {
                   }, true);
                 }
               }
-              target="_self" 
               style={{ textDecoration: 'none' }}
             >
               { this.props.logo &&

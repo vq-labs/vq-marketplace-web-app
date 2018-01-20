@@ -50,8 +50,8 @@ class Task extends Component {
                 images: [],
                 categories: [],
                 location: {},
-                requests: []  
-            }  
+                requests: []
+            }
         };
     }
     handleTouchTap = (event) => {
@@ -150,7 +150,7 @@ class Task extends Component {
                                     _ => _.fromUserId === user.id
                                 );
                         }
-                        
+
                         this.setState({
                             taskOwner: task.user,
                             sentRequestId: sentRequest ? sentRequest.id : null,
@@ -190,6 +190,7 @@ class Task extends Component {
               }
               { !this.state.isLoading &&
                     <div className="container-fluid" >
+
                         { this.state.task && this.state.task.status === '103' &&
                             <div className="row">
                                 <div className="text-center" style={{ 'marginTop': '40px' }}>
@@ -206,13 +207,13 @@ class Task extends Component {
                             </div>
                         }
 
-                        { CONFIG.LISTING_IMAGES_MODE === "1" && this.state.task.images.length &&
+                        { CONFIG.LISTING_IMAGES_MODE === "1" && this.state.task.images.length > 0 &&
                             <div className="row listing-gallery-section">
                                 <ImageGallery
                                     style={{ height: 50, maxHeight: "100%" }}
                                     showPlayButton={false}
                                     useBrowserFullscreen={false}
-                                    showFullscreenButton={false}
+                                    showFullscreenButton={true}
                                     items={this.state.task.images.map(_ => ({ original: _.imageUrl, thumbnail: _.imageUrl }))}
                                 />
                             </div>
@@ -267,7 +268,7 @@ class Task extends Component {
                                         <CardText>
                                             { CONFIG.LISTING_PRICING_MODE === "1" &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
-                                                    {displayPrice(
+                                                    {this.state.task.price && displayPrice(
                                                         this.state.task.price,
                                                         this.state.task.currency,
                                                         this.state.task.priceType
@@ -377,7 +378,7 @@ class Task extends Component {
                                             </div>
                                        }
 
-                                       { CONFIG.LISTING_DESC_MODE === "1" &&
+                                       { CONFIG.LISTING_DESC_MODE === "1" && this.state.task.description.length > 0  &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
@@ -389,7 +390,7 @@ class Task extends Component {
                                             </div>
                                         </div>
                                        }
-                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location &&
+                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && Object.keys(this.state.task.location).length > 0 &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
                                             <p className="text-muted">

@@ -360,7 +360,7 @@ export default class ChatRoom extends React.Component {
                             </div>
 
                             <div className="col-xs-12 col-sm-4">
-                                    <Paper zDepth={1} style={{ padding: '10px' }}>
+                                    <Paper zDepth={1} style={{ marginTop: '20px', padding: '10px' }}>
                                         <div className="row">
                                             <div className="col-xs-12" style={ { marginBottom: '20px'} }>
                                                 <h4>{translate("IN_THIS_CHAT")}</h4>

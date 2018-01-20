@@ -18,7 +18,7 @@ export default class RequestDialog extends React.Component {
         super(props);
 
         this.state = {
-            isBeingPosted: false,
+            isBeingPosted: true,
             mask: 'init', 
             logged: Boolean(coreAuth.getToken()),
             open: false,

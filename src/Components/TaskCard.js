@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Card, CardText, CardMedia } from 'material-ui/Card';
+import { Card, CardText, CardMedia, CardHeader } from 'material-ui/Card';
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
 import { stripHtml } from '../core/util';
@@ -60,12 +62,19 @@ export default class TaskCard extends Component {
   getTaskListItem(task) {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
-                { task.images.length &&
+                    { task.images.length > 0 &&
                   <CardMedia style={{ minHeight: 130, maxHeight: 130, overflow: "hidden" }} onClick={() => this.handleGoToTask(task.id) }>
-                    <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
+                      <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
                   </CardMedia>
-                }
-                <CardText 
+                    }
+                       {
+                      task.images.length === 0 &&
+                         <div style={{ minHeight: 130, maxHeight: 130, backgroundColor: '#9D9D9D' }} onClick={() => this.handleGoToTask(task.id) }>
+
+                          <PhotoIcon color="#fff" viewBox='0 65 50 50'/>
+                         </div>
+                    }
+                <CardText
                   onClick={() => this.handleGoToTask(task.id)}
                   style={{
                     height: '93px',
@@ -109,7 +118,7 @@ export default class TaskCard extends Component {
 
                 { this.props.displayManagement &&
                   <CardText style={{'marginBottom': '20px'}}>
-                    <div class="row">
+                    <div className="row">
                       <div className="col-xs-10 col-sm-11 col-md-9 col-lg-10 text-muted">
                         <p style={{ marginTop: '16px', marginLeft: '-17px' }}>
                           { task.status !== 0 &&

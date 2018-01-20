@@ -6,7 +6,7 @@ import Loader from "../Components/Loader";
 import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
 import VIEW_TYPES from '../constants/VIEW_TYPES';
-import { displayPrice }  from '../core/format';
+import { displayPrice, displayUnit }  from '../core/format';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
 import TaskMap from "../Components/TaskMap";
@@ -32,8 +32,8 @@ class Offers extends Component {
 
         let locationQueryString;
 
-        if ((query.q && query.q !== 'null') || (query.lat && query.lng)) {
-            locationQueryString = (query.q || `${query.lat} ${query.lng}`);
+        if ((query.q && query.q !== 'null') || (query.lat && query.lng && query.rad)) {
+            locationQueryString = (query.q || `${query.lat} ${query.lng} ${query.rad}`);
         }
         
         this.state = {
@@ -48,7 +48,8 @@ class Offers extends Component {
                 q: locationQueryString,
                 category: query.category,
                 lat: query.lat,
-                lng: query.lng
+                lng: query.lng,
+                rad: query.rad || Number(CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE)
             },
             offer: {
                 utm: {}
@@ -117,6 +118,7 @@ class Offers extends Component {
             status: '0',
             lat: query.lat,
             lng: query.lng,
+            rad: query.rad || CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE,
             category: query.category
         })
         .then(offers => {
@@ -163,11 +165,16 @@ class Offers extends Component {
         
         appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
+
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
 
         if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
             appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
             appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+        }
+
+        if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1") {
+            appliedFilter.rad = typeof query.rad === 'undefined' ? CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE : query.rad;
         }
 
         appliedFilter.listingType = query.listingType || 2;
@@ -296,6 +303,48 @@ class Offers extends Component {
                 </div>
             </div>
             }
+            { CONFIG.LISTING_RANGE_FILTER_ENABLED === "1" &&
+            <div
+                className="col-xs-12"
+                style={{
+                    marginTop: 50
+                }}
+            >
+                <span className="vq-uppercase vq-bold">
+                    <strong>{translate('RANGE')}</strong>
+                </span>
+                <hr style={{
+                    marginTop: '5px'
+                }}/>
+                <div style={{ width: '100%' }}>
+                    <h4 style={{ fontSize: '14px' }}>{CONFIG.LISTING_RANGE_FILTER_MIN}-{this.state.appliedFilter.rad} {displayUnit(undefined, CONFIG.LISTING_RANGE_FILTER_DEFAULT_UNIT)}</h4>
+                        <InputRange
+                            formatLabel={value => displayUnit(value, CONFIG.LISTING_RANGE_FILTER_DEFAULT_UNIT)}
+                            maxValue={Number(CONFIG.LISTING_RANGE_FILTER_MAX)}
+                            minValue={Number(CONFIG.LISTING_RANGE_FILTER_MIN)}
+                            step={Number(CONFIG.LISTING_RANGE_FILTER_STEP)}
+                            value={this.state.appliedFilter.rad}
+                            onChange={value => {
+                                const appliedFilter = this.state.appliedFilter;
+
+                                appliedFilter.rad = value;
+
+                                if (!updatingResults) {
+                                    updatingResults = setTimeout(() => {
+                                        updatingResults = null;
+
+                                        this.updateResults(appliedFilter);
+                                    }, 1000);
+                                }
+
+                                return this.setState({
+                                    appliedFilter
+                                });
+                            }}
+                        />
+                </div>
+            </div>
+            }
         </div>;
 
         return (
@@ -342,6 +391,7 @@ class Offers extends Component {
 
                                             appliedFilter.lat = null;
                                             appliedFilter.lng = null;
+                                            appliedFilter.rad = null;
                                             appliedFilter.q = null;
 
                                             newState.appliedFilter = appliedFilter;
@@ -373,6 +423,7 @@ class Offers extends Component {
                                         
                                         appliedFilter.lat = locationValue.lat;
                                         appliedFilter.lng = locationValue.lng;
+                                        appliedFilter.rad = locationValue.rad;
                                         appliedFilter.q = locationQueryString;
 
                                         this.setState({
@@ -383,7 +434,8 @@ class Offers extends Component {
                                         this.updateResults({
                                             q: locationQueryString,
                                             lat: appliedFilter.lat,
-                                            lng: appliedFilter.lng
+                                            lng: appliedFilter.lng,
+                                            rad: appliedFilter.rad
                                         });
                                     }}
                                     types={[
@@ -402,6 +454,7 @@ class Offers extends Component {
 
                                             delete appliedFilter.lat;
                                             delete appliedFilter.lng;
+                                            delete appliedFilter.rad;
                                             delete appliedFilter.q;
 
                                             this.setState({
@@ -421,7 +474,7 @@ class Offers extends Component {
                     </div>
                 </div>
 
-                <div className="container custom-xs-style" style={{ marginTop: 10 }}>
+                <div className="container custom-xs-style" style={{ marginTop: '10px' }}>
                     <div className="col-sm-4 col-md-3 col-lg-2">
                         <div className="row">
                             {SidebarContent}
@@ -430,7 +483,7 @@ class Offers extends Component {
                     <div className="col-lg-2 visible-lg">
                     </div>
                     <div className="col-sm-8 col-md-9 col-lg-8 custom-xs-style" >
-                        <div className="col-xs-12" style={{ marginBottom: 5 }}>
+                        <div className="col-xs-12" style={{ marginBottom: '20px' }}>
                             {Boolean(this.state.appliedFilter.viewType) &&
                                 <OfferViewTypeChoice
                                     className="pull-right"
@@ -506,7 +559,7 @@ class Offers extends Component {
                                                         .map(offer =>
                                                             <div 
                                                                 className="col-xs-12 col-sm-6"
-                                                                style={{ marginBottom: 10} }
+                                                                style={{ marginBottom: 20} }
                                                             >
                                                                 <TaskCard
                                                                     key={offer.id}

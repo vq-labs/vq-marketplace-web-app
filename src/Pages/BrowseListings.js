@@ -191,7 +191,7 @@ class Offers extends Component {
     render() {
         const SidebarContent =
         <div className="row hidden-xs">
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                 <div className="col-xs-12"> 
                     <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 1 ?
@@ -206,7 +206,7 @@ class Offers extends Component {
                 </div>
             }
 
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                 <div className="col-xs-12"> 
                     <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 2 ?
@@ -241,8 +241,9 @@ class Offers extends Component {
             .map((category, index) =>
                 <div key={index}>
                     <span style={{
-                        fontWeight: this.state.appliedFilter.category === category.code ? 'bold' : 'normal'
-                    }} className="vq-uppercase with-pointer" onClick={
+                        fontWeight: this.state.appliedFilter.category === category.code ? 'bold' : 'normal',
+                        marginLeft: '15px'
+                    }} className="with-pointer" onClick={
                     () => {
                         this.updateResults({
                             listingType: this.state.appliedFilter.listingType,

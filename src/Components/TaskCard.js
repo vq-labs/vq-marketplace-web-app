@@ -69,9 +69,9 @@ export default class TaskCard extends Component {
                     }
                        {
                       task.images.length === 0 &&
-                         <div style={{ minHeight: 130, maxHeight: 130, backgroundColor: '#9D9D9D' }} onClick={() => this.handleGoToTask(task.id) }>
+                         <div style={{ minHeight: 130, maxHeight: 130, backgroundColor: '#9D9D9D', textAlign: 'center', lineHeight: '12' }} onClick={() => this.handleGoToTask(task.id) }>
 
-                          <PhotoIcon color="#fff" viewBox='0 65 50 50'/>
+                          <PhotoIcon color="#fff" viewBox="0 0 25 25" style={{width: '50px', height: '50px'}}/>
                          </div>
                     }
                 <CardText

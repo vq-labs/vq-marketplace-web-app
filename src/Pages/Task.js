@@ -266,7 +266,7 @@ class Task extends Component {
                                 <div className="col-xs-12 col-sm-4">
                                     <Card style={{ 'marginTop': 50 }}>
                                         <CardText>
-                                            { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                            { CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.price &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
                                                     {this.state.task.price && displayPrice(
                                                         this.state.task.price,
@@ -276,13 +276,13 @@ class Task extends Component {
                                                 </h2>
                                             }
 
-                                            { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                            { CONFIG.LISTING_QUANTITY_MODE === "1" && (this.state.task.quantity || this.state.task.unitOfMeasure) &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
                                                     {this.state.task.quantity} {this.state.task.unitOfMeasure}
                                                 </h2>
                                             }
                                         </CardText>
-                                        { !this.state.user &&
+                                        { !this.state.user && this.state.configReady &&
                                             <RaisedButton
                                                 backgroundColor={CONFIG.COLOR_PRIMARY}
                                                 labelColor={"white"}
@@ -290,9 +290,10 @@ class Task extends Component {
                                                 label={translate("REGISTER_TO_APPLY")} 
                                                 onClick={ () => goTo('/signup') }
                                             /> 
-                                       }>
+                                       }
                                         {   
                                             this.state.user &&
+                                            this.state.configReady &&
                                             (   this.state.user.userType === 2 ||
                                                 (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
                                                 this.state.user.userType === 0

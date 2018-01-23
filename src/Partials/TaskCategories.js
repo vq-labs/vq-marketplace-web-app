@@ -45,7 +45,7 @@ export default class TaskCategories extends Component {
     }
     getChip(category) {
         return (
-             <a key={category.label} style={styles.categoryStyle}>
+             <a key={category.id} style={styles.categoryStyle}>
                 <Chip 
                     style={styles.margin}
                     onClick={() => {

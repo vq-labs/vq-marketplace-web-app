@@ -36,7 +36,10 @@ class Review extends Component {
             user: null,
             order: null,
             config: null,
-            body: '',
+            body: {
+              value: '',
+              rawText: ''
+            },
             selectedRating: 0,
             isLoading: true
         };
@@ -154,10 +157,13 @@ class Review extends Component {
                         </div>
                         <div className="col-xs-12">
                             <HtmlTextField
-                                onChange={(ev, body) => {
-                                    this.setState({ body });
+                                onChange={(ev, value, rawText) => {
+                                    this.setState({ body: {
+                                      value,
+                                      rawText
+                                    } });
                                 }}
-                                value={this.state.body} 
+                                value={this.state.body.value}
                             />
                         </div>
                     </div>
@@ -168,7 +174,7 @@ class Review extends Component {
                                 style={{
                                     float: 'right'
                                 }}
-                                disabled={!stripHtml(this.state.body) || this.state.isProcessing || this.state.isProcessed}
+                                disabled={!this.state.body.rawText || this.state.isProcessing || this.state.isProcessed}
                                 labelStyle={{color: 'white '}}
                                 backgroundColor={this.state.config.COLOR_PRIMARY}
                                 label={translate("REVIEW_SUBMIT")}
@@ -180,20 +186,20 @@ class Review extends Component {
                                     const orderId = order ? order.id : null;
                                     const requestId = request ? request.id : null;
 
-                                    const body = purifyHtmlMessage(this.state.body);
-
-                                    const review = {
-                                        rate: String(this.state.selectedRating),
-                                        body
-                                    };
+                                    const body = this.state.body.rawText;
 
                                     if (!this.state.selectedRating) {
                                         return alert('Rate is required (min. 1 start)');
                                     }
 
-                                    if (!this.state.body) {
+                                    if (!this.state.body.rawText) {
                                         return alert('Review text is required');
                                     }
+
+                                    const review = {
+                                        rate: String(this.state.selectedRating),
+                                        body: this.state.body.value
+                                    };
 
                                     this.setState({
                                         isProcessing: true

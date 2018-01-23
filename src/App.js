@@ -155,7 +155,6 @@ class App extends Component {
             <ConfirmDialog />
             <RequestDialog />
             <MessageDialog />
-            <MessageSnackbar />
           </div>
         </MuiThemeProvider> 
       );

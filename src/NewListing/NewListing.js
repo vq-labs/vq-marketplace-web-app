@@ -5,6 +5,7 @@ import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import * as apiTaskLocation from '../api/task-location';
 import { translate } from '../core/i18n';
+import { trimSpaces } from '../core/format';
 import { goTo, convertToAppPath } from '../core/navigation';
 import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
@@ -76,11 +77,6 @@ const verifyPostalCode = postalCode => {
     }
 
     return true;
-};
-
-const trimSpaces = string => {
-  console.log(string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim());
-  return string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
 };
 
 export default class NewListing extends Component {
@@ -301,9 +297,10 @@ export default class NewListing extends Component {
         const task = this.state.task;
 
         if (!fieldRawText) {
-          task[fieldName] = fieldValue.replace(/\s+/g,' ').trim();
+          task[fieldName] = trimSpaces(fieldValue);
         } else {
-          task[fieldName].value = fieldValue.replace(/\s+/g,' ').trim();
+          task[fieldName] = {};
+          task[fieldName].value = trimSpaces(fieldValue);
           task[fieldName].rawText = fieldRawText;
         }
 
@@ -621,7 +618,7 @@ export default class NewListing extends Component {
                                                     });
                                                 }
 
-                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && (!this.state.task.description.rawText || (this.state.task.description.rawText && trimSpaces(this.state.task.description).length === 0))) {
+                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && (!this.state.task.description.rawText || (this.state.task.description.rawText && trimSpaces(this.state.task.description.rawText).length === 0))) {
                                                     return displayMessage({
                                                         label: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
@@ -703,6 +700,7 @@ export default class NewListing extends Component {
                                             delete task.location.countryRestriction;
                                             
                                             task.status = TASK_STATUS.ACTIVE;
+                                            task.description = task.description.value;
 
                                             createListing(task, err => {
                                                 if (err) {

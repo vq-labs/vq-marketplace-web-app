@@ -17,7 +17,7 @@ import { factory as errorFactory } from '../core/error-handler';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
-import { displayPrice } from '../core/format';
+import { displayPrice, trimSpaces } from '../core/format';
 import { displayMessage } from '../helpers/display-message.js';
 import '../App.css';
 
@@ -92,7 +92,10 @@ export default class TaskEdit extends Component {
                             updatedTask: {
                                 images: rTask.images,
                                 title: rTask.title,
-                                description: rTask.description,
+                                description: {
+                                  value: rTask.description,
+                                  rawText: trimSpaces(rTask.description)
+                                },
                                 price: rTask.price,
                                 priceType: rTask.priceType
                             }
@@ -104,11 +107,15 @@ export default class TaskEdit extends Component {
     }
 
   handleFieldChange (field, transform)  {
-        return (event, value) => {
+        return (event, value, rawText) => {
             const updatedTask = this.state.updatedTask;
-         
-            updatedTask[field] = transform ? transform(value) : value;
-            
+            if (!rawText) {
+              updatedTask[field] = transform ? transform(value) : value;
+            } else {
+              updatedTask[field].value = value;
+              updatedTask[field].rawText = rawText;
+            }
+
             this.setState({
                 updatedTask
             });
@@ -125,13 +132,7 @@ export default class TaskEdit extends Component {
         });
     }
 
-    updatedTask.description = updatedTask.description
-        .split('<p><br></p>')
-        .filter(_ => _ !== '<p><br></p>')
-        .join('')
-        .replace(/(\r\n|\n|\r)/gm, "");
-
-    if (updatedTask.description.length < 50) {
+    if (updatedTask.description.rawText.length < 50) {
         return displayMessage({
             label: translate('LISTING_DESCRIPTION_TOO_SHORT')
         });
@@ -140,6 +141,8 @@ export default class TaskEdit extends Component {
     // updatedTask.price *= 100;
 
     apiTaskImage.createItem(taskId, updatedTask.images);
+
+    updatedTask.description = updatedTask.description.value;
 
     apiTask
         .updateItem(taskId, updatedTask)
@@ -168,8 +171,8 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                     <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
                                         <HtmlTextField
-                                            onChange={this.handleFieldChange('description')}
-                                            value={this.state.updatedTask.description}
+                                             onChange={this.handleFieldChange('description')}
+                                            value={this.state.updatedTask.description.value}
                                         />
                                     <hr />
                                 </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Editor, EditorState } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
+import { trimSpaces } from "../core/format";
 
 // const striptags = require('striptags');
 
@@ -16,7 +17,7 @@ export default class HtmlTextField extends Component {
 
     this.onChange = changedEditorState => {
         let html = stateToHTML(changedEditorState.getCurrentContent());
-        const rawText = changedEditorState.getCurrentContent().getPlainText().replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
+        const rawText = trimSpaces(changedEditorState.getCurrentContent().getPlainText());
         /*
             html = striptags(html, [
                 'p',

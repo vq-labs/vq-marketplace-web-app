@@ -78,3 +78,7 @@ export const displayPrice = (amount, currencyCode, pricingModel) => {
 
     return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
 };
+
+export const trimSpaces = string => {
+  return string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
+};

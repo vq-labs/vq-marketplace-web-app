@@ -21,7 +21,7 @@ import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
 import { getCategoriesAsync } from '../core/categories.js';
-import { displayPrice, displayLocation } from '../core/format';
+import { displayPrice, displayLocation, trimSpaces } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
@@ -45,8 +45,8 @@ class Task extends Component {
             isLoading: true,
             isMyTask: false,
             taskOwner: {},
-            comments: [],
             task: {
+                comments: [],
                 images: [],
                 categories: [],
                 location: {},
@@ -120,6 +120,14 @@ class Task extends Component {
                     .then(task => {
                         const isMyTask = task.userId === user.id;
 
+                        task.comments.map(comment => {
+
+                          comment.comment = {
+                            value: comment.comment,
+                            rawText: trimSpaces(comment.comment)
+                          }
+                        })
+
                         if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                             if (user.userType === 1 && !isMyTask) {
                                 goTo('/');
@@ -167,13 +175,13 @@ class Task extends Component {
             <GoogleMap
                 ref={() => {}}
                 defaultZoom={12}
-                defaultCenter={{ lat: props.lat, lng: props.lng }}
+                defaultCenter={{ lat: parseFloat(props.lat), lng: parseFloat(props.lng) }}
                 onClick={() => {}}
             >
                 <Marker
                     position={{
-                        lat: props.lat,
-                        lng: props.lng
+                        lat: parseFloat(props.lat),
+                        lng: parseFloat(props.lng)
                     }}
                     key={`Task Location`}
                     defaultAnimation={2}
@@ -384,7 +392,7 @@ class Task extends Component {
                                                     <h3 className="text-left">{translate('LISTING_DESCRIPTION')}</h3>
                                                 </div>
                                                 <div>
-                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
+                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -392,9 +400,9 @@ class Task extends Component {
                                        { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
-                                            <p className="text-muted">
-                                                <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
-                                            </p>
+                                            <div style={{ display: 'block-inline' }}>
+                                                <p className="text-muted">{displayLocation(this.state.task.location)}</p>
+                                            </div>
 
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
@@ -426,15 +434,12 @@ class Task extends Component {
                                         </div>
                                         }
                                         
-                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task && this.state.task.comments &&
+                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task.comments &&
                                             <div className="row">
-                                                <div className="col-xs-12">
                                                     <TaskComments
-                                                        taskId={this.state.task.id}
+                                                        task={this.state.task}
                                                         canSubmit={this.state.task.status === TASK_STATUS.ACTIVE}
-                                                        comments={this.state.task.comments}
                                                     />
-                                                </div>
                                             </div>
                                         }
                                     </div>

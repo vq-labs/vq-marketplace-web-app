@@ -83,8 +83,6 @@ export const createListing = (task, cb) => async
             }, cb);
         },
         // make the task public
-        cb => apiTask.updateItem(task.id, {
-            status: 0
-        }).then(() => cb(), cb)
+        cb => apiTask.updateItem(task.id, {...task, status: 0}).then(() => cb(), cb)
     ], cb);
                              

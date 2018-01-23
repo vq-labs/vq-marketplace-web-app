@@ -81,7 +81,7 @@ export default class NewListingReview extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
-                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description)}}></div>
+                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description.value)}}></div>
                             </div>
                         </div>
                     }

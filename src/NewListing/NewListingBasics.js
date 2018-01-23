@@ -76,17 +76,17 @@ export default class NewListingBasics extends Component {
                                     </h4>
                                     <HtmlTextField 
                                         onChange={(ev, descriptionValue, rawText) => {
-                                            const description = this.state.description;
-
-                                            description.value = descriptionValue;
 
                                             this.setState({
-                                                description
+                                                description: {
+                                                  value: descriptionValue,
+                                                  rawText: rawText
+                                                }
                                             });
 
                                             this.props.onDescriptionChange(descriptionValue, rawText);
                                         }}
-                                        value={this.state.description.value} 
+                                        value={this.state.description.value}
                                     />
                                 </div>    
                             </div>

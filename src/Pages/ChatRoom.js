@@ -87,7 +87,10 @@ export default class ChatRoom extends React.Component {
 
         this.state = {
             isLoading: true,
-            newMessage: '',
+            newMessage: {
+              value: '',
+              rawText: ''
+            },
             task: {},
             users: {},
             messages: []
@@ -125,7 +128,10 @@ export default class ChatRoom extends React.Component {
                     }
 
                     this.setState({
-                        newMessage: '',
+                        newMessage: {
+                          value: '',
+                          rawText: ''
+                        },
                         config,
                         isUserOwner: user.id === chat.task.userId,
                         requestId,
@@ -148,11 +154,7 @@ export default class ChatRoom extends React.Component {
     handleNewMessage (event) {
         event.preventDefault()
     
-        let newMessage = this.state.newMessage;
-
-        newMessage = purifyHtmlMessage(newMessage);
-
-        if (newMessage < 2) {
+        if (this.state.newMessage.rawText < 2) {
             return alert(translate('ERROR_MESSAGE_TOO_SHORT'));
         }
 
@@ -161,14 +163,17 @@ export default class ChatRoom extends React.Component {
             toUserId: this.state.toUserId,
             fromUserId: this.state.fromUserId,
             requestId: this.state.requestId,
-            message: newMessage
+            message: this.state.newMessage.value
         };
 
         this.state.messages.unshift(data);
         
         this.setState({
             isSubmitting: true,
-            newMessage: '',
+            newMessage: {
+              value: '',
+              rawText: ''
+            },
             messages: this.state.messages
         });
 
@@ -274,14 +279,17 @@ export default class ChatRoom extends React.Component {
                                             <div className="col-xs-12">
                                                 <form onSubmit={this.handleNewMessage}>
                                                     <HtmlTextField                                                 
-                                                        onChange={(event, newMessage) => this.setState({
-                                                            newMessage
+                                                        onChange={(event, value, rawText) => this.setState({
+                                                            newMessage: {
+                                                              value,
+                                                              rawText
+                                                            }
                                                         })}
-                                                        value={this.state.newMessage}
+                                                        value={this.state.newMessage.value}
                                                     />
                                                     
                                                     <RaisedButton
-                                                        disabled={this.state.isSubmitting || !stripHtml(this.state.newMessage)}
+                                                        disabled={this.state.isSubmitting || !this.state.newMessage.rawText}
                                                         type="submit"
                                                         style={{ marginTop: 10, width: '100%' }}
                                                         label={translate("CHAT_MESSAGE_SUBMIT")}

@@ -27,6 +27,7 @@ export default class RequestDialog extends React.Component {
                 taskId: this.props.taskId,
                 message: ''
             }
+
         };
   }
   componentWillReceiveProps(nextProps) {
@@ -187,8 +188,8 @@ export default class RequestDialog extends React.Component {
           { this.state.mask==='confirmation' && ApplicationConfirmation }
           { this.state.mask==='success' && Success }
           <Snackbar
-            open={this.state.openSnackbar}
-            message={this.state.snackbarMessage}
+            open={this.state.open}
+            message={this.state.application.message}
             autoHideDuration={4000}
           />
         </Dialog>

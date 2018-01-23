@@ -108,9 +108,12 @@ class Profile extends React.Component {
             .getItems({
                 toUserId: userId
             })
-            .then(reviews => this.setState({
+            .then(reviews => {
+              console.log('reviews', reviews)
+              this.setState({
                 reviews
-            }));
+            })
+            });
     }
 
     componentDidMount() {

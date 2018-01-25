@@ -2,27 +2,28 @@
 Storefront for your Sharing Economy Marketplace (https://vqmarketplace.com).
 ## Installation
 ```
-git clone https://github.com/vq-labs/vq-marketplace-web-app
-cd vq-marketplace-web-app
 npm install
+npm install gulp -g
 ```
 
 ## Running
+Review .env file and make necessary changes first!
+
 This will start the app on localhost:3000. The app will assume that the [VQ-MARKETPLACE-API](https://github.com/vq-labs/vq-marketplace-api) is available at http://localhost:8080.
 ```
-npm run start:local
+npm start
 ```
 
 ## Integrating with an existing marketplace
-VQ MARKETPLACE enables you to work on your own marketplace storefront while still using the offical VQ web services.
-You can always connect to the marketplace that is hosted by VQ-LABS. You just need to ajust the VQ_API_URL when you build the application.
+VQ MARKETPLACE enables you to work on your own marketplace storefront while still using the official VQ web services.
+You can always connect to the marketplace that is hosted by VQ-LABS. You just need to adjust the VQ_API_URL when you build the application.
 ```
-VQ_API_URL=https://<yourMarketplaceId>.vqmarketplace.com npm run start:local
+npm start
 ```
 
 To try it out and start up quickly and connect to an existing marketplace https://talentwand.de, enter:
 ```
-npm run start:talentwand
+npm run start:talentwand (or npm run start --marketplace yourMarketplaceId)
 ```
 
 ## Deployment

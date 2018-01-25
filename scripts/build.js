@@ -1,4 +1,12 @@
-var args = require('yargs').argv;
+// Do this as the first thing so that any code reading it knows the right env.
+process.env.NODE_ENV = 'production';
+
+// Load environment variables from .env file. Suppress warnings using silent
+// if this file is missing. dotenv will never modify any environment variables
+// that have already been set.
+// https://github.com/motdotla/dotenv
+require('dotenv').config({silent: true});
+
 var chalk = require('chalk');
 var fs = require('fs-extra');
 var path = require('path');
@@ -6,30 +14,11 @@ var filesize = require('filesize');
 var gzipSize = require('gzip-size').sync;
 var rimrafSync = require('rimraf').sync;
 var webpack = require('webpack');
+var config = require('../config/webpack.config.prod');
 var paths = require('../config/paths');
 var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 var recursive = require('recursive-readdir');
 var stripAnsi = require('strip-ansi');
-var config = require('../config/webpack.config.prod');
-
-const generateConfig = () => {
-  if (!args.env) {
-    console.log("ERROR: Please provide an environment as an argument!")
-  }
-}
-
-if (!generateConfig()) {
-  return;
-}
-
-// Do this as the first thing so that any code reading it knows the right env.
-process.env.NODE_ENV = args.env;
-
-// Load environment variables from .env file. Suppress warnings using silent
-// if this file is missing. dotenv will never modify any environment variables
-// that have already been set.
-// https://github.com/motdotla/dotenv
-require('dotenv').config({silent: true});
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {

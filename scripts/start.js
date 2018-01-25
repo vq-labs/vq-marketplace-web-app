@@ -1,7 +1,11 @@
-var fs = require('fs');
-var args = require('yargs').argv;
-var path = require('path');
-var appRoot = require('app-root-path').path;
+process.env.NODE_ENV = 'development';
+
+// Load environment variables from .env file. Suppress warnings using silent
+// if this file is missing. dotenv will never modify any environment variables
+// that have already been set.
+// https://github.com/motdotla/dotenv
+require('dotenv').config({silent: true});
+
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -13,39 +17,8 @@ var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 var formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 var openBrowser = require('react-dev-utils/openBrowser');
 var prompt = require('react-dev-utils/prompt');
-var webpackConfig = require('../config/webpack.config.dev');
+var config = require('../config/webpack.config.dev');
 var paths = require('../config/paths');
-
-const generateConfig = () => {
-  if (!args.config) {
-    console.log("ERROR: Please provide a config file as an argument!")
-  }
-
-  if (!args.env) {
-    console.log("ERROR: Please provide an environment as an argument!")
-  }
-
-  if(!fs.existsSync(path.join(appRoot, args.config))) {
-    console.log("Config file was not found at ", path.join(appRoot, args.config));
-    return null;
-  } else {
-   return fs.readFileSync(path.join(appRoot, args.config), "utf8");
-  }
-}
-
-if (!generateConfig()) {
-  return;
-}
-
-var config = JSON.parse(generateConfig());
-
-process.env.NODE_ENV = args.env;
-
-// Load environment variables from .env file. Suppress warnings using silent
-// if this file is missing. dotenv will never modify any environment variables
-// that have already been set.
-// https://github.com/motdotla/dotenv
-require('dotenv').config({silent: true});
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
@@ -53,7 +26,7 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
 }
 
 // Tools like Cloud9 rely on this.
-var DEFAULT_PORT = args.port || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["PORT"];
+var DEFAULT_PORT = process.env.PORT || 3000;
 var compiler;
 var handleCompile;
 
@@ -73,7 +46,7 @@ if (isSmokeTest) {
 function setupCompiler(host, port, protocol) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
-  compiler = webpack(webpackConfig, handleCompile);
+  compiler = webpack(config, handleCompile);
 
   // "invalid" event fires when you have changed a file, and Webpack is
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
@@ -237,7 +210,7 @@ function runDevServer(host, port, protocol) {
     hot: true,
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
-    publicPath: webpackConfig.output.publicPath,
+    publicPath: config.output.publicPath,
     // WebpackDevServer is noisy by default so we emit custom message instead
     // by listening to the compiler events with `compiler.plugin` calls above.
     quiet: true,
@@ -268,8 +241,8 @@ function runDevServer(host, port, protocol) {
 }
 
 function run(port) {
-  var protocol = args.protocol || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["PROTOCOL"];
-  var host = args.host || config[args.env.toUpperCase()]["VQ_MARKETPLACE_WEB_APP"]["HOST"];
+  var protocol = process.env.HTTPS === 'true' ? "https" : "http";
+  var host = process.env.HOST || 'localhost';
   setupCompiler(host, port, protocol);
   runDevServer(host, port, protocol);
 }

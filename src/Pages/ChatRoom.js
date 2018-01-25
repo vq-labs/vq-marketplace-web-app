@@ -23,7 +23,7 @@ import TASK_STATUS from '../constants/TASK_STATUS';
 import USER_TYPES from '../constants/USER_TYPES';
 import { getUserAsync } from '../core/auth';
 import { displayPrice, displayLocation } from '../core/format';
-import { stripHtml, purifyHtmlMessage } from '../core/util';
+import { stripHTML } from '../core/format';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
 import { CONFIG } from '../core/config';
@@ -309,14 +309,14 @@ export default class ChatRoom extends React.Component {
 
                                             return false;
                                         })
-                                        .map(message => {
+                                        .map((message, index) => {
                                             const sender = this.state.users[message.fromUserId];
 
                                             const firstName = sender.firstName;
                                             const lastName = sender.lastName;
                                             const profileImageUrl = sender.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || defaultProfileImageUrl;
 
-                                            return <div className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
+                                            return <div key={index} className="row" style={{ paddingLeft: '20px', marginTop: '20px'}}>
                                                         <div className="col-xs-12" style={{ marginBottom: '20px'}}>
                                                             <div className="row">
                                                                 <div className="col-xs-3 col-sm-1">
@@ -385,9 +385,9 @@ export default class ChatRoom extends React.Component {
                                                     const lastName = user.lastName;
                                                     const profileImageUrl = user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || defaultProfileImageUrl;
                                                     const name = `${firstName} ${lastName}`;
-                                                    const profileBio = stripHtml(user.bio, 50);
+                                                    const profileBio = stripHTML(user.bio, 50);
 
-                                                    return <div className="row" style={{ marginBottom: '10px' }}>
+                                                    return <div key={userId} className="row" style={{ marginBottom: '10px' }}>
                                                                 <a href={`/app/profile/${userId}`}>
                                                                     <div className="col-xs-4 col-sm-3 col-md-2">
                                                                         <img alt={name}

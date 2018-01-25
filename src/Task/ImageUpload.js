@@ -50,7 +50,7 @@ class ImageUpload extends Component {
             </button>
             {this.state.files ? <div>
             <h2>Uploading {files.length} files...</h2>
-            <div>this.state.files.map((file) => <img src={file.preview} />)</div>
+            <div>this.state.files.map((file, index) => <img key={index} src={file.preview} />)</div>
             </div> : null}
       </div>
     )

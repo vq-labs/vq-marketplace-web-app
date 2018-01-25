@@ -1,5 +1,3 @@
-import { stripHtml } from './util';
-
 const CENT_CURRENCIES = [
     'PLN',
     'EUR',
@@ -46,7 +44,7 @@ export const displayTotalPrice = (price, timings, currencyCode) => {
 
 export const displayListingDesc = desc => {
     if (desc) {
-        return stripHtml(desc)
+        return stripHTML(desc)
             .substring(0, 75) + '..';
     }
 
@@ -81,4 +79,20 @@ export const displayPrice = (amount, currencyCode, pricingModel) => {
 
 export const trimSpaces = string => {
   return string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
+};
+
+
+export const stripHTML = (html, noOfChars) => {
+   const tmp = document.createElement("DIV");
+
+   tmp.innerHTML = html;
+
+   const text = (tmp.textContent || tmp.innerText || "")
+    .replace(/\s+$/, '');
+
+   if (noOfChars && text.length > noOfChars) {
+       return `${text.substring(0, noOfChars)}...`;
+   }
+
+   return text;
 };

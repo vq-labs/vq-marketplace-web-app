@@ -109,10 +109,9 @@ class Profile extends React.Component {
                 toUserId: userId
             })
             .then(reviews => {
-              console.log('reviews', reviews)
               this.setState({
                 reviews
-            })
+              });
             });
     }
 
@@ -423,8 +422,9 @@ class Profile extends React.Component {
                             }}>
                             {this.state.preferences
                             .filter(_ => this.state.categoryLabels[_.value])
-                            .map(preference =>
+                            .map((preference, index) =>
                                 <Chip
+                                    key={index}
                                     onTouchTap={() => {
                                         goTo(`/?category=${preference.value}`)
                                     }}
@@ -470,8 +470,8 @@ class Profile extends React.Component {
 
                                 return true;
                             })
-                            .map(review =>
-                                <div className="row">
+                            .map((review, index) =>
+                                <div key={index} className="row">
                                     <div className="col-xs-12">
                                         <div
                                             style={{ marginTop: 4, paddingLeft: 0, paddingRight: 0}}

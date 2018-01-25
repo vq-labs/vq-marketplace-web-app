@@ -1,17 +1,4 @@
-export const stripHtml = (html, noOfChars) => {
-   const tmp = document.createElement("DIV");
 
-   tmp.innerHTML = html;
-
-   const text = (tmp.textContent || tmp.innerText || "")
-    .replace(/\s+$/, '');
-
-   if (noOfChars && text.length > noOfChars) {
-       return `${text.substring(0, noOfChars)}...`;
-   }
-   
-   return text;
-};
 
 export const parseJSON = response => new Promise((resolve, reject) => {
   if (response.status !== 200) {
@@ -172,12 +159,4 @@ export const getUtcUnixTimeNow = () => {
     const nowUtcUnix = nowUtc.getTime() / 1000;
 
     return nowUtcUnix;
-};
-
-export const purifyHtmlMessage = message => {
-    return message
-        .split('<p><br></p>')
-        .filter(_ => _ !== '<p><br></p>')
-        .join('')
-        .replace(/(\r\n|\n|\r)/gm, "");
 };

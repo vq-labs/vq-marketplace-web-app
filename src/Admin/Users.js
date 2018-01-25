@@ -111,8 +111,9 @@ export default class SectionUsers extends React.Component {
                                 <MenuItem value={undefined} primaryText="No filter" />
                                 {
                                     Object.keys(USER_STATUS)
-                                    .map(status => 
+                                    .map((status, index) =>
                                         <MenuItem
+                                            key={index}
                                             value={USER_STATUS[status]}
                                             primaryText={status}
                                         />
@@ -130,7 +131,7 @@ export default class SectionUsers extends React.Component {
                     </div>
                     <div className="col-xs-12">
                         <table className="table">
-                            <thead class="thead-dark">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Email</th>
@@ -160,7 +161,7 @@ export default class SectionUsers extends React.Component {
                                 return true;
                             })
                             .map(user => 
-                                <tr>
+                                <tr key={user.id}>
                                    <td>
                                         <a href="#" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
                                    </td>

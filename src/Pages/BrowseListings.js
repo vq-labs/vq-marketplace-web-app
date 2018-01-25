@@ -469,11 +469,11 @@ class Offers extends Component {
                                 { this.state.appliedFilter.viewType === VIEW_TYPES.LIST &&
                                         this.state.offers.map(offer =>
                                             <div 
+                                                key={offer.id}
                                                 className="col-xs-12"
                                                 style={{ marginBottom: 10} }
                                             >
                                                 <TaskListItem
-                                                    key={offer.id}
                                                     task={offer}
                                                     displayPrice={true}
                                                 />
@@ -505,11 +505,11 @@ class Offers extends Component {
                                                     { this.state.offersChunksXS[index]
                                                         .map(offer =>
                                                             <div 
+                                                                key={offer.id}
                                                                 className="col-xs-12 col-sm-6"
                                                                 style={{ marginBottom: 10} }
                                                             >
                                                                 <TaskCard
-                                                                    key={offer.id}
                                                                     task={offer}
                                                                     displayDesc={false}
                                                                     displayPrice={true}

@@ -166,13 +166,13 @@ export default class Dashboard extends Component {
                   { !this.state.isLoading && this.state.tasks
                   .map((task, index) =>
                       <div 
+                          key={task.id}
                           className="col-xs-12"
                           style={{
                             marginBottom: 10
                           }}
                       >
                           <TaskListItem
-                              key={task.id}
                               task={task}
                               showRequests={true}
                               displayManagement={true}

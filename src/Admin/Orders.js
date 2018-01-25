@@ -35,7 +35,7 @@ export default class SectionUsers extends React.Component {
                     </div>
                     <div className="col-xs-12">
                         <table className="table">
-                            <thead class="thead-dark">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Amount</th>
@@ -46,8 +46,8 @@ export default class SectionUsers extends React.Component {
                             </thead>
                             <tbody>
                             { this.state.orders
-                            .map(order => 
-                               <tr>
+                            .map((order, index) =>
+                               <tr key={index}>
                                    <td>
                                         {order.id}
                                    </td>

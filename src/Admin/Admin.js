@@ -110,12 +110,12 @@ export default class AdminPage extends React.Component {
                     <div className="col-xs-12 col-sm-3 col-md-2" style={{
                         marginBottom: 10,
                     }}>
-                            { menuPoints.map(menuGroup =>
-                                    <div className="col-xs-12">
+                            { menuPoints.map((menuGroup, index) =>
+                                    <div key={index} className="col-xs-12">
                                         <h4>{menuGroup[0]}</h4>
                                         <ul className="list-unstyled vq-account-sector-list">
-                                            { menuGroup[1].map(menuItem =>
-                                                <li className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
+                                            { menuGroup[1].map((menuItem, index2) =>
+                                                <li key={index2} className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
                                                     <a 
                                                         href="#"
                                                         onClick={() =>

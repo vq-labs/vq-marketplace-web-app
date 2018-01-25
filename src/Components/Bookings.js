@@ -119,7 +119,8 @@ export default class Bookings extends Component {
                         </div>
                     }
                     { !this.state.isLoading && this.state.orders.map((order, index) =>
-                        <div 
+                        <div
+                            key={index}
                             className="col-xs-12"
                             style={{ marginTop: 10 }}
                         >

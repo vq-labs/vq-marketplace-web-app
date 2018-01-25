@@ -70,8 +70,9 @@ export const Component = class RequestDialog extends React.Component {
                                         {this.state.requests
                                         .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                         .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
-                                        .map(request => 
+                                        .map((request, index) =>
                                             <ListItem
+                                                key={index}
                                                 onTouchTap={() => {
                                                     this.setState({
                                                         requests: [],

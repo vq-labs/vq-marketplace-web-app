@@ -6,12 +6,11 @@ import HtmlTextField from '../Components/HtmlTextField';
 import * as coreAuth from '../core/auth';
 import * as apiTaskComment from '../api/task-comment';
 import {translate} from '../core/i18n';
+import {stripHTML} from "../core/format";
 import {goTo} from '../core/navigation';
-import {stripHtml} from '../core/util';
 import {getConfigAsync} from '../core/config';
 import DOMPurify from 'dompurify'
 import '../Chat.css';
-import {trimSpaces} from "../core/format";
 
 const _ = require('underscore');
 
@@ -22,26 +21,32 @@ export default class TaskComments extends React.Component {
     super(props);
 
     this.state = {
-         config: {},
-        task: {},
-        isLoading: true,
-        newComment: {
-          value: '',
-          rawText: ''
-        },
-        comments: []
+      config: {},
+      task: {},
+      isLoading: true,
+      newComment: {
+        value: '',
+        rawText: ''
+      },
+      comments: []
     }
     this.handleNewComment = this.handleNewComment.bind(this);
   }
+
   componentWillReceiveProps(nextProps) {
     if (this.state.task !== nextProps.task) {
       this.setState({
         task: nextProps.task,
         isLoading: false,
-        comments: nextProps.task.comments
+        comments: () => nextProps.task.comments.map(comment => {
+          return comment.comment = {
+            value: comment.comment,
+            rawText: stripHTML(comment.comment)
+          }
+        })
       })
     }
-}
+  }
 
 
   componentDidMount() {
@@ -92,7 +97,7 @@ export default class TaskComments extends React.Component {
           <h3>{translate('LISTING_COMMENTS_HEADER')}</h3>
           <p>{translate('LISTING_COMMENTS_DESC')}</p>
         </div>
-        {this.state.comments
+        {this.state.comments && this.state.comments.length > 0 && this.state.comments
           .map((message, index) => {
             const sender = message.user;
             const firstName = sender.firstName;

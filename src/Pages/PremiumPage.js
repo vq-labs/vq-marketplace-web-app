@@ -137,8 +137,8 @@ export default class PremiumPage extends Component {
             </div>
             <div className="col-xs-12 col-sm-4">
               <Paper>
-                  <div class="row">
-                    <div class="col-xs-12">
+                  <div className="row">
+                    <div className="col-xs-12">
                       <h2>Ihre Bestellung</h2>
                       ST Premium<br />
                       Preis: 10€<br />

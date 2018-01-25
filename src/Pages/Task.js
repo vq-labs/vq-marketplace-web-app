@@ -21,7 +21,7 @@ import * as apiRequest from '../api/request';
 import { translate } from '../core/i18n';
 import { goTo, convertToAppPath } from '../core/navigation';
 import { getCategoriesAsync } from '../core/categories.js';
-import { displayPrice, displayLocation, trimSpaces } from '../core/format';
+import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
@@ -119,14 +119,6 @@ class Task extends Component {
                     .getItem(taskId)
                     .then(task => {
                         const isMyTask = task.userId === user.id;
-
-                        task.comments.map(comment => {
-
-                          comment.comment = {
-                            value: comment.comment,
-                            rawText: trimSpaces(comment.comment)
-                          }
-                        })
 
                         if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
                             if (user.userType === 1 && !isMyTask) {

@@ -6,7 +6,6 @@ import ProfileImage from '../Components/ProfileImage';
 import apiReview from '../api/review';
 import apiOrder from '../api/order';
 import * as apiRequest from '../api/request';
-import { stripHtml, purifyHtmlMessage } from '../core/util';
 import { getConfigAsync } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { goTo, convertToAppPath, goBack } from '../core/navigation';

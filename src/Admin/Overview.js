@@ -38,8 +38,8 @@ export default class SectionOverview extends React.Component {
                             <Loader isLoading={true} />
                         }
 
-                        { !this.state.isLoading && this.state.reports.map(overviewItem => 
-                            <div className="col-xs-6 col-sm-4 col-md-3 col-lg-2" style={{ padding: 3 }}>
+                        { !this.state.isLoading && this.state.reports.map((overviewItem, index) =>
+                            <div key={index} className="col-xs-6 col-sm-4 col-md-3 col-lg-2" style={{ padding: 3 }}>
                                 <div style={{ padding: 3 }} className="col-xs-12 panel">
                                     <h2>{overviewItem.reportValue}</h2>
                                     <p className="text-muted">{overviewItem.reportName}</p>

@@ -71,8 +71,9 @@ export default class SectionUsers extends React.Component {
                                 <MenuItem value={undefined} primaryText="No filter" />
                                 {
                                     Object.keys(TASK_STATUS)
-                                    .map(status => 
+                                    .map((status, index) =>
                                         <MenuItem
+                                            key={index}
                                             value={TASK_STATUS[status]}
                                             primaryText={status}
                                         />
@@ -91,7 +92,7 @@ export default class SectionUsers extends React.Component {
 
                     <div className="col-xs-12">
                         <table className="table">
-                            <thead class="thead-dark">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Title</th>
@@ -115,8 +116,8 @@ export default class SectionUsers extends React.Component {
                                     String(listing.id) === String(this.state.listingIdSearchValue) :
                                     true;
                             })
-                            .map(task => 
-                                <tr>
+                            .map((task, index) =>
+                                <tr key={index}>
                                    <td>
                                         {task.id}
                                    </td>

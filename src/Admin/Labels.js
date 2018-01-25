@@ -87,8 +87,8 @@ export default class SectionLabels extends React.Component {
                             this.getLabels(value);
                         }}>
                             <MenuItem value={this.state.defaultLang} primaryText={LANG_CODES[this.state.defaultLang]} />
-                            { this.state.languages.map(language => 
-                                <MenuItem value={language} primaryText={LANG_CODES[language]} />
+                            { this.state.languages.map((language, index) =>
+                                <MenuItem key={index} value={language} primaryText={LANG_CODES[language]} />
                             )}
                         </DropDownMenu>
                     </div>

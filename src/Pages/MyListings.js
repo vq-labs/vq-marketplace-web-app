@@ -161,7 +161,7 @@ class MyListings extends Component {
                                                                             const offerProgress = this.getOfferProgress(offer);
                                                                             const taskId = offer.id;
                                                                                 return( 
-                                                                                     <Paper style={style} zDepth={1} >
+                                                                                     <Paper key={taskId} style={style} zDepth={1} >
                                                                                                 <div className="row">  
                                                                                                     <div className="col-xs-12 col-sm-8"  >
                                                                                                             <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
@@ -200,7 +200,7 @@ class MyListings extends Component {
                                                                                 { this.state.offers.map( offer => {
                                                                                    const offerProgress = this.getOfferProgress(offer);
                                                                                      return(
-                                                                                        <Paper style={style} zDepth={1}>
+                                                                                        <Paper key={offer.id} style={style} zDepth={1}>
                                                                                             <div className="row">  
                                                                                                 <div className="col-xs-12 col-sm-8"  >
                                                                                                         <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />
@@ -237,11 +237,11 @@ class MyListings extends Component {
                                                                         >
                                                                         { this.state.isLoading && <CircularProgress size={80} thickness={5} style={{ 'marginTop':'125px', 'marginLeft':'300px' }}  /> }
                                                                             { !this.state.isLoading && <div className="col-xs-12 col-sm-12">
-                                                                                 { this.state.offers.map( offer => {
+                                                                                 { this.state.offers.map(offer => {
                                                                                      const offerProgress = this.getOfferProgress(offer);
                                                                                      const taskId = this.getTaskId(offer);
                                                                                         return(
-                                                                                                <Paper style={style} zDepth={1} >
+                                                                                                <Paper key={taskId} style={style} zDepth={1} >
                                                                                                     <div className="row">  
                                                                                                             <div className="col-xs-12 col-sm-8"  >
                                                                                                                     <img className="img-responsive"  src={ offer.images && offer.images[0] ? offer.images[0].imageUrl  : 'https://talentwand.de/images/categories/design.jpg' } role="presentation" />

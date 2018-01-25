@@ -159,7 +159,7 @@ class Signup extends Component {
                     
                     <div className="row">
                       { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
-                      <div class="col-xs-12">
+                      <div className="col-xs-12">
                           <h4>{translate('FIND_OR_POST_TASKS')}</h4>
                           <div className="col-xs-6">
                             { this.state.userType === USER_TYPES.BUYER &&
@@ -237,7 +237,7 @@ class Signup extends Component {
               </div>
             </div>
             <hr/>
-            <div class="row">
+            <div className="row">
                   <div className="col-xs-12">
                       <p className="text-center text-muted">
                         {translate('ALREADY_HAVE_AN_ACCOUNT')}<br />

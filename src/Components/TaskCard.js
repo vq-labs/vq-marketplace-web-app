@@ -6,8 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
-import { stripHtml } from '../core/util';
-import { displayPrice }  from '../core/format';
+import { displayPrice, stripHTML }  from '../core/format';
 
 export default class TaskCard extends Component {
   constructor(props) {
@@ -51,7 +50,7 @@ export default class TaskCard extends Component {
 
   formatDesc (desc) {
     if (desc) {
-       return stripHtml(desc).substring(0, 75) + '..'
+       return stripHTML(desc).substring(0, 75) + '..'
     }
 
     return 'No description';
@@ -109,7 +108,7 @@ export default class TaskCard extends Component {
 
                 { this.props.displayManagement &&
                   <CardText style={{'marginBottom': '20px'}}>
-                    <div class="row">
+                    <div className="row">
                       <div className="col-xs-10 col-sm-11 col-md-9 col-lg-10 text-muted">
                         <p style={{ marginTop: '16px', marginLeft: '-17px' }}>
                           { task.status !== 0 &&

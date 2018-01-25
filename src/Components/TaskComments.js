@@ -35,15 +35,18 @@ export default class TaskComments extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.task !== nextProps.task) {
-      this.setState({
-        task: nextProps.task,
-        isLoading: false,
-        comments: () => nextProps.task.comments.map(comment => {
-          return comment.comment = {
+      const nextComments = nextProps.task.comments.map(comment => {
+          return {
+            ...comment,
             value: comment.comment,
             rawText: stripHTML(comment.comment)
           }
-        })
+        });
+
+      this.setState({
+        task: nextProps.task,
+        isLoading: false,
+        comments: nextComments
       })
     }
   }
@@ -69,7 +72,7 @@ export default class TaskComments extends React.Component {
     const newComment = {
       userId: user.id,
       user,
-      comment: newCommentBody
+      comment: newCommentBody.value
     };
 
     comments.push(newComment);
@@ -146,7 +149,7 @@ export default class TaskComments extends React.Component {
               </div>
               <div className="col-xs-12">
                 <div dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(message.comment.value)
+                  __html: DOMPurify.sanitize(message.comment)
                 }}/>
                 <Divider style={{marginRight: '10px'}}/>
               </div>

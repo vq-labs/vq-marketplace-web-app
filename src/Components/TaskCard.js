@@ -100,7 +100,7 @@ export default class TaskCard extends Component {
                       lineHeight: '20px',
                       overflow: 'hidden'
                   }}>
-                        <h4 primary={true}>
+                        <h4>
                           { displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType) }
                         </h4>
                   </CardText>

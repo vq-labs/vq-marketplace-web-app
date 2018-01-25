@@ -187,13 +187,7 @@ export default class RequestDialog extends React.Component {
           /> }
           { this.state.mask==='confirmation' && ApplicationConfirmation }
           { this.state.mask==='success' && Success }
-          <Snackbar
-            open={this.state.application.message.length}
-            message={this.state.application.message}
-            autoHideDuration={4000}
-          />
         </Dialog>
-
     );
   }
 }  

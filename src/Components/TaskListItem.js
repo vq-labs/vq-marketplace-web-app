@@ -66,7 +66,7 @@ export default class TaskListItem extends Component {
                                         <a
                                             className="vq-link"
                                             label={`${translate('EDIT_LISTING')}`}
-                                            labelStyle={{color: CONFIG.COLOR_PRIMARY}}
+                                            style={{color: CONFIG.COLOR_PRIMARY}}
                                             onTouchTap={() => goTo(`/task/${task.id}/edit`)}
                                         >
                                             {translate('EDIT')}

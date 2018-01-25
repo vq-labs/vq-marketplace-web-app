@@ -262,12 +262,14 @@ class Header extends Component {
                       <IconMenu
                             style={{ cursor: 'pointer' }}
                             iconButtonElement={
-                              <IconButton>
-                                <Avatar src={this.state.user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL} size={40} />
-                              </IconButton>
+                                <Avatar
+                                  src={this.state.user.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || DEFAULTS.PROFILE_IMG_URL}
+                                  size={40}
+                                />
                             }
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                              targetOrigin={{horizontal: 'left', vertical: 'top'}}  >
+                            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                      >
                         <MenuItem 
                           onClick={
                             () => goTo(`/profile/${this.state.user.id}`, (newPath, oldPath) => {

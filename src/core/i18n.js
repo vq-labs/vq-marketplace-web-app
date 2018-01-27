@@ -29,10 +29,6 @@ export const translate = fieldKey => {
         return '';
     }
 
-    TRANSLATIONS[LANG]["RANGE"] = "Range";
-    TRANSLATIONS[LANG]["DEMAND_LISTING_FILTER"] = "Hire"; //Sell, Offer
-    TRANSLATIONS[LANG]["SUPPLY_LISTING_FILTER"] = "Rent"; //Buy, Request
-
 
     if (typeof TRANSLATIONS[LANG][fieldKey.toUpperCase()] === 'undefined') {
         return fieldKey;

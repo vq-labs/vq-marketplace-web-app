@@ -112,7 +112,7 @@ class Offers extends Component {
         apiTask
         .getItems({
             untilNow: CONFIG.LISTING_TIMING_MODE === '1' ? 1 : undefined,
-            minPrice: query.minPrice,
+            minPrice: 0,
             maxPrice: query.maxPrice,
             taskType: query.listingType || this.state.listingType,
             status: '0',
@@ -318,9 +318,9 @@ class Offers extends Component {
                     marginTop: '5px'
                 }}/>
                 <div style={{ width: '100%' }}>
-                    <h4 style={{ fontSize: '14px' }}>{CONFIG.LISTING_RANGE_FILTER_MIN}-{this.state.appliedFilter.rad} {displayUnit(undefined, CONFIG.LISTING_RANGE_FILTER_DEFAULT_UNIT)}</h4>
+                    <h4 style={{ fontSize: '14px' }}>{CONFIG.LISTING_RANGE_FILTER_MIN}-{this.state.appliedFilter.rad} {displayUnit(undefined, 'meters')}</h4>
                         <InputRange
-                            formatLabel={value => displayUnit(value, CONFIG.LISTING_RANGE_FILTER_DEFAULT_UNIT)}
+                            formatLabel={value => displayUnit(value, 'meters')}
                             maxValue={Number(CONFIG.LISTING_RANGE_FILTER_MAX)}
                             minValue={Number(CONFIG.LISTING_RANGE_FILTER_MIN)}
                             step={Number(CONFIG.LISTING_RANGE_FILTER_STEP)}

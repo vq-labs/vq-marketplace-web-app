@@ -72,6 +72,34 @@ const priceFields = [
     }
 ];
 
+const rangeFields = [
+    {
+        type: 'bool',
+        key: 'LISTING_RANGE_FILTER_ENABLED',
+        label: 'Enable range filtering?'
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_DEFAULT_VALUE',
+        label: 'What is the default radius of search in meters'
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_MIN',
+        label: 'Range filter (min. radius in meters)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_MAX',
+        label: 'Range filter (max. radius in meters)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_STEP',
+        label: 'By how much is the range to be incremented?',
+    }
+];
+
 export default class SectionFilters extends React.Component {
     constructor() {
         super();
@@ -104,6 +132,11 @@ export default class SectionFilters extends React.Component {
                 <ConfigEdit
                     header={"Location filter"}
                     fields={geofilterFields}
+                />
+
+                <ConfigEdit
+                    header={"Range filter"}
+                    fields={rangeFields}
                 />
             </div>
         );

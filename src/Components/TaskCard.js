@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Card, CardText, CardMedia } from 'material-ui/Card';
+import { Card, CardText, CardMedia, CardHeader } from 'material-ui/Card';
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
 import { displayPrice, stripHTML }  from '../core/format';
@@ -59,12 +61,19 @@ export default class TaskCard extends Component {
   getTaskListItem(task) {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
-                { task.images.length &&
+                    { task.images.length > 0 &&
                   <CardMedia style={{ minHeight: 130, maxHeight: 130, overflow: "hidden" }} onClick={() => this.handleGoToTask(task.id) }>
-                    <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
+                      <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
                   </CardMedia>
-                }
-                <CardText 
+                    }
+                       {
+                      task.images.length === 0 &&
+                         <div style={{ minHeight: 130, maxHeight: 130, backgroundColor: '#9D9D9D', textAlign: 'center', lineHeight: '12' }} onClick={() => this.handleGoToTask(task.id) }>
+
+                          <PhotoIcon color="#fff" viewBox="0 0 25 25" style={{width: '50px', height: '50px'}}/>
+                         </div>
+                    }
+                <CardText
                   onClick={() => this.handleGoToTask(task.id)}
                   style={{
                     height: '93px',

@@ -77,6 +77,7 @@ export const displayPrice = (amount, currencyCode, pricingModel) => {
     return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
 };
 
+
 export const trimSpaces = string => {
   return string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
 };
@@ -95,4 +96,10 @@ export const stripHTML = (html, noOfChars) => {
    }
 
    return text;
+};
+
+export const displayUnit = (amount, unit) => {
+    amount = amount || '';
+
+    return `${amount} ${unit}`;
 };

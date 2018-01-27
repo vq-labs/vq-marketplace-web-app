@@ -187,7 +187,7 @@ class Header extends Component {
                             () => { goTo('/login'); 
                           }} style={headerBtnStyle} />
                           }
-                    { this.state.logged && <ToolbarSeparator /> }
+                    { this.state.logged && <ToolbarSeparator style={ { marginRight: '24px' } }/> }
 
                     { this.state.logged &&
                       (
@@ -260,7 +260,7 @@ class Header extends Component {
 
                   { this.state.logged &&
                       <IconMenu
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', marginLeft: '24px' }}
                             iconButtonElement={
                               <IconButton style={{padding: '0px'}}>
                                 <Avatar

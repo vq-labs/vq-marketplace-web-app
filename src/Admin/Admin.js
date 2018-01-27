@@ -110,9 +110,9 @@ export default class AdminPage extends React.Component {
                     <div className="col-xs-12 col-sm-3 col-md-2" style={{
                         marginBottom: 10,
                     }}>
-                            { menuPoints.map((menuGroup, index) =>
-                                    <div key={index} className="col-xs-12">
-                                        <h4>{menuGroup[0]}</h4>
+                            { menuPoints.map(menuGroup =>
+                                    <div className="col-xs-12">
+                                        <h4 style={ { textTransform: 'uppercase', color: '##9E9E9E' } }>{menuGroup[0]}</h4>
                                         <ul className="list-unstyled vq-account-sector-list">
                                             { menuGroup[1].map((menuItem, index2) =>
                                                 <li key={index2} className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
@@ -130,7 +130,7 @@ export default class AdminPage extends React.Component {
                                     </div>
                             )}
                                 <div className="col-xs-12">
-                                <h4>Support</h4>
+                                <h4 style={ { textTransform: 'uppercase', color: '##9E9E9E' } }>Support</h4>
                                 <ul className="list-unstyled vq-account-sector-list">
                                         <li>
                                             <a 

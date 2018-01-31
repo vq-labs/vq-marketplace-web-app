@@ -106,7 +106,7 @@ const getActiveStep = (requestStatus, isReviewed, config) => {
       }
 
 
-      if (stepIndex === 5 &&
+      if (isReviewed &&
         (
           (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED !== "1") ||
           (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED !== "1")
@@ -273,7 +273,7 @@ export default class ChatRoom extends React.Component {
       steps.push(<Step>
                 <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
               </Step>,
-        <Step>
+              <Step>
                 <StepLabel>{translate('REQUEST_ACCEPTED')}</StepLabel>
               </Step>
       )

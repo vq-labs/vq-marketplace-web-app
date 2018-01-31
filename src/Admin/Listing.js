@@ -130,38 +130,38 @@ const workflowFields = [
               }
             ]
           },
-          {
-            type: 'bool',
-            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED',
-            label: 'Booking Step',
-            explanation: 'Enable the step on task where the demand books the offer of the supply side',
-          },
+          // {
+          //   type: 'bool',
+          //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED',
+          //   label: 'Booking Step',
+          //   explanation: 'Enable the step on task where the demand books the offer of the supply side',
+          // },
           {
             type: 'bool',
             key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED',
             label: 'Complete Step',
             explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
             subFields: [
-                {
-                  type: 'bool',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
-                  label: 'Completion of supply side is required'
-                },
-                {
-                  type: 'bool',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
-                  label: 'Completion of demand side is required'
-                },
-              {
-                  selection: [
-                      { value: String(USER_TYPES.ANY), label: 'Any' },
-                      { value: String(USER_TYPES.DEMAND), label: 'Demand' },
-                      { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
-                  ],
-                  type: 'select',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
-                  label: 'Choose a side to enforce to mark the task as complete first'
-              },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
+                //   label: 'Completion of supply side is required'
+                // },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
+                //   label: 'Completion of demand side is required'
+                // },
+              // {
+              //     selection: [
+              //         { value: String(USER_TYPES.ANY), label: 'Any' },
+              //         { value: String(USER_TYPES.DEMAND), label: 'Demand' },
+              //         { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
+              //     ],
+              //     type: 'select',
+              //     key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
+              //     label: 'Choose a side to enforce to mark the task as complete first'
+              // },
             ]
           },
           {
@@ -170,16 +170,16 @@ const workflowFields = [
             label: 'Review Step',
             explanation: 'Enable the step on task where the demand and the supply leave reviews for each other',
             subFields: [
-                {
-                  type: 'bool',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
-                  label: 'Completion of supply side is required'
-                },
-                {
-                  type: 'bool',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
-                  label: 'Review of demand side is required'
-                },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
+                //   label: 'Review of supply side is required'
+                // },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
+                //   label: 'Review of demand side is required'
+                // },
                 {
                   type: 'bool',
                   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS',
@@ -218,38 +218,38 @@ const workflowFields = [
             }
           ]
         },
-        {
-          type: 'bool',
-          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED',
-          label: 'Booking Step',
-          explanation: 'Enable the step on task where the demand books the offer of the supply side',
-        },
+        // {
+        //   type: 'bool',
+        //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED',
+        //   label: 'Booking Step',
+        //   explanation: 'Enable the step on task where the demand books the offer of the supply side',
+        // },
         {
           type: 'bool',
           key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED',
           label: 'Complete Step',
           explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
           subFields: [
-              {
-                type: 'bool',
-                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
-                label: 'Completion of supply side is required'
-              },
-              {
-                type: 'bool',
-                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
-                label: 'Completion required by demand'
-              },
-              {
-                  selection: [
-                      { value: String(USER_TYPES.ANY), label: 'Any' },
-                      { value: String(USER_TYPES.DEMAND), label: 'Demand' },
-                      { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
-                  ],
-                  type: 'select',
-                  key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
-                  label: 'Choose a side to enforce to mark the task as complete first'
-              },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
+              //   label: 'Completion of supply side is required'
+              // },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
+              //   label: 'Completion required by demand'
+              // },
+              // {
+              //     selection: [
+              //         { value: String(USER_TYPES.ANY), label: 'Any' },
+              //         { value: String(USER_TYPES.DEMAND), label: 'Demand' },
+              //         { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
+              //     ],
+              //     type: 'select',
+              //     key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
+              //     label: 'Choose a side to enforce to mark the task as complete first'
+              // },
           ]
         },
         {
@@ -258,16 +258,16 @@ const workflowFields = [
           label: 'Review Step',
           explanation: 'Enable the step on task where the demand and the supply leave reviews for each other',
           subFields: [
-              {
-                type: 'bool',
-                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
-                label: 'Review of supply side is required'
-              },
-              {
-                type: 'bool',
-                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
-                label: 'Review of demand side is required'
-              },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
+              //   label: 'Review of supply side is required'
+              // },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
+              //   label: 'Review of demand side is required'
+              // },
               {
                 type: 'bool',
                 key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS',

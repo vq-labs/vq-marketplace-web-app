@@ -505,7 +505,10 @@ class Profile extends React.Component {
                                                 </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
-                                            { !review.rate &&
+                                            { (
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
+                                              ) &&  !review.rate &&
                                                 <div className="row" style={{ marginTop: 15 }}>
                                                         <div className="col-xs-12">
                                                             {translate("YOU_MUST_LEAVE_REVIEW")}
@@ -536,7 +539,11 @@ class Profile extends React.Component {
                                                         </div>
                                                 </div>
                                             }
-                                            { review.rate &&
+                                            {
+                                              (
+                                                (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
+                                                (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&  CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
+                                              ) && review.rate &&
                                             <div className="row">
                                                     <div className="col-xs-12">
                                                         <div style={{
@@ -555,7 +562,10 @@ class Profile extends React.Component {
                                                     </div>
                                             </div>
                                             }
-                                            { review.rate &&
+                                            { (
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
+                                            ) &&  review.rate &&
                                             <div className="row">
                                                 <div className="col-xs-12" style={{ padding: 30 }}>
                                                     <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 

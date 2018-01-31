@@ -559,10 +559,13 @@ export default class ChatRoom extends React.Component {
                                             </div>
                                         </div>
                                     </Paper>
-                                    { this.state.isUserOwner &&
+                                    { (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" || CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1") &&
+                                      this.state.isUserOwner &&
                                       String(this.state.request.status) === '0' &&
                                         <div>
-                                            { this.state.user.userType === USER_TYPES.DEMAND || Number(this.state.userMode) === USER_TYPES.DEMAND &&
+                                            { (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") &&
+                                              this.state.user.userType === USER_TYPES.DEMAND || Number(this.state.userMode) === USER_TYPES.DEMAND &&
                                                 <RaisedButton
                                                     primary={true}
                                                     style={actionBtnStyle}
@@ -572,7 +575,9 @@ export default class ChatRoom extends React.Component {
                                                     }
                                                 />
                                             }
-                                            { false && this.state.user.userType === USER_TYPES.SUPPLY || Number(this.state.userMode) === USER_TYPES.SUPPLY &&
+                                          {   (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") &&
+                                              this.state.user.userType === USER_TYPES.SUPPLY || Number(this.state.userMode) === USER_TYPES.SUPPLY &&
                                                 <RaisedButton
                                                     primary={true}
                                                     style={actionBtnStyle}
@@ -583,7 +588,9 @@ export default class ChatRoom extends React.Component {
                                         </div>
                                     }
 
-                                    { this.state.request.order &&
+                                    { (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED === "1") ||
+                                      (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED === "1") &&
+                                      this.state.request.order &&
                                       (
                                           String(this.state.request.order.status) === ORDER_STATUS.PENDING
                                       ) &&
@@ -622,7 +629,9 @@ export default class ChatRoom extends React.Component {
                                             }}
                                         />
                                     }
-                                    { this.state.isUserOwner && this.state.request.order &&
+                                    { (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED === "1") ||
+                                      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED === "1") &&
+                                      this.state.isUserOwner && this.state.request.order &&
                                       (
                                           String(this.state.request.order.status) === ORDER_STATUS.PENDING ||
                                           String(this.state.request.order.status) === ORDER_STATUS.MARKED_DONE
@@ -658,7 +667,9 @@ export default class ChatRoom extends React.Component {
                                         />
                                     }
 
-                                    { this.state.isUserOwner && this.state.request.order &&
+                                    { (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1") ||
+                                      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1") &&
+                                      this.state.isUserOwner && this.state.request.order &&
                                       (
                                           String(this.state.request.status) === REQUEST_STATUS.SETTLED
                                           ||

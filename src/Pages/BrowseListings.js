@@ -42,6 +42,7 @@ class Offers extends Component {
             queryCity: null,
             autoCompleteText: '',
             isLoading: false,
+            userType: 1,
             locationQueryString,
             appliedFilter: {
                 viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
@@ -81,7 +82,8 @@ class Offers extends Component {
             this.setState({
                 appliedFilter,
                 listingType: appliedFilter.listingType,
-                isLoading: true
+                isLoading: true,
+                userType: user.userType
             });
 
             apiCategory
@@ -191,7 +193,7 @@ class Offers extends Component {
     render() {
         const SidebarContent =
         <div className="row hidden-xs">
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" && this.state.userType === 0 &&
                 <div className="col-xs-12"> 
                     <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 1 ?
@@ -203,16 +205,11 @@ class Offers extends Component {
                     }>
                         { translate('DEMAND_LISTING_FILTER') }
                     </span>
-                </div>
-            }
-
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
-                <div className="col-xs-12"> 
-                    <span style={{
+                                      <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 2 ?
                         'bold' :
                         'normal'
-                    }}    
+                    }}
                     className="vq-uppercase with-pointer" onClick={
                         () => this.updateResults({ listingType: 2 })
                     }>

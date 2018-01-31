@@ -366,6 +366,20 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
+
+                                       { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
+                                            <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                <div style={{width: '100%', marginBottom: '20px'}}>
+                                                    <div>
+                                                        <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
+                                                    </div>
+                                                    <div>
+                                                        { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       }
+
                                        { CONFIG.LISTING_DESC_MODE === "1" && this.state.task.description.length > 0  &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>

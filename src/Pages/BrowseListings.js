@@ -193,7 +193,7 @@ class Offers extends Component {
     render() {
         const SidebarContent =
         <div className="row hidden-xs">
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" && this.state.userType === 0 &&
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                 <div className="col-xs-12"> 
                     <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 1 ?

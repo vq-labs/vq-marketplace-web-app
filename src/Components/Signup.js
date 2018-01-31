@@ -20,7 +20,7 @@ class Signup extends Component {
     super(props);
     
     this.state = {
-      userType: CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" ? USER_TYPES.BUYER : 0,
+      userType: CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" ? USER_TYPES.BUYER : 0,
       userProperties: []
     };
 
@@ -158,7 +158,7 @@ class Signup extends Component {
                     }
                     
                     <div className="row">
-                      { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
+                      { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
                       <div className="col-xs-12">
                           <h4>{translate('FIND_OR_POST_TASKS')}</h4>
                           <div className="col-xs-6">

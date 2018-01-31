@@ -51,10 +51,10 @@ export const goTo = (url, shouldReload) => {
 };
 
 export const goStartPage = () => {
-    // history.push(`/`);
-    // browserHistory.push(`/`);
+    history.push(`/`);
+    browserHistory.push(`/`);
 
-    window.open('/', '_blank');
+    //window.open('/', '_blank');
 
     // location.pathname = '/';
     // location.reload();

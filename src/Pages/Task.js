@@ -25,6 +25,7 @@ import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
@@ -88,9 +89,13 @@ class Task extends Component {
             });
 
             getUserAsync(user => {
-                if (!user) {
-                    return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
-                }
+              if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1" && getMeOutFromHereIfAmNotAuthorized(user)){
+                  return;
+              }
+
+              let taskId = this.props.params.taskId;
+
+              if (user) {
 
                 apiPayment
                 .getUserAccount("stripe")
@@ -103,36 +108,44 @@ class Task extends Component {
                         ignoreCodes: [ "STRIPE_NOT_CONNECTED" ]
                     }));
 
-                apiRequest
-                .getItems({
-                    userId: user.id
-                })
-                .then(userRequests => {
-                    this.setState({
-                        userRequests
-                    });
-                });
+                  apiRequest
+                  .getItems({
+                      userId: user.id
+                  })
+                  .then(userRequests => {
+                      this.setState({
+                          userRequests
+                      });
+                  });
+                }
 
-                let taskId = this.props.params.taskId;
+
                 
                 apiTask
                     .getItem(taskId)
                     .then(task => {
-                        const isMyTask = task.userId === user.id;
+                        const isMyTask = user ? task.userId === user.id : false;
 
                         if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
-                            if (user.userType === 1 && !isMyTask) {
+                            if (user && user.userType === 1 && !isMyTask) {
                                 goTo('/');
     
                                 return alert('You cannot access this page.');
                             }
                         }
 
-                        this.setState({
-                            configReady: true,
-                            user,
-                            task
-                        });
+                        if (user) {
+                          this.setState({
+                              configReady: true,
+                              user,
+                              task
+                          });
+                        } else {
+                          this.setState({
+                              configReady: true,
+                              task
+                          });
+                        }
 
                         pricingModelProvider.get()
                         .then(pricingModels => this.setState({
@@ -366,20 +379,7 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
-                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
-                                            <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                                <div style={{width: '100%', marginBottom: '20px'}}>
-                                                    <div>
-                                                        <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
-                                                    </div>
-                                                    <div>
-                                                        { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                       }
-
-                                       { CONFIG.LISTING_DESC_MODE === "1" && this.state.task.description.length > 0  &&
+                                       { CONFIG.LISTING_DESC_MODE === "1" && this.state.task.description && this.state.task.description.length > 0  &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
@@ -391,7 +391,7 @@ class Task extends Component {
                                             </div>
                                         </div>
                                        }
-                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && Object.keys(this.state.task.location).length > 0 &&
+                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location && Object.keys(this.state.task.location).length > 0 &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
                                             <div style={{ display: 'block-inline' }}>

@@ -7,6 +7,7 @@ import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 import HtmlTextField from './HtmlTextField';
 import ImageUploader from './ImageUploader';
 import FileUploader from './FileUploader';
@@ -16,6 +17,242 @@ import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
 
 const _ = require('underscore');
+
+let timesNested;
+
+const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state) => {
+  timesNested = level === null ? 0 : level;
+  if ((!field.condition) || (field.condition && state && state.config && state.config[field.condition.key] && state.config[field.condition.key] === field.condition.value)) {
+   return (
+    <div className={timesNested < 2 || parentFieldSubFieldsLength < 2 || (parentFieldSubFieldsLength % 3 === 0 && index + 1 === parentFieldSubFieldsLength) ? "col-xs-12" : "col-xs-6"} style={timesNested < 1 ? {} : {paddingLeft: '40px'}} key={field.key}>
+      { field.type === 'color' &&
+      <div style={{ marginBottom: 20 }}>
+        <TextField
+            floatingLabelFixed={true}
+            floatingLabelText={field.label}
+            disabled={true}
+            value={getFieldValue(field)}
+        />
+        <TwitterPicker
+            color={updatedEntity[field.key]}
+            onChange={color => {
+                handleFieldChange(field)(undefined, color.hex);
+            }}
+        />
+      </div>
+      }
+      {
+      (
+        field.type === 'string' ||
+        field.type === 'number' ||
+        field.type === 'secret'
+      ) &&
+      <div style={{ marginBottom: 20 }}>
+        { field.title &&
+            <div>
+                <h3>{field.title}</h3>
+            </div>
+        }
+        <div>
+            { field.type === 'string' &&
+                <TextField
+                    key={index}
+                    type={field.type}
+                    disabled={field.deriveValue}
+                    onChange={handleFieldChange(field)}
+                    value={getFieldValue(field)}
+                    style={{width: '100%'}}
+                    inputStyle={{width: '100%'}}
+                    floatingLabelText={field.label}
+                    hintText={field.hint}
+                    floatingLabelFixed={true}
+                />
+            }
+            { field.type === 'secret' &&
+                    <TextField
+                        key={index}
+                        type={"password"}
+                        disabled={field.deriveValue}
+                        onChange={handleFieldChange(field)}
+                        value={getFieldValue(field)}
+                        style={{width: '100%'}}
+                        inputStyle={{width: '100%'}}
+                        floatingLabelText={field.label}
+                        hintText={field.hint}
+                        floatingLabelFixed={true}
+                    />
+            }
+
+            { field.type === 'number' &&
+
+                <TextField
+                    min={field.min}
+                    max={field.max}
+                    key={index}
+                    type={field.type}
+                    disabled={field.deriveValue}
+                    onChange={handleFieldChange(field)}
+                    errorText={validationErrors[field.key] && 'Invalid value'}
+                    value={getFieldValue(field)}
+                    style={{width: '100%'}}
+                    inputStyle={{width: '100%'}}
+                    floatingLabelText={field.label}
+                    hintText={field.hint}
+                    floatingLabelFixed={true}
+                />
+            }
+            { field.explanation &&
+                <div>
+                    <div className="text-muted" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(field.explanation)}}>
+                    </div>
+                </div>
+            }
+        </div>
+      </div>
+      }
+      { field.type === 'select' && field.multiple &&
+        <SelectField
+          style={{width: '100%'}}
+          disabled={field.disabled}
+          multiple={field.multiple}
+          floatingLabelText={field.label}
+          value={getFieldValue(field)}
+          onChange={handleFieldSelections(field)}
+          >
+        {field.selection.map((selectionItem, index) =>
+          <MenuItem
+              key={index}
+              insetChildren={true}
+              value={selectionItem.value}
+              checked={
+                  updatedEntity[field.key] &&
+                  updatedEntity[field.key].indexOf(selectionItem.value) > -1}
+              primaryText={selectionItem.label}
+          />
+        )}
+        </SelectField>
+      }
+
+      { field.type === 'select' && !field.multiple &&
+        <SelectField
+          style={{width: '100%'}}
+          disabled={field.disabled}
+          multiple={field.multiple}
+          floatingLabelText={field.label}
+          value={getFieldValue(field)}
+          onChange={handleFieldSelection(field)}
+          >
+        {field.selection.map((selectionItem, index) =>
+          <MenuItem key={index} value={selectionItem.value} primaryText={selectionItem.label} />
+        )}
+        </SelectField>
+      }
+
+      { (field.type === 'html') &&
+        <div className="row">
+          { field.label &&
+              <div className="col-xs-12">
+                  <h3>{field.label}</h3>
+              </div>
+          }
+          <div className="col-xs-12">
+              <HtmlTextField
+                  value={updatedEntity[field.key]}
+                  onChange={handleFieldChange(field)}
+              >
+              </HtmlTextField>
+          </div>
+        </div>
+      }
+
+      { field.type === 'bool' &&
+      <div style={{ marginTop: 15 }}>
+        <Checkbox
+            disabled={field.disabled}
+            label={field.label}
+            checked={
+                updatedEntity[field.key] === "1" || updatedEntity[field.key] === true
+            }
+            onCheck={handleFieldChange(field)}
+        />
+
+        { field.explanation &&
+            <div>
+                <div className="text-muted" dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(field.explanation)
+                }}></div>
+            </div>
+        }
+      </div>
+      }
+      { field.type === 'image' &&
+        <ImageUploader
+          singleImageMode={false}
+          images={
+              updatedEntity[field.key] ?
+              [{ imageUrl: updatedEntity[field.key] }] :
+              []
+          }
+          onChange={images => {
+              handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
+          }}
+        />
+      }
+      { field.type === 'single-image' &&
+        <div style={{ marginTop: 15 }}>
+          <strong>{field.label}</strong>
+          {field.hint && <p>{field.hint}</p>}
+          <ImageUploader
+              imageResolution={field.imageResolution}
+              singleImageMode={true}
+              images={
+                  updatedEntity[field.key] ?
+                  [{ imageUrl: updatedEntity[field.key] }] :
+                  []
+              }
+              onChange={images => {
+                  handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
+              }}
+          />
+        </div>
+      }
+
+      { field.type === 'single-file' &&
+        <div style={{ marginTop: 15 }}>
+          <strong>{field.label}</strong>
+          {field.hint && <p>{field.hint}</p>}
+          <FileUploader
+              files={
+                  updatedEntity[field.key] ?
+                  [{ fileUrl: updatedEntity[field.key] }] :
+                  []
+              }
+              onChange={files => {
+                  handleFieldChange(field)(null, files[0] ? files[0].fileUrl : undefined)
+              }}
+          />
+        </div>
+      }
+      { field.type === 'hr' &&
+        <Divider style={{ marginTop: 15, marginBottom: 15 }} />
+      }
+      {
+        parentFieldSubFieldsLength !== 0 && (updatedEntity[field.key] === "1" || updatedEntity[field.key] === true) && field.subFields && field.subFields.map((subField, index2) =>
+          renderEditableEntityProxy(subField, index2, level, field.subFields.length, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection)
+        )
+      }
+    </div>
+  )
+  } else {
+    return;
+  }
+};
+
+const renderEditableEntityProxy = (field, index, level, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state) => {
+  level += 1;
+  timesNested = level;
+  return renderEditableEntity(field, index, timesNested, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state);
+}
 
 export default class EditableEntity extends Component {
     constructor(props) {
@@ -37,7 +274,7 @@ export default class EditableEntity extends Component {
                 return;
             }
 
-            updatedEntity[field.key] = updatedEntity[field.key] || '';
+            updatedEntity[field.key] = updatedEntity[field.key] || '';
         });
         
         this.state = {
@@ -141,6 +378,13 @@ export default class EditableEntity extends Component {
 
         this.props.onConfirm(this.state.updatedEntity);
     }
+
+    getFieldValue (field) {
+      if (field.default && typeof this.state.updatedEntity[field.key] === 'undefined') {
+        return field.default
+      }
+      return this.state.updatedEntity[field.key];
+    }
     
     render() {
             return (
@@ -152,220 +396,18 @@ export default class EditableEntity extends Component {
                 }
                 { !this.state.isLoading &&
                             <div className="col-xs-12">
-                                
-                                <div className="col-xs-12 col-sm-8">
+                              <div className="col-xs-12 col-sm-8">
                                     {   this.state.fields
                                         .map((field, index) =>
-                                            <div className="col-xs-12" key={field.key}>
-                                                    { field.type === 'color' &&
-                                                        <div style={{ marginBottom: 20 }}>
-                                                            <TextField
-                                                                floatingLabelFixed={true}
-                                                                floatingLabelText={field.label}
-                                                                disabled={true}
-                                                                value={this.state.updatedEntity[field.key]}
-                                                            />
-                                                            <TwitterPicker
-                                                                color={this.state.updatedEntity[field.key]}
-                                                                onChange={color => {
-                                                                    this.handleFieldChange(field)(undefined, color.hex);
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    }
-                                                    {
-                                                        (
-                                                            field.type === 'string' ||
-                                                            field.type === 'number' ||
-                                                            field.type === 'secret'
-                                                        ) &&
-                                                        <div style={{ marginBottom: 20 }}>
-                                                            { field.title &&
-                                                                <div>
-                                                                    <h3>{field.title}</h3>
-                                                                </div>
-                                                            }
-                                                            <div>
-                                                                { field.type === 'string' &&
-                                                                    <TextField
-                                                                        key={index}
-                                                                        type={field.type}
-                                                                        disabled={field.deriveValue}
-                                                                        onChange={this.handleFieldChange(field)}
-                                                                        value={this.state.updatedEntity[field.key]}
-                                                                        style={{width: '100%'}}
-                                                                        inputStyle={{width: '100%'}}
-                                                                        floatingLabelText={field.label}
-                                                                        hintText={field.hint}
-                                                                        floatingLabelFixed={true}
-                                                                    />
-                                                                }
-                                                                { field.type === 'secret' &&
-                                                                        <TextField
-                                                                            key={index}
-                                                                            type={"password"}
-                                                                            disabled={field.deriveValue}
-                                                                            onChange={this.handleFieldChange(field)}
-                                                                            value={this.state.updatedEntity[field.key]}
-                                                                            style={{width: '100%'}}
-                                                                            inputStyle={{width: '100%'}}
-                                                                            floatingLabelText={field.label}
-                                                                            hintText={field.hint}
-                                                                            floatingLabelFixed={true}
-                                                                        />
-                                                                }
-      
-                                                                { field.type === 'number' &&
-                                                                    <TextField
-                                                                        min={field.min}
-                                                                        max={field.max}
-                                                                        key={index}
-                                                                        type={field.type}
-                                                                        disabled={field.deriveValue}
-                                                                        onChange={this.handleFieldChange(field)}
-                                                                        errorText={this.state.validationErrors[field.key] && 'Invalid value'}
-                                                                        value={this.state.updatedEntity[field.key]}
-                                                                        style={{width: '100%'}}
-                                                                        inputStyle={{width: '100%'}}
-                                                                        floatingLabelText={field.label}
-                                                                        hintText={field.hint}
-                                                                        floatingLabelFixed={true}
-                                                                    />
-                                                                }
-                                                                { field.explanation &&
-                                                                    <div>
-                                                                        <div className="text-muted" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(field.explanation)}}>
-                                                                        </div>
-                                                                    </div>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    { field.type === 'select' && field.multiple &&
-                                                    <SelectField
-                                                        style={{width: '100%'}}
-                                                        disabled={field.disabled}
-                                                        multiple={field.multiple}
-                                                        floatingLabelText={field.label}
-                                                        value={this.state.updatedEntity[field.key]}
-                                                        onChange={this.handleFieldSelections(field)}
-                                                    >
-                                                        {field.selection.map((selectionItem, index) =>
-                                                            <MenuItem
-                                                                key={index}
-                                                                insetChildren={true}
-                                                                value={selectionItem.value}
-                                                                checked={
-                                                                    this.state.updatedEntity[field.key] &&
-                                                                    this.state.updatedEntity[field.key].indexOf(selectionItem.value) > -1}
-                                                                primaryText={selectionItem.label}
-                                                            />
-                                                        )}
-                                                    </SelectField>
-                                                    }
-
-                                                    { field.type === 'select' && !field.multiple &&
-                                                    <SelectField
-                                                        style={{width: '100%'}}
-                                                        disabled={field.disabled}
-                                                        multiple={field.multiple}
-                                                        floatingLabelText={field.label}
-                                                        value={this.state.updatedEntity[field.key]}
-                                                        onChange={this.handleFieldSelection(field)}
-                                                    >
-                                                        {field.selection.map((selectionItem, index) => 
-                                                            <MenuItem key={index} value={selectionItem.value} primaryText={selectionItem.label} />
-                                                        )}
-                                                    </SelectField>
-                                                    }
-
-                                                    { (field.type === 'html') &&
-                                                        <div className="row">
-                                                            { field.label &&
-                                                                <div className="col-xs-12">
-                                                                    <h3>{field.label}</h3>
-                                                                </div>
-                                                            }
-                                                            <div className="col-xs-12">
-                                                                <HtmlTextField
-                                                                    value={this.state.updatedEntity[field.key]}
-                                                                    onChange={this.handleFieldChange(field)}
-                                                                >
-                                                                </HtmlTextField>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    
-                                                    { field.type === 'bool' &&
-                                                        <div style={{ marginTop: 15 }}>
-                                                            <Checkbox
-                                                                disabled={field.disabled}
-                                                                label={field.label}
-                                                                checked={
-                                                                    this.state.updatedEntity[field.key] === "1" || this.state.updatedEntity[field.key] === true
-                                                                }
-                                                                onCheck={this.handleFieldChange(field)}
-                                                            />
-                                                            
-                                                            { field.explanation &&
-                                                                <div>
-                                                                    <div className="text-muted" dangerouslySetInnerHTML={{
-                                                                        __html: DOMPurify.sanitize(field.explanation)
-                                                                    }}></div>
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                    }
-                                                    { field.type === 'image' &&
-                                                        <ImageUploader
-                                                            singleImageMode={false}
-                                                            images={
-                                                                this.state.updatedEntity[field.key] ?
-                                                                [{ imageUrl: this.state.updatedEntity[field.key] }] :
-                                                                []
-                                                            } 
-                                                            onChange={images => {
-                                                                this.handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
-                                                            }}
-                                                        />
-                                                    }
-                                                    { field.type === 'single-image' &&
-                                                        <div style={{ marginTop: 15 }}>
-                                                            <strong>{field.label}</strong>
-                                                            {field.hint && <p>{field.hint}</p>}
-                                                            <ImageUploader
-                                                                imageResolution={field.imageResolution}
-                                                                singleImageMode={true}
-                                                                images={
-                                                                    this.state.updatedEntity[field.key] ?
-                                                                    [{ imageUrl: this.state.updatedEntity[field.key] }] :
-                                                                    []
-                                                                } 
-                                                                onChange={images => {
-                                                                    this.handleFieldChange(field)(null, images[0] ? images[0].imageUrl : undefined)
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    }
-
-                                                    { field.type === 'single-file' &&
-                                                        <div style={{ marginTop: 15 }}>
-                                                            <strong>{field.label}</strong>
-                                                            {field.hint && <p>{field.hint}</p>}
-                                                            <FileUploader
-                                                                files={
-                                                                    this.state.updatedEntity[field.key] ?
-                                                                    [{ fileUrl: this.state.updatedEntity[field.key] }] :
-                                                                    []
-                                                                } 
-                                                                onChange={files => {
-                                                                    this.handleFieldChange(field)(null, files[0] ? files[0].fileUrl : undefined)
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    }
-                                            </div>
-                                        )}
+                                          <div className="row">
+                                              {
+                                                renderEditableEntity(field, index, null, field.subFields ? field.subFields.length : 0, this.state.updatedEntity, this.state.validationErrors, this.getFieldValue.bind(this), this.handleFieldChange.bind(this), this.handleFieldSelections.bind(this), this.handleFieldSelection.bind(this), this.state)
+                                              }
+                                            {
+                                            }
+                                          </div>
+                                        )
+                                    }
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>

@@ -22,6 +22,7 @@ import ORDER_STATUS from '../constants/ORDER_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import USER_TYPES from '../constants/USER_TYPES';
 import { getUserAsync } from '../core/auth';
+import { getMode } from '../core/user-mode.js';
 import { displayPrice, displayLocation } from '../core/format';
 import { stripHTML } from '../core/format';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
@@ -58,15 +59,62 @@ const actionBtnStyle = {
     width: '100%'
 };
 
-const getActiveStep = (requestStatus, isReviewed) => {
+const getActiveStep = (requestStatus, isReviewed, config) => {
     let stepIndex = 1;
+    let stepperMap = {};
 
     STEPER_STATUSES.forEach((STEPPER_STATUS, index) => {
+        console.log(STEPPER_STATUS)
         stepIndex = STEPPER_STATUS.indexOf(requestStatus) > -1 ? index : stepIndex;
     });
 
-    if (stepIndex === 4) {
-        return isReviewed ? stepIndex + 1 : stepIndex;
+    if (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" || config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1") {
+      if (requestStatus === REQUEST_STATUS.PENDING &&
+        (
+          (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED !== "1") ||
+          (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED !== "1")
+        )
+      ) {
+        stepIndex += 1;
+      }
+
+      if (requestStatus === REQUEST_STATUS.ACCEPTED &&
+        (
+          (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED !== "1") ||
+          (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED !== "1")
+        )
+      ) {
+        stepIndex += 1;
+      }
+
+      if (requestStatus === REQUEST_STATUS.MARKED_DONE &&
+        (
+          (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED !== "1") ||
+          (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED !== "1")
+        )
+      ) {
+        stepIndex += 1;
+      }
+
+      if ((requestStatus === REQUEST_STATUS.SETTLED || requestStatus === REQUEST_STATUS.CLOSED) &&
+        (
+          (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED !== "1") ||
+          (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED !== "1")
+        )
+      ) {
+        stepIndex += 1;
+      }
+
+
+      if (stepIndex === 5 &&
+        (
+          (config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED !== "1") ||
+          (config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED !== "1")
+        )
+      ) {
+        stepIndex = 1;
+      }
+
     }
 
     return stepIndex;
@@ -93,10 +141,12 @@ export default class ChatRoom extends React.Component {
             },
             task: {},
             users: {},
-            messages: []
+            messages: [],
+            isUserOwner: false
         };
 
         this.handleNewMessage = this.handleNewMessage.bind(this);
+        this.handleRequestAccepted = this.handleRequestAccepted.bind(this);
     }
 
     componentDidMount() {
@@ -134,6 +184,7 @@ export default class ChatRoom extends React.Component {
                         },
                         config,
                         isUserOwner: user.id === chat.task.userId,
+                        userMode: getMode(),
                         requestId,
                         user,
                         isLoading: false,
@@ -195,6 +246,89 @@ export default class ChatRoom extends React.Component {
             alert('error');
         });
     }
+
+    handleRequestAccepted() {
+      apiRequest
+        .updateItem(this.state.requestId, {
+          status: 5
+        })
+        .then(res => {
+          if (res.status === 200) {
+            console.log(this.state.request)
+            this.setState({request: {
+              ...this.state.request,
+              status: '5'
+            }})
+          }
+      });
+    }
+
+    renderStepper() {
+    let steps = [];
+
+    if (
+        (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
+        (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1")
+    ) {
+      steps.push(<Step>
+                <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
+              </Step>,
+        <Step>
+                <StepLabel>{translate('REQUEST_ACCEPTED')}</StepLabel>
+              </Step>
+      )
+    }
+
+    if (
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED === "1") ||
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED === "1")
+    ) {
+      steps.push(<Step>
+              <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
+          </Step>)
+    }
+
+    if (
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED === "1") ||
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED === "1")
+    ) {
+      steps.push(<Step>
+              <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
+          </Step>)
+    }
+
+    if (
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED === "1") ||
+          (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED === "1")
+    ) {
+      steps.push(<Step>
+              <StepLabel>{ this.state.request.status === REQUEST_STATUS.CLOSED ? translate('REQUEST_CLOSED') : translate('REQUEST_SETLLED')}</StepLabel>
+          </Step>)
+    }
+
+
+    if (
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1") ||
+      (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1")
+    ) {
+      steps.push(<Step>
+              <StepLabel>{translate('REQUEST_REVIEWED')}</StepLabel>
+          </Step>)
+    }
+
+      return (
+            <Stepper className="hidden-xs" activeStep={
+                getActiveStep(this.state.request.status, getReviewFromState(this.state), CONFIG)
+              } orientation="vertical">
+              {
+                steps.map((step, index) =>
+                step
+                )
+              }
+            </Stepper>
+        )
+    }
+
     render() {
         return (
                 <div className="container vq-no-padding st-chat-view">
@@ -366,7 +500,6 @@ export default class ChatRoom extends React.Component {
                                         })
                                     }          
                             </div>
-
                             <div className="col-xs-12 col-sm-4">
                                     <Paper zDepth={1} style={{ marginTop: '20px', padding: '10px' }}>
                                         <div className="row">
@@ -411,11 +544,25 @@ export default class ChatRoom extends React.Component {
                                                 })} 
                                             </div>
                                         </div>
+                                      <div className="row">
+                                            <div className="col-xs-12">
+                                                <h4>{translate("WORKFLOW")}</h4>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-xs-12">
+                                              { (CONFIG && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" || CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1") &&
+                                                this.state.user &&
+                                                this.state.task &&
+                                                  this.renderStepper()
+                                              }
+                                            </div>
+                                        </div>
                                     </Paper>
                                     { this.state.isUserOwner &&
                                       String(this.state.request.status) === '0' &&
                                         <div>
-                                            { this.state.user.userType === USER_TYPES.DEMAND &&
+                                            { this.state.user.userType === USER_TYPES.DEMAND || Number(this.state.userMode) === USER_TYPES.DEMAND &&
                                                 <RaisedButton
                                                     primary={true}
                                                     style={actionBtnStyle}
@@ -425,12 +572,12 @@ export default class ChatRoom extends React.Component {
                                                     }
                                                 />
                                             }
-                                            { false && this.state.user.userType === USER_TYPES.SUPPLY &&
+                                            { false && this.state.user.userType === USER_TYPES.SUPPLY || Number(this.state.userMode) === USER_TYPES.SUPPLY &&
                                                 <RaisedButton
                                                     primary={true}
                                                     style={actionBtnStyle}
                                                     label={translate("ACCEPT_REQUEST")} 
-                                                    onClick={() => {}}
+                                                    onClick={this.handleRequestAccepted}
                                                 />
                                             }
                                         </div>
@@ -475,7 +622,6 @@ export default class ChatRoom extends React.Component {
                                             }}
                                         />
                                     }
-
                                     { this.state.isUserOwner && this.state.request.order &&
                                       (
                                           String(this.state.request.order.status) === ORDER_STATUS.PENDING ||
@@ -546,31 +692,6 @@ export default class ChatRoom extends React.Component {
                                             style={actionBtnStyle}
                                             onTouchTap={() => goTo(`/request/${this.state.request.id}/review`)}
                                         />
-                                    }
-
-                                    { CONFIG.LISTING_TASK_WORKFLOW_ENABLED === "1" &&
-                                      this.state.user &&
-                                      this.state.task &&
-                                      this.state.task.taskType === 1 &&
-                                        <Stepper className="hidden-xs" activeStep={
-                                            getActiveStep(this.state.request.status, getReviewFromState(this.state))
-                                        } orientation="vertical">
-                                            <Step>
-                                                <StepLabel>{translate('REQUEST_RECEIVED')}</StepLabel>
-                                            </Step>
-                                            <Step>
-                                                <StepLabel>{translate('REQUEST_BOOKED')}</StepLabel>
-                                            </Step>
-                                            <Step>
-                                                <StepLabel>{translate('REQUEST_MARKED_AS_DONE')}</StepLabel>
-                                            </Step>
-                                            <Step>
-                                                <StepLabel>{ this.state.request.status === REQUEST_STATUS.CLOSED ? translate('REQUEST_CLOSED') : translate('REQUEST_SETLLED')}</StepLabel>
-                                            </Step>
-                                            <Step>
-                                                <StepLabel>{translate('REQUEST_REVIEWED')}</StepLabel>
-                                            </Step>
-                                        </Stepper>
                                     }
                             </div>
                         </div>   

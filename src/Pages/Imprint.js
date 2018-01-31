@@ -57,7 +57,7 @@ export default class Imprint extends React.Component {
 
                             <div className="row">
                                 <div className="col-xs-12">
-                                    <p>{this.state.config.NAME} is powered by <a href="https://vq-labs.com" target="_blank">VQ-MARKETPLACE</a></p>
+                                    <p>{this.state.config.NAME} is powered by <a href="https://vqmarketplace.com/?source=marketplace" target="_blank">VQ-MARKETPLACE</a></p>
                                 </div>
                             </div>
                         </div>

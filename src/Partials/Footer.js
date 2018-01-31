@@ -105,7 +105,7 @@ class Footer extends Component {
                             </ul>
                         </div>
                         <div className="col-xs-12 text-center">
-                            <small>Powered by <a target="_blank" href="https://vq-labs.com?source=marketplace">VQ-MARKETPLACE</a></small>
+                            <small>Powered by <a target="_blank" href="https://vqmarketplace.com/?source=marketplace">VQ-MARKETPLACE</a></small>
                         </div>
                     </div>
                     }

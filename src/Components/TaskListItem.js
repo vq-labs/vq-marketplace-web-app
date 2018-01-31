@@ -83,7 +83,7 @@ export default class TaskListItem extends Component {
                                       <a  
                                           className="vq-link"
                                           label={`${translate('CANCEL_LISTING_ACTION_HEADER')}`}
-                                          labelStyle={{color: CONFIG.COLOR_PRIMARY}}
+                                          style={{color: CONFIG.COLOR_PRIMARY}}
                                           onTouchTap={() => {
                                             openConfirmDialog({
                                               headerLabel: translate("CANCEL_LISTING_ACTION_HEADER"),

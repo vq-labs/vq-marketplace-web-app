@@ -53,7 +53,7 @@ class Header extends Component {
       userId: undefined,
       user: undefined
     });
-  } 
+  }
 
   componentDidMount() {
     setInterval(() => {
@@ -77,11 +77,11 @@ class Header extends Component {
 
     coreAuth.destroy();
 
-    this.setState({ 
-      logged: false, 
+    this.setState({
+      logged: false,
       user: false
     });
-    
+
     location.reload();
   }
 
@@ -113,13 +113,13 @@ class Header extends Component {
                                 iconStyle={{ color: grey600 }}>
                                 <DashboardIcon />
                               </IconButton>
-                              
+
                                 <IconMenu
                                   iconButtonElement={
                                     <FlatButton
                                       className="hidden-xs"
                                       label={translate("HEADER_DASHBOARD")}
-                                      
+
                                       style={headerBtnStyle}
                                     />
                                   }
@@ -154,7 +154,7 @@ class Header extends Component {
                               ) {
                                 return goTo(this.state.userMode === "1" ? "/dashboard/requests" : "/dashboard/listings");
                               }
-                              
+
                               if (
                                 CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
                                 CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
@@ -172,30 +172,18 @@ class Header extends Component {
                               <FlatButton
                                 className="hidden-xs"
                                 label={translate("HEADER_DASHBOARD")}
-                                
+
                                 style={headerBtnStyle}
                               />
                             </div>
                           }
-                          { !this.state.logged &&
-                          <FlatButton label={translate("SIGNUP")} onClick={ 
-                            () => goTo('/signup')}
-                            style={headerBtnStyle} />
-                          }
-                          { !this.state.logged &&
-                          <FlatButton label={translate("LOGIN")} onClick={ 
-                            () => { goTo('/login'); 
-                          }} style={headerBtnStyle} />
-                          }
                     { this.state.logged && <ToolbarSeparator style={ { marginRight: '24px' } }/> }
-
-                    { this.state.logged &&
-                      (
-                        (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && Number(this.state.userMode) === 1) ||
-                        (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && Number(this.state.userMode) === 2) 
-                      )
+                    {   (CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1" ||
+                        (this.state.logged &&
+                              (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && Number(this.state.userMode) === 2)
+                        ))
                     &&
-                      <div onTouchTap={ 
+                      <div onTouchTap={
                           () => goTo('/')
                       }>
                         <IconButton
@@ -206,7 +194,16 @@ class Header extends Component {
 
                         <FlatButton
                           className="hidden-xs"
-                          label={Number(this.state.userMode) === 1 ? translate('HEADER_SUPPLY_LISTINGS') : translate('HEADER_DEMAND_LISTINGS')}
+                          label={
+                            this.state.userMode ?
+                              Number(this.state.userMode) === 1 ?
+                                translate('HEADER_SUPPLY_LISTINGS') :
+                                translate('HEADER_DEMAND_LISTINGS')
+                              :
+                              Number(CONFIG.LISTING_PUBLIC_VIEW_MODE) === 1 ?
+                                translate('HEADER_SUPPLY_LISTINGS') :
+                                translate('HEADER_DEMAND_LISTINGS')
+                          }
                           style={headerBtnStyle}
                         />
                       </div>
@@ -224,14 +221,13 @@ class Header extends Component {
                           <IconButton iconStyle={{ color: grey600 }}>
                             <ContentAdd />
                           </IconButton> :
-                          <FlatButton 
+                          <FlatButton
                               label={translate('HEADER_ADD_LISTING')}
                               style={headerBtnStyle}
                           />
                         }
                       </a>
                     }
-
                     { this.state.logged
                       &&
                       Number(this.state.userMode) === 2
@@ -244,15 +240,15 @@ class Header extends Component {
                           <IconButton iconStyle={{ color: grey600 }}>
                             <ContentAdd />
                           </IconButton> :
-                          <FlatButton 
+                          <FlatButton
                               label={translate('HEADER_ADD_OFFER_LISTING')}
                               style={headerBtnStyle}
                           />
                         }
                       </a>
                     }
-                
-                  { false && this.state.logged && 
+
+                  { false && this.state.logged &&
                     <IconButton iconStyle={{ color: grey600 }}  onClick={ () => { goTo('/chat' ) }}>
                       <CommunicationChatBubble />
                     </IconButton>
@@ -272,7 +268,7 @@ class Header extends Component {
                             anchorOrigin={{horizontal: 'left', vertical: 'top'}}
                             targetOrigin={{horizontal: 'left', vertical: 'top'}}
                       >
-                        <MenuItem 
+                        <MenuItem
                           onClick={
                             () => goTo(`/profile/${this.state.user.id}`, (newPath, oldPath) => {
                               if (oldPath.indexOf('profile') > -1) {
@@ -288,7 +284,7 @@ class Header extends Component {
                         <MenuItem
                             onClick={() => goTo(`/account`)}
                             primaryText={translate("ACCOUNT_SETTINGS")}
-                        />     
+                        />
 
                         { this.state.user && this.state.user.userType === 0 &&
                             <MenuItem
@@ -309,17 +305,28 @@ class Header extends Component {
                         { coreAuth.isAdmin() &&
                           <MenuItem onClick={
                             () => goTo('/admin/overview', true)
-                          } primaryText="Admin dashboard" /> 
+                          } primaryText="Admin dashboard" />
                         }
                         <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                       </IconMenu>
-                    }
+                  }
+                   { !this.state.logged &&
+                    <FlatButton label={translate("LOGIN")} onClick={
+                      () => { goTo('/login');
+                    }} style={headerBtnStyle} />
+                  }
+                  { !this.state.logged &&
+                  <FlatButton label={translate("SIGNUP")} onClick={
+                    () => goTo('/signup')}
+                    style={headerBtnStyle} />
+                  }
+
                 </ToolbarGroup>
               }
             </Toolbar>
         </div>
       );
    }
-}   
+}
 
 export default Header;

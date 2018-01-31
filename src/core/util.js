@@ -9,7 +9,9 @@ export const parseJSON = response => new Promise((resolve, reject) => {
   let jsonResponse;
 
   try {
-    jsonResponse = response.json();
+    jsonResponse = response.text().then(function(text) {
+      return text ? JSON.parse(text) : {status: response.status}
+    });
   } catch (err) {
     console.warn("jsonResponse could not be parsed")
   }

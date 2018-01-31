@@ -297,10 +297,10 @@ export default class NewListing extends Component {
         const task = this.state.task;
 
         if (!fieldRawText) {
-          task[fieldName] = trimSpaces(fieldValue);
+          task[fieldName] = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
         } else {
           task[fieldName] = {};
-          task[fieldName].value = trimSpaces(fieldValue);
+          task[fieldName].value = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
           task[fieldName].rawText = fieldRawText;
         }
 
@@ -391,7 +391,7 @@ export default class NewListing extends Component {
                                     onPricingChange={
                                         pricing => this.handlePricingChange(pricing.priceType, pricing.price)
                                     } 
-                                /> 
+                                />
                             }
                             { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics

@@ -62,7 +62,9 @@ export const displayLocation = (location, showDetails) => {
 };
 
 export const displayPrice = (amount, currencyCode, pricingModel) => {
-    amount = amount || '';
+    if (amount === undefined || amount === null) {
+      amount = '';
+    }
 
     // per hour
     if (pricingModel === 1) {
@@ -99,7 +101,9 @@ export const stripHTML = (html, noOfChars) => {
 };
 
 export const displayUnit = (amount, unit) => {
-    amount = amount || '';
+    if (amount === undefined || amount === null) {
+      amount = '';
+    }
 
     return `${amount} ${unit}`;
 };

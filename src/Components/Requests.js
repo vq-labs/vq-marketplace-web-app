@@ -36,17 +36,22 @@ export default class Requests extends Component {
     getUserAsync(user => {
         const queryObj = {};
         
+        console.log('queryobj')
         if (this.state.view) {
             queryObj.view = this.state.view;
 
             if (this.props.showOutgoing) {
                 queryObj.fromUserId = user.id;
             }
+        console.log('queryobj')
         }
+
+        console.log('apireq')
 
         apiRequest
             .getItems(queryObj)
             .then(requests => {
+              console.log('requests', requests)
                 this.setState({
                     requests,
                     isLoading: false

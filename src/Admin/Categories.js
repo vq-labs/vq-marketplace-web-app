@@ -64,17 +64,17 @@ export default class SectionCategories extends React.Component {
                                 key: 'minQuantity',
                                 type: 'number',
                                 label: 'Min. Quantity',
-                                explanation: 'Enter the minimum quantity'
+                                explanation: 'Enter the minimum quantity of products in this category'
                             }, {
                                 key: 'maxQuantity',
                                 type: 'number',
                                 label: 'Max. Quantity',
-                                explanation: 'Enter the maximum quantity'
+                                explanation: 'Enter the maximum quantity of products in this category'
                             }, {
                                 key: 'quantityStep',
                                 type: 'number',
                                 label: 'Quantity step',
-                                explanation: 'Enter the quantity step'
+                                explanation: 'Enter the quantity steps for sliding filter of products in this category'
                             }, {
                                 key: 'imageUrl',
                                 type: 'single-image',

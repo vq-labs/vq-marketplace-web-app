@@ -98,9 +98,9 @@ export default class Dashboard extends Component {
           status: '0',
           userId: user.id,
         }).then(tasks => this.setState({
-          tasks,
-          isLoading: false
-        }));
+            tasks,
+            isLoading: false
+          }))
       }, true);
   }
 

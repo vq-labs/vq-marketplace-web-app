@@ -415,7 +415,7 @@ form.vq-payment-form {
   CSS overwrites to react-image-gallery
 */
 .image-gallery .image-gallery-content .image-gallery-slide .image-gallery-image {
-    max-height:30vh;
+    max-height:50vh;
 }
 .image-gallery .image-gallery-content .image-gallery-slide .image-gallery-image img {
     max-height:100%;
@@ -423,10 +423,11 @@ form.vq-payment-form {
     display: block;
 }
 .image-gallery.fullscreen-modal .image-gallery-content.fullscreen .image-gallery-slide .image-gallery-image {
-    max-height:100vh !important;
+    max-height:85vh !important;
 }
 
 .image-gallery.fullscreen-modal .image-gallery-content.fullscreen .image-gallery-slide .image-gallery-image img {
-    max-width: 100%;
-    max-height: 100%;
+    width: auto;
+    max-height: inherit;
+    margin: 0 auto;
 }

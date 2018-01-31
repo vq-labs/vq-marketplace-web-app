@@ -2,6 +2,7 @@ import React from 'react';
 import Chip from 'material-ui/Chip';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import Badge from 'material-ui/Badge';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Divider from 'material-ui/Divider';
@@ -117,7 +118,7 @@ class Profile extends React.Component {
 
     componentDidMount() {
         getUserAsync(user => {
-            if (!user) {
+            if (CONFIG.USER_ENABLE_PUBLIC_VIEW !== "1" && !user) {
                 return goTo(`/login?redirectTo=/profile/${this.state.userId}`);
             }
 
@@ -234,17 +235,23 @@ class Profile extends React.Component {
                                 }
                             </div>
                         </div>
-                        <div className="row">
+                      {
+                            this.state.profile.bio && this.state.profile.bio.length > 0 && (
+                              <div className="row">
                             <div className="col-xs-12">
-                                    
+
                             </div>
+
                             <div className="col-xs-1"><FormatQuote /></div>
                             <div className="col-xs-11 text-muted" style={{ padding: 10 }} >
-                                    { this.state.profile && 
+                                    { this.state.profile &&
                                         <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.profile.bio)}}></div>
                                     }
                             </div>
                         </div>
+                            )
+                          }
+
 
                         <div className="row">
                             <div className="col-xs-12">
@@ -260,16 +267,14 @@ class Profile extends React.Component {
                                 }
                             </div>
                             { this.state.profile && this.state.profile.status === '10' &&
-                                <div className="col-sm-2 col-xs-6 text-center" style={{ marginTop: 10 }}>
-                                    <div className="col-xs-12">
-                                        <CheckCircleIcon color={'green'}/>
-                                    </div>
-                                    <div className="col-xs-12">
-                                        <small style={{
-                                                paddingBottom: 20,
-                                                fontSize: 10
-                                        }}>{translate('EMAIL_VERIFIED')}</small>
-                                    </div>
+                                <div className="col-xs-12" style={{marginTop: 10}}>
+                                  <Chip
+                                  labelColor={'white'}
+                                  backgroundColor={'#4CAF50'}
+                                >
+                                  <Avatar backgroundColor={'#43A047'} color={'white'} icon={<CheckCircleIcon />} />
+                                  {translate('EMAIL_VERIFIED')}
+                                </Chip>
                                 </div>
                             }
                             { this.state.profile && Boolean(getUserProperty(this.state.profile, 'studentIdUrl')) &&

@@ -296,15 +296,19 @@ export default class NewListing extends Component {
     handleListingFieldChange(fieldName, fieldValue, fieldRawText) {
         const task = this.state.task;
 
+        const processedValue = typeof fieldValue === "string" ? trimSpaces(fieldValue) : fieldValue;
+
         if (!fieldRawText) {
-          task[fieldName] = trimSpaces(fieldValue);
+          task[fieldName] = processedValue;
         } else {
           task[fieldName] = {};
-          task[fieldName].value = trimSpaces(fieldValue);
+          task[fieldName].value = processedValue;
           task[fieldName].rawText = fieldRawText;
         }
 
-        this.setState({ task });
+        this.setState({
+            task
+        });
     }
 
     selectListingType(listingType) {

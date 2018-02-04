@@ -379,7 +379,8 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
-                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+
+                                       { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                                             <div className="col-xs-12" style={{ marginTop: 10 }}>
                                                 <div style={{width: '100%', marginBottom: '20px'}}>
                                                     <div>

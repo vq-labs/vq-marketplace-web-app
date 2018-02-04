@@ -9,7 +9,7 @@ import PhotoIcon from 'material-ui/svg-icons/image/photo';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
 import { displayPrice, stripHTML }  from '../core/format';
-
+import { CONFIG } from '../core/config';
 export default class TaskCard extends Component {
   constructor(props) {
     super(props);
@@ -76,7 +76,7 @@ export default class TaskCard extends Component {
                 <CardText
                   onClick={() => this.handleGoToTask(task.id)}
                   style={{
-                    height: '93px',
+                    Height: '85px',
                     paddingBottom: 0,
                     lineHeight: '18px', 
                     overflow: 'hidden'
@@ -102,7 +102,7 @@ export default class TaskCard extends Component {
                   </CardText>
                 }
 
-                { this.props.displayPrice && 
+                { CONFIG.LISTING_PRICING_MODE === "1" && this.props.displayPrice && 
                   <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
                       height: '53px',
                       paddingTop: 0,

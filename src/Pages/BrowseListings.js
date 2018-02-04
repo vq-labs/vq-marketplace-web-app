@@ -49,7 +49,7 @@ class Offers extends Component {
                 category: query.category,
                 lat: query.lat,
                 lng: query.lng,
-                rad: query.rad || Number(CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE)
+                rad: query.rad || Number(CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE) || undefined
             },
             offer: {
                 utm: {}
@@ -258,7 +258,7 @@ class Offers extends Component {
             )
             }
             </div>
-            { CONFIG.LISTING_PRICE_FILTER_ENABLED === "1" &&
+            { CONFIG.LISTING_PRICING_MODE === "1" && CONFIG.LISTING_PRICE_FILTER_ENABLED === "1" &&
             <div
                 className="col-xs-12"
                 style={{
@@ -561,11 +561,11 @@ class Offers extends Component {
                                                             <div 
                                                                 key={offer.id}
                                                                 className="col-xs-12 col-sm-6"
-                                                                style={{ marginBottom: 20} }
+                                                                style={{ marginBottom: 20 } }
                                                             >
                                                                 <TaskCard
                                                                     task={offer}
-                                                                    displayDesc={false}
+                                                                    displayDesc={true}
                                                                     displayPrice={true}
                                                                 />
                                                             </div>
@@ -589,7 +589,7 @@ class Offers extends Component {
                                                             <TaskCard
                                                                 task={offer}
                                                                 displayPrice={true}
-                                                                displayDesc={false}
+                                                                displayDesc={true}
                                                             />
                                                         </div>
                                                     )}

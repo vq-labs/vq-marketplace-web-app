@@ -208,9 +208,9 @@ class Task extends Component {
                         }
 
                         { CONFIG.LISTING_IMAGES_MODE === "1" && this.state.task.images.length > 0 &&
-                            <div className="row listing-gallery-section">
+                            <div className="row listing-gallery-section" >
                                 <ImageGallery
-                                    style={{ height: 50, maxHeight: "100%" }}
+                                    style={{ height: 300, maxHeight: "100%" }}
                                     showPlayButton={false}
                                     useBrowserFullscreen={false}
                                     showFullscreenButton={true}
@@ -264,6 +264,7 @@ class Task extends Component {
                                 </div>
                     
                                 <div className="col-xs-12 col-sm-4">
+                                    { CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE !== "1" &&
                                     <Card style={{ 'marginTop': 50 }}>
                                         <CardText>
                                             { CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.price &&
@@ -357,7 +358,19 @@ class Task extends Component {
                                                 }}
                                             />
                                        }
-                                    </Card> 
+                                    </Card>
+                                    }
+
+                                    {
+                                           CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE === "1" && this.state.task.callToActionUrl &&
+                                           <a href={this.state.task.callToActionUrl}>
+                                                <RaisedButton
+                                                    style={{width: '100%'}}
+                                                    primary={true}
+                                                    label={`${this.state.task.callToActionLabel || this.state.task.callToActionUrl}`}
+                                                />
+                                            </a>
+                                       }
                                 </div> 
                             </div>
                         </div>

@@ -65,6 +65,12 @@ const newListingFields = [
     },
     {
         type: 'bool',
+        key: 'LISTING_CUSTOM_CALL_TO_ACTION_MODE',
+        label: 'Enable Listing Custom Call to Action',
+        explanation: 'This option will add a listing for custom call to action.'
+    },
+    {
+        type: 'bool',
         key: 'LISTING_QUANTITY_MODE',
         label: 'Enable Listing quantity',
         explanation: 'This option will add a new section to a listing creation page and will allow to specify the wholesale quantity'

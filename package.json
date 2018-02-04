@@ -106,7 +106,7 @@
     "start:talentwand": "VQ_API_URL=https://talentwand.vqmarketplace.com/api npm run preparestart",
     "start:ani": "VQ_API_URL=https://ani.vqmarketplace.com/api npm run preparestart",
     "start:b2btemplate": "VQ_API_URL=https://b2btemplate.vqmarketplace.com/api npm run preparestart",
-    "start:click4work": "VQ_API_URL=https://click4work.vq-labs.com/api npm run preparestart",
+    "start:templates": "VQ_API_URL=https://templates.vqmarketplace.com/api npm run preparestart",
     "start:rentkitchen": "VQ_API_URL=https://rental-kitchen.vqmarketplace.com/api npm run preparestart",
     "start:bitcoinmeetup": "VQ_API_URL=https://bitcoinmeetup.vqmarketplace.com/api npm run preparestart",
     "start:yogaat": "VQ_API_URL=https://yogaat.vqmarketplace.com/api npm run preparestart",

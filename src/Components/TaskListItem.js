@@ -43,10 +43,7 @@ export default class TaskListItem extends Component {
               }
             }}
           >
-                    <ListingHeader
-                      task={task}
-                      config={this.state.config}
-                    />
+                    <ListingHeader task={task} />
                     <div className="row">
                         { this.props.displayManagement &&
                           <div className="col-xs-12">

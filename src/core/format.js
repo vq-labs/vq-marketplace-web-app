@@ -45,7 +45,7 @@ export const displayTotalPrice = (price, timings, currencyCode) => {
 export const displayListingDesc = desc => {
     if (desc) {
         return stripHTML(desc)
-            .substring(0, 75) + '..';
+            .substring(0, 80) + '..';
     }
 
     return 'No description';

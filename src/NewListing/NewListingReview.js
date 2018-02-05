@@ -55,7 +55,6 @@ export default class NewListingReview extends Component {
                             </div>
                         </div>
                     }
-
                     <div className="row">
                         <div className="col-xs-12">
                             <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("CATEGORY")}</h4>

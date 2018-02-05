@@ -304,7 +304,9 @@ export default class NewListing extends Component {
           task[fieldName].rawText = fieldRawText;
         }
 
-        this.setState({ task });
+        this.setState({
+            task
+        });
     }
 
     selectListingType(listingType) {

@@ -22,8 +22,8 @@ const displayDuration = timings => {
 class ListingHeader extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            config: props.config,
             task: props.task
         };
     }
@@ -34,7 +34,6 @@ class ListingHeader extends Component {
     
     componentWillReceiveProps (nextProps) {
         this.setState({
-            config: nextProps.config,
             task: nextProps.task
         });
     } 
@@ -81,47 +80,47 @@ class ListingHeader extends Component {
                     }
 
                     { CONFIG.LISTING_DESC_MODE === "1" && !this.props.hideDesc &&
-                    <p>
-                        { displayListingDesc(this.state.task.description) }
-                    </p>
+                        <p>
+                            { displayListingDesc(this.state.task.description) }
+                        </p>
                     }
                 </div>
-                <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} >
-                    {
-                        CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.priceType === PRICE_TYPE.PER_HOUR &&
-                        <div>
-                            <h1 style={{
-                                marginTop: this.props.noPaddings ? 5 : 30,
-                                color: CONFIG.COLOR_PRIMARY
-                            }}>
-                                {   CONFIG.LISTING_PRICING_MODE === "1" &&
-                                    (Boolean(this.state.task.taskTimings.length) ?
-                                        displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency) :
-                                        displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType))
-                                }
-                                {   CONFIG.LISTING_QUANTITY_MODE === "1" &&
-                                       `${this.state.task.quantity} ${this.state.task.unitOfMeasure}`
-                                }
-                            </h1>
-                            <br />
-                            {
-                                Boolean(this.state.task.taskTimings.length) &&
-                                <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
-                            }
-                        </div>
-                    }
 
-                    { CONFIG.LISTING_QUANTITY_MODE === "1" &&
-                        <div>
-                            <h1 style={{
-                                marginTop: this.props.noPaddings ? 5 : 30,
-                                color: CONFIG.COLOR_PRIMARY
-                            }}>
-                                {`${this.state.task.quantity} ${this.state.task.unitOfMeasure}`}
-                            </h1>
-                        </div>
-                    }
-                </div>
+                { CONFIG.LISTING_PRICING_MODE === "1" &&
+                    <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} >
+                        <h1 style={{
+                            marginTop: this.props.noPaddings ? 5 : 30,
+                            color: CONFIG.COLOR_PRIMARY
+                        }}>
+                            {   CONFIG.LISTING_PRICING_MODE === "1" &&
+                                (Boolean(this.state.task.taskTimings.length) ?
+                                    displayTotalPrice(this.state.task.price, this.state.task.taskTimings, this.state.task.currency) :
+                                    displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType))
+                            }
+                            {   CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                `${this.state.task.quantity} ${this.state.task.unitOfMeasure}`
+                            }
+                        </h1>
+                        <br />
+                        {
+                            Boolean(this.state.task.taskTimings.length) &&
+                            <p className="text-muted">{displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}, {displayDuration(this.state.task.taskTimings)}h</p>
+                        }
+                    </div>
+                }
+
+                { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                    <div className={`col-xs-12 ${this.props.noColumns ? 'col-sm-12' : 'col-sm-3 text-right'}`} >
+                            <div>
+                                <h1 style={{
+                                    marginTop: this.props.noPaddings ? 5 : 30,
+                                    color: CONFIG.COLOR_PRIMARY
+                                }}>
+                                    {`${this.state.task.quantity} ${this.state.task.unitOfMeasure}`}
+                                </h1>
+                            </div>
+                    </div>
+                }
             </div>
         );
     }

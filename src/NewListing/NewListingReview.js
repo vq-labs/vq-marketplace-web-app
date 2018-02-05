@@ -47,7 +47,7 @@ export default class NewListingReview extends Component {
                     </div>
 
                 <div className="col-xs-12">
-                    { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                    { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TYPE")}</h4>

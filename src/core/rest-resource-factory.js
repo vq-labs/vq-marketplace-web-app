@@ -28,7 +28,6 @@ export const create = (resource, transformers) => {
 
                 if (params.cache) {
                    cache[url] = data;
-
                    localStorage.setItem(`VQ_CACHE_${resource.toUpperCase()}`, JSON.stringify(cache));
                 }
 

@@ -43,6 +43,7 @@ class Offers extends Component {
             queryCity: null,
             autoCompleteText: '',
             isLoading: false,
+            userType: 1,
             locationQueryString,
             appliedFilter: {
                 viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
@@ -86,7 +87,8 @@ class Offers extends Component {
             this.setState({
                 appliedFilter,
                 listingType: appliedFilter.listingType,
-                isLoading: true
+                isLoading: true,
+                userType: user.userType
             });
 
             apiCategory

@@ -63,13 +63,14 @@ export default class LoginPage extends Component {
 
                     break;
                   case 2:
-                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-                      return goTo(`/`);
-                    }
 
                     if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
                       return goTo(`/dashboard/listings`);
                     }
+
+                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                      return goTo(`/`);
+                    }                 
 
                     break;
                   default:

@@ -575,9 +575,11 @@ export default class ChatRoom extends React.Component {
                                                     }
                                                 />
                                             }
-                                          {   (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
-                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") &&
-                                              this.state.user.userType === USER_TYPES.SUPPLY || Number(this.state.userMode) === USER_TYPES.SUPPLY &&
+                                          {   ((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
+                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1")) &&
+                                              (this.state.user.userType === USER_TYPES.SUPPLY || Number(this.state.userMode) === USER_TYPES.SUPPLY ||
+                                              this.state.user.userType === USER_TYPES.ANY || Number(this.state.userMode) === USER_TYPES.ANY
+                                                ) &&
                                                 <RaisedButton
                                                     primary={true}
                                                     style={actionBtnStyle}

@@ -6,6 +6,7 @@ import EditableEntity from '../Components/EditableEntity';
 import * as apiConfig from '../api/config';
 import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import TASK_CATEGORY_STATUS from '../constants/TASK_CATEGORY_STATUS.js';
 
 function slugify(text) {
     return text.toString().toLowerCase()
@@ -160,28 +161,67 @@ export default class SectionCategories extends React.Component {
                                     categoryInEdit: category
                                 });
                             }}/>
-                            { false &&
+                            {
+                                category.status === TASK_CATEGORY_STATUS.ACTIVE && 
                                 <FlatButton
-                                    label="Delete"
-                                    onTouchTap={() => {
-                                        openConfirmDialog({
-                                            headerLabel: `Delete category "${category.code}"`,
-                                            confirmationLabel: `Are you sure?`,
-                                            okLabel: 'Confirm',
-                                            cancelLabel: 'Cancel'
-                                        }, () => {
-                                            this.state.categories.splice(index, 1);
+                                label="Deactivate"
+                                onTouchTap={() => {
+                                    openConfirmDialog({
+                                        headerLabel: `Deactivate a category "${category.code}"`,
+                                        confirmationLabel: `Are you sure?`,
+                                        okLabel: 'Confirm',
+                                        cancelLabel: 'Cancel'
+                                    }, () => {
+                                        
+                                        apiConfig.categories
+                                        .updateItem(category.id, { status: TASK_CATEGORY_STATUS.INACTIVE })
+                                        .then(() => {
+                                            this.state.categories.forEach(_ => {
+                                                if (_.id === category.id) {
+                                                    return _.status = TASK_CATEGORY_STATUS.INACTIVE;
+                                                }
+                                            })
 
-                                            apiConfig.categories
-                                            .deleteItem(category.id)
-                                            .then(() => {
-                                                this.setState({ 
-                                                    categories: this.state.categories
-                                                });
+
+                                            this.setState({ 
+                                                categories: this.state.categories
                                             });
                                         });
-                                    }}
-                                />
+                                    });
+                                }}
+                            />
+                            }
+                            { category.status === TASK_CATEGORY_STATUS.INACTIVE &&
+                                <FlatButton
+                                label="Activate"
+                                onTouchTap={() => {
+                                    openConfirmDialog({
+                                        headerLabel: `Activate a category "${category.code}"`,
+                                        confirmationLabel: `Are you sure?`,
+                                        okLabel: 'Confirm',
+                                        cancelLabel: 'Cancel'
+                                    }, () => {
+                                        
+                                        apiConfig.categories
+                                        .updateItem(category.id, { status: TASK_CATEGORY_STATUS.ACTIVE })
+                                        .then(() => {
+
+                                            this.state.categories.forEach(_ => {
+                                                if (_.id === category.id) {
+                                                    _.status = TASK_CATEGORY_STATUS.ACTIVE;
+                                                }
+                                            })
+
+                                            console.log(this.state.categories)
+
+
+                                            this.setState({ 
+                                                categories: this.state.categories
+                                            });
+                                        });
+                                    });
+                                }}
+                            />
                             }
                         </CardActions>
                     </Card>

@@ -146,7 +146,7 @@ export default class SectionCategories extends React.Component {
         
                 { !this.state.categoryInEdit && this.state.categories && this.state.categories
                     .map((category, index) =>
-                    <div key={index} className="col-xs-12 col-sm-6" style={{ marginBottom: 10 }}>
+                    <div key={index} className="col-xs-12 col-sm-3" style={{ marginBottom: 10 }}>
                     <Card>
                         <CardMedia>
                             <img src={category.imageUrl || '/images/category-default-img.jpeg'} alt={category.label}/>
@@ -168,7 +168,7 @@ export default class SectionCategories extends React.Component {
                                 onTouchTap={() => {
                                     openConfirmDialog({
                                         headerLabel: `Deactivate a category "${category.code}"`,
-                                        confirmationLabel: `Are you sure?`,
+                                        confirmationLabel: `This action will cancel all unbooked listings. Are you sure?`,
                                         okLabel: 'Confirm',
                                         cancelLabel: 'Cancel'
                                     }, () => {
@@ -220,6 +220,13 @@ export default class SectionCategories extends React.Component {
                                     });
                                 }}
                             />
+                            }
+                            { category.status === TASK_CATEGORY_STATUS.INACTIVE &&
+                                <strong>
+                                    <span style={{color: '#9E9E9E', lineHeight: '36px', float: 'right', paddingRight: '8px'}}>
+                                        Deactivated
+                                    </span>
+                              </strong>
                             }
                         </CardActions>
                     </Card>

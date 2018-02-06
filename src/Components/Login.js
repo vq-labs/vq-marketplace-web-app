@@ -117,7 +117,7 @@ export default class Login extends Component {
                 }  
                   <br />
                   <RaisedButton
-                    disabled={this.state.isSubmitting || this.state.email === '' || this.state.password === ''}
+                    disabled={this.state.isSubmitting || this.state.email === '' || (this.state.authMode !== 'password_reset' && this.state.password === '')}
                     type="submit" 
                     label={translate('SUBMIT')}
                     fullWidth={true} 

@@ -10,7 +10,7 @@ const userConfigFields = [
     {
         key: 'USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS',
         type: "bool",
-        label: "Users can be either Supply or Demand. If enabled, users will have to choose one option at signup"
+        label: "Users can be both Supply or Demand. If disabled, users will have to choose one option at signup; if enabled, users can switch their roles from their avatar menu"
     },
     {
         key: 'USER_REQUIRE_PHONE_NUMBER',

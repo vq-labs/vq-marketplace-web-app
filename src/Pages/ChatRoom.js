@@ -538,7 +538,7 @@ export default class ChatRoom extends React.Component {
                                         
                                     ) &&
                                     (
-                                        this.state.isUserTaskOwner
+                                        this.state.isUserTaskOwner && this.state.taskType && Number(this.state.taskType) === 2 
                                     ) &&
                                     String(this.state.request.status) === REQUEST_STATUS.PENDING &&
                                     <RaisedButton
@@ -578,7 +578,7 @@ export default class ChatRoom extends React.Component {
                                         )
                                     ) &&
                                     (
-                                        !this.state.request.order
+                                        !this.state.request.order && this.state.request.status === REQUEST_STATUS.ACCEPTED
                                     ) &&
                                     <RaisedButton
                                         primary={true}

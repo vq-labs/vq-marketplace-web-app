@@ -23,25 +23,6 @@ function getField(fieldKey, fields) {
     }
 }
 
-function hasField(fieldKey, fields) {
-    let result = null;
-
-    fields.map(field => {
-      if (field.key === fieldKey) {
-        result = field;
-        return
-      }
-      if (!result && field.subFields && field.subFields.length > 0) {
-        result = getField(fieldKey, field.subFields);
-        return;
-      }
-    });
-
-    if (result) {
-      return true;
-    }
-}
-
 export default class ConfigEdit extends React.Component {
     constructor() {
         super();

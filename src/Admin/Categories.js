@@ -210,9 +210,7 @@ export default class SectionCategories extends React.Component {
                                                 if (_.id === category.id) {
                                                     _.status = TASK_CATEGORY_STATUS.ACTIVE;
                                                 }
-                                            })
-
-                                            console.log(this.state.categories)
+                                            });
 
 
                                             this.setState({ 

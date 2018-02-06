@@ -53,9 +53,35 @@ export const displayListingDesc = desc => {
 
 export const displayLocation = (location, showDetails) => {
     if (location) {
-        return showDetails ?
-        `${location.street} ${location.streetNumber}, ${location.postalCode} ${location.city}` :
-        `${location.street}, ${location.postalCode} ${location.city}`
+        let neededFields = [
+            'street',
+            'streetNumber',
+            ',',
+            'postalCode',
+            'city'
+        ];
+
+        if (!showDetails) {
+            neededFields = [
+                'street',
+                ',',
+                'postalCode',
+                'city'
+            ];
+        }
+
+        let renderedLocation = "";
+
+        neededFields.forEach((field, index) => {
+            if (field === ',') {
+                renderedLocation = renderedLocation.substr(0, renderedLocation.length - 1);
+                renderedLocation += field + ' '
+            } else if (location[field] !== undefined && location[field] !== null) {
+                renderedLocation += location[field] + ' '
+            }
+        });
+
+        return renderedLocation;
     }
 
     return '';

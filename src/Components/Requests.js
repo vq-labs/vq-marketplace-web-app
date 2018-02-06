@@ -36,22 +36,19 @@ export default class Requests extends Component {
     getUserAsync(user => {
         const queryObj = {};
         
-        console.log('queryobj')
         if (this.state.view) {
             queryObj.view = this.state.view;
 
             if (this.props.showOutgoing) {
                 queryObj.fromUserId = user.id;
             }
-        console.log('queryobj')
-        }
 
-        console.log('apireq')
+        }
 
         apiRequest
             .getItems(queryObj)
             .then(requests => {
-              console.log('requests', requests)
+
                 this.setState({
                     requests,
                     isLoading: false
@@ -187,6 +184,10 @@ export default class Requests extends Component {
 
                                                     { String(request.status) === REQUEST_STATUS.ACCEPTED &&
                                                         translate("REQUEST_STATUS_ACCEPTED")
+                                                    }
+
+                                                    { String(request.status) === REQUEST_STATUS.BOOKED &&
+                                                        translate("REQUEST_STATUS_BOOKED")
                                                     }
 
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&

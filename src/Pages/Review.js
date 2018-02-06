@@ -61,6 +61,7 @@ class Review extends Component {
                     return apiOrder
                         .getItem(this.state.orderId)
                         .then(order => {
+                            
                             if (order.userId !== user.id) {
                                 return goTo('/');
                             }
@@ -84,6 +85,7 @@ class Review extends Component {
                     return apiRequest
                         .getItem(this.state.requestId)
                         .then(request => {
+
                             if (request.request.fromUserId !== user.id) {
                                 return goTo('/');
                             }

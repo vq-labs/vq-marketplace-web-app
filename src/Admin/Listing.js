@@ -127,7 +127,9 @@ const workflowFields = [
             type: 'bool',
             key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED',
             label: 'Request Step',
-            explanation: 'Enable the step on task where the supply makes a request (an offer) on a demand listing. The demand will have to confirm (or cancel) the request',
+            explanation: 'Enable the step on task where the supply makes a request (an offer) on a demand listing. The demand will have to book (or cancel) the request',
+            disabled: true,
+            forceChecked: true,
             subFields: [
               {
                   type: 'bool',
@@ -136,17 +138,21 @@ const workflowFields = [
               }
             ]
           },
-          // {
-          //   type: 'bool',
-          //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED',
-          //   label: 'Booking Step',
-          //   explanation: 'Enable the step on task where the demand books the offer of the supply side',
-          // },
+          {
+            type: 'bool',
+            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED',
+            label: 'Booking Step',
+            explanation: 'Enable the step on task where the demand books the offer of the supply side',
+            disabled: true,
+            forceChecked: true,
+          },
           {
             type: 'bool',
             key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED',
             label: 'Complete Step',
             explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
+            disabled: true,
+            forceChecked: true,
             subFields: [
                 // {
                 //   type: 'bool',
@@ -216,6 +222,8 @@ const workflowFields = [
           key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED',
           label: 'Request Step',
           explanation: 'Enable the step on task where the demand makes a request on a supply listing. The supply will have to confirm (or cancel) the request',
+          disabled: true,
+          forceChecked: true,
           subFields: [
             {
                 type: 'bool',
@@ -224,17 +232,21 @@ const workflowFields = [
             }
           ]
         },
-        // {
-        //   type: 'bool',
-        //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED',
-        //   label: 'Booking Step',
-        //   explanation: 'Enable the step on task where the demand books the offer of the supply side',
-        // },
+        {
+          type: 'bool',
+          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED',
+          label: 'Booking Step',
+          explanation: 'Enable the step on task where the demand books the offer of the supply side',
+          disabled: true,
+          forceChecked: true,
+        },
         {
           type: 'bool',
           key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED',
           label: 'Complete Step',
           explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
+          disabled: true,
+          forceChecked: true,
           subFields: [
               // {
               //   type: 'bool',

@@ -171,7 +171,7 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
             disabled={field.disabled}
             label={field.label}
             checked={
-                updatedEntity[field.key] === "1" || updatedEntity[field.key] === true
+                field.forceChecked ? field.forceChecked : updatedEntity[field.key] === "1" || updatedEntity[field.key] === true
             }
             onCheck={handleFieldChange(field)}
         />
@@ -237,7 +237,7 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
         <Divider style={{ marginTop: 15, marginBottom: 15 }} />
       }
       {
-        parentFieldSubFieldsLength !== 0 && (updatedEntity[field.key] === "1" || updatedEntity[field.key] === true) && field.subFields && field.subFields.map((subField, index2) =>
+        parentFieldSubFieldsLength !== 0 && (updatedEntity[field.key] === "1" || updatedEntity[field.key] === true || field.forceChecked === true) && field.subFields && field.subFields.map((subField, index2) =>
           renderEditableEntityProxy(subField, index2, level, field.subFields.length, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection)
         )
       }
@@ -254,29 +254,46 @@ const renderEditableEntityProxy = (field, index, level, parentFieldSubFieldsLeng
   return renderEditableEntity(field, index, timesNested, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state);
 }
 
+
+function constructUpdatedEntity(updatedEntity, fields) {
+    fields.forEach(field => {
+        if (field.type === 'bool') {
+            updatedEntity[field.key] = field.forceChecked ? field.forceChecked : updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
+            
+            if (field.subFields && field.subFields.length > 0) {
+                constructUpdatedEntity(updatedEntity, field.subFields);
+            }
+
+            return;
+        }
+
+        if (field.type === 'select' && field.multiple) {
+            updatedEntity[field.key] = updatedEntity[field.key] ?
+                updatedEntity[field.key].split(",") : [];
+
+            if (field.subFields && field.subFields.length > 0) {
+                constructUpdatedEntity(updatedEntity, field.subFields);
+            }
+            return;
+        }
+
+        if (field.subFields && field.subFields.length > 0) {
+            constructUpdatedEntity(updatedEntity, field.subFields);
+        }      
+
+        //updatedEntity[field.key] = updatedEntity[field.key] || '';
+    });
+
+    return updatedEntity;
+}
+
 export default class EditableEntity extends Component {
     constructor(props) {
         super(props);
 
-        const updatedEntity = _.clone(props.value) || {};
+        let updatedEntity =  _.clone(props.value) || {};
+        updatedEntity = constructUpdatedEntity(updatedEntity, props.fields);
 
-        props.fields.forEach(field => {
-            if (field.type === 'bool') {
-                updatedEntity[field.key] = updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
-
-                return;
-            }
-
-            if (field.type === 'select' && field.multiple) {
-                updatedEntity[field.key] = updatedEntity[field.key] ?
-                    updatedEntity[field.key].split(",") : [];
-
-                return;
-            }
-
-            updatedEntity[field.key] = updatedEntity[field.key] || '';
-        });
-        
         this.state = {
             valid: true,
             validationErrors: {},
@@ -301,26 +318,9 @@ export default class EditableEntity extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        const updatedEntity = _.clone(nextProps.value) || {};
+        let updatedEntity = _.clone(nextProps.value) || {};
 
-        this.props.fields
-        .forEach(field => {
-            if (field.type === 'bool') {
-                updatedEntity[field.key] = updatedEntity[field.key] === true || updatedEntity[field.key] === '1';
-
-                return;
-            }
-
-            if (field.type === 'select' && field.multiple) {
-                if (typeof updatedEntity[field.key] === 'string') {
-                    return updatedEntity[field.key].split(',');
-                }
-
-                updatedEntity[field.key] = updatedEntity[field.key] || [];
-
-                return;
-            }
-        });
+        updatedEntity = constructUpdatedEntity(updatedEntity, nextProps.fields);
 
         this.setState({
             fields: nextProps.fields,

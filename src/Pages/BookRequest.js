@@ -50,7 +50,7 @@ class BookRequest extends Component {
         .then(requestDetails => {
             const request = requestDetails.request;
 
-            if (request.status !== REQUEST_STATUS.PENDING) {
+            if (request.status !== REQUEST_STATUS.PENDING && request.status !== REQUEST_STATUS.ACCEPTED) {
                 return goTo(`/chat/${request.id}`);
             }
 
@@ -141,7 +141,7 @@ class BookRequest extends Component {
                         header: translate('BOOKING_SUCCESS_HEADER'),
                         desc: translate('BOOKING_SUCCESS_DESC')
                     }, () => {
-                        goTo(`/chat/${rOrder.requestId}`);
+                        goTo(`/chat/${rOrder.requestId}`, true);
                     });
                 }, displayErrorFactory({
                     // possible error codes: NO_SUPPLY_PAYMENT_ACCOUNT

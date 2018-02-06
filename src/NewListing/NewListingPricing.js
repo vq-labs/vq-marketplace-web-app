@@ -31,7 +31,7 @@ export default class NewListingPricing extends React.Component {
 
     componentDidMount() { }
 
-    componentWillReceiveProps (nextProps) {console.log('nextprops', nextProps)}
+    componentWillReceiveProps (nextProps) {}
 
     handlePriceChange (price, priceType) {
         if (price) {

@@ -141,7 +141,9 @@ class App extends Component {
           <div>
             <Header user={this.state.user}></Header>
            
-            { AppRoutes }
+            <div style={{paddingTop: '56px'}}>
+              { AppRoutes }
+            </div>
          
             { window.location.pathname.indexOf("admin") === -1 &&
               this.state.config.APP_FOOTER_VISIBLE === "1" &&

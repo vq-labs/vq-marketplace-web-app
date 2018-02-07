@@ -48,7 +48,6 @@ export default class Requests extends Component {
         apiRequest
             .getItems(queryObj)
             .then(requests => {
-
                 this.setState({
                     requests,
                     isLoading: false
@@ -122,6 +121,7 @@ export default class Requests extends Component {
 
   shouldShowPhoneNumber = request => {
     return request.status === REQUEST_STATUS.ACCEPTED ||
+    request.status === REQUEST_STATUS.BOOKED ||
     request.status === REQUEST_STATUS.MARKED_DONE;
   }
 
@@ -136,7 +136,7 @@ export default class Requests extends Component {
   }
 
   shouldAllowMarkingAsDone = request => {
-      return request.status === REQUEST_STATUS.ACCEPTED;
+      return request.status === REQUEST_STATUS.BOOKED;
   }
 
   render() {
@@ -223,7 +223,7 @@ export default class Requests extends Component {
                                                     `${request.toUser.firstName} ${request.toUser.lastName}`
                                                 }
                                             >
-                                                <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                <Avatar src={request.toUser.imageUrl || '/images/avatar.png'} />
                                             </IconButton>
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton
@@ -259,9 +259,26 @@ export default class Requests extends Component {
                                                     onTouchTap={() => this.markAsDone(request)}
                                                 />
                                             }
+                                            {request.status === REQUEST_STATUS.ACCEPTED  &&
+                                                <RaisedButton
+                                                    primary={true}
+                                                    label={translate('ORDER_CREATE')}
+                                                    onTouchTap={() => goTo(`/request/${request.id}/book`)}
+                                                />
+                                            }
                                             {!request.review &&
-                                                (request.status === REQUEST_STATUS.SETTLED ||
-                                                 request.status === REQUEST_STATUS.CLOSED) &&
+                                                (
+                                                    request.status === REQUEST_STATUS.SETTLED ||
+                                                    request.status === REQUEST_STATUS.CLOSED
+                                                ) &&
+                                                (
+                                                    (
+                                                        Number(request.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                                    ) ||
+                                                    (
+                                                        Number(request.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                                    )
+                                                ) &&
                                                 <div style={{
                                                     display: 'inline-block',
                                                     padding: 10

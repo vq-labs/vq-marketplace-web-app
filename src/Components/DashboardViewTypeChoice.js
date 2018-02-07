@@ -61,7 +61,7 @@ export default class DashboardViewTypeChoice extends Component {
             }
 
             if (this.state.dashboardType === "listings" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-                VIEW_TYPES.OFFER_LISTINGS_POSTED = 'LISTINGS_POSTED';
+                VIEW_TYPES.LISTINGS_POSTED = 'LISTINGS_POSTED';
                 VIEW_TYPES.ORDERS_IN_PROGRESS = 'ORDERS_IN_PROGRESS';
                 VIEW_TYPES.ORDERS_COMPLETED = 'ORDERS_COMPLETED';
             }

@@ -20,7 +20,6 @@ export const create = (resource, transformers) => {
 
                 resolve(cache[url]);
             }
-
             communication.doGet(`/${resource}`, query).then(data => {
                 const getItemsTransformer = transformers ? transformers.getItems : data => data;
 

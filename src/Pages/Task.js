@@ -314,7 +314,15 @@ class Task extends Component {
                                             ) &&
                                             !this.state.isMyTask &&
                                             (
-                                                !this.state.sentRequestId || CONFIG.MULTIPLE_REQUESTS_ENABLED === "1"
+                                                !this.state.sentRequestId ||
+                                                (
+                                                    (
+                                                        Number(this.state.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                    ) ||
+                                                    (
+                                                        Number(this.state.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                    )
+                                                )
                                             ) &&
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
@@ -346,9 +354,22 @@ class Task extends Component {
                                             }/>
                                        }
 
-                                       { CONFIG.MULTIPLE_REQUESTS_ENABLED !== "1" &&
-                                         !this.state.isMyTask &&
-                                         this.state.sentRequestId &&
+                                       {
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                )
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                )
+                                            )
+                                        ) &&
+                                        !this.state.isMyTask &&
+                                        this.state.sentRequestId &&
                                             <FlatButton
                                                 style={{width: '100%'}}
                                                 label={translate("REQUEST_ALREADY_SENT")}

@@ -60,7 +60,7 @@ export default class Dashboard extends Component {
           viewType:  defaultViewTypes[dashboardType]
         };
         
-        setQueryParams(newState, ['dashboardType', 'viewType']);
+        setQueryParams(newState, ['viewType']);
         this.setState(newState);
 
         apiTask
@@ -68,9 +68,9 @@ export default class Dashboard extends Component {
           status: '0',
           userId: user.id,
         }).then(tasks => this.setState({
-            tasks,
-            isLoading: false
-          }))
+          tasks,
+          isLoading: false
+        }))
       }, true);
   }
 
@@ -200,7 +200,7 @@ export default class Dashboard extends Component {
                 </div>
               }
 
-              {this.state.viewType === 'ORDERS_IN_PROGRESS' &&
+              {this.state.dashboardType === 'listings' && this.state.viewType === 'ORDERS_IN_PROGRESS' &&
                 <div className="row vq-margin-top-bottom">
                   <Bookings
                     showTitle={false}
@@ -230,7 +230,16 @@ export default class Dashboard extends Component {
                 </div>
               }
 
-              {this.state.viewType === 'SENT_REQUESTS_ACCEPTED' &&
+              {CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && this.state.viewType === 'SENT_REQUESTS_ACCEPTED' &&
+                <div className="row vq-margin-top-bottom">
+                  <Requests
+                    view={"accepted"}
+                    showTitle={false}
+                  />
+                </div>
+              }
+
+              {this.state.dashboardType === 'requests' && this.state.viewType === 'ORDERS_IN_PROGRESS' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
                     view={"in_progress"}

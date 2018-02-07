@@ -22,7 +22,6 @@ import getUserProperty from '../helpers/get-user-property';
 export default class Bookings extends Component {
   constructor(props) {
     super();
-
     this.state = {
         view: props.view,
         ready: false,
@@ -79,6 +78,7 @@ export default class Bookings extends Component {
         apiOrder
             .getItems(queryObj)
             .then(orders => {
+                console.log(orders)
                 this.setState({
                     ready: true,
                     config,
@@ -92,6 +92,9 @@ export default class Bookings extends Component {
   }
 
   render() {
+
+    const { config } = this.state;
+
     return (
         <div className="container">
             { this.state.ready &&
@@ -280,7 +283,17 @@ export default class Bookings extends Component {
                                                 }}
                                             />
                                         }
-                                        { (order.status === ORDER_STATUS.SETTLED || order.status === ORDER_STATUS.CLOSED) &&
+                                        {   (
+                                                order.status === ORDER_STATUS.SETTLED || order.status === ORDER_STATUS.CLOSED
+                                            ) &&
+                                            (
+                                                (
+                                                    Number(order.task.taskType) === 2 && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                                ) ||
+                                                (
+                                                    Number(order.task.taskType) === 1 && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && config.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                                )
+                                            ) &&
                                             !order.review &&
                                             <div style={{
                                                 display: 'inline-block',

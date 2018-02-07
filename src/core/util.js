@@ -24,7 +24,7 @@ export const serializeQueryObj = (obj, prefix, fieldsToSet) => {
 
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
-      if(fieldsToSet && fieldsToSet.length > 0 && fieldsToSet.indexOf(p) !== -1) {
+      if((fieldsToSet && fieldsToSet.length > 0 && fieldsToSet.indexOf(p) !== -1) || !fieldsToSet) {
         var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
         if (typeof v !== 'undefined') {
            str.push((v !== null && typeof v === "object") ?

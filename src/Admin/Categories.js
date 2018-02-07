@@ -182,7 +182,6 @@ export default class SectionCategories extends React.Component {
                                                 }
                                             })
 
-
                                             this.setState({ 
                                                 categories: this.state.categories
                                             });

@@ -19,16 +19,18 @@ export const parseJSON = response => new Promise((resolve, reject) => {
     .then(resolve);
 });
 
-export const serializeQueryObj = (obj, prefix) => {
+export const serializeQueryObj = (obj, prefix, fieldsToSet) => {
   let str = [], p;
 
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
-      var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
-      if (typeof v !== 'undefined') {
-         str.push((v !== null && typeof v === "object") ?
-            serializeQueryObj(v, k) :
-            encodeURIComponent(k) + "=" + encodeURIComponent(v));
+      if(fieldsToSet && fieldsToSet.length > 0 && fieldsToSet.indexOf(p) !== -1) {
+        var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+        if (typeof v !== 'undefined') {
+           str.push((v !== null && typeof v === "object") ?
+              serializeQueryObj(v, k) :
+              encodeURIComponent(k) + "=" + encodeURIComponent(v));
+        }
       }
     }
   }

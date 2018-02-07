@@ -7,6 +7,7 @@ import TaskCard from '../Components/TaskCard';
 import TaskListItem from '../Components/TaskListItem';
 import VIEW_TYPES from '../constants/VIEW_TYPES';
 import FILTER_DEFAULTS from '../constants/FILTER_DEFAULTS';
+import TASK_CATEGORY_STATUS from '../constants/TASK_CATEGORY_STATUS';
 import { displayPrice, displayUnit }  from '../core/format';
 import apiTask from '../api/task';
 import * as apiCategory from '../api/category';
@@ -68,7 +69,7 @@ class Offers extends Component {
             const appliedFilter = this.state.appliedFilter;
 
             /**
-             * Only sellers can access this page
+             * Only sellers can access this page unless public view is enabled
              */
             if ((user && user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") && CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1") {
                 return goTo('/dashboard');
@@ -88,7 +89,7 @@ class Offers extends Component {
                 appliedFilter,
                 listingType: appliedFilter.listingType,
                 isLoading: true,
-                userType: user.userType
+                userType: user ? user.userType : undefined
             });
 
             apiCategory
@@ -220,7 +221,7 @@ class Offers extends Component {
                 </div>
             }
 
-            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+            { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                 <div className="col-xs-12">
                     <span style={{
                         fontWeight: this.state.appliedFilter.listingType === 2 ?
@@ -252,6 +253,7 @@ class Offers extends Component {
             {
             this.state.categories &&
             this.state.categories
+            .filter(category => category.status === TASK_CATEGORY_STATUS.ACTIVE)
             .map((category, index) =>
                 <div key={index}>
                     <span style={{

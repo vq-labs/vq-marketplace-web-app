@@ -22,9 +22,9 @@ export default class Dashboard extends Component {
   constructor(props) {
       super();
   
-      const viewType = getParams(location.search).viewType;
       const dashboardType = props.params.type;
-
+      const viewType = getParams(location.search).viewType
+      console.log('dt', dashboardType)
       this.state = {
         dashboardType,
         viewType,
@@ -48,21 +48,7 @@ export default class Dashboard extends Component {
         let dashboardType = this.state.dashboardType;
 
         if (!dashboardType) {
-          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            dashboardType = 'listings';
-          }
-  
-          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            dashboardType = 'requests';
-          }
-  
-          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            dashboardType = 'listings';
-          }
-  
-          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            dashboardType = 'requests';
-          }
+          dashboardType = this.setDashboardType(userMode);
         }
 
         const newState = {
@@ -70,27 +56,11 @@ export default class Dashboard extends Component {
           isLoading: true,
           ready: true,
           userType: user.userType,
-          dashboardType
+          dashboardType,
+          viewType:  defaultViewTypes[dashboardType]
         };
-
-        if (!this.state.viewType) {
-          if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
-          }
-
-          if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
-          }
-
-          if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
-          }
-
-          if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            newState.viewType = this.state.dashboardType === "requests" ? "SENT_REQUESTS_PENDING" : "SENT_REQUESTS_PENDING";
-          }
-        }
-
+        
+        setQueryParams(newState, ['dashboardType', 'viewType']);
         this.setState(newState);
 
         apiTask
@@ -104,14 +74,46 @@ export default class Dashboard extends Component {
       }, true);
   }
 
+
+
   onViewChange(viewType) {
       const newState = {
         viewType
       };
 
       setQueryParams(newState);
-
       this.setState(newState);
+  }
+
+  setDashboardType(userMode) {
+    switch (Number(userMode)) {
+      case 1: // demand user
+        if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+          return 'requests';
+          break;
+        }
+  
+        if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+          return 'listings';
+          break;
+        }
+  
+        break;
+      case 2: //supply user
+        if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+          return 'listings';
+          break;
+        }
+  
+        if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+          return 'requests';
+          break;
+        }                 
+  
+        break;
+      default:
+        return 'listings';
+    }
   }
 
   render() {
@@ -147,7 +149,7 @@ export default class Dashboard extends Component {
                 </div>
             }
           
-            {(this.state.viewType === 'LISTINGS_POSTED' || this.state.viewType === 'OFFER_LISTINGS_POSTED' ) &&
+            {(this.state.viewType === 'LISTINGS_POSTED') &&
                 <div className="row vq-margin-top-bottom">
                   { this.state.isLoading &&
                     <Loader isLoading={true} />

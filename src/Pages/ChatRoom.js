@@ -43,14 +43,7 @@ const REQUEST_ORDER = [
     REQUEST_STATUS.CANCELED
 ];
 
-const STEPER_STATUSES = [
-    [],
-    [REQUEST_STATUS.PENDING],
-    [REQUEST_STATUS.ACCEPTED],
-    [REQUEST_STATUS.BOOKED],
-    [REQUEST_STATUS.MARKED_DONE],
-    [REQUEST_STATUS.SETTLED, REQUEST_STATUS.CLOSED]
-];
+let STEPER_STATUSES = [];
 
 const actionBtnStyle = {
     marginTop: 10,
@@ -99,6 +92,7 @@ export default class ChatRoom extends React.Component {
                 apiRequest
                     .getItem(requestId)
                     .then(chat => {
+                        
                         if (chat.task.status === TASK_STATUS.INACTIVE) {
                             return goTo('/');
                         }
@@ -200,6 +194,7 @@ export default class ChatRoom extends React.Component {
     }
 
     renderStepper(orientation) {
+        this.constructStepperStatuses();
         let steps = [];
 
         if (
@@ -208,11 +203,15 @@ export default class ChatRoom extends React.Component {
         ) {
             steps.push(<Step>
                 <StepLabel>{translate('REQUEST_STATUS_RECEIVED')}</StepLabel>
-            </Step>,
-                <Step>
-                    <StepLabel>{translate('REQUEST_STATUS_ACCEPTED')}</StepLabel>
-                </Step>
-            )
+            </Step>)
+        }
+
+        if (
+            this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+        ) {
+            steps.push(<Step>
+                <StepLabel>{translate('REQUEST_STATUS_ACCEPTED')}</StepLabel>
+            </Step>)
         }
 
         if (
@@ -281,6 +280,24 @@ export default class ChatRoom extends React.Component {
     
         return stepIndex;
     };
+
+    constructStepperStatuses() {
+        STEPER_STATUSES = [];
+        STEPER_STATUSES.push(
+            [],
+            [REQUEST_STATUS.PENDING]
+        )
+    
+        if (this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") {
+            STEPER_STATUSES.push([REQUEST_STATUS.ACCEPTED])
+        }
+    
+        STEPER_STATUSES.push(
+            [REQUEST_STATUS.BOOKED],
+            [REQUEST_STATUS.MARKED_DONE],
+            [REQUEST_STATUS.SETTLED, REQUEST_STATUS.CLOSED]
+        )
+    }
 
     render() {
         return (
@@ -574,11 +591,14 @@ export default class ChatRoom extends React.Component {
                                             ) &&
                                             (
                                                 this.state.isUserRequestOwner
+                                            ) &&
+                                            (
+                                                this.state.request.status === REQUEST_STATUS.ACCEPTED
                                             )
                                         )
                                     ) &&
                                     (
-                                        !this.state.request.order && this.state.request.status === REQUEST_STATUS.ACCEPTED
+                                        !this.state.request.order
                                     ) &&
                                     <RaisedButton
                                         primary={true}

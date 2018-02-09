@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import Bookings from '../Components/Bookings';
 import Requests from '../Components/Requests';
-import TaskListItem from '../Components/TaskListItem';
 import DashboardViewTypeChoice from '../Components/DashboardViewTypeChoice';
 import Loader from "../Components/Loader";
 import { translate } from '../core/i18n';
 import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
 import { setQueryParams } from '../core/navigation';
+import TASK_STATUS from '../constants/TASK_STATUS';
 import { getParams } from '../core/util.js';
 import { getMode } from '../core/user-mode.js';
 import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import apiTask from '../api/task';
 import { openDialog } from '../helpers/open-message-dialog.js';
+import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 
 const defaultViewTypes = {
-  listings: "LISTINGS_POSTED",
-  requests: "SENT_REQUESTS_PENDING"
+  listings: "LISTINGS_PENDING",
+  requests: "REQUESTS_PENDING"
 };
 export default class Dashboard extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ export default class Dashboard extends Component {
   
       const dashboardType = props.params.type;
       const viewType = getParams(location.search).viewType
-      console.log('dt', dashboardType)
+      
       this.state = {
         dashboardType,
         viewType,
@@ -46,31 +47,31 @@ export default class Dashboard extends Component {
 
         const userMode = user.userType === 0 ? getMode() : user.userType;
         let dashboardType = this.state.dashboardType;
+        let viewTypes = this.state.viewTypes;
 
         if (!dashboardType) {
           dashboardType = this.setDashboardType(userMode);
         }
 
+        if (!viewTypes) {
+          viewTypes = this.setViewTypes(dashboardType);
+        }
+
+        
+
         const newState = {
           userMode,
-          isLoading: true,
+          isLoading: false,
           ready: true,
           userType: user.userType,
           dashboardType,
-          viewType:  defaultViewTypes[dashboardType]
+          viewType:  defaultViewTypes[dashboardType],
+          viewTypes
         };
         
         setQueryParams(newState, ['viewType']);
         this.setState(newState);
 
-        apiTask
-        .getItems({
-          status: '0',
-          userId: user.id,
-        }).then(tasks => this.setState({
-          tasks,
-          isLoading: false
-        }))
       }, true);
   }
 
@@ -81,7 +82,7 @@ export default class Dashboard extends Component {
         viewType
       };
 
-      setQueryParams(newState);
+      setQueryParams(newState, ['viewType']);
       this.setState(newState);
   }
 
@@ -116,143 +117,250 @@ export default class Dashboard extends Component {
     }
   }
 
+  setViewTypes(dashboardType) {
+    switch (dashboardType) {
+      case "listings":
+        return {
+          LISTINGS_PENDING: 'LISTINGS_PENDING',
+          LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS',
+          LISTINGS_COMPLETED: 'LISTINGS_COMPLETED',
+          LISTINGS_CANCELED: 'LISTINGS_CANCELED',
+        }
+
+        break;
+      case "requests":
+        if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+          return {
+            REQUESTS_PENDING: 'REQUESTS_PENDING',
+            REQUESTS_ACCEPTED: 'REQUESTS_ACCEPTED',
+            REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
+            REQUESTS_COMPLETED: 'REQUESTS_COMPLETED',
+            REQUESTS_CANCELED: 'REQUESTS_CANCELED',
+            REQUESTS_DECLINED: 'REQUESTS_DECLINED',
+          }
+          break;
+        }
+  
+        if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+          return {
+            REQUESTS_PENDING: 'REQUESTS_PENDING',
+            REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
+            REQUESTS_SETTLED: 'REQUESTS_SETTLED',
+            REQUESTS_CANCELED: 'REQUESTS_CANCELED',
+            REQUESTS_DECLINED: 'REQUESTS_DECLINED',
+          }
+          break;
+        }                 
+  
+        break;
+      default:
+      return {
+        LISTINGS_PENDING: 'LISTINGS_PENDING',
+        LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS',
+        LISTINGS_COMPLETED: 'LISTINGS_COMPLETED',
+        LISTINGS_CANCELED: 'LISTINGS_CANCELED',
+      }
+    }
+  }
+
   render() {
     return (
         <div className="container vq-no-padding">
           {this.state.ready &&
           <div className="col-xs-12">
-            { this.state.dashboardType === "listings" &&
-              <div className="row vq-margin-top-bottom">
-                  <div className="col-xs-12 vq-margin-top-bottom">
-                    <DashboardViewTypeChoice
-                      userType={Number(this.state.userMode)}
-                      dashboardType={"listings"}
-                      halign="left"
-                      selected={this.state.viewType}
-                      onSelect={this.onViewChange}
-                    />
-                  </div>
-                </div>
-            }
+            <div className="row vq-margin-top-bottom">
+              <div className="col-xs-12 vq-margin-top-bottom">
+                <DashboardViewTypeChoice
+                  halign="left"
+                  viewType={this.state.viewType}
+                  changeViewType={this.onViewChange}
+                  viewTypes={this.state.viewTypes}
+                />
+              </div>
+            </div>
 
-            {this.state.dashboardType === "requests" &&
-              <div className="row vq-margin-top-bottom">
-                  <div className="col-xs-12 vq-margin-top-bottom">
-                      <DashboardViewTypeChoice
-                        userType={Number(this.state.userMode)}
-                        dashboardType={"requests"}
-                        halign="left"
-                        selected={this.state.viewType}
-                        onSelect={this.onViewChange}
-                      />
-                  </div>
-                </div>
-            }
-          
-            {(this.state.viewType === 'LISTINGS_POSTED') &&
-                <div className="row vq-margin-top-bottom">
-                  { this.state.isLoading &&
-                    <Loader isLoading={true} />
-                  }
-                  { !this.state.isLoading && !this.state.tasks.length &&
-                    <div className="col-xs-12">
-                        <div className="row">
-                          <div className="col-xs-12">
-                              <p className="text-muted">
-                                  {translate("NO_OPEN_LISTINGS")}
-                              </p>
-                          </div>
-                        </div>
-                    </div>
-                  }
-                  { !this.state.isLoading && this.state.tasks
-                  .map((task, index) =>
-                      <div 
-                          key={task.id}
-                          className="col-xs-12"
-                          style={{
-                            marginBottom: 10
-                          }}
-                      >
-                          <TaskListItem
-                              task={task}
-                              showRequests={true}
-                              displayManagement={true}
-                              displayPrice={true}
-                              editable={true}
-                              onCancel={() => openDialog({
-                                  header: translate('CANCEL_LISTING_SUCCESS_HEADER'),
-                                  desc: translate('CANCEL_LISTING_SUCCESS_DESC')
-                                }, () => {
-                                  const tasks = this.state.tasks;
-
-                                  tasks.splice(index, 1);
-
-                                  this.setState({
-                                    tasks
-                                  });
-                                })
-                              }
-                          />
-                        <div className="row"><hr /></div>
-                      </div>
-                  )}
-                </div>
-              }
-
-              {this.state.dashboardType === 'listings' && this.state.viewType === 'ORDERS_IN_PROGRESS' &&
+            {this.state.viewType === 'LISTINGS_PENDING' &&
                 <div className="row vq-margin-top-bottom">
                   <Bookings
-                    showTitle={false}
-                    view={"in_progress"}
-                    onReady={() => {}}
+                    status={TASK_STATUS.ACTIVE}
+                    properties={
+                      {
+                        clickableTitle: true,
+                        editButton: true,
+                        cancelButton: true,
+                        requestsButton: true,
+                        bookingDetails: false,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }
 
-              {this.state.viewType === 'ORDERS_COMPLETED' &&
+
+              {this.state.viewType === 'LISTINGS_IN_PROGRESS' &&
                 <div className="row vq-margin-top-bottom">
                   <Bookings
-                    showTitle={false}
-                    view={"completed"}
-                    onReady={() => {}}
+                    status={TASK_STATUS.BOOKED}
+                    properties={
+                      {
+                        clickableTitle: true,
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: true,
+                        markAsDoneButton: true,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }
 
-              {this.state.viewType === 'SENT_REQUESTS_PENDING' &&
+              {this.state.viewType === 'LISTINGS_COMPLETED' &&
+                <div className="row vq-margin-top-bottom">
+                  <Bookings
+                    status={TASK_STATUS.COMPLETED}
+                    properties={
+                      {
+                        clickableTitle: true,
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: true,
+                        markAsDoneButton: false,
+                        leaveReviewButton: true
+                      }
+                    }
+                  />
+                </div>
+              }
+
+              
+              {this.state.viewType === 'LISTINGS_CANCELED' &&
+                <div className="row vq-margin-top-bottom">
+                  <Bookings
+                    status={[TASK_STATUS.INACTIVE, TASK_STATUS.SPAM]}
+                    properties={
+                      {
+                        clickableTitle: true,
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: false,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
+                  />
+                </div>
+              }
+
+              {this.state.viewType === 'REQUESTS_PENDING' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
-                    showOutgoing={this.state.dashboardType === "requests"}
-                    view={"pending"}
-                    showTitle={false}
+                    status={REQUEST_STATUS.PENDING}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: false,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }
 
-              {CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && this.state.viewType === 'SENT_REQUESTS_ACCEPTED' &&
+              {this.state.viewType === 'REQUESTS_ACCEPTED' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
-                    view={"accepted"}
-                    showTitle={false}
+                    status={REQUEST_STATUS.ACCEPTED}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: true,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }
 
-              {this.state.dashboardType === 'requests' && this.state.viewType === 'ORDERS_IN_PROGRESS' &&
+              {this.state.viewType === 'REQUESTS_IN_PROGRESS' &&
                 <div className="row vq-margin-top-bottom">
                   <Requests
-                    view={"in_progress"}
-                    showTitle={false}
+                    status={REQUEST_STATUS.BOOKED}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: true,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }
 
-              {this.state.viewType === 'SENT_REQUESTS_SETTLED' &&
+              {this.state.viewType === 'REQUESTS_COMPLETED' &&
                 <div className="vq-margin-top-bottom">
                   <Requests
-                    view={"completed"}
-                    showTitle={false}
+                    status={[REQUEST_STATUS.CLOSED, REQUEST_STATUS.MARKED_DONE, REQUEST_STATUS.SETTLED]}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: true,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
+                  />
+                </div>
+              }
+
+              {this.state.viewType === 'REQUESTS_CANCELED' &&
+                <div className="vq-margin-top-bottom">
+                  <Requests
+                    status={REQUEST_STATUS.CANCELED}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: false,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
+                  />
+                </div>
+              }
+
+              {this.state.viewType === 'REQUESTS_DECLINED' &&
+                <div className="vq-margin-top-bottom">
+                  <Requests
+                    status={REQUEST_STATUS.DECLINED}
+                    properties={
+                      {
+                        editButton: false,
+                        cancelButton: false,
+                        requestsButton: false,
+                        bookingDetails: false,
+                        markAsDoneButton: false,
+                        leaveReviewButton: false
+                      }
+                    }
                   />
                 </div>
               }

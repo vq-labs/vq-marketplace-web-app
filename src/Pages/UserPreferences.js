@@ -73,6 +73,7 @@ export default class SectionCategories extends React.Component {
                     </div>
                     <div className="row">
                         { this.state.categories && this.state.categories
+                            .filter(category => Number(category.status) === 0)
                             .map((category, index) =>
                             <div key={index} className="col-xs-12 col-sm-4 col-md-3" style={{ marginBottom: 10 }}>
                             <Card onTouchTap={

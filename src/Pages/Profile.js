@@ -56,10 +56,6 @@ class Profile extends React.Component {
         this.onDrop = this.onDrop.bind(this);
     }
 
-    shouldShowPreferences() {
-        return this.state.profile && this.state.profile.userType === USER_TYPES.SELLER;
-    }
-
     getUserTalent(skill) {
         const styles = {
             chip: {
@@ -277,32 +273,57 @@ class Profile extends React.Component {
                                 </Chip>
                                 </div>
                             }
-                            { this.state.profile && Boolean(getUserProperty(this.state.profile, 'studentIdUrl')) &&
-                                <div className="col-xs-6 col-sm-2 text-center" style={{ marginTop: 10 }}>
-                                    <div className="col-xs-12">
-                                        <CheckCircleIcon color={'green'}/>
+
+                            { 
+                                (
+                                    (
+                                        this.state.profile && this.state.profile.userType === 0 && (
+                                            CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1" ||
+                                            CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1"
+                                        )
+                                    ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 1 && CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1"
+                                    ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 2 && CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1"
+                                    ) 
+                                ) &&
+                                this.state.profile && Boolean(getUserProperty(this.state.profile, 'studentIdUrl')) &&
+                                    <div className="col-xs-12" style={{marginTop: 10}}>
+                                    <Chip
+                                  labelColor={'white'}
+                                  backgroundColor={'#4CAF50'}
+                                >
+                                  <Avatar backgroundColor={'#43A047'} color={'white'} icon={<CheckCircleIcon />} />
+                                  {translate('DOCUMENT_UPLOADED')}
+                                </Chip>
                                     </div>
-                                    <div className="col-xs-12">
-                                        <small style={{
-                                                paddingBottom: 20,
-                                                fontSize: 10
-                                        }}>{translate('DOCUMENT_UPLOADED')}</small>
-                                    </div>
-                                </div>
                             }
-                            { this.state.profile && Boolean(getUserProperty(this.state.profile, 'referenceUrl')) &&
-                                <div className="col-xs-6 col-sm-2 text-center" style={{ marginTop: 10 }}>
-                                    <div className="col-xs-12">
-                                        <a href={getUserProperty(this.state.profile, 'referenceUrl')} target="_blank">
-                                            <IconFileAttachment/>
-                                        </a>
-                                    </div>
-                                    <div className="col-xs-12">
-                                        <small style={{
-                                                paddingBottom: 20,
-                                                fontSize: 10
-                                        }}>{translate('PROFILE_REFERENCE_UPLOADED')}</small>
-                                    </div>
+                            { 
+                                (
+                                    (
+                                        this.state.profile && this.state.profile.userType === 0 && (
+                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" ||
+                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1"
+                                        )
+                                    ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 1 && CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1"
+                                    ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 2 && CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1"
+                                    ) 
+                                ) &&
+                                this.state.profile && Boolean(getUserProperty(this.state.profile, 'referenceUrl')) &&
+                                <div className="col-xs-12" style={{marginTop: 10}}>
+                                <Chip
+                                labelColor={'white'}
+                                backgroundColor={'#4CAF50'}
+                            >
+                                <Avatar backgroundColor={'#43A047'} color={'white'} icon={<IconFileAttachment />} />
+                                {translate('PROFILE_REFERENCE_UPLOADED')}
+                            </Chip>
                                 </div>
                             }
                         </div>            
@@ -393,7 +414,21 @@ class Profile extends React.Component {
                             marginTop: 20
                         }}
                     >
-                        {this.shouldShowPreferences() &&
+                        {
+                            (
+                                (
+                                    this.state.profile && this.state.profile.userType === 0 && (
+                                        CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1" ||
+                                        CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1"
+                                    )
+                                ) ||
+                                (
+                                    this.state.profile && this.state.profile.userType === 1 && CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1"
+                                ) ||
+                                (
+                                    this.state.profile && this.state.profile.userType === 2 && CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1"
+                                ) 
+                            ) &&
                         <div className="col-xs-12 col-sm-12">
                             <div className="row">
                                 <div className="col-xs-12 col-sm-11">
@@ -443,7 +478,32 @@ class Profile extends React.Component {
                             </div>
                         </div>
                         }
-                        <div
+                        {
+                            (
+                                (
+                                    this.state.profile && this.state.profile.userType === 0 && 
+                                        (
+                                            (
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                 CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                            ) ||
+                                            (
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                            )
+                                        )
+                                    
+                                ) ||
+                                (
+                                    this.state.profile && this.state.profile.userType === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                ) ||
+                                (
+                                    this.state.profile && this.state.profile.userType === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                ) 
+                            ) &&
+                            <div
                             className="col-xs-12 col-sm-12"
                             style={{
                                 marginTop: 20
@@ -455,142 +515,240 @@ class Profile extends React.Component {
                             <p className="text-muted">
                                 {translate("PROFILE_REVIEWS_DESC")}
                             </p>
-                            {!this.state.reviews.filter(review => {
-                                if (!review.rate) {
-                                    return this.state.isMyProfile;
-                                }
-
-                                return true;
-                            }).length &&
+                            {!this.state.reviews.length &&
                                 <p className="text-muted">
                                     {translate("NO_REVIEWS")}
                                 </p>
                             }
 
-                            {this.state.reviews
-                            .filter(review => {
-                                if (!review.rate) {
-                                    return this.state.isMyProfile;
-                                }
 
-                                return true;
-                            })
+                            {
+                                this.state.isMyProfile && this.state.reviews
                             .map((review, index) =>
-                                <div key={index} className="row">
-                                    <div className="col-xs-12">
-                                        <div
-                                            style={{ marginTop: 4, paddingLeft: 0, paddingRight: 0}}
-                                            className="col-xs-12 col-sm-3 col-md-2"
-                                            onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
-                                        >   
-                                                <div className="row">
-                                                    <div className="col-xs-4 col-sm-12 text-center" style={{ paddingLeft: 0, paddingRight: 0}}>
-                                                        <IconButton
-                                                            style={{ bottom: 5 }}
-                                                            tooltip={
-                                                                `${review.fromUser.firstName} ${review.fromUser.lastName}`
+                            <div key={index} className="row">
+                            <div className="col-xs-12">
+                                <div
+                                    style={{ marginTop: 4, paddingLeft: 0, paddingRight: 0}}
+                                    className="col-xs-12 col-sm-3 col-md-2"
+                                    onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
+                                >   
+                                        <div className="row">
+                                            <div className="col-xs-4 col-sm-12 text-center" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                <IconButton
+                                                    style={{ bottom: 5 }}
+                                                    tooltip={
+                                                        `${review.fromUser.firstName} ${review.fromUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={review.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                </IconButton>
+                                            </div>
+                                            <div className="col-xs-8 col-sm-12" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                <p className="text-muted text-center hidden-xs">
+                                                    {review.fromUser.firstName}<span className="hidden-xs"> {review.fromUser.lastName}</span>
+                                                </p>
+                                                <p className="text-muted visible-xs text-left" style={{ paddingTop: 17 }}>
+                                                    {review.fromUser.firstName}
+                                                </p>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                    { (
+                                        (
+                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1"
+                                        ) ||
+                                        (
+                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1"
+                                        )
+                                      ) &&
+                                      !review.rate &&
+                                        <div className="row" style={{ marginTop: 15 }}>
+                                                <div className="col-xs-12">
+                                                    {translate("YOU_MUST_LEAVE_REVIEW")}
+                                                </div>
+                                                <div className="col-xs-12" style={{ marginTop: 5 }}>
+                                                    <RaisedButton
+                                                        labelStyle={{color: 'white '}}
+                                                        backgroundColor={CONFIG.COLOR_PRIMARY}
+                                                        label={translate('LEAVE_REVIEW')}
+                                                        onTouchTap={() => {
+                                                            if (review.orderId) {
+                                                                requestOrder
+                                                                .getCorrespondingRequestForOrder(review.orderId)
+                                                                .then(request => {
+                                                                    return goTo(`/request/${request.id}/review`);
+                                                                })
                                                             }
-                                                        >
-                                                            <Avatar src={review.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
-                                                        </IconButton>
-                                                    </div>
-                                                    <div className="col-xs-8 col-sm-12" style={{ paddingLeft: 0, paddingRight: 0}}>
-                                                        <p className="text-muted text-center hidden-xs">
-                                                            {review.fromUser.firstName}<span className="hidden-xs"> {review.fromUser.lastName}</span>
-                                                        </p>
-                                                        <p className="text-muted visible-xs text-left" style={{ paddingTop: 17 }}>
-                                                            {review.fromUser.firstName}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
-                                            { (
-                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
-                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
-                                              ) &&  !review.rate &&
-                                                <div className="row" style={{ marginTop: 15 }}>
-                                                        <div className="col-xs-12">
-                                                            {translate("YOU_MUST_LEAVE_REVIEW")}
-                                                        </div>
-                                                        <div className="col-xs-12" style={{ marginTop: 5 }}>
-                                                            <RaisedButton
-                                                                labelStyle={{color: 'white '}}
-                                                                backgroundColor={CONFIG.COLOR_PRIMARY}
-                                                                label={translate('LEAVE_REVIEW')}
-                                                                onTouchTap={() => {
-                                                                    if (review.orderId) {
-                                                                        requestOrder
-                                                                        .getCorrespondingRequestForOrder(review.orderId)
-                                                                        .then(request => {
-                                                                            return goTo(`/request/${request.id}/review`);
-                                                                        })
-                                                                    }
 
-                                                                    if (review.requestId) {
-                                                                        requestOrder
-                                                                        .getCorrespondingOrderForRequest(review.requestId)
-                                                                        .then(order => {
-                                                                            return goTo(`/order/${order.id}/review`);
-                                                                        })
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </div>
+                                                            if (review.requestId) {
+                                                                requestOrder
+                                                                .getCorrespondingOrderForRequest(review.requestId)
+                                                                .then(order => {
+                                                                    return goTo(`/order/${order.id}/review`);
+                                                                })
+                                                            }
+                                                        }}
+                                                    />
                                                 </div>
-                                            }
-                                            {
-                                              (
-                                                (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
-                                                (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&  CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
-                                              ) && review.rate &&
-                                            <div className="row">
-                                                    <div className="col-xs-12">
-                                                        <div style={{
-                                                            lineHeight: 2
-                                                        }}>
-                                                            <ReactStars
-                                                                edit={false}
-                                                                disable={true}
-                                                                count={5}
-                                                                size={16}
-                                                                half={false}
-                                                                value={review.rate}
-                                                                color2={'#ffd700'}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            }
-                                            { (
-                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
-                                              (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
-                                            ) &&  review.rate &&
-                                            <div className="row">
-                                                <div className="col-xs-12" style={{ padding: 30 }}>
-                                                    <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
-                                                </div>
-                                            </div>
-                                            }
-                                            <div className="row" style={{ marginTop: 15 }}>
-                                                <div className="col-xs-12 text-muted">
-                                                        <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
-                                                        <span> </span>
-                                                        <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
-                                                            {review.task.title}
-                                                        </a>
-                                                </div>
-                                            </div>
                                         </div>
-                                        
-                                        <div className="col-xs-12">
-                                        <hr />
+                                    }
+                                    {
+                                      (
+                                        (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
+                                        (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&  CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
+                                      ) && review.rate &&
+                                    <div className="row">
+                                            <div className="col-xs-12">
+                                                <div style={{
+                                                    lineHeight: 2
+                                                }}>
+                                                    <ReactStars
+                                                        edit={false}
+                                                        disable={true}
+                                                        count={5}
+                                                        size={16}
+                                                        half={false}
+                                                        value={review.rate}
+                                                        color2={'#ffd700'}
+                                                    />
+                                                </div>
+                                            </div>
+                                    </div>
+                                    }
+                                    { (
+                                      (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") ||
+                                      (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")
+                                    ) && review.rate &&
+                                    <div className="row">
+                                        <div className="col-xs-12" style={{ padding: 30 }}>
+                                            <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                        </div>
+                                    </div>
+                                    }
+                                    <div className="row" style={{ marginTop: 15 }}>
+                                        <div className="col-xs-12 text-muted">
+                                                <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
+                                                <span> </span>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                    {review.task.title}
+                                                </a>
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                <div className="col-xs-12">
+                                <hr />
                             </div>
+                        </div>
+                    </div>
+                            )}
+
+{
+                            !this.state.isMyProfile && this.state.reviews
+                                .filter(review => {
+                                    return (
+                                        (
+                                            (
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1"
+                                                ) ||
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1"
+                                                )
+                                            ) ||
+                                            (
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1"
+                                                ) ||
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1"
+                                                ) &&
+                                                review.rate
+                                            )
+                                        )
+                                        
+                                    )
+                                })
+                            .map((review, index) =>
+                            <div key={index} className="row">
+                            <div className="col-xs-12">
+                                <div
+                                    style={{ marginTop: 4, paddingLeft: 0, paddingRight: 0}}
+                                    className="col-xs-12 col-sm-3 col-md-2"
+                                    onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}
+                                >   
+                                        <div className="row">
+                                            <div className="col-xs-4 col-sm-12 text-center" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                <IconButton
+                                                    style={{ bottom: 5, padding: 0 }}
+                                                    tooltip={
+                                                        `${review.fromUser.firstName} ${review.fromUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={review.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'}/>
+                                                </IconButton>
+                                            </div>
+                                            <div className="col-xs-8 col-sm-12" style={{ paddingLeft: 0, paddingRight: 0}}>
+                                                <p className="text-muted text-center hidden-xs">
+                                                    {review.fromUser.firstName}<span className="hidden-xs"> {review.fromUser.lastName}</span>
+                                                </p>
+                                                <p className="text-muted visible-xs text-left" style={{ paddingTop: 17 }}>
+                                                    {review.fromUser.firstName}
+                                                </p>
+                                            </div>
+                                        </div>
+                                </div>
+                                
+                                <div className="col-xs-12 col-sm-9 col-md-10" style={{ paddingLeft: 0, paddingRight: 0}}>
+
+                                    <div className="row">
+                                            <div className="col-xs-12">
+                                                <div style={{
+                                                    lineHeight: 2
+                                                }}>
+                                                    <ReactStars
+                                                        edit={false}
+                                                        disable={true}
+                                                        count={5}
+                                                        size={16}
+                                                        half={false}
+                                                        value={review.rate}
+                                                        color2={'#ffd700'}
+                                                    />
+                                                </div>
+                                            </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-xs-12" style={{ padding: 30 }}>
+                                        {
+                                            JSON.stringify(review, null, 2)
+                                        }
+                                            <div className="row content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(review.body)}}></div> 
+                                        </div>
+                                    </div>
+                                    <div className="row" style={{ marginTop: 15 }}>
+                                        <div className="col-xs-12 text-muted">
+                                                <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
+                                                <span> </span>
+                                                <a style={{ cursor: 'pointer' }} onClick={() => goTo(`/task/${review.task.id}`)}>
+                                                    {review.task.title}
+                                                </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="col-xs-12">
+                                <hr />
+                            </div>
+                        </div>
+                    </div>
                             )}
 
                         </div>
+                        }
+
                     </div>
                     }
                 </div>

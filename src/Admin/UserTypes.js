@@ -2,7 +2,7 @@ import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
 
 const userTypeFields = [
-    {
+/*     {
         type: 'bool',
         key: 'USER_TYPE_SUPPLY_LOGIN_ENABLED',
         label: 'Supply user login enabled',
@@ -16,17 +16,7 @@ const userTypeFields = [
         type: 'bool',
         key: 'USER_TYPE_GENERAL_LOGIN_ENABLED',
         label: 'General user login enabled',
-    },
-    {
-        type: 'bool',
-        key: 'USER_TYPE_SUPPLY_DOCUMENT_REQUIRED',
-        label: 'Require documents from Supply Type users?',
-    },
-    {
-        type: 'bool',
-        key: 'USER_TYPE_DEMAND_DOCUMENT_REQUIRED',
-        label: 'Require documents from Demand Type users?',
-    },
+    }, */
 ];
 
 const userTypeActions = [

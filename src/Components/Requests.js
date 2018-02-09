@@ -8,11 +8,12 @@ import IconChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Avatar from 'material-ui/Avatar';
 import ListingHeader from '../Components/ListingHeader';
 import Moment from 'react-moment';
+import RequestListItem from './RequestListItem';
 import * as apiRequest from '../api/request';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-import { openDialog as openMessageDialog } from '../helpers/open-message-dialog.js';
+import { openDialog } from '../helpers/open-message-dialog.js';
 import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
 import { getUtcUnixTimeNow } from '../core/util';
@@ -27,8 +28,10 @@ export default class Requests extends Component {
       this.state = {
         view: props.view,
         open: false,
+        status: props.status,
         isLoading: true,
-        requests: []
+        requests: [],
+        properties: props.properties
       };
   }
   
@@ -36,14 +39,10 @@ export default class Requests extends Component {
     getUserAsync(user => {
         const queryObj = {};
         
-        if (this.state.view) {
-            queryObj.view = this.state.view;
-
-            if (this.props.showOutgoing) {
-                queryObj.fromUserId = user.id;
-            }
-
+        if (this.state.status) {
+            queryObj.status = this.state.status;
         }
+        queryObj.userId = user.id;
 
         apiRequest
             .getItems(queryObj)
@@ -80,7 +79,7 @@ export default class Requests extends Component {
                     requests
                 });
 
-                return openMessageDialog({
+                return openDialog({
                     header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")
                 });
             }, errorFactory());
@@ -105,7 +104,7 @@ export default class Requests extends Component {
                 requests
             });
 
-            return openMessageDialog({
+            return openDialog({
                 header: translate("CANCEL_REQUEST_ACTION_SUCCESS")
             });
         }, errorFactory());
@@ -149,11 +148,6 @@ export default class Requests extends Component {
             { !this.state.isLoading &&
                 <div className="row">
                     <div className="col-xs-12">
-                    { this.props.showTitle &&
-                        <h1 style={{color: CONFIG.COLOR_PRIMARY}}>
-                            {translate('YOUR_REQUESTS')}
-                        </h1>
-                    }
                     { !this.state.isLoading && !this.state.requests.length &&
                         <div className="col-xs-12">
                             <div className="row">
@@ -168,131 +162,23 @@ export default class Requests extends Component {
                                 className="col-xs-12"
                                 style={{ marginTop: 10 }}
                             >
-                                <Paper
-                                    style={{ padding: 10 }}>
-                                    <ListingHeader
-                                        task={request.task}
-                                        config={CONFIG}
-                                    />
-                                    <div className="row">
-                                        <div className="col-xs-12 col-sm-6 text-left"> 
-                                            <p className="text-muted" style={{ marginTop: 18 }}>
-                                                <strong>
-                                                    { String(request.status) === REQUEST_STATUS.PENDING &&
-                                                        translate("REQUEST_STATUS_PENDING")
-                                                    }
+                        <RequestListItem
+                            request={request}
+                            properties={this.state.properties}
+                            onCancel={() => openDialog({
+                                header: translate('CANCEL_REQUEST_ACTION_HEADER'),
+                                desc: translate('CANCEL_REQUEST_ACTION_DESC')
+                              }, () => {
+                                const tasks = this.state.tasks;
 
-                                                    { String(request.status) === REQUEST_STATUS.ACCEPTED &&
-                                                        translate("REQUEST_STATUS_ACCEPTED")
-                                                    }
+                                tasks.splice(index, 1);
 
-                                                    { String(request.status) === REQUEST_STATUS.BOOKED &&
-                                                        translate("REQUEST_STATUS_BOOKED")
-                                                    }
-
-                                                    { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
-                                                        <span>
-                                                            {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
-                                                        </span>
-                                                    }
-
-                                                    { String(request.status) === REQUEST_STATUS.SETTLED &&
-                                                        translate("REQUEST_STATUS_SETTLED")
-                                                    }
-
-                                                    { String(request.status) === REQUEST_STATUS.CLOSED &&
-                                                        translate("REQUEST_STATUS_CLOSED")
-                                                    }
-
-                                                    { String(request.status) === REQUEST_STATUS.DECLINED &&
-                                                        translate("REQUEST_STATUS_DECLINED")
-                                                    }
-
-                                                    { String(request.status) === REQUEST_STATUS.CANCELED &&
-                                                        translate("REQUEST_STATUS_CANCELED")
-                                                    }
-                                                    {request.review ? `, ${translate("REQUEST_REVIEWED")}` : ''}
-                                                </strong>
-                                            </p>
-                                        </div>
-                                        <div className="col-xs-12 col-sm-6 text-right">
-                                            <IconButton
-                                                onClick={() => goTo(`/profile/${request.toUser.id}`)}
-                                                tooltipPosition="top-center"
-                                                tooltip={
-                                                    `${request.toUser.firstName} ${request.toUser.lastName}`
-                                                }
-                                            >
-                                                <Avatar src={request.toUser.imageUrl || '/images/avatar.png'} />
-                                            </IconButton>
-                                            { this.shouldShowPhoneNumber(request) &&
-                                                <IconButton
-                                                    style={{ top: 10 }}
-                                                    tooltipPosition="top-center"
-                                                    tooltip={
-                                                        getUserProperty(request.with, 'phoneNo')
-                                                    }>
-                                                    <IconCall />
-                                                </IconButton>
-                                            }
-                                            { String(request.status) !== REQUEST_STATUS.SETTLED && String(request.status) !== REQUEST_STATUS.CANCELED &&
-                                                <IconButton
-                                                    style={{ top: 10 }}
-                                                    tooltip={'Chat'}
-                                                    tooltipPosition="top-center"
-                                                    onClick={() => goTo(`/chat/${request.id}`)}
-                                                >
-                                                    <IconChatBubble />
-                                                </IconButton>
-                                            }
-                                            { this.shouldAllowCancel(request) &&
-                                                <RaisedButton
-                                                    primary={true}
-                                                    label={translate('CANCEL')}
-                                                    onTouchTap={() => this.cancelRequest(request)}
-                                                />
-                                            }
-                                            { this.shouldAllowMarkingAsDone(request) &&
-                                                <RaisedButton
-                                                    primary={true}
-                                                    label={translate('REQUEST_ACTION_MARK_DONE')}
-                                                    onTouchTap={() => this.markAsDone(request)}
-                                                />
-                                            }
-                                            {request.status === REQUEST_STATUS.ACCEPTED  &&
-                                                <RaisedButton
-                                                    primary={true}
-                                                    label={translate('ORDER_CREATE')}
-                                                    onTouchTap={() => goTo(`/request/${request.id}/book`)}
-                                                />
-                                            }
-                                            {!request.review &&
-                                                (
-                                                    request.status === REQUEST_STATUS.SETTLED ||
-                                                    request.status === REQUEST_STATUS.CLOSED
-                                                ) &&
-                                                (
-                                                    (
-                                                        Number(request.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                                    ) ||
-                                                    (
-                                                        Number(request.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                                    )
-                                                ) &&
-                                                <div style={{
-                                                    display: 'inline-block',
-                                                    padding: 10
-                                                }}>
-                                                    <RaisedButton
-                                                        primary={true}
-                                                        label={translate('LEAVE_REVIEW')}
-                                                        onTouchTap={() => goTo(`/request/${request.id}/review`)}
-                                                    />
-                                                </div>
-                                                }
-                                        </div>
-                                    </div>
-                            </Paper>
+                                this.setState({
+                                  tasks
+                                });
+                              })
+                            }
+                        />
                         </div>
                     )}
                    

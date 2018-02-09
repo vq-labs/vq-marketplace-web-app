@@ -45,7 +45,6 @@ class ListingHeader extends Component {
                     <h3>
                         <a  href="#"
                             style={{
-                                color: 'black',
                                 cursor: 'pointer'
                             }}
                             onTouchTap={() => goTo(`/task/${this.state.task.id}`)}

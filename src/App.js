@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // Library components
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { StickyContainer } from 'react-sticky';
 
 import AppRoutes from './AppRoutes';  
 import Header from './Partials/Header';
@@ -138,12 +139,9 @@ class App extends Component {
       return (
         this.state.ready && this.state.config &&
         <MuiThemeProvider muiTheme={muiTheme}>
-          <div>
-            <Header user={this.state.user}></Header>
-           
-            <div style={{paddingTop: '56px'}}>
+                  <StickyContainer>
+                    <Header user={this.state.user} />
               { AppRoutes }
-            </div>
          
             { window.location.pathname.indexOf("admin") === -1 &&
               this.state.config.APP_FOOTER_VISIBLE === "1" &&
@@ -158,7 +156,7 @@ class App extends Component {
             <RequestDialog />
             <MessageDialog />
             <MessageSnackbar />
-          </div>
+      </StickyContainer>
         </MuiThemeProvider> 
       );
    }

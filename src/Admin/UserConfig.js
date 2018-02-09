@@ -43,12 +43,26 @@ const userAccountConfigFields = [
     {
         key: 'USER_VERIFICATIONS_ENABLED_FOR_SUPPLY',
         type: "bool",
-        label: "Supply users can specify their verifications on their account such as a photo of their personal ID"
+        label: "Supply users can specify their verifications on their account such as a photo of their personal ID",
+        subFields: [
+            {
+                type: 'bool',
+                key: 'USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY',
+                label: 'Mandatory?',
+            },
+        ]
     },
     {
         key: 'USER_VERIFICATIONS_ENABLED_FOR_DEMAND',
         type: "bool",
-        label: "Demand users can specify their verifications on their account such as a photo of their personal ID"
+        label: "Demand users can specify their verifications on their account such as a photo of their personal ID",
+        subFields: [
+            {
+                type: 'bool',
+                key: 'USER_VERIFICATIONS_REQUIRED_FOR_DEMAND',
+                label: 'Mandatory?',
+            },
+        ]
     }
 ];
 

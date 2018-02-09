@@ -56,12 +56,12 @@ class Review extends Component {
                     user,
                     config
                 });
-    
+
                 if (this.state.reviewType === REVIEW_TYPES.ORDER) {
                     return apiOrder
                         .getItem(this.state.orderId)
                         .then(order => {
-                            if (order.request.toUserId !== user.id) {
+                            if (order.request.fromUserId !== user.id) {
                                 return goTo('/');
                             }
 
@@ -85,7 +85,7 @@ class Review extends Component {
                         .getItem(this.state.requestId)
                         .then(request => {
 
-                            if (request.request.fromUserId !== user.id) {
+                            if (request.request.toUserId !== user.id) {
                                 return goTo('/');
                             }
 

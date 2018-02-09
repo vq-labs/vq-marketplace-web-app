@@ -4,6 +4,7 @@ import Loader from "../Components/Loader";
 import * as apiCategory from '../api/category';
 import { translate } from '../core/i18n';
 import { getConfigAsync } from '../core/config';
+import TASK_CATEGORY_STATUS from '../constants/TASK_CATEGORY_STATUS';
 
 const _chunk = require('lodash.chunk');
 
@@ -56,7 +57,7 @@ export default class NewListingCategory extends React.Component {
                             { this.state.categories && this.state.categories
                                 .map((row, rowIndex) => (
                                     <div key={rowIndex} className="row">
-                                        { row.map(tile =>
+                                        { row.filter(category => category.status === TASK_CATEGORY_STATUS.ACTIVE).map(tile =>
                                             <div
                                                 key={tile.code}
                                                 className="col-xs-12 col-sm-4"

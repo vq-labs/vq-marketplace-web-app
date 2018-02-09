@@ -15,10 +15,25 @@ const landingPageFields = [
     }
 ];
 
+
+const landingPageGeneralSettings = [
+    {
+        key: 'LANDING_PAGE_HEADER_BUTTON_TEXT_FOR_SELLERS',
+        type: "string",
+        label: "The route (link) for the Tasker (supplier) button in the landing page",
+        explanation: 'The default landing page is for the demand side but we have a supplier landing page aswell which by default is yourDomain/taskers page. You can customize this \'taskers\' keyword'
+    },
+];
+
 export default class SectionLandingPage extends React.Component {
     render() {
         return (
             <div className="row">
+                <ConfigEdit
+                    header={'Landing page general settings'}
+                    fields={landingPageGeneralSettings}
+                />
+
                 <ConfigEdit
                     header={'Landing page template sections'}
                     desc={'You can use pre-configured templates to include on the landing page.'}

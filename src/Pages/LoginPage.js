@@ -13,7 +13,35 @@ const getOutOfHere = (user, redirectTo) => {
     return goTo(redirectTo);
   }
 
-  return goTo(`/`);
+  switch (Number(user.userType)) {
+    case 1: // demand user has to go to browse if supply listings are enabled otherwise has to go to dashboard
+      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        return goTo(`/`);
+        break;
+      }
+
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+        return goTo(`/dashboard`);
+        break;
+      }
+
+      break;
+    case 2: //supply user has to go to dashboard if supply listings are enabled otherwise has to go to browse to supply
+
+      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        return goTo(`/dashboard`);
+        break;
+      }
+
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+        return goTo(`/`);
+        break;
+      }                 
+
+      break;
+    default:
+      return goTo(`/`);
+  }
 };
 
 export default class LoginPage extends Component {
@@ -47,34 +75,13 @@ export default class LoginPage extends Component {
 
                 initUserMode(user.userType);
 
+
                 if (this.state.redirectTo) {
                   return goTo(this.state.redirectTo, this.state.redirectTo.indexOf("admin") > -1);
                 }
 
-                switch (Number(user.userType)) {
-                  case 1: // demand user
-                    if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-                      return goTo(`/`);
-                    }
+                getOutOfHere(user);
 
-                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-                      return goTo(`/dashboard/listings`);
-                    }
-
-                    break;
-                  case 2:
-                    if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-                      return goTo(`/`);
-                    }
-
-                    if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-                      return goTo(`/dashboard/listings`);
-                    }
-
-                    break;
-                  default:
-                    goTo(`/`);
-                }
               }}
               onNotVerified={() => {
                 return goTo('/email-not-verified');

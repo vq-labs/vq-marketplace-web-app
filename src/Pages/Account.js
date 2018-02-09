@@ -14,7 +14,7 @@ import { getUserAsync } from '../core/auth';
 import { translate, getLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-import LANG_CODES from '../constants/LANG_CODES.js';
+import {LANG_CODES} from '../constants/LANGUAGES.js';
 import EmailSettings from './Account/EmailSettings.js';
 import StripePaymentConnector from '../Components/PaymentConnectors/Stripe.js';
 import { CONFIG } from '../core/config';
@@ -36,7 +36,7 @@ export default class Account extends Component {
             sector,
             data: {
                 emailNotifDisabled: false,
-                phoneNo: null
+                phoneNo: ''
             },
             toBeUpdated: {
                 phoneNo: false
@@ -139,28 +139,49 @@ export default class Account extends Component {
                                         </li>
                                     }
 
-                                    { CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
+                                    { CONFIG && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
                                       this.state.user &&
                                       this.state.user.userType === 1 &&
                                         <li className={this.state.sector === 'listing' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('listing')}>{translate('ACCOUNT_MENU_LISTING')}</a>
                                         </li>
                                     }
-
-                                    { this.state.user &&
-                                      this.state.user.userType === 2 &&
+                                    { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-documents?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('HEADER_USER_DOCUMENTS')}</a>
                                         </li>
                                     }
 
-                                    { this.state.user && this.state.user.userType === 2 &&
+                                    { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-preferences?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_PREFERENCES')}</a>
                                         </li>
                                     }
-
-                                    { this.state.user && this.state.user.userType === 2 &&
+                                { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-verifications?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_VERIFICATIONS')}</a>
                                         </li>

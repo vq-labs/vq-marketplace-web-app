@@ -13,6 +13,18 @@ const defaultConfigsFields = [
         key: 'SEO_DESCRIPTION',
         label: 'Description',
         explanation: 'Meta descriptions can be any length, but search engines generally truncate snippets longer than 160 characters'
+    },
+    {
+        type: 'string',
+        key: 'SEO_KEYWORDS',
+        label: 'Keywords',
+        explanation: 'Meta keywords should be seperated by a comma'
+    },
+    {
+        type: 'single-image',
+        key: 'SEO_IMAGE',
+        label: 'Marketplace image for social media (1200x630px recommended)',
+        imageResolution: [ 1200, 630 ]
     }
 ];
 

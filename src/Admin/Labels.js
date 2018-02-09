@@ -7,7 +7,7 @@ import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
-import LANG_CODES from '../constants/LANG_CODES.js';
+import {LANG_CODES} from '../constants/LANGUAGES.js';
 import LABELS from '../constants/LABELS.js';
 import LabelEdit from './Components/LabelEdit';
 

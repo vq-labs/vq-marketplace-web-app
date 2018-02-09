@@ -11,10 +11,13 @@ export default class Login extends Component {
     super(props);
     this.state = {
       isSubmitting: false,
-      authMode: 'login'
+      authMode: 'login',
+      email: '',
+      password: ''
     };
 
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
   }
   handleLogin(event) {
       event.preventDefault()
@@ -24,7 +27,7 @@ export default class Login extends Component {
       });
 
       const data = {
-        email: this.refs.email.getValue()
+        email: this.state.email
       };
 
       if (this.state.authMode === 'password_reset') {
@@ -37,7 +40,7 @@ export default class Login extends Component {
           })
       }
 
-      data.password = this.refs.password.getValue();
+      data.password = this.state.password;
 
       apiAuth
         .login(data)
@@ -68,6 +71,14 @@ export default class Login extends Component {
           alert(err ? translate(err.code) : err);
         })
   }
+
+  handleFieldChange(field, event) {
+    this.setState({
+      ...this.state,
+      [field]: event.target.value
+    });
+  }
+
   render() {
     return (
       <div className="col-xs-12">
@@ -91,7 +102,7 @@ export default class Login extends Component {
                 <TextField
                   floatingLabelFixed={true}
                   style={{width: '100%'}}
-                  ref="email"
+                  onChange={e => this.handleFieldChange('email', e)}
                   floatingLabelText={translate('EMAIL')}
                   type="email"/>
                 <br/>
@@ -99,14 +110,14 @@ export default class Login extends Component {
                   <TextField
                     floatingLabelFixed={true}
                     style={{width: '100%'}}
-                    ref="password"
+                    onChange={e => this.handleFieldChange('password', e)}
                     floatingLabelText={translate('PASSWORD')}
                     type="password"
                   />
                 }  
                   <br />
                   <RaisedButton
-                    disabled={this.state.isSubmitting}
+                    disabled={this.state.isSubmitting || this.state.email === '' || (this.state.authMode !== 'password_reset' && this.state.password === '')}
                     type="submit" 
                     label={translate('SUBMIT')}
                     fullWidth={true} 

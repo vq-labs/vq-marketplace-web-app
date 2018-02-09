@@ -55,8 +55,8 @@ export const doPut = (url, body) => fetch(API_URL + url, {
     },
     body: JSON.stringify(body || {})
 })
-.then(response => { 
-        return parseJSON(response);
+.then(response => {
+    return parseJSON(response);
 });
 
 export const doDelete = (url, body) => fetch(API_URL + url, {

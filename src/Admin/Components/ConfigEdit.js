@@ -3,6 +3,26 @@ import DOMPurify from 'dompurify';
 import EditableEntity from '../../Components/EditableEntity';
 import { appConfig } from '../../api/config';
 import Loader from "../../Components/Loader";
+
+function getField(fieldKey, fields) {
+    let result = null;
+
+    fields.map(field => {
+      if (field.key === fieldKey) {
+        result = field;
+        return
+      }
+      if (!result && field.subFields && field.subFields.length > 0) {
+        result = getField(fieldKey, field.subFields);
+        return;
+      }
+    });
+
+    if (result) {
+      return result;
+    }
+}
+
 export default class ConfigEdit extends React.Component {
     constructor() {
         super();
@@ -49,29 +69,35 @@ export default class ConfigEdit extends React.Component {
                                 fields={this.props.fields}
                                 onConfirm={
                                     updatedEntity => {
-                                        const updatedData = Object.keys(updatedEntity)
-                                        .filter(fieldKey => {
-                                            return this.props.fields.find(_ => _.key === fieldKey)
-                                        })
-                                        .map(fieldKey => {
-                                            const field = this.props.fields.find(_ => _.key === fieldKey);
-                                            const mappedItem = {};
 
-                                            mappedItem.fieldKey = fieldKey;
-                                            mappedItem.fieldValue = updatedEntity[fieldKey];
+                                        const updatedData = [];
 
-                                            if (field.type === 'select') {
-                                                mappedItem.fieldValue = typeof updatedEntity[fieldKey] === 'string' ?
-                                                    updatedEntity[fieldKey] :
-                                                    updatedEntity[fieldKey].join(',');
+                                        Object.keys(updatedEntity)
+                                        .forEach(fieldKey => {
+
+                                            const field = getField(fieldKey, this.props.fields);
+
+                                            if (field) {
+                                              const mappedItem = {};
+
+                                              mappedItem.fieldKey = fieldKey;
+                                              mappedItem.fieldValue = updatedEntity[fieldKey];
+
+                                              if (field.type === 'select') {
+                                                  mappedItem.fieldValue = typeof updatedEntity[fieldKey] === 'string' ?
+                                                      updatedEntity[fieldKey] :
+                                                      updatedEntity[fieldKey].join(',');
+                                              }
+
+                                              if (field.type === 'bool') {
+                                                  mappedItem.fieldValue =
+                                                  (updatedEntity[fieldKey] === "1" || updatedEntity[fieldKey] === true)
+                                              }
+
+                                              updatedData.push(mappedItem);
                                             }
 
-                                            if (field.type === 'bool') {
-                                                mappedItem.fieldValue =
-                                                (updatedEntity[fieldKey] === "1" || updatedEntity[fieldKey] === true)
-                                            }
 
-                                            return mappedItem;
                                         });
 
                                         appConfig

@@ -30,7 +30,8 @@ const menuPoints = [
     [ "General",
         [
             [ 'get-started', 'Get Started' ],
-            [ 'overview', 'Overview' ]
+            [ 'overview', 'Overview' ],
+            [ 'subscription-plan', 'Subscription' ],
         ]
     ],
     [ 'Entities',

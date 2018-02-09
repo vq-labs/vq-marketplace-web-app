@@ -9,6 +9,11 @@ export const users = {
     removeVerifications: userId => communication.doDelete(`/admin/user/${userId}/verifications`, {}),
 };
 
+export const tenant = {
+    getTenant: () => communication.doGet('/admin/tenant'),
+    upgradeSubscription: taskId => communication.doPost(`/admin/tenant/subscription`)
+};
+
 export const task = {
     getItems: () => communication.doGet('/admin/task'),
     markAsSpam: taskId => communication.doPut(`/admin/task/${taskId}/spam`)

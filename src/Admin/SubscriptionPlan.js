@@ -9,6 +9,7 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
+import * as apiAdmin from '../api/admin';
 
 const modules = {
   registration: [
@@ -106,126 +107,87 @@ export default class TableExampleComplex extends Component {
     this.setState({height: event.target.value});
   };
 
+  upgrade = () => {
+    console.log("click");
+    apiAdmin.tenant.upgradeSubscription()
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  };
+
+  componentDidMount() {
+    apiAdmin.tenant
+    .getTenant()
+    .then(tenant => {
+        this.setState({
+            tenant
+        });
+    });
+}
+
   render() {
     return (
       <div>
-        <h2>
-          Your package: <b>Custom</b>
-        </h2>
-        <p className="text-muted">
-          Available packages: Startup, Growth, Scale, Enterprise. Legacy contracts are listed under 'Custom' pricing plan. Learn more about our pricing <a href="https://vq-labs.com/pricing?source=marketplace" target="_blank">here</a>.
-        </p>
-        <Table selectable={false} >
-          <TableBody displayRowCheckbox={false}>
-            <TableRow>
-                <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                    General
-                </TableHeaderColumn>
-            </TableRow>
+        { this.state.tenant &&
+          <h2>
+            Your package: {this.state.tenant.tenant.chargebeeSubscriptionId ? "Paid" : "Starter" }
+          </h2>
+        }
 
-            {modules.general.map( (row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
+        { this.state.tenant &&
+          <div className="row">
+          <div className="col-xs-12 col-md-4 col-lg-4">
+                <div className="price-wrapp">
+                  <div classname="price-header">
+                    <h1>Starter</h1>
+                    <h2>Free</h2>
+                    <span>Have your product/market fit, get more users, gain your initial "traction".</span>
+                  </div>
+                
+                  <div class="price-body">
+                    <ul>
+                      <li><b>1,000</b> users included</li>
+                      <li><b>Unlimited</b> listings</li>
+                      <li><b>2 languages</b></li>
+                      <li>Create 2 Landing Pages</li>
+                      <li>Hosted under vqmarketplace.com domain</li>
+                      <li>No export of data</li>
+                    </ul>
+                    </div>
+                    <div className="price-footer">
+                      <button className="wsk-btn red" onTouchTap={() => this.upgrade()}>Upgrade</button>
+                    </div>
+                </div>
+              </div>
+              <div className="col-xs-12 col-md-4 col-lg-4">
+                <div className="price-wrapp">
+                  <div classname="price-header">
+                    <h1>Traction</h1>
+                    <h2>249 € / Month</h2>
+                    <span>Have your product/market fit, get more users, gain your initial "traction".</span>
+                  </div>
+                
+                  <div class="price-body">
+                    <ul>
+                      <li><b>1,000</b> users included</li>
+                      <li><b>Unlimited</b> listings</li>
+                      <li><b>2 languages</b></li>
+                      <li>Create 2 Landing Pages</li>
+                      <li>Use your own domain</li>
+                      <li>Export all data at the same time</li>
+                    </ul>
+                    </div>
+                    <div className="price-footer">
+                      <button className="wsk-btn red" onTouchTap={() => this.upgrade()}>Upgrade</button>
+                    </div>
+                </div>
+              </div>
+          </div>
+        }
 
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Registration
-              </TableHeaderColumn>
-            </TableRow>
-            {modules.registration.map( (row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
-
-            <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                Internationalisation
-            </TableHeaderColumn>
-            {modules.i18n.map((row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Users
-              </TableHeaderColumn>
-            </TableRow>
-            {tableData.map( (row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Support
-              </TableHeaderColumn>
-            </TableRow>
-            {modules.support.map((row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
-
-              <TableRow>
-                <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                    Listing
-                </TableHeaderColumn>
-              </TableRow>
-              {modules.listing.map( (row, index) => (
-              <TableRow key={index}>
-                <TableRowColumn colSpan="2">{row.name}</TableRowColumn>
-                <TableRowColumn colSpan="1">{row.status}</TableRowColumn>
-                <TableRowColumn colSpan="1"><a target="_blank" href="https://vqlabs.freshdesk.com/support/tickets/new">Upgrade / Downgrade</a></TableRowColumn>
-              </TableRow>
-            ))}
-           
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Notifications (under construction)
-              </TableHeaderColumn>
-            </TableRow>
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Pricing scenarios (under construction)
-              </TableHeaderColumn>
-            </TableRow>
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Booking scenarios (under construction)
-              </TableHeaderColumn>
-            </TableRow>
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Browse page (under construction)
-              </TableHeaderColumn>
-            </TableRow>
-
-            <TableRow>
-              <TableHeaderColumn colSpan="4" style={{textAlign: 'center'}}>
-                  Artificial Intelligence modules (under construction)
-              </TableHeaderColumn>
-            </TableRow>
-          </TableBody>
-        </Table>
       </div>
     );
   }

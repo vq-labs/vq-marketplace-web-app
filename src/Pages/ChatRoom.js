@@ -761,7 +761,16 @@ export default class ChatRoom extends React.Component {
                                             !this.state.request.order.review
                                         )
                                     ) &&
-                                    this.state.isUserTaskOwner &&
+                                    (
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 1 &&
+                                            this.state.isUserTaskOwner
+                                        ) ||
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 2 &&
+                                            this.state.isUserRequestOwner
+                                        )
+                                    ) &&
                                     <RaisedButton
                                         label={translate('LEAVE_REVIEW')}
                                         labelStyle={{ color: 'white' }}
@@ -789,7 +798,16 @@ export default class ChatRoom extends React.Component {
                                             !this.state.request.review
                                         )
                                     ) &&
-                                    this.state.isUserRequestOwner &&
+                                    (
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 1 &&
+                                            this.state.isUserRequestOwner
+                                        ) ||
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 2 &&
+                                            this.state.isUserTaskOwner
+                                        )
+                                    ) &&
                                     <RaisedButton
                                         label={translate('LEAVE_REVIEW')}
                                         labelStyle={{ color: 'white' }}

@@ -189,16 +189,17 @@ export default class TaskListItem extends Component {
 }
                                 </div>
                                 <div className="col-xs-12 col-sm-6 text-right">
-                                    {this.state.task.status === TASK_STATUS.BOOKED && this.state.bookedRequest && this.state.properties.bookingDetails && (
-                                        <div>
-                                            <IconButton
+                                            {
+                                                this.state.bookedRequest && this.state.properties.bookingDetails && 
+                                                <IconButton
                                                 onClick={() => goTo(`/profile/${this.state.bookedRequest.fromUser.id}`)}
                                                 tooltipPosition="top-center"
                                                 tooltip={`${this.state.bookedRequest.fromUser.firstName} ${this.state.bookedRequest.fromUser.lastName}`}>
                                                 <Avatar
                                                     src={this.state.bookedRequest.fromUser.imageUrl || '/images/avatar.png'}/>
                                             </IconButton>
-                                            {this.shouldShowPhoneNumber(this.state.bookedRequest) && <IconButton
+                                            }
+                                            {this.state.bookedRequest && this.state.properties.bookingDetails && this.shouldShowPhoneNumber(this.state.bookedRequest) && <IconButton
                                                 style={{
                                                 top: 10
                                             }}
@@ -207,7 +208,7 @@ export default class TaskListItem extends Component {
                                                 <IconCall/>
                                             </IconButton>
 }
-                                            {String(this.state.bookedRequest.status) !== REQUEST_STATUS.SETTLED && String(this.state.bookedRequest.status) !== REQUEST_STATUS.CANCELED && <IconButton
+                                            {this.state.bookedRequest && this.state.properties.bookingDetails && String(this.state.bookedRequest.status) !== REQUEST_STATUS.SETTLED && String(this.state.bookedRequest.status) !== REQUEST_STATUS.CANCELED && <IconButton
                                                 style={{
                                                 top: 10
                                             }}
@@ -217,21 +218,19 @@ export default class TaskListItem extends Component {
                                                 <IconChatBubble/>
                                             </IconButton>
 }
-                                        </div>
-                                    )
-}
 
-                                    {this.shouldAllowMarkingAsDone(this.state.bookedRequest) && this.state.properties.markAsDoneButton && <RaisedButton
+
+                                    {this.state.bookedRequest && this.shouldAllowMarkingAsDone(this.state.bookedRequest) && this.state.properties.markAsDoneButton && <RaisedButton
                                         primary={true}
                                         label={translate('REQUEST_ACTION_MARK_DONE')}
                                         onTouchTap={() => this.markAsDone(this.state.bookedRequest)}/>
 }
-                                    {this.state.bookedRequest.status === REQUEST_STATUS.ACCEPTED && this.state.properties.bookButton && <RaisedButton
+                                    {this.state.bookedRequest && this.state.bookedRequest.status === REQUEST_STATUS.ACCEPTED && this.state.properties.bookButton && <RaisedButton
                                         primary={true}
                                         label={translate('ORDER_CREATE')}
                                         onTouchTap={() => goTo(`/request/${this.state.bookedRequest.id}/book`)}/>
 }
-                                    {!this.state.bookedRequest.review && (this.state.bookedRequest.status === REQUEST_STATUS.SETTLED || this.state.bookedRequest.status === REQUEST_STATUS.CLOSED) && ((Number(this.state.bookedRequest.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1") || (Number(this.state.bookedRequest.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1")) && this.state.properties.leaveReviewButton && <div
+                                    {this.state.bookedRequest && !this.state.bookedRequest.review && (this.state.bookedRequest.status === REQUEST_STATUS.SETTLED || this.state.bookedRequest.status === REQUEST_STATUS.CLOSED) && ((Number(this.state.bookedRequest.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1") || (Number(this.state.bookedRequest.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1")) && this.state.properties.leaveReviewButton && <div
                                         style={{
                                         display: 'inline-block',
                                         padding: 10

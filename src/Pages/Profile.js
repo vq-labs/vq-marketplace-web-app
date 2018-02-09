@@ -36,10 +36,12 @@ class Profile extends React.Component {
     constructor(props) {
         super();
         const userId = Number(props.params.profileId);
+        const viewer = Number(coreAuth.getUserId());
 
         this.state = {
             isProfileImgLoaded: true,
-            isMyProfile: Number(coreAuth.getUserId()) === userId,
+            isMyProfile: Number(viewer) === userId,
+            viewer: Number(viewer),
             userId,
             open: false,
             isLoading: true,
@@ -99,6 +101,7 @@ class Profile extends React.Component {
         apiReview
             .getItems({toUserId: userId})
             .then(reviews => {
+                console.log('reviews', reviews)
                 this.setState({reviews});
             });
     }
@@ -493,7 +496,7 @@ class Profile extends React.Component {
                                                     paddingRight: 0
                                                 }}>
                                                     <p className="text-muted text-center hidden-xs">
-                                                        {review.fromUser.firstName}<span className="hidden-xs">
+                                                        {review.fromUser.firstName}<span className="hidden-xs">&nbsp;
                                                             {review.fromUser.lastName}</span>
                                                     </p>
                                                     <p
@@ -512,7 +515,14 @@ class Profile extends React.Component {
                                             paddingLeft: 0,
                                             paddingRight: 0
                                         }}>
-                                            {((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1")) && !review.rate && <div
+                                            {
+                                                (
+                                                    (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1")
+                                                ) &&
+                                                (
+                                                    !review.hasOppositeReview && review.hiddenByWorkflow
+                                                ) &&
+                                            <div
                                                 className="row"
                                                 style={{
                                                 marginTop: 15
@@ -550,7 +560,8 @@ class Profile extends React.Component {
                                                 </div>
                                             </div>
 }
-                                            {((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")) && review.rate && <div className="row">
+                                            {
+                                                !review.hiddenByWorkflow && <div className="row">
                                                 <div className="col-xs-12">
                                                     <div
                                                         style={{
@@ -568,7 +579,8 @@ class Profile extends React.Component {
                                                 </div>
                                             </div>
 }
-                                            {((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")) && review.rate && <div className="row">
+                                            {
+                                                !review.hiddenByWorkflow && <div className="row">
                                                 <div
                                                     className="col-xs-12"
                                                     style={{
@@ -588,8 +600,7 @@ class Profile extends React.Component {
                                                 marginTop: 15
                                             }}>
                                                 <div className="col-xs-12 text-muted">
-                                                    <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
-                                                    <span></span>
+                                                    <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>&nbsp;&nbsp;|&nbsp;&nbsp;
                                                     <a
                                                         style={{
                                                         cursor: 'pointer'
@@ -611,7 +622,14 @@ class Profile extends React.Component {
                                 .state
                                 .reviews
                                 .filter(review => {
-                                    return ((((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS !== "1")) || ((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") && review.rate)))
+                                    return (
+                                        (
+                                            review.isOwnReview && review.hiddenByWorkflow
+                                        ) ||
+                                        (
+                                            !review.isOwnReview && !review.hiddenByWorkflow
+                                        )
+                                    )
                                 })
                                 .map((review, index) => <div key={index} className="row">
                                     <div className="col-xs-12">
@@ -647,7 +665,7 @@ class Profile extends React.Component {
                                                     paddingRight: 0
                                                 }}>
                                                     <p className="text-muted text-center hidden-xs">
-                                                        {review.fromUser.firstName}<span className="hidden-xs">
+                                                        {review.fromUser.firstName}<span className="hidden-xs">&nbsp;
                                                             {review.fromUser.lastName}</span>
                                                     </p>
                                                     <p
@@ -692,13 +710,22 @@ class Profile extends React.Component {
                                                     style={{
                                                     padding: 30
                                                 }}>
-                                                    {JSON.stringify(review, null, 2)
-}
                                                     <div
                                                         className="row content"
                                                         dangerouslySetInnerHTML={{
                                                         __html: DOMPurify.sanitize(review.body)
                                                     }}></div>
+                                                    {
+                                                    !review.hasOppositeReview &&
+                                                    (    
+                                                        (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1")
+                                                    ) &&
+                                                        <div className="row">
+                                                            <div className="col-xs-12 vq-no-padding">
+                                                            {translate("YOUR_REVIEW_IS_ONLY_VISIBLE_TO_YOU")}
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                             <div
@@ -707,8 +734,7 @@ class Profile extends React.Component {
                                                 marginTop: 15
                                             }}>
                                                 <div className="col-xs-12 text-muted">
-                                                    <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>
-                                                    <span></span>
+                                                    <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>&nbsp;&nbsp;|&nbsp;&nbsp;
                                                     <a
                                                         style={{
                                                         cursor: 'pointer'

@@ -139,13 +139,9 @@ class Header extends Component {
                   >
                     <MenuItem primaryText={translate("MY_LISTINGS")} onTouchTap={() => {
                       goTo("/dashboard/listings");
-
-                      location.reload();
                     }}/>
                     <MenuItem primaryText={translate("MY_REQUESTS")} onTouchTap={() => {
                       goTo("/dashboard/requests");
-
-                      location.reload();
                     }} />
                   </IconMenu>
               </div>

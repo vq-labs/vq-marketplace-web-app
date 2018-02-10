@@ -139,9 +139,9 @@ class App extends Component {
       return (
         this.state.ready && this.state.config &&
         <MuiThemeProvider muiTheme={muiTheme}>
-                  <StickyContainer>
-                    <Header user={this.state.user} />
-              { AppRoutes }
+        <StickyContainer>
+          <Header user={this.state.user} />
+            { AppRoutes }
          
             { window.location.pathname.indexOf("admin") === -1 &&
               this.state.config.APP_FOOTER_VISIBLE === "1" &&

@@ -6,20 +6,12 @@ import HtmlTextField from '../Components/HtmlTextField';
 import WYSIWYGEditor from './Components/WYSIWYGEditor';
 import CodeEditor from './Components/CodeEditor';
 import apiPost from '../api/post';
+import {sluggify} from '../core/format';
 
 const CodeMirror = require('react-codemirror');
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/mode/javascript/javascript');
-
-function slugify(text) {
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')             // Trim - from start of text
-    .replace(/-+$/, '');            // Trim - from end of text
-}
 
 export default class SectionNewPost extends React.Component {
   constructor(props) {
@@ -80,7 +72,7 @@ export default class SectionNewPost extends React.Component {
                   const post = this.state.post;
 
                   post.title = value;
-                  post.code = slugify(value);
+                  post.code = sluggify(value);
 
                   this.setState({
                     dirty: true,

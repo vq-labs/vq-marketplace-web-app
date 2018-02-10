@@ -25,7 +25,7 @@ export default class Dashboard extends Component {
 
     const dashboardType = props.params.type;
     const viewType = getParams(location.search).viewType
-
+    console.log('1', dashboardType, viewType)
     this.state = {
       dashboardType,
       viewType,
@@ -51,6 +51,7 @@ export default class Dashboard extends Component {
         ? getMode()
         : user.userType;
       let dashboardType = this.state.dashboardType;
+      let viewType = this.state.viewType;
       let viewTypes = this.state.viewTypes;
 
       if (!dashboardType) {
@@ -61,13 +62,15 @@ export default class Dashboard extends Component {
         viewTypes = this.setViewTypes(dashboardType);
       }
 
+      console.log('2', dashboardType, viewType)
+
       const newState = {
         userMode,
         isLoading: false,
         ready: true,
         userType: user.userType,
         dashboardType,
-        viewType: defaultViewTypes[dashboardType],
+        viewType: this.state.viewType || defaultViewTypes[dashboardType],
         viewTypes
       };
 
@@ -75,6 +78,18 @@ export default class Dashboard extends Component {
       this.setState(newState);
 
     }, true);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.type && nextProps.params.type !== this.state.dashboardType) {
+      const newState = {
+        dashboardType: nextProps.params.type,
+        viewType: defaultViewTypes[nextProps.params.type],
+        viewTypes: this.setViewTypes(nextProps.params.type)
+      };
+      this.setState(newState);
+      setQueryParams(newState, ['viewType']);   
+    }
   }
 
   onViewChange(viewType) {
@@ -165,7 +180,7 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.ACTIVE}
               properties={{
-              clickableTitle: true,
+              statusText: false,
               editButton: true,
               cancelButton: true,
               requestsButton: true,
@@ -180,7 +195,7 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.BOOKED}
               properties={{
-              clickableTitle: true,
+              statusText: true,
               editButton: false,
               cancelButton: false,
               requestsButton: false,
@@ -195,11 +210,11 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.COMPLETED}
               properties={{
-              clickableTitle: true,
+              statusText: true,
               editButton: false,
               cancelButton: false,
               requestsButton: false,
-              bookingDetails: true,
+              bookingDetails: false,
               markAsDoneButton: false,
               leaveReviewButton: true
             }}/>
@@ -210,7 +225,7 @@ export default class Dashboard extends Component {
             <Bookings
               status={[TASK_STATUS.INACTIVE, TASK_STATUS.SPAM]}
               properties={{
-              clickableTitle: true,
+              statusText: true,
               editButton: false,
               cancelButton: false,
               requestsButton: false,
@@ -225,8 +240,9 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.PENDING}
               properties={{
+              statusText: true,
               editButton: false,
-              cancelButton: false,
+              cancelButton: true,
               requestsButton: false,
               bookingDetails: false,
               markAsDoneButton: false,
@@ -239,8 +255,10 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.ACCEPTED}
               properties={{
+              statusText: true,
               editButton: false,
-              cancelButton: false,
+              cancelButton: true,
+              bookButton: true,
               requestsButton: false,
               bookingDetails: true,
               markAsDoneButton: false,
@@ -251,13 +269,15 @@ export default class Dashboard extends Component {
 
           {this.state.viewType === 'REQUESTS_IN_PROGRESS' && <div className="row vq-margin-top-bottom">
             <Requests
-              status={REQUEST_STATUS.BOOKED}
+              status={[REQUEST_STATUS.BOOKED, REQUEST_STATUS.MARKED_DONE]}
               properties={{
+              statusText: true,
               editButton: false,
               cancelButton: false,
+              bookButton: false,
               requestsButton: false,
               bookingDetails: true,
-              markAsDoneButton: false,
+              markAsDoneButton: true,
               leaveReviewButton: false
             }}/>
           </div>
@@ -265,14 +285,16 @@ export default class Dashboard extends Component {
 
           {this.state.viewType === 'REQUESTS_COMPLETED' && <div className="vq-margin-top-bottom">
             <Requests
-              status={[REQUEST_STATUS.CLOSED, REQUEST_STATUS.MARKED_DONE, REQUEST_STATUS.SETTLED]}
+              status={[REQUEST_STATUS.CLOSED, REQUEST_STATUS.SETTLED]}
               properties={{
+              statusText: true,
               editButton: false,
               cancelButton: false,
+              bookButton: false,
               requestsButton: false,
-              bookingDetails: true,
+              bookingDetails: false,
               markAsDoneButton: false,
-              leaveReviewButton: false
+              leaveReviewButton: true
             }}/>
           </div>
 }
@@ -281,8 +303,10 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.CANCELED}
               properties={{
+              statusText: true,
               editButton: false,
               cancelButton: false,
+              bookButton: false,
               requestsButton: false,
               bookingDetails: false,
               markAsDoneButton: false,
@@ -295,8 +319,10 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.DECLINED}
               properties={{
+              statusText: true,
               editButton: false,
               cancelButton: false,
+              bookButton: false,
               requestsButton: false,
               bookingDetails: false,
               markAsDoneButton: false,

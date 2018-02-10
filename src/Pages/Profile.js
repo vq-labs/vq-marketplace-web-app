@@ -441,7 +441,31 @@ class Profile extends React.Component {
                             </div>
                         </div>
 }
-                        {((this.state.profile && this.state.profile.userType === 0 && ((CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"))) || (this.state.profile && this.state.profile.userType === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1") || (this.state.profile && this.state.profile.userType === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1")) && <div
+                        {
+                            (
+                                (
+                                    this.state.profile && this.state.profile.userType === 0 &&
+                                    (
+                                        (
+                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                        ) || 
+                                        (
+                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                        )
+                                    )
+                                ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 1 &&
+                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                    ) ||
+                                    (
+                                        this.state.profile && this.state.profile.userType === 2 &&
+                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
+                                    )
+                                ) &&
+                        <div
                             className="col-xs-12 col-sm-12"
                             style={{
                             marginTop: 20
@@ -460,9 +484,22 @@ class Profile extends React.Component {
                             </p>
 }
 
-                            {this.state.isMyProfile && this
+                            {
+                                this
                                 .state
                                 .reviews
+                                .filter(review => {
+                                    return (
+                                        (
+                                            review.hiddenByWorkflow && (
+                                                review.isOwnReview || this.state.isMyProfile
+                                            )
+                                        ) ||
+                                        (
+                                            !review.hiddenByWorkflow
+                                        )
+                                    )
+                                })
                                 .map((review, index) => <div key={index} className="row">
                                     <div className="col-xs-12">
                                         <div
@@ -517,217 +554,106 @@ class Profile extends React.Component {
                                         }}>
                                             {
                                                 (
-                                                    (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1")
+                                                    !review.hasOppositeReview && review.hiddenByWorkflow && this.state.isMyProfile
                                                 ) &&
+                                                <div
+                                                    className="row"
+                                                    style={{
+                                                    marginTop: 15
+                                                }}>
+                                                    <div className="col-xs-12">
+                                                        {translate("YOU_MUST_LEAVE_REVIEW")}
+                                                    </div>
+                                                    <div
+                                                        className="col-xs-12"
+                                                        style={{
+                                                        marginTop: 5
+                                                    }}>
+                                                        <RaisedButton
+                                                            labelStyle={{
+                                                            color: 'white '
+                                                        }}
+                                                            backgroundColor={CONFIG.COLOR_PRIMARY}
+                                                            label={translate('LEAVE_REVIEW')}
+                                                            onTouchTap={() => {
+                                                            if (review.orderId) {
+                                                                requestOrder
+                                                                    .getCorrespondingRequestForOrder(review.orderId)
+                                                                    .then(request => {
+                                                                        return goTo(`/request/${request.id}/review`);
+                                                                    })
+                                                            }
+                                                            if (review.requestId) {
+                                                                requestOrder
+                                                                    .getCorrespondingOrderForRequest(review.requestId)
+                                                                    .then(order => {
+                                                                        return goTo(`/order/${order.id}/review`);
+                                                                    })
+                                                            }
+                                                        }}/>
+                                                    </div>
+                                                </div>
+                                            }
+                                            {
                                                 (
-                                                    !review.hasOppositeReview && review.hiddenByWorkflow
+                                                    (
+                                                        review.hiddenByWorkflow && review.isOwnReview
+                                                    ) ||
+                                                    (
+                                                        !review.hiddenByWorkflow
+                                                    ) 
                                                 ) &&
-                                            <div
-                                                className="row"
-                                                style={{
-                                                marginTop: 15
-                                            }}>
-                                                <div className="col-xs-12">
-                                                    {translate("YOU_MUST_LEAVE_REVIEW")}
-                                                </div>
-                                                <div
-                                                    className="col-xs-12"
-                                                    style={{
-                                                    marginTop: 5
-                                                }}>
-                                                    <RaisedButton
-                                                        labelStyle={{
-                                                        color: 'white '
-                                                    }}
-                                                        backgroundColor={CONFIG.COLOR_PRIMARY}
-                                                        label={translate('LEAVE_REVIEW')}
-                                                        onTouchTap={() => {
-                                                        if (review.orderId) {
-                                                            requestOrder
-                                                                .getCorrespondingRequestForOrder(review.orderId)
-                                                                .then(request => {
-                                                                    return goTo(`/request/${request.id}/review`);
-                                                                })
-                                                        }
-                                                        if (review.requestId) {
-                                                            requestOrder
-                                                                .getCorrespondingOrderForRequest(review.requestId)
-                                                                .then(order => {
-                                                                    return goTo(`/order/${order.id}/review`);
-                                                                })
-                                                        }
-                                                    }}/>
-                                                </div>
-                                            </div>
-}
-                                            {
-                                                !review.hiddenByWorkflow && <div className="row">
-                                                <div className="col-xs-12">
-                                                    <div
-                                                        style={{
-                                                        lineHeight: 2
-                                                    }}>
-                                                        <ReactStars
-                                                            edit={false}
-                                                            disable={true}
-                                                            count={5}
-                                                            size={16}
-                                                            half={false}
-                                                            value={review.rate}
-                                                            color2={'#ffd700'}/>
-                                                    </div>
-                                                </div>
-                                            </div>
-}
-                                            {
-                                                !review.hiddenByWorkflow && <div className="row">
-                                                <div
-                                                    className="col-xs-12"
-                                                    style={{
-                                                    padding: 30
-                                                }}>
-                                                    <div
-                                                        className="row content"
-                                                        dangerouslySetInnerHTML={{
-                                                        __html: DOMPurify.sanitize(review.body)
-                                                    }}></div>
-                                                </div>
-                                            </div>
-}
-                                            <div
-                                                className="row"
-                                                style={{
-                                                marginTop: 15
-                                            }}>
-                                                <div className="col-xs-12 text-muted">
-                                                    <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{review.createdAt}</Moment>&nbsp;&nbsp;|&nbsp;&nbsp;
-                                                    <a
-                                                        style={{
-                                                        cursor: 'pointer'
-                                                    }}
-                                                        onClick={() => goTo(`/task/${review.task.id}`)}>
-                                                        {review.task.title}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="col-xs-12">
-                                            <hr/>
-                                        </div>
-                                    </div>
-                                </div>)}
-
-                            {!this.state.isMyProfile && this
-                                .state
-                                .reviews
-                                .filter(review => {
-                                    return (
-                                        (
-                                            review.isOwnReview && review.hiddenByWorkflow
-                                        ) ||
-                                        (
-                                            !review.isOwnReview && !review.hiddenByWorkflow
-                                        )
-                                    )
-                                })
-                                .map((review, index) => <div key={index} className="row">
-                                    <div className="col-xs-12">
-                                        <div
-                                            style={{
-                                            marginTop: 4,
-                                            paddingLeft: 0,
-                                            paddingRight: 0
-                                        }}
-                                            className="col-xs-12 col-sm-3 col-md-2"
-                                            onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}>
-                                            <div className="row">
-                                                <div
-                                                    className="col-xs-4 col-sm-12 text-center"
-                                                    style={{
-                                                    paddingLeft: 0,
-                                                    paddingRight: 0
-                                                }}>
-                                                    <IconButton
-                                                        style={{
-                                                        bottom: 5,
-                                                        padding: 0
-                                                    }}
-                                                        tooltip={`${review.fromUser.firstName} ${review.fromUser.lastName}`}>
-                                                        <Avatar
-                                                            src={review.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'}/>
-                                                    </IconButton>
-                                                </div>
-                                                <div
-                                                    className="col-xs-8 col-sm-12"
-                                                    style={{
-                                                    paddingLeft: 0,
-                                                    paddingRight: 0
-                                                }}>
-                                                    <p className="text-muted text-center hidden-xs">
-                                                        {review.fromUser.firstName}<span className="hidden-xs">&nbsp;
-                                                            {review.fromUser.lastName}</span>
-                                                    </p>
-                                                    <p
-                                                        className="text-muted visible-xs text-left"
-                                                        style={{
-                                                        paddingTop: 17
-                                                    }}>
-                                                        {review.fromUser.firstName}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="col-xs-12 col-sm-9 col-md-10"
-                                            style={{
-                                            paddingLeft: 0,
-                                            paddingRight: 0
-                                        }}>
-
-                                            <div className="row">
-                                                <div className="col-xs-12">
-                                                    <div
-                                                        style={{
-                                                        lineHeight: 2
-                                                    }}>
-                                                        <ReactStars
-                                                            edit={false}
-                                                            disable={true}
-                                                            count={5}
-                                                            size={16}
-                                                            half={false}
-                                                            value={review.rate}
-                                                            color2={'#ffd700'}/>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="row">
-                                                <div
-                                                    className="col-xs-12"
-                                                    style={{
-                                                    padding: 30
-                                                }}>
-                                                    <div
-                                                        className="row content"
-                                                        dangerouslySetInnerHTML={{
-                                                        __html: DOMPurify.sanitize(review.body)
-                                                    }}></div>
-                                                    {
-                                                    !review.hasOppositeReview &&
-                                                    (    
-                                                        (CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1") || (CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS === "1")
-                                                    ) &&
-                                                        <div className="row">
-                                                            <div className="col-xs-12 vq-no-padding">
-                                                            {translate("YOUR_REVIEW_IS_ONLY_VISIBLE_TO_YOU")}
-                                                            </div>
+                                                <div className="row">
+                                                    <div className="col-xs-12">
+                                                        <div
+                                                            style={{
+                                                            lineHeight: 2
+                                                        }}>
+                                                            <ReactStars
+                                                                edit={false}
+                                                                disable={true}
+                                                                count={5}
+                                                                size={16}
+                                                                half={false}
+                                                                value={Number(review.rate)}
+                                                                color2={'#ffd700'}/>
                                                         </div>
-                                                    }
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+                                            {
+                                                (
+                                                    (
+                                                        review.hiddenByWorkflow && review.isOwnReview
+                                                    ) ||
+                                                    (
+                                                        !review.hiddenByWorkflow
+                                                    ) 
+                                                ) &&
+                                                <div className="row">
+                                                    <div
+                                                        className="col-xs-12"
+                                                        style={{
+                                                        padding: 30
+                                                    }}>
+                                                        <div
+                                                            className="row content"
+                                                            dangerouslySetInnerHTML={{
+                                                            __html: DOMPurify.sanitize(review.body)
+                                                        }}></div>
+                                                        {
+                                                            (
+                                                                review.hiddenByWorkflow && review.isOwnReview
+                                                            ) &&
+                                                            <div className="row">
+                                                                <div className="col-xs-12 vq-no-padding">
+                                                                {translate('ONLY_YOU_CAN_SEE_YOUR_REVIEW')}
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
                                             <div
                                                 className="row"
                                                 style={{
@@ -751,7 +677,6 @@ class Profile extends React.Component {
                                         </div>
                                     </div>
                                 </div>)}
-
                         </div>
 }
 

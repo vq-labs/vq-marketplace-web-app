@@ -97,6 +97,7 @@ export default class TaskEdit extends Component {
                             priceType: rTask.priceType
                         }
                     });
+                    console.log(this.state)
                 });
             }, errorFactory());
         }, false);
@@ -106,9 +107,14 @@ export default class TaskEdit extends Component {
         return (event, value, rawText) => {
             const updatedTask = this.state.updatedTask;
             if (!rawText) {
-              updatedTask[field] = transform ? transform(value) : value;
+              updatedTask[field] = transform ?
+                transform(value) :
+                typeof value === 'string' ?
+                    trimSpaces(value) :
+                    value;
             } else {
-              updatedTask[field].value = value;
+                console.log(field, updatedTask, rawText)
+              updatedTask[field].value = typeof value === 'string' ? trimSpaces(value) : value;
               updatedTask[field].rawText = rawText;
             }
 
@@ -167,7 +173,17 @@ export default class TaskEdit extends Component {
                                 <div className="col-xs-12">
                                     <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
                                         <HtmlTextField
-                                             onChange={this.handleFieldChange('description')}
+                                            onChange={(ev, descriptionValue, rawText) => {
+                                                this.setState({
+                                                    updatedTask: {
+                                                        ...this.state.updatedTask,
+                                                        description: {
+                                                            value: descriptionValue,
+                                                            rawText: rawText
+                                                        }
+                                                    }
+                                                });
+                                            }}
                                             value={this.state.updatedTask.description.value}
                                         />
                                     <hr />

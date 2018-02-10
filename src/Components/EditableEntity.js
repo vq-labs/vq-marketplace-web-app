@@ -68,6 +68,17 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
                     floatingLabelFixed={true}
                 />
             }
+            { field.type === 'string' &&
+                <TextField
+                    key={index + '-mirror'}
+                    type={field.type}
+                    disabled={true}
+                    value={getFieldValue(field, true)}
+                    style={{width: '100%'}}
+                    inputStyle={{width: '100%'}}
+                    floatingLabelFixed={true}
+                />
+            }
             { field.type === 'secret' &&
                     <TextField
                         key={index}
@@ -254,7 +265,6 @@ const renderEditableEntityProxy = (field, index, level, parentFieldSubFieldsLeng
   return renderEditableEntity(field, index, timesNested, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state);
 }
 
-
 function constructUpdatedEntity(updatedEntity, fields) {
     fields.forEach(field => {
         if (field.type === 'bool') {
@@ -379,12 +389,21 @@ export default class EditableEntity extends Component {
         this.props.onConfirm(this.state.updatedEntity);
     }
 
-    getFieldValue (field) {
+    getFieldValue (field, shallTransform) {
+        let fieldValue;
+
       if (field.default && typeof this.state.updatedEntity[field.key] === 'undefined') {
-        return field.default
+        fieldValue = field.default;
       }
-      return this.state.updatedEntity[field.key];
+      fieldValue = this.state.updatedEntity[field.key];
+
+      if (field.transform && typeof fieldValue === "string" && shallTransform) {
+          return field.transform(fieldValue)
+      }
+      return fieldValue;
     }
+
+    
     
     render() {
             return (

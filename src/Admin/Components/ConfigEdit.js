@@ -81,7 +81,7 @@ export default class ConfigEdit extends React.Component {
                                               const mappedItem = {};
 
                                               mappedItem.fieldKey = fieldKey;
-                                              mappedItem.fieldValue = updatedEntity[fieldKey];
+                                              mappedItem.fieldValue = field.transformOnSave ? field.transformOnSave(updatedEntity[fieldKey]) : updatedEntity[fieldKey];
 
                                               if (field.type === 'select') {
                                                   mappedItem.fieldValue = typeof updatedEntity[fieldKey] === 'string' ?

@@ -152,7 +152,7 @@ class Task extends Component {
                             pricingModels
                         }));
 
-                        let sentRequest;
+                        let sentRequest, bookedRequest;
 
                         if (user) {
                             sentRequest = task.requests
@@ -162,10 +162,15 @@ class Task extends Component {
                                 .find(
                                     _ => _.fromUserId === user.id
                                 );
+                            bookedRequest = task.requests
+                                .find(
+                                    _ => _.status === REQUEST_STATUS.BOOKED
+                                )
                         }
 
                         this.setState({
                             taskOwner: task.user,
+                            bookedRequestId: bookedRequest ? bookedRequest.id : null,
                             sentRequestId: sentRequest ? sentRequest.id : null,
                             isLoading: false,
                             isMyTask: task.userId === coreAuth.getUserId()
@@ -297,6 +302,14 @@ class Task extends Component {
                                             }
                                         </CardText>
                                         { !this.state.user && this.state.configReady &&
+                                            (
+                                                (
+                                                    Number(this.state.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                ) ||
+                                                (
+                                                    Number(this.state.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                ) 
+                                            ) &&
                                             <RaisedButton
                                                 backgroundColor={CONFIG.COLOR_PRIMARY}
                                                 labelColor={"white"}
@@ -308,22 +321,24 @@ class Task extends Component {
                                         {   
                                             this.state.user &&
                                             this.state.configReady &&
-                                            (   this.state.user.userType === 2 ||
-                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
-                                                this.state.user.userType === 0
-                                            ) &&
                                             !this.state.isMyTask &&
                                             (
                                                 !this.state.sentRequestId ||
                                                 (
                                                     (
-                                                        Number(this.state.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                        Number(this.state.task.taskType) === 2 &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
                                                     ) ||
                                                     (
-                                                        Number(this.state.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                        Number(this.state.task.taskType) === 1 &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
                                                     )
                                                 )
-                                            ) &&
+                                            ) && 
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 primary={true}
@@ -359,12 +374,12 @@ class Task extends Component {
                                             (
                                                 Number(this.state.task.taskType) === 2 && 
                                                 (
-                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
                                                 )
                                             ) ||
                                             (
                                                 Number(this.state.task.taskType) === 1 && (
-                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
                                                 )
                                             )
                                         ) &&
@@ -377,15 +392,56 @@ class Task extends Component {
                                                     goTo(`/chat/${this.state.sentRequestId}`)
                                                 }}
                                             /> 
+                                        }
+                                        {
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                )
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                )
+                                            )
+                                        ) &&
+                                        this.state.isMyTask &&
+                                        this.state.bookedRequestId &&
+                                            <RaisedButton
+                                                primary={true}
+                                                style={{width: '100%'}}
+                                                label={translate("REQUEST_ALREADY_BOOKED")}
+                                                onTouchTap={() => {
+                                                    goTo(`/chat/${this.state.bookedRequestId}`)
+                                                }}
+                                            /> 
                                        }
 
-                                       { this.state.isMyTask &&
+                                       { 
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && 
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                
+                                            )
+                                        ) &&   
+                                        this.state.isMyTask &&
                                          this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 style={{width: '100%'}}
                                                 primary={true}
                                                 label={`${this.state.task.requests
-                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING || _.status === REQUEST_STATUS.ACCEPTED)
                                                     .length} ${translate('REQUESTS')}`}
                                                 onTouchTap={() => {
                                                     openRequestDialog(this.state.task.requests);

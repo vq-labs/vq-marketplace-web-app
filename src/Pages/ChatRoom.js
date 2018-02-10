@@ -2,6 +2,7 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import Moment from 'react-moment';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
@@ -255,6 +256,7 @@ export default class ChatRoom extends React.Component {
             <Stepper
                 activeStep={this.getActiveStep(this.state.request.status)}
                 orientation={orientation || 'horizontal'}
+                connector={<ArrowForwardIcon />}
                 style={{ paddingLeft: '15px', paddingRight: '15px' }}
             >
                 {
@@ -320,8 +322,8 @@ export default class ChatRoom extends React.Component {
                             this.state.user &&
                             this.state.task &&
                             (
-                                <div className="col-xs-12" style={{ marginTop: '50px' }}>
-                                    <div className="col-xs-12 hidden-xs">
+                                <div className="col-xs-12">
+                                    <div className="col-xs-12 hidden-xs" style={{padding: '0px'}}>
                                         {this.renderStepper('horizontal')}
                                     </div>
                                     <div className="col-xs-12 visible-xs" style={{ paddingLeft: '15px', paddingRight: '15px' }}>

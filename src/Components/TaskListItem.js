@@ -160,13 +160,16 @@ export default class TaskListItem extends Component {
                         <div className="row">
                             {
                                 (
-                                    this.state.properties.statusText ||
-                                    this.state.properties.editButton ||
-                                    this.state.properties.cancelButton ||
-                                    this.state.properties.requestsButton ||
-                                    this.state.properties.bookingDetails ||
-                                    this.state.properties.markAsDoneButton ||
-                                    this.state.properties.leaveReviewButton
+                                    this.state.properties &&
+                                    (
+                                        this.state.properties.statusText ||
+                                        this.state.properties.editButton ||
+                                        this.state.properties.cancelButton ||
+                                        this.state.properties.requestsButton ||
+                                        this.state.properties.bookingDetails ||
+                                        this.state.properties.markAsDoneButton ||
+                                        this.state.properties.leaveReviewButton
+                                    )
                                 ) &&
                                 <div className="col-xs-12">
                                     <div className="row">

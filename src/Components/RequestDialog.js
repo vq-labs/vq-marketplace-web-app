@@ -64,6 +64,7 @@ export default class RequestDialog extends React.Component {
             return translate("BACK");
     }
   }
+  
   showContinueBtnLabel (currentMask) {
       switch (currentMask) {
         case 'success':
@@ -72,19 +73,23 @@ export default class RequestDialog extends React.Component {
             return translate("REQUEST_MESSAGE_CONFIRM");
     }
   }
+
   sendRequest() {
     if (Boolean(coreAuth.getToken())) {
             this.setState({ isBeingPosted: true });
             
-            apiRequest.createItem(this.state.application)
+            return apiRequest.createItem(this.state.application)
                 .then(result => this.setState({
                     mask: 'success', 
                     isBeingPosted: false 
                 }));
-    } else {
-        this.setState({ mask: 'auth' });
     }
+    
+    this.setState({
+        mask: 'auth'
+    });
   }
+
   continuePosting (currentMask) {
          if (!this.state.application.message) {
             return displayMessage({
@@ -106,7 +111,10 @@ export default class RequestDialog extends React.Component {
                 return alert('I do not know what to do');
         }   
   }
-  getDialogTitle = currentMask => translate('SEND_REQUEST');
+
+  getDialogTitle(currentMask) {
+    return translate('SEND_REQUEST');
+  } 
   
   render() {
      const backBtn = <FlatButton

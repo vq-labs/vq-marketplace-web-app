@@ -5,7 +5,6 @@ import { Editor } from 'react-draft-wysiwyg';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 
-
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 class EditorConvertToHTML extends Component {
@@ -15,11 +14,11 @@ class EditorConvertToHTML extends Component {
         this.state = {
             editorState: props.value ?
                 EditorState.createWithContent(stateFromHTML(props.value || '')) :
-                EditorState.createEmpty(),
+                EditorState.createEmpty()
         };
     }
   
-    onEditorStateChange = editorState => {
+    onEditorStateChange(editorState) {
         this.setState({
             editorState
         });
@@ -29,7 +28,7 @@ class EditorConvertToHTML extends Component {
         if (this.props.onChange) { 
             this.props.onChange(null, html);
         }
-    };
+    }
 
     render() {
         const {

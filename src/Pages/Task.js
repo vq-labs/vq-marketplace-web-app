@@ -55,19 +55,22 @@ class Task extends Component {
             }
         };
     }
-    handleTouchTap = (event) => {
+
+    handleTouchTap(event) {
         event.preventDefault();
 
         this.setState({
             open: true,
-            anchorEl: event.currentTarget,
+            anchorEl: event.currentTarget
         });
     }
-    handleRequestClose = () => {
+
+    handleRequestClose() {
         this.setState({
             open: false
         });
     }
+
     displayIconElement (task) {
         if (task && task.location) {
             return <MapsPlace viewBox='-20 -7 50 10' />;

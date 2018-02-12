@@ -95,23 +95,25 @@ export default class Account extends Component {
         }, true);
     }
 
-    changeSectorFn = sector => () => {
-        if (sector === 'profile') {
-            goTo(`/account/${sector}`)
+    changeSectorFn(sector) {
+        return () => {
+            if (sector === 'profile') {
+                goTo(`/account/${sector}`)
 
-            return apiUser
-            .getItem(this.state.user.id)
-            .then(profile => this.setState({
-                profile,
+                return apiUser
+                    .getItem(this.state.user.id)
+                    .then(profile => this.setState({
+                        profile,
+                        sector
+                    }));
+            }
+
+            goTo(`/account/${sector}`);
+
+            this.setState({
                 sector
-            }));
+            });
         }
-
-        goTo(`/account/${sector}`);
-
-        this.setState({
-            sector
-        });
     }
 
     render() {

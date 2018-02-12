@@ -124,7 +124,7 @@ export default class NewListing extends Component {
         };
     }
 
-    updateCurrentCategoryConfig = (listingCategories) => {
+    updateCurrentCategoryConfig(listingCategories) {
         const task = this.state.task;
 
         const category = listingCategories

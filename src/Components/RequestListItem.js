@@ -47,9 +47,9 @@ export default class RequestListItem extends Component {
         this.setState({ready: true});
     }
 
-    markAsDone = () => {
+    markAsDone() {
         if (this.state.task.taskType === 2) {
-            openConfirmDialog({
+            return openConfirmDialog({
                 headerLabel: translate('SETTLE_ORDER'),
                 confirmationLabel: translate('SETTLE_ORDER_DESC')
             }, () => {
@@ -72,36 +72,36 @@ export default class RequestListItem extends Component {
                         return openDialog({header: translate('ORDER_SETTLED_SUCCESS')});
                     }, errorFactory());
             });
-        } else {
-            openConfirmDialog({
-                headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
-                confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
-            }, () => {
-    
-                apiRequest
-                    .updateItem(this.state.request.id, {status: REQUEST_STATUS.MARKED_DONE})
-                    .then(_ => {
-                        const request = this.state.request;
-    
-                        request.status = REQUEST_STATUS.MARKED_DONE;
-    
-                        request.order.autoSettlementStartedAt = getUtcUnixTimeNow();
-    
-                        this.setState({
-                            request,
-                            properties: {
-                                ...this.state.properties,
-                                bookingDetails: false
-                            }
-                        });
-    
-                        return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
-                    }, errorFactory());
-            });
         }
+
+        openConfirmDialog({
+            headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
+            confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
+        }, () => {
+
+            apiRequest
+                .updateItem(this.state.request.id, {status: REQUEST_STATUS.MARKED_DONE})
+                .then(_ => {
+                    const request = this.state.request;
+
+                    request.status = REQUEST_STATUS.MARKED_DONE;
+
+                    request.order.autoSettlementStartedAt = getUtcUnixTimeNow();
+
+                    this.setState({
+                        request,
+                        properties: {
+                            ...this.state.properties,
+                            bookingDetails: false
+                        }
+                    });
+
+                    return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
+                }, errorFactory());
+        });
     }
 
-    cancelRequest = () => {
+    cancelRequest() {
         openConfirmDialog({
             headerLabel: translate('CANCEL_REQUEST_ACTION_HEADER'),
             confirmationLabel: translate('CANCEL_REQUEST_ACTION_DESC')
@@ -117,7 +117,7 @@ export default class RequestListItem extends Component {
                     return openDialog({header: translate("CANCEL_REQUEST_ACTION_SUCCESS")});
                 }, errorFactory());
         })
-    };
+    }
 
     leaveReview() {
         return this.state.task.taskType === 1 ?
@@ -126,7 +126,6 @@ export default class RequestListItem extends Component {
     }
 
     render() {
-
         const request = this.state.request;
 
         return (

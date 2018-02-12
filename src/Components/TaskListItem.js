@@ -50,10 +50,12 @@ export default class TaskListItem extends Component {
     }
 
     componentDidMount() {
-        this.setState({ready: true});
+        this.setState({
+            ready: true
+        });
     }
 
-    markAsDone = () => {
+    markAsDone() {
         if (this.state.task.taskType === 1) {
             openConfirmDialog({
                 headerLabel: translate('SETTLE_ORDER'),

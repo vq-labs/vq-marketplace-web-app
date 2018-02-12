@@ -105,7 +105,7 @@
     "preparestart": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
     "start:local": "node ./node_modules/gulp/bin/gulp.js prepare --env local && node scripts/start.js",
     "start:talentwand": "VQ_API_URL=https://talentwand.vqmarketplace.com/api npm run preparestart",
-    "start:ani": "VQ_API_URL=https://ani.vqmarketplace.com/api npm run preparestart",
+    "start:testclick4work": "VQ_API_URL=https://testclick4work.vqmarketplace.com/api npm run preparestart",
     "start:b2btemplate": "VQ_API_URL=https://b2btemplate.vqmarketplace.com/api npm run preparestart",
     "start:templates": "VQ_API_URL=https://templates.vqmarketplace.com/api npm run preparestart",
     "start:rentkitchen": "VQ_API_URL=https://rental-kitchen.vqmarketplace.com/api npm run preparestart",

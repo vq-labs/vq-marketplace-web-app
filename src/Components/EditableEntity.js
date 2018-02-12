@@ -13,16 +13,57 @@ import ImageUploader from './ImageUploader';
 import FileUploader from './FileUploader';
 import DOMPurify from 'dompurify';
 import * as coreNavigation from '../core/navigation';
-import { getConfigAsync } from '../core/config';
 import { translate } from '../core/i18n';
 
 const _ = require('underscore');
 
 let timesNested;
 
+const checkConditionOfField = (field, state) => {
+    let shouldRender;
+    if (field.condition) {
+        if (Array.isArray(field.condition) === true) {
+            const conditions = [];
+            for (var i = 0; i < field.condition.length; i++) {
+
+                if (
+                    state &&
+                    state.updatedEntity &&
+                    state.updatedEntity[field.condition[i].key] &&
+                    state.updatedEntity[field.condition[i].key] === field.condition[i].value
+                ) {
+                    conditions.push(true);
+                } else {
+                    conditions.push(false);
+                }
+            }
+            shouldRender = _.some(conditions);
+            
+        } else if (
+            Array.isArray(field.condition) === false &&
+            state &&
+            state.updatedEntity &&
+            state.updatedEntity[field.condition.key] &&
+            state.updatedEntity[field.condition.key] === field.condition.value
+        ) {
+            shouldRender = true;
+        } else {
+            shouldRender = false;
+        }
+      } else {
+          shouldRender = true;
+      }
+
+      return shouldRender;
+}
+
 const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state) => {
   timesNested = level === null ? 0 : level;
-  if ((!field.condition) || (field.condition && state && state.config && state.config[field.condition.key] && state.config[field.condition.key] === field.condition.value)) {
+
+  let shouldRender = true;
+  shouldRender = checkConditionOfField(field, state);
+
+  if (shouldRender) {
    return (
     <div className={timesNested < 2 || parentFieldSubFieldsLength < 2 || (parentFieldSubFieldsLength % 3 === 0 && index + 1 === parentFieldSubFieldsLength) ? "col-xs-12" : "col-xs-6"} style={timesNested < 1 ? {} : {paddingLeft: '40px'}} key={field.key}>
       { field.type === 'color' &&
@@ -39,6 +80,12 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
                 handleFieldChange(field)(undefined, color.hex);
             }}
         />
+        { field.explanation &&
+            <div style={{marginTop: 20}}>
+                <div className="text-muted" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(field.explanation)}}>
+                </div>
+            </div>
+        }
       </div>
       }
       {
@@ -68,6 +115,18 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
                     floatingLabelFixed={true}
                 />
             }
+            { field.type === 'string' &&
+                field.showTransformMirror &&
+                <TextField
+                    key={index + '-mirror'}
+                    type={field.type}
+                    disabled={true}
+                    value={getFieldValue(field, true)}
+                    style={{width: '100%'}}
+                    inputStyle={{width: '100%'}}
+                    floatingLabelFixed={true}
+                />
+            }
             { field.type === 'secret' &&
                     <TextField
                         key={index}
@@ -82,7 +141,6 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
                         floatingLabelFixed={true}
                     />
             }
-
             { field.type === 'number' &&
 
                 <TextField
@@ -119,7 +177,7 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
           value={getFieldValue(field)}
           onChange={handleFieldSelections(field)}
           >
-        {field.selection.map((selectionItem, index) =>
+        {field.selection.filter(selectionField => checkConditionOfField(selectionField, state)).map((selectionItem, index) =>
           <MenuItem
               key={index}
               insetChildren={true}
@@ -142,7 +200,7 @@ const renderEditableEntity = (field, index, level, parentFieldSubFieldsLength, u
           value={getFieldValue(field)}
           onChange={handleFieldSelection(field)}
           >
-        {field.selection.map((selectionItem, index) =>
+        {field.selection.filter(selectionField => checkConditionOfField(selectionField, state)).map((selectionItem, index) =>
           <MenuItem key={index} value={selectionItem.value} primaryText={selectionItem.label} />
         )}
         </SelectField>
@@ -254,7 +312,6 @@ const renderEditableEntityProxy = (field, index, level, parentFieldSubFieldsLeng
   return renderEditableEntity(field, index, timesNested, parentFieldSubFieldsLength, updatedEntity, validationErrors, getFieldValue, handleFieldChange, handleFieldSelections, handleFieldSelection, state);
 }
 
-
 function constructUpdatedEntity(updatedEntity, fields) {
     fields.forEach(field => {
         if (field.type === 'bool') {
@@ -307,14 +364,6 @@ export default class EditableEntity extends Component {
  
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
-    }
-    
-    componentDidMount() {
-        getConfigAsync(config => {
-            this.setState({
-                config
-            });
-        });
     }
 
     componentWillReceiveProps (nextProps) {
@@ -379,12 +428,21 @@ export default class EditableEntity extends Component {
         this.props.onConfirm(this.state.updatedEntity);
     }
 
-    getFieldValue (field) {
+    getFieldValue (field, shallTransform) {
+        let fieldValue;
+
       if (field.default && typeof this.state.updatedEntity[field.key] === 'undefined') {
-        return field.default
+        fieldValue = field.default;
       }
-      return this.state.updatedEntity[field.key];
+      fieldValue = this.state.updatedEntity[field.key];
+
+      if (field.transform && typeof fieldValue === "string" && shallTransform) {
+          return field.transform(fieldValue)
+      }
+      return fieldValue;
     }
+
+    
     
     render() {
             return (
@@ -411,7 +469,7 @@ export default class EditableEntity extends Component {
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-12" style={{ marginTop: 30 }}>
-                                            { this.state.config &&
+                                            { this.state.updatedEntity &&
                                                 this.state.showCancelBtn &&  
                                                 <FlatButton
                                                     style={{ float: 'left' }}
@@ -421,7 +479,7 @@ export default class EditableEntity extends Component {
                                                     onTouchTap={ () => this.props.onCancel ? this.props.onCancel() : coreNavigation.goBack() }
                                                 />
                                             }
-                                            { this.state.config &&
+                                            { this.state.updatedEntity &&
                                                 <RaisedButton
                                                     primary={true}
                                                     disabled={!this.state.valid || (!this.props.enableSkip ? !this.state.dirty : false)}

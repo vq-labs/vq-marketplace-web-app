@@ -60,15 +60,15 @@ class Review extends Component {
                     return apiOrder
                         .getItem(this.state.orderId)
                         .then(order => {
-                            if (order.request.fromUserId !== user.id) {
+                            if (order.userId !== user.id) {
                                 return goTo('/');
                             }
 
-                            if (order.review) {
+                            if (order.review && order.review.fromUserId === user.id) {
                                 return goTo('/');
                             }
 
-                            const userUnderReview = order.request.fromUser;
+                            const userUnderReview = Number(order.task.taskType) === 1 ? order.request.fromUser : order.request.toUser;
 
                             this.setState({userUnderReview, order})
                         }, err => {
@@ -80,16 +80,24 @@ class Review extends Component {
                     return apiRequest
                         .getItem(this.state.requestId)
                         .then(request => {
-
-                            if (request.request.toUserId !== user.id) {
+                            if (
+                                (
+                                    Number(request.task.taskType) === 1 &&
+                                    request.request.fromUserId !== user.id
+                                ) ||
+                                (
+                                    Number(request.task.taskType) === 2 &&
+                                    request.request.toUserId !== user.id
+                                )
+                            ) {
                                 return goTo('/');
                             }
 
-                            if (request.request.review) {
+                            if (request.request.review && request.request.review.fromUserId === user.id) {
                                 return goTo('/');
                             }
 
-                            const userUnderReview = request.request.toUser;
+                            const userUnderReview = Number(request.task.taskType) === 1 ? request.request.toUser : request.request.fromUser;
 
                             this.setState({userUnderReview, request: request.request})
                         }, err => {
@@ -256,8 +264,7 @@ class Review extends Component {
                             onTouchTap={() => {
                             goTo(`/profile/${this.state.userUnderReview.id}`)
                         }}>
-                            {this.state.userUnderReview.firstName}
-                            {this.state.userUnderReview.lastName}
+                            {`${this.state.userUnderReview.firstName} ${this.state.userUnderReview.lastName}`}
                         </a>
                     </h3>
                 </div>

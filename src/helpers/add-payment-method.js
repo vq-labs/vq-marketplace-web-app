@@ -46,8 +46,6 @@ export const Component = class AddPaymentMethod extends React.Component {
                     >
                         <StripeCheckout
                             onSubmit={cardToken => {
-                                console.log(cardToken);
-
                                 apiPayment
                                 .createItem("stripe", "card", {
                                     obj: cardToken

@@ -106,8 +106,10 @@ export default class SectionCategories extends React.Component {
                         }}
                         onConfirm={newCategory => {
                             const categories = this.state.categories;
+                            const category = newCategory;
+                            category.status = String(TASK_CATEGORY_STATUS.ACTIVE);
 
-                            categories[index] = newCategory;
+                            categories[index] = category;
 
                             if (this.state.isAddingNewCategory) {
                                 apiConfig.categories
@@ -162,7 +164,7 @@ export default class SectionCategories extends React.Component {
                                 });
                             }}/>
                             {
-                                category.status === TASK_CATEGORY_STATUS.ACTIVE && 
+                                String(category.status) === TASK_CATEGORY_STATUS.ACTIVE && 
                                 <FlatButton
                                 label="Deactivate"
                                 onTouchTap={() => {
@@ -190,7 +192,7 @@ export default class SectionCategories extends React.Component {
                                 }}
                             />
                             }
-                            { category.status === TASK_CATEGORY_STATUS.INACTIVE &&
+                            { String(category.status) === TASK_CATEGORY_STATUS.INACTIVE &&
                                 <FlatButton
                                 label="Activate"
                                 onTouchTap={() => {
@@ -232,7 +234,7 @@ export default class SectionCategories extends React.Component {
                 </div>
                 )}
                 { !this.state.categoryInEdit && !this.state.isAddingNewCategory && 
-                    <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10}}>       
+                    <div className="col-xs-12 col-sm-3" style={{ marginBottom: 10}}>       
                         <FloatingActionButton
                             primary={true}
                             onClick={() => {

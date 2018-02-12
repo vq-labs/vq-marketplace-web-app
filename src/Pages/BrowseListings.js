@@ -52,7 +52,7 @@ class Offers extends Component {
                 category: query.category,
                 lat: query.lat,
                 lng: query.lng,
-                rad: query.rad || Number(CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE) || undefined
+                rad: query.rad
             },
             offer: {
                 utm: {}
@@ -71,19 +71,19 @@ class Offers extends Component {
             /**
              * Only sellers can access this page unless public view is enabled
              */
-            if ((user && user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") && CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1") {
+/*             if (
+                (
+                    user &&
+                    user.userType === 1 &&
+                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1"
+                ) &&
+                CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1"
+            ) {
                 return goTo('/dashboard');
-            }
+            } */
 
-            appliedFilter.listingType =
-              CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1" ?
-                Number(CONFIG.LISTING_PUBLIC_VIEW_MODE)
-              :
-                CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" ? 1 : 2;
 
-            if (user && user.userType === 0) {
-                appliedFilter.listingType = Number(getMode()) === 1 ? 2 : 1;
-            }
+            appliedFilter.listingType = this.getListingTypeFromUser(user);
 
             this.setState({
                 appliedFilter,
@@ -112,6 +112,33 @@ class Offers extends Component {
         return <FileCloud viewBox='-20 -7 50 10'/>;
     }
 
+    getListingTypeFromUser(user) {
+        if (
+            !user &&
+            CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1"
+        ) {
+            return Number(CONFIG.LISTING_PUBLIC_VIEW_MODE);
+        } else if (user) {
+            switch(user.userType) {
+                case 0: {
+                    return Number(getMode()) === 1 ? 2 : 1;
+                    break;
+                }
+                case 1: {
+                    return CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" ? 2 : 1;
+                    break;
+                }
+                case 2: {
+                    return CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" ? 1 : 2;
+                    break;
+                }
+                default: {
+                    return 1
+                }
+            }
+        }
+    }
+
     getConfigValue(configKey) {
       if (typeof CONFIG[configKey] === 'undefined' && typeof FILTER_DEFAULTS[configKey] !== 'undefined') {
         return FILTER_DEFAULTS[configKey];
@@ -122,18 +149,18 @@ class Offers extends Component {
     loadTasks(query) {
         this.setState({
             isLoading: true
-        });
+        }); 
 
         apiTask
         .getItems({
             untilNow: CONFIG.LISTING_TIMING_MODE === '1' ? 1 : undefined,
-            minPrice: query.minPrice || this.getConfigValue('LISTING_PRICE_FILTER_MIN'),
-            maxPrice: query.maxPrice || this.getConfigValue('LISTING_PRICE_FILTER_MAX'),
-            taskType: query.listingType || this.state.listingType,
+            minPrice: query.minPrice,
+            maxPrice: query.maxPrice,
+            taskType: query.listingType,
             status: '0',
             lat: query.lat,
             lng: query.lng,
-            rad: query.rad || this.getConfigValue('LISTING_RANGE_FILTER_DEFAULT_VALUE'),
+            rad: query.rad,
             category: query.category
         })
         .then(offers => {
@@ -191,8 +218,6 @@ class Offers extends Component {
         if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1") {
             appliedFilter.rad = typeof query.rad === 'undefined' ? this.getConfigValue('LISTING_RANGE_FILTER_DEFAULT_VALUE') : query.rad;
         }
-
-        appliedFilter.listingType = query.listingType || 2;
 
         setQueryParams(appliedFilter);
 
@@ -340,7 +365,7 @@ class Offers extends Component {
                             maxValue={Number(this.getConfigValue('LISTING_RANGE_FILTER_MAX'))}
                             minValue={Number(this.getConfigValue('LISTING_RANGE_FILTER_MIN'))}
                             step={Number(this.getConfigValue('LISTING_RANGE_FILTER_STEP'))}
-                            value={Number(this.state.appliedFilter.rad) || Number(this.getConfigValue('LISTING_RANGE_FILTER_DEFAULT_VALUE'))}
+                            value={Number(this.state.appliedFilter.rad)}
                             onChange={value => {
                                 const appliedFilter = this.state.appliedFilter;
 

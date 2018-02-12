@@ -1,6 +1,7 @@
 import React from 'react';
 import CodeEditor from './Components/CodeEditor';
 import ConfigEdit from './Components/ConfigEdit';
+import { sluggify } from '../core/format';
 
 const landingPageFields = [
     {
@@ -18,10 +19,13 @@ const landingPageFields = [
 
 const landingPageGeneralSettings = [
     {
+        transformOnSave: sluggify,
+        showTransformMirror: true,
+        transform: sluggify,
         key: 'LANDING_PAGE_HEADER_BUTTON_TEXT_FOR_SELLERS',
         type: "string",
         label: "The route (link) for the Tasker (supplier) button in the landing page",
-        explanation: 'The default landing page is for the demand side but we have a supplier landing page aswell which by default is yourDomain/taskers page. You can customize this \'taskers\' keyword'
+        explanation: 'The default landing page is for the demand side but we have a supplier landing page aswell which by default is yourDomain/taskers page. You can customize this \'taskers\' keyword. Please note that all non-Latin characters will be removed and spaces will be converted to dashes.'
     },
 ];
 

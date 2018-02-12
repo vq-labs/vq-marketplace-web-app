@@ -4,18 +4,50 @@ import USER_TYPES from '../constants/USER_TYPES';
 
 const listingSettingsFields = [
     {
+        condition: [
+            {
+                key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                value: "1"
+            }, {
+                key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                value: "1"
+            }
+        ],
         type: 'bool',
         key: 'LISTING_ENABLE_PUBLIC_VIEW',
         label: 'Enable listings to be viewed without registration'
     },
     {
+        condition: [
+            {
+                key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                value: "1"
+            }, {
+                key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                value: "1"
+            }
+        ],
         type: 'select',
         key: 'LISTING_PUBLIC_VIEW_MODE',
         default: '1',
         label: 'Default listing type to show to the public',
         selection: [
-            { value: "1", label: 'Supply Listings' },
-            { value: "2", label: 'Demand Listings' }
+            { 
+                value: "2",
+                label: 'Supply Listings',
+                condition: {
+                    key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                    value: "1"
+                } 
+            },
+            { 
+                value: "1",
+                label: 'Demand Listings',
+                condition: {
+                    key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                    value: "1"
+                } 
+            }
         ]
     }
 ];

@@ -2,6 +2,7 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import Moment from 'react-moment';
 import HtmlTextField from '../Components/HtmlTextField';
 import * as apiRequest from '../api/request';
@@ -88,11 +89,10 @@ export default class ChatRoom extends React.Component {
                 if (!user) {
                     return goTo(`/login?redirectTo=/chat/${requestId}`);
                 }
-
+                
                 apiRequest
-                    .getItem(requestId)
-                    .then(chat => {
-                        
+                .getItem(requestId)
+                .then(chat => {                       
                         if (chat.task.status === TASK_STATUS.INACTIVE) {
                             return goTo('/');
                         }
@@ -197,14 +197,15 @@ export default class ChatRoom extends React.Component {
         this.constructStepperStatuses();
         let steps = [];
 
-        if (
+        //Disabled by request of Ani
+        /* if (
             (this.state.taskType && Number(this.state.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
             (this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1")
         ) {
             steps.push(<Step>
                 <StepLabel>{translate('REQUEST_STATUS_RECEIVED')}</StepLabel>
             </Step>)
-        }
+        } */
 
         if (
             this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
@@ -255,6 +256,7 @@ export default class ChatRoom extends React.Component {
             <Stepper
                 activeStep={this.getActiveStep(this.state.request.status)}
                 orientation={orientation || 'horizontal'}
+                connector={<ArrowForwardIcon />}
                 style={{ paddingLeft: '15px', paddingRight: '15px' }}
             >
                 {
@@ -320,8 +322,8 @@ export default class ChatRoom extends React.Component {
                             this.state.user &&
                             this.state.task &&
                             (
-                                <div className="col-xs-12" style={{ marginTop: '50px' }}>
-                                    <div className="col-xs-12 hidden-xs">
+                                <div className="col-xs-12">
+                                    <div className="col-xs-12 hidden-xs" style={{padding: '0px'}}>
                                         {this.renderStepper('horizontal')}
                                     </div>
                                     <div className="col-xs-12 visible-xs" style={{ paddingLeft: '15px', paddingRight: '15px' }}>
@@ -761,7 +763,16 @@ export default class ChatRoom extends React.Component {
                                             !this.state.request.order.review
                                         )
                                     ) &&
-                                    this.state.isUserTaskOwner &&
+                                    (
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 1 &&
+                                            this.state.isUserTaskOwner
+                                        ) ||
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 2 &&
+                                            this.state.isUserRequestOwner
+                                        )
+                                    ) &&
                                     <RaisedButton
                                         label={translate('LEAVE_REVIEW')}
                                         labelStyle={{ color: 'white' }}
@@ -789,7 +800,16 @@ export default class ChatRoom extends React.Component {
                                             !this.state.request.review
                                         )
                                     ) &&
-                                    this.state.isUserRequestOwner &&
+                                    (
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 1 &&
+                                            this.state.isUserRequestOwner
+                                        ) ||
+                                        (
+                                            this.state.taskType && Number(this.state.taskType) === 2 &&
+                                            this.state.isUserTaskOwner
+                                        )
+                                    ) &&
                                     <RaisedButton
                                         label={translate('LEAVE_REVIEW')}
                                         labelStyle={{ color: 'white' }}

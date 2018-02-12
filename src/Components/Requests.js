@@ -27,7 +27,6 @@ export default class Requests extends Component {
 
         this.state = {
             view: props.view,
-            open: false,
             status: props.status,
             isLoading: true,
             requests: [],
@@ -56,111 +55,46 @@ export default class Requests extends Component {
         });
     }
 
-    markAsDone = request => {
-        openConfirmDialog({
-            headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
-            confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
-        }, () => {
-            const requests = this.state.requests;
-
-            apiRequest
-                .updateItem(request.id, {status: REQUEST_STATUS.MARKED_DONE})
-                .then(_ => {
-                    const requestRef = requests.find(_ => _.id === request.id);
-
-                    requestRef.status = REQUEST_STATUS.MARKED_DONE;
-
-                    requestRef.order.autoSettlementStartedAt = getUtcUnixTimeNow();
-
-                    this.setState({requests});
-
-                    return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
-                }, errorFactory());
-        });
-    }
-
-    cancelRequest = request => {
-        openConfirmDialog({
-            headerLabel: translate('CANCEL_REQUEST_ACTION_HEADER'),
-            confirmationLabel: translate('CANCEL_REQUEST_ACTION_DESC')
-        }, () => {
-            const requests = this.state.requests;
-
-            apiRequest
-                .updateItem(request.id, {status: REQUEST_STATUS.CANCELED})
-                .then(_ => {
-                    requests
-                        .find(_ => _.id === request.id)
-                        .status = REQUEST_STATUS.CANCELED;
-
-                    this.setState({requests});
-
-                    return openDialog({header: translate("CANCEL_REQUEST_ACTION_SUCCESS")});
-                }, errorFactory());
-        })
-    };
-
-    handleClose = () => {
-        this.setState({selectedOrderId: null, open: false});
-    };
-
-    shouldShowPhoneNumber = request => {
-        return request.status === REQUEST_STATUS.ACCEPTED || request.status === REQUEST_STATUS.BOOKED || request.status === REQUEST_STATUS.MARKED_DONE;
-    }
-
-    shouldAllowCancel = request => {
-        return request.status === REQUEST_STATUS.PENDING;
-        /**
-         request.status != REQUEST_STATUS.CANCELED &&
-         request.status != REQUEST_STATUS.MARKED_DONE &&
-         request.status != REQUEST_STATUS.SETTLED &&
-         request.status != REQUEST_STATUS.ACCEPTED;
-        */
-    }
-
-    shouldAllowMarkingAsDone = request => {
-        return request.status === REQUEST_STATUS.BOOKED;
-    }
-
     render() {
         return (
             <div className="container">
-                {this.state.isLoading && <Loader isLoading={true}/>
-}
-
-                {!this.state.isLoading && <div className="row">
-                    <div className="col-xs-12">
-                        {!this.state.isLoading && !this.state.requests.length && <div className="col-xs-12">
-                            <div className="row">
-                                <p className="text-muted">{translate("NO_REQUESTS")}</p>
-                            </div>
+                {
+                    this.state.isLoading && <Loader isLoading={true}/>
+                }
+                {
+                    !this.state.isLoading &&
+                    <div className="row">
+                        <div className="col-xs-12">
+                            {
+                                !this.state.isLoading &&
+                                !this.state.requests.length &&
+                                <div className="col-xs-12">
+                                    <div className="row">
+                                        <p className="text-muted">{translate("NO_REQUESTS")}</p>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                !this.state.isLoading &&
+                                this
+                                .state
+                                .requests
+                                .map(
+                                    (request, index) => 
+                                    <div
+                                        key={index}
+                                        className="col-xs-12"
+                                        style={{marginTop: 10}}>
+                                        <RequestListItem
+                                            request={request}
+                                            properties={this.state.properties}
+                                        />
+                                    </div>
+                                )
+                            }
                         </div>
-}
-                        {!this.state.isLoading && this
-                            .state
-                            .requests
-                            .map((request, index) => <div
-                                key={index}
-                                className="col-xs-12"
-                                style={{
-                                marginTop: 10
-                            }}>
-                                <RequestListItem
-                                    request={request}
-                                    properties={this.state.properties}
-                                    onCancel={() => openDialog({
-                                    header: translate('CANCEL_REQUEST_ACTION_HEADER'),
-                                    desc: translate('CANCEL_REQUEST_ACTION_DESC')
-                                }, () => {
-                                    const tasks = this.state.tasks;
-                                    tasks.splice(index, 1);
-                                    this.setState({tasks});
-                                })}/>
-                            </div>)}
-
                     </div>
-                </div>
-}
+                }
             </div>
         );
     }

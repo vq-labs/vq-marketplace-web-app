@@ -176,14 +176,14 @@ export default class Account extends Component {
                                                 (
                                                     (
                                                         this.state.user.userType === 2 &&
-                                                        CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
-                                                        CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) 
                                                     ) ||
                                                     (
-                                                        this.state.user.userType === 1 &&
-                                                        CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" ||
-                                                        CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
-                                                    ) 
+                                                        this.state.user.userType === 1
+                                                    )
                                                 )
                                             )
                                         ) &&
@@ -238,11 +238,22 @@ export default class Account extends Component {
                                                             CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
                                                     )
                                                 )
                                             )
                                         ) &&
-                                        <li className={this.state.sector === 'listing' && 'vq-account-sector-active'}>
+                                        <li className={this.state.sector === 'listing-address' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('listing-address')}>{translate('ACCOUNT_MENU_LISTING_ADDRESS')}</a>
                                         </li>
                                     }

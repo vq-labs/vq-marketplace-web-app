@@ -193,18 +193,6 @@ export const lightOrDark = (color) => {
         }
 }
 
-/* export const getReadableTextColor = (color1, color2) => {
-    if (lightOrDark(color1) === 'dark' && lightOrDark(color2) === 'light') {
-        return color2;
-    } else if (lightOrDark(color1) === 'light' && lightOrDark(color2) === 'dark') {
-        return color1;
-    } else if (lightOrDark(color1) === 'dark' && lightOrDark(color2) === 'dark') {
-        return '#FFF';
-    } else if (lightOrDark(color1) === 'light' && lightOrDark(color2) === 'light') {
-        return '#000';
-    }
-} */
-
 export const getReadableTextColor = (color) => {
         const [r, g, b] = getRGBColors(color);
       

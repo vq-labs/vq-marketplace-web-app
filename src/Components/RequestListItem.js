@@ -41,7 +41,6 @@ export default class RequestListItem extends Component {
                 .reviews
                 .find(_ => _.fromUserId === props.request.fromUserId)
         };
-        console.log('rr' ,this.state)
     }
 
     componentDidMount() {

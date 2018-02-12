@@ -97,7 +97,6 @@ export default class TaskEdit extends Component {
                             priceType: rTask.priceType
                         }
                     });
-                    console.log(this.state)
                 });
             }, errorFactory());
         }, false);
@@ -113,7 +112,6 @@ export default class TaskEdit extends Component {
                     trimSpaces(value) :
                     value;
             } else {
-                console.log(field, updatedTask, rawText)
               updatedTask[field].value = typeof value === 'string' ? trimSpaces(value) : value;
               updatedTask[field].rawText = rawText;
             }

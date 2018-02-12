@@ -7,7 +7,6 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
         
         return true;
     }
-    console.log(user)
 
     // user is blocked
     if (user.status === '20') {

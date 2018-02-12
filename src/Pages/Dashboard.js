@@ -25,7 +25,7 @@ export default class Dashboard extends Component {
 
     const dashboardType = props.params.type;
     const viewType = getParams(location.search).viewType
-    console.log('1', dashboardType, viewType)
+    
     this.state = {
       dashboardType,
       viewType,
@@ -61,8 +61,6 @@ export default class Dashboard extends Component {
       if (!viewTypes) {
         viewTypes = this.setViewTypes(dashboardType);
       }
-
-      console.log('2', dashboardType, viewType)
 
       const newState = {
         userMode,

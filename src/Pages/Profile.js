@@ -101,7 +101,6 @@ class Profile extends React.Component {
         apiReview
             .getItems({toUserId: userId})
             .then(reviews => {
-                console.log('reviews', reviews)
                 this.setState({reviews});
             });
     }

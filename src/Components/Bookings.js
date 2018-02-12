@@ -50,7 +50,6 @@ export default class Bookings extends Component {
             apiTask
                 .getItems(queryObj)
                 .then(tasks => {
-                    console.log('tt', tasks)
                     this.setState({ready: true, tasks, isLoading: false});
 
                     this.props.onReady && this

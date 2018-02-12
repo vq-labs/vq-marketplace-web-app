@@ -148,7 +148,7 @@ export default class Account extends Component {
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         ) ||
                                                         (
-                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         )
                                                     ) ||
@@ -164,7 +164,7 @@ export default class Account extends Component {
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         ) ||
                                                         (
-                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         )
                                                     )
@@ -238,10 +238,7 @@ export default class Account extends Component {
                                                             CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
                                                             CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
                                                         )
-                                                    ) ||
-                                                    (
-                                                        this.state.user.userType === 1
-                                                    ) 
+                                                    )
                                                 )
                                             )
                                         ) &&

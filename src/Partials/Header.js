@@ -114,8 +114,24 @@ class Header extends Component {
   
     if (buttonType === 'browse') {
       if (
-        isLoggedIn ||
-        CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1"
+        (
+          CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1" &&
+          !isLoggedIn
+        ) ||
+        (
+          isLoggedIn &&
+          (
+            userType === 0
+          ) ||
+          (
+            userType === 1 &&
+            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+          ) ||
+          (
+            userType === 2 &&
+            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+          )
+        )
       ) {
         return true;
       }
@@ -124,16 +140,18 @@ class Header extends Component {
   
     if (buttonType === 'new-listing') {
       if (
-        isLoggedIn &&
         (
-          userType === 0 ||
+          isLoggedIn &&
+          (
+            userType === 0
+          ) ||
           (
             userType === 1 &&
-            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED
+            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
           ) ||
           (
             userType === 2 &&
-            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED
+            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
           )
         )
       ) {
@@ -144,8 +162,10 @@ class Header extends Component {
 
     if (buttonType === 'listings') {
       if (
-        isLoggedIn ||
-        userType === 0 ||
+        isLoggedIn &&
+        (
+          userType === 0
+        ) ||
         (
           userType === 1 &&
           CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
@@ -163,8 +183,10 @@ class Header extends Component {
 
     if (buttonType === 'requests') {
       if (
-        isLoggedIn ||
-        userType === 0 ||
+        isLoggedIn &&
+        (
+          userType === 0
+        ) ||
         (
           userType === 1 &&
           CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
@@ -252,7 +274,7 @@ class Header extends Component {
                           <IconButton
                             iconStyle={{ color: grey600 }}
                             onTouchTap={() => {
-                              goTo("/dashboard/listings");
+                              goTo("/dashboard");
                             }}
                           >
                             <DashboardIcon />
@@ -275,7 +297,7 @@ class Header extends Component {
                             label={translate("HEADER_DASHBOARD")}
                             style={headerBtnStyle}
                             onTouchTap={() => {
-                              goTo("/dashboard/listings");
+                              goTo("/dashboard");
                             }}
                           />
                       }

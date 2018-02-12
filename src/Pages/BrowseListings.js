@@ -211,8 +211,7 @@ class Offers extends Component {
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
 
         if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
-            //appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? this.getConfigValue('LISTING_PRICE_FILTER_MIN') : query.minPrice;
-            appliedFilter.minPrice = 0;
+            appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? this.getConfigValue('LISTING_PRICE_FILTER_MIN') : query.minPrice;
             appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? this.getConfigValue('LISTING_PRICE_FILTER_MAX') : query.maxPrice;
         }
 

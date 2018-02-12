@@ -66,6 +66,15 @@ const userAccountConfigFields = [
     }
 ];
 
+const userDashboardConfigFields = [
+    {
+        key: 'USER_HIDE_DECLINED_REQUESTS_TAB',
+        type: "bool",
+        label: "Hide declined requests tab from user's dashboard",
+        explanation: "If you feel like showing declined requests in user's dashboard is having a negative impact, enable this option to hide it from their dashboard"
+    }
+];
+
 export default class SectionUserConfig extends React.Component {
     constructor() {
         super();
@@ -87,6 +96,11 @@ export default class SectionUserConfig extends React.Component {
                     header={'User account configuration'}
                     desc={''}
                     fields={userAccountConfigFields}
+                />
+              <ConfigEdit
+                    header={'User dashboard configuration'}
+                    desc={''}
+                    fields={userDashboardConfigFields}
                 />
             </div>
         );

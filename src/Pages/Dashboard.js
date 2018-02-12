@@ -138,6 +138,16 @@ export default class Dashboard extends Component {
         break;
       case "requests":
         if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+          if (CONFIG.USER_HIDE_DECLINED_REQUESTS_TAB === "1") {
+            return {
+              REQUESTS_PENDING: 'REQUESTS_PENDING',
+              REQUESTS_ACCEPTED: 'REQUESTS_ACCEPTED',
+              REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
+              REQUESTS_COMPLETED: 'REQUESTS_COMPLETED',
+              REQUESTS_CANCELED: 'REQUESTS_CANCELED'
+            }
+            break;
+          }
           return {
             REQUESTS_PENDING: 'REQUESTS_PENDING',
             REQUESTS_ACCEPTED: 'REQUESTS_ACCEPTED',
@@ -150,13 +160,34 @@ export default class Dashboard extends Component {
         }
 
         if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-          return {REQUESTS_PENDING: 'REQUESTS_PENDING', REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS', REQUESTS_SETTLED: 'REQUESTS_SETTLED', REQUESTS_CANCELED: 'REQUESTS_CANCELED', REQUESTS_DECLINED: 'REQUESTS_DECLINED'}
+          if (CONFIG.USER_HIDE_DECLINED_REQUESTS_TAB === "1") {
+            return {
+              REQUESTS_PENDING: 'REQUESTS_PENDING',
+              REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
+              REQUESTS_SETTLED: 'REQUESTS_SETTLED',
+              REQUESTS_CANCELED: 'REQUESTS_CANCELED',
+            }
+            break;
+          }
+          return {
+            REQUESTS_PENDING: 'REQUESTS_PENDING',
+            REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
+            REQUESTS_SETTLED: 'REQUESTS_SETTLED',
+            REQUESTS_CANCELED: 'REQUESTS_CANCELED',
+            REQUESTS_DECLINED: 'REQUESTS_DECLINED'
+          }
+
           break;
         }
 
         break;
       default:
-        return {LISTINGS_PENDING: 'LISTINGS_PENDING', LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS', LISTINGS_COMPLETED: 'LISTINGS_COMPLETED', LISTINGS_CANCELED: 'LISTINGS_CANCELED'}
+        return {
+          LISTINGS_PENDING: 'LISTINGS_PENDING',
+          LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS',
+          LISTINGS_COMPLETED: 'LISTINGS_COMPLETED',
+          LISTINGS_CANCELED: 'LISTINGS_CANCELED'
+        }
     }
   }
 

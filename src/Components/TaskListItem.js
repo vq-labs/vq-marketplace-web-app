@@ -116,7 +116,13 @@ export default class TaskListItem extends Component {
 
                     task.status = TASK_STATUS.INACTIVE;
 
-                    this.setState({task});
+                    this.setState({
+                        task,
+                        properties: {
+                            ...this.state.properties,
+                            statusText: true
+                        }
+                    });
 
                     return openDialog({
                         header: translate('CANCEL_LISTING_SUCCESS_HEADER'),
@@ -164,7 +170,11 @@ export default class TaskListItem extends Component {
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 text-left">
                                             {
-                                                CONFIG.LISTING_EDIT_ENABLED === "1" && this.state.properties.editButton && this.state.task && this.state.task.requests && !this
+                                                CONFIG.LISTING_EDIT_ENABLED === "1" &&
+                                                this.state.properties.editButton &&
+                                                this.state.task &&
+                                                this.state.task.requests &&
+                                                !this
                                                 .state
                                                 .task
                                                 .requests 
@@ -189,7 +199,9 @@ export default class TaskListItem extends Component {
                                                 </div>
                                             }
                                             {
-                                                this.state.properties.cancelButton && this.state.task &&
+                                                this.state.properties.cancelButton &&
+                                                this.state.task &&
+                                                this.state.task.status !== TASK_STATUS.INACTIVE &&
                                                 <div
                                                     style={{
                                                     display: 'inline-block',
@@ -203,16 +215,15 @@ export default class TaskListItem extends Component {
                                                             style={{
                                                             color: CONFIG.COLOR_PRIMARY
                                                         }}
-                                                            onTouchTap={() => {
-                                                            
-                                                        }}>
+                                                            onTouchTap={() => { this.cancelTask() }}>
                                                             {translate('CANCEL')}
                                                         </a>
                                                     </strong>
                                                 </div>
                                             }
                                             {
-                                                this.state.properties.statusText && this.state.task &&
+                                                this.state.properties.statusText &&
+                                                this.state.task &&
                                                 <p
                                                     className="text-muted"
                                                     style={{

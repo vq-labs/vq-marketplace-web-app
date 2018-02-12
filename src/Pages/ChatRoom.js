@@ -89,11 +89,10 @@ export default class ChatRoom extends React.Component {
                 if (!user) {
                     return goTo(`/login?redirectTo=/chat/${requestId}`);
                 }
-
+                
                 apiRequest
-                    .getItem(requestId)
-                    .then(chat => {
-                        
+                .getItem(requestId)
+                .then(chat => {                       
                         if (chat.task.status === TASK_STATUS.INACTIVE) {
                             return goTo('/');
                         }
@@ -198,14 +197,15 @@ export default class ChatRoom extends React.Component {
         this.constructStepperStatuses();
         let steps = [];
 
-        if (
+        //Disabled by request of Ani
+        /* if (
             (this.state.taskType && Number(this.state.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1") ||
             (this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1")
         ) {
             steps.push(<Step>
                 <StepLabel>{translate('REQUEST_STATUS_RECEIVED')}</StepLabel>
             </Step>)
-        }
+        } */
 
         if (
             this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"

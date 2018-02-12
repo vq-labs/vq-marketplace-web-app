@@ -4,7 +4,7 @@ export const getItems = queryObj =>
     communication.doGet('/request', queryObj);
 
 export const getItem = requestId =>
-    communication.doGet(`/request/${requestId}`);
+    communication.doGet(`/request/${requestId}`, undefined, { noCache: true });
 
 export const createItem = data =>
     communication.doPost('/request', data);

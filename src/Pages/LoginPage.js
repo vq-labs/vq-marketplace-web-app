@@ -5,7 +5,7 @@ import Login from '../Components/Login';
 import Snackbar from 'material-ui/Snackbar';
 import { getParams } from '../core/util.js'
 import { getUserAsync } from '../core/auth';
-import { init as initUserMode } from '../core/user-mode.js';
+import { init as initUserMode, getMode } from '../core/user-mode.js';
 import { CONFIG } from '../core/config';
 
 const getOutOfHere = (user, redirectTo) => {
@@ -13,30 +13,39 @@ const getOutOfHere = (user, redirectTo) => {
     return goTo(redirectTo);
   }
 
-  switch (Number(user.userType)) {
+  switch (Number(getMode())) {
     case 1: // demand user has to go to browse if supply listings are enabled otherwise has to go to dashboard
-      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
         return goTo(`/`);
         break;
       }
 
-      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
         return goTo(`/dashboard`);
+        break;
+      }
+
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        return goTo(`/`);
         break;
       }
 
       break;
     case 2: //supply user has to go to dashboard if supply listings are enabled otherwise has to go to browse to supply
-
-      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+      if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
         return goTo(`/dashboard`);
         break;
       }
 
-      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
         return goTo(`/`);
         break;
-      }                 
+      }
+      
+      if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        return goTo(`/`);
+        break;
+      }              
 
       break;
     default:

@@ -139,7 +139,7 @@ class App extends Component {
       return (
         this.state.ready && this.state.config &&
         <MuiThemeProvider muiTheme={muiTheme}>
-        <StickyContainer>
+        <StickyContainer style={{paddingBottom: '50px'}}>
           <Header user={this.state.user} />
             { AppRoutes }
          

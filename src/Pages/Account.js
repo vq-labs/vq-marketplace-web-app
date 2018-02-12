@@ -129,21 +129,124 @@ export default class Account extends Component {
                                         <a href="#" onTouchTap={this.changeSectorFn('language')}>{translate('ACCOUNT_MENU_LANGUAGE')}</a>
                                     </li>
 
-                                    { this.state.user &&
-                                    (
-                                        this.state.user.userType === 1 ||
-                                        (CONFIG && CONFIG.PAYMENTS_ENABLED === '1')
-                                    ) &&
+                                    {
+                                        this.state.user &&
+                                        (
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED === '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    )
+                                                )
+                                            ) ||
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED !== '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                        CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" ||
+                                                        CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                    ) 
+                                                )
+                                            )
+                                        ) &&
                                         <li className={this.state.sector === 'billing-address' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('billing-address')}>{translate('ACCOUNT_MENU_BILLING_ADDRESS')}</a>
                                         </li>
                                     }
 
-                                    { CONFIG && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
-                                      this.state.user &&
-                                      this.state.user.userType === 1 &&
+                                    {
+                                        this.state.user &&
+                                        (
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED === '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    )
+                                                )
+                                            ) ||
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED !== '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1
+                                                    ) 
+                                                )
+                                            )
+                                        ) &&
                                         <li className={this.state.sector === 'listing' && 'vq-account-sector-active'}>
-                                            <a href="#" onTouchTap={this.changeSectorFn('listing')}>{translate('ACCOUNT_MENU_LISTING')}</a>
+                                            <a href="#" onTouchTap={this.changeSectorFn('listing-address')}>{translate('ACCOUNT_MENU_LISTING_ADDRESS')}</a>
                                         </li>
                                     }
                                     { CONFIG && this.state.user &&
@@ -445,7 +548,7 @@ export default class Account extends Component {
                             </div>
                             }
 
-                            { this.state.sector === 'listing' &&
+                            { this.state.sector === 'listing-address' &&
                             <div className="row">
                                 <div className="col-xs-12">
                                     <h2>{translate('ACCOUNT_DEFAULT_LISTING_LOCATION_HEADER')}</h2>

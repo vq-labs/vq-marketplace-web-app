@@ -35,7 +35,6 @@ export const Component = class RequestDialog extends React.Component {
         });
 
         onOpen = (requests, task) => {
-            console.log('task', task)
             this.setState({
                 pendingRequests: requests.filter(_ => _.status === REQUEST_STATUS.PENDING),
                 acceptedRequests: requests.filter(_ => _.status === REQUEST_STATUS.ACCEPTED),

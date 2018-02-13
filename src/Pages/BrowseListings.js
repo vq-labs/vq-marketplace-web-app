@@ -224,6 +224,8 @@ class Offers extends Component {
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
 
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
+        
+        appliedFilter.viewType = Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW);
 
         if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
             appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;

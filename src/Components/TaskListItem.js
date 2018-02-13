@@ -39,7 +39,7 @@ export default class TaskListItem extends Component {
                 .requests
                 .find(_ => {
                     if (props.task.status === TASK_STATUS.BOOKED) {
-                        return _.status === REQUEST_STATUS.BOOKED || _.status === REQUEST_STATUS.MARKED_DONE
+                        return _.status === REQUEST_STATUS.ACCEPTED || _.status === REQUEST_STATUS.BOOKED || _.status === REQUEST_STATUS.MARKED_DONE
                     } else if (props.task.status === TASK_STATUS.COMPLETED) {
                         return _.status === REQUEST_STATUS.SETTLED || _.status === REQUEST_STATUS.CLOSED
                     }
@@ -50,6 +50,8 @@ export default class TaskListItem extends Component {
                 .find(_ => _.fromUserId === props.task.userId),
             userType: props.userType
         };
+
+        console.log()
     }
 
     componentDidMount() {

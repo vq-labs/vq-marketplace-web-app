@@ -39,7 +39,12 @@ export default class TaskListItem extends Component {
                 .requests
                 .find(_ => {
                     if (props.task.status === TASK_STATUS.BOOKED) {
-                        return _.status === REQUEST_STATUS.ACCEPTED || _.status === REQUEST_STATUS.BOOKED || _.status === REQUEST_STATUS.MARKED_DONE
+                        return _.status === REQUEST_STATUS.ACCEPTED ||
+                            _.status === REQUEST_STATUS.BOOKED ||
+                            _.status === REQUEST_STATUS.MARKED_DONE ||
+                            _.status === REQUEST_STATUS.CLOSED ||
+                            _.status === REQUEST_STATUS.SETTLED ||
+                            _.status === REQUEST_STATUS.DECLINED
                     } else if (props.task.status === TASK_STATUS.COMPLETED) {
                         return _.status === REQUEST_STATUS.SETTLED || _.status === REQUEST_STATUS.CLOSED
                     }
@@ -50,8 +55,6 @@ export default class TaskListItem extends Component {
                 .find(_ => _.fromUserId === props.task.userId),
             userType: props.userType
         };
-
-        console.log()
     }
 
     componentDidMount() {
@@ -69,12 +72,10 @@ export default class TaskListItem extends Component {
                 apiOrderActions
                     .settleOrder(this.state.request.order.id)
                     .then(_ => {
-                        console.log('_', _)
                         const request = this.state.request;
                         request.status = REQUEST_STATUS.SETTLED;
                         request.order.status = ORDER_STATUS.SETTLED;
 
-                        console.log('reqe', request)
                         this.setState({
                             request,
                             properties: {
@@ -264,6 +265,10 @@ export default class TaskListItem extends Component {
                                                                 <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(this.state.request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
                                                             </span>
                                                         }
+
+                                                        {String(this.state.request.status) === REQUEST_STATUS.ACCEPTED && translate("TASK_STATUS_ACCEPTED")}
+
+                                                        {String(this.state.request.status) === REQUEST_STATUS.DECLINED && translate("TASK_STATUS_DECLINED")}
 
                                                         {String(this.state.request.status) === REQUEST_STATUS.SETTLED && translate("TASK_STATUS_COMPLETED")}
 

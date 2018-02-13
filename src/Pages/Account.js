@@ -55,9 +55,19 @@ export default class Account extends Component {
 
             apiUser
             .getItem(user.id)
-            .then(profile => this.setState({
-                profile
-            }));
+            .then(profile => {
+                const data = this.state.data;
+                const phoneNoProp = profile.userProperties.find(_ => _.propKey === 'phoneNo');
+                debugger;
+                if (phoneNoProp) {
+                    data.phoneNo = phoneNoProp.propValue;
+                }
+
+                this.setState({
+                    data,
+                    profile
+                });
+            });
 
             apiTaskLocation
             .getItems({

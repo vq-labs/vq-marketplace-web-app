@@ -234,6 +234,7 @@ export default class TaskListItem extends Component {
                                                 </div>
                                             }
                                             {
+                                                this.state.properties &&
                                                 this.state.properties.statusText &&
                                                 this.state.task &&
                                                 <p
@@ -398,6 +399,7 @@ export default class TaskListItem extends Component {
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
                                                     )
                                                 ) &&
+                                                this.state.properties &&
                                                 this.state.properties.leaveReviewButton &&
                                                 this.state.properties.statusText &&
                                                 <Chip labelColor={getReadableTextColor(CONFIG.COLOR_PRIMARY)} backgroundColor={CONFIG.COLOR_PRIMARY} style={{float: 'right'}}>

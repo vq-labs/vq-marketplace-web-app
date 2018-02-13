@@ -57,12 +57,9 @@ export default class RequestListItem extends Component {
                 apiOrderActions
                     .settleOrder(this.state.request.order.id)
                     .then(_ => {
-                        console.log('_', _)
                         const request = this.state.request;
                         request.status = REQUEST_STATUS.SETTLED;
                         request.order.status = ORDER_STATUS.SETTLED;
-
-                        console.log('reqe', request)
 
                         this.setState({
                             request,

@@ -53,15 +53,6 @@ class Offers extends Component {
                 utm: {}
             }
         };
-
-        /* appliedFilter: {
-            viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
-            q: locationQueryString,
-            category: query.category,
-            lat: query.lat,
-            lng: query.lng,
-            rad: query.rad
-        }, */
     }
 
     componentDidMount() {
@@ -222,19 +213,19 @@ class Offers extends Component {
         const appliedFilter = this.state && this.state.appliedFilter ? this.state.appliedFilter : {};
         appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
         appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
+        if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1" && appliedFilter.lat && appliedFilter.lng) {
+            appliedFilter.rad = typeof query.rad === 'undefined' ? CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE : query.rad;
+        }
 
         appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
-        
-        appliedFilter.viewType = Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW);
 
         if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
             appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
             appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
         }
 
-        if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1") {
-            appliedFilter.rad = typeof query.rad === 'undefined' ? CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE : query.rad;
-        }
+        appliedFilter.viewType = Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW)
+        
         return appliedFilter;
     }
 
@@ -356,6 +347,7 @@ class Offers extends Component {
             </div>
             }
             { CONFIG.LISTING_RANGE_FILTER_ENABLED === "1" &&
+            this.state.appliedFilter.rad &&
             <div
                 className="col-xs-12"
                 style={{
@@ -559,7 +551,8 @@ class Offers extends Component {
                         }
                         { !this.state.isLoading &&
                         <div className="col-xs-12">
-                                {!this.state.offers.length &&
+                                {
+                                    this.state.offers.length === 0 &&
                                 this.state.appliedFilter.viewType !== VIEW_TYPES.MAP &&
                                     <div
                                         className="text-center text-muted col-xs-12"
@@ -582,6 +575,9 @@ class Offers extends Component {
                                                     task={offer}
                                                     displayPrice={true}
                                                 />
+                                                {
+                                                    'sercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercan'
+                                                }
                                                 <div className="row"><hr /></div>
                                             </div>
                                         )

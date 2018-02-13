@@ -563,7 +563,6 @@ class Offers extends Component {
                                     </div>
                                 }
 
-
                                 { this.state.appliedFilter.viewType === VIEW_TYPES.LIST &&
                                         this.state.offers.map(offer =>
                                             <div
@@ -575,9 +574,6 @@ class Offers extends Component {
                                                     task={offer}
                                                     displayPrice={true}
                                                 />
-                                                {
-                                                    'sercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercan'
-                                                }
                                                 <div className="row"><hr /></div>
                                             </div>
                                         )

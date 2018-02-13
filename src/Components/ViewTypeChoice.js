@@ -14,16 +14,18 @@ export default class ViewTypeChoice extends Component {
         };
     }
 
-    componentWillReceiveProps (nextProps) {
-        if (nextProps.selected !== this.state.viewType || nextProps.viewTypes !== this.state.viewTypes) {
-            this.changeViewType(nextProps.selected, nextProps.viewTypes);
-        }
+    componentDidMount() {
+        getConfigAsync(config => {
+            this.setState({
+                ready: true,
+                config
+            });
+        })
     }
 
-    changeViewType(viewType, viewTypes) {
+    changeViewType(viewType) {
         this.setState({
-            viewType,
-            viewTypes
+            viewType
         });
 
         this.props.changeViewType &&
@@ -33,7 +35,7 @@ export default class ViewTypeChoice extends Component {
     render() {
         return (
             <div className={`row pull-${this.props.halign}`}>
-                { Object.keys(this.state.viewTypes)
+                { this.state.ready && Object.keys(this.state.viewTypes)
                 .map((viewType, index) =>
                     <div key={index} style={{ display: 'inline-block' }}>
                         { this.state.viewType !== this.state.viewTypes[viewType] &&

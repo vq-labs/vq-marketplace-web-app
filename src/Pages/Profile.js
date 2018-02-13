@@ -441,29 +441,7 @@ class Profile extends React.Component {
                         </div>
 }
                         {
-                            (
-                                (
-                                    this.state.profile && this.state.profile.userType === 0 &&
-                                    (
-                                        (
-                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                        ) || 
-                                        (
-                                            CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                        )
-                                    )
-                                ) ||
-                                    (
-                                        this.state.profile && this.state.profile.userType === 1 &&
-                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
-                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                    ) ||
-                                    (
-                                        this.state.profile && this.state.profile.userType === 2 &&
-                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
-                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED === "1"
-                                    )
-                                ) &&
+                            true &&
                         <div
                             className="col-xs-12 col-sm-12"
                             style={{
@@ -633,8 +611,10 @@ class Profile extends React.Component {
                                                     <div
                                                         className="col-xs-12"
                                                         style={{
-                                                        padding: 30
-                                                    }}>
+                                                            paddingLeft: 30,
+                                                            paddingTop: 15
+                                                        }}
+                                                    >
                                                         <div
                                                             className="row content"
                                                             dangerouslySetInnerHTML={{

@@ -39,7 +39,8 @@ export default class RequestListItem extends Component {
                 .request
                 .task
                 .reviews
-                .find(_ => _.fromUserId === props.request.fromUserId)
+                .find(_ => _.fromUserId === props.request.fromUserId),
+            userType: props.userType
         };
     }
 
@@ -56,9 +57,12 @@ export default class RequestListItem extends Component {
                 apiOrderActions
                     .settleOrder(this.state.request.order.id)
                     .then(_ => {
+                        console.log('_', _)
                         const request = this.state.request;
                         request.status = REQUEST_STATUS.SETTLED;
                         request.order.status = ORDER_STATUS.SETTLED;
+
+                        console.log('reqe', request)
 
                         this.setState({
                             request,
@@ -89,11 +93,7 @@ export default class RequestListItem extends Component {
                     request.order.autoSettlementStartedAt = getUtcUnixTimeNow();
 
                     this.setState({
-                        request,
-                        properties: {
-                            ...this.state.properties,
-                            bookingDetails: false
-                        }
+                        request
                     });
 
                     return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
@@ -142,6 +142,7 @@ export default class RequestListItem extends Component {
                         <ListingHeader task={request.task} config={CONFIG}/>
                         <div className="row">
                             {
+                                this.state.properties &&
                                 (
                                     this.state.properties.statusText ||
                                     this.state.properties.editButton ||
@@ -250,7 +251,17 @@ export default class RequestListItem extends Component {
                                                 />
                                             }
                                             {
-                                                request.status === REQUEST_STATUS.BOOKED &&
+                                                (
+                                                    (
+                                                        this.state.userType === 1 &&
+                                                        request.status === REQUEST_STATUS.MARKED_DONE ||
+                                                        request.status === REQUEST_STATUS.BOOKED
+                                                    ) ||
+                                                    (
+                                                        this.state.userType === 2 &&
+                                                        request.status === REQUEST_STATUS.BOOKED
+                                                    )
+                                                ) &&
                                                 this.state.properties.markAsDoneButton &&
                                                 <RaisedButton
                                                     primary={true}
@@ -309,10 +320,10 @@ export default class RequestListItem extends Component {
                                                 ) &&
                                                 this.state.properties.leaveReviewButton &&
                                                 this.state.properties.statusText &&
-                                                <Chip labelColor={getReadableTextColor(CONFIG.COLOR_SECONDARY)} backgroundColor={CONFIG.COLOR_PRIMARY} style={{float: 'right'}}>
+                                                <Chip labelColor={getReadableTextColor(CONFIG.COLOR_PRIMARY)} backgroundColor={CONFIG.COLOR_PRIMARY} style={{float: 'right'}}>
                                                     <Avatar
                                                         backgroundColor={luminateColor(CONFIG.COLOR_PRIMARY, -0.2)}
-                                                        color={getReadableTextColor(CONFIG.COLOR_SECONDARY)}
+                                                        color={getReadableTextColor(CONFIG.COLOR_PRIMARY)}
                                                         icon={<CheckCircleIcon />}/> {translate('REQUEST_ALREADY_REVIEWED')}
                                                 </Chip>
                                             }

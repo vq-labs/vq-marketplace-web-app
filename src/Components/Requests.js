@@ -30,7 +30,8 @@ export default class Requests extends Component {
             status: props.status,
             isLoading: true,
             requests: [],
-            properties: props.properties
+            properties: props.properties,
+            userType: props.userType
         };
     }
 
@@ -88,6 +89,7 @@ export default class Requests extends Component {
                                         <RequestListItem
                                             request={request}
                                             properties={this.state.properties}
+                                            userType={this.state.userType}
                                         />
                                     </div>
                                 )

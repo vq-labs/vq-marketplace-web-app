@@ -52,6 +52,17 @@ class Footer extends Component {
                                         </a>
                                     </li>
                                 }
+                                { this.state.config.CUSTOM_FAQ_URL &&
+                                    <li>
+                                        <a
+                                            style={linkStyle}
+                                            href={this.state.config.CUSTOM_FAQ_URL}
+                                            target="_blank"
+                                        >
+                                            {translate("HOMEPAGE_FOOTER_FAQ")}
+                                        </a>
+                                    </li>
+                                }
 
                                 { this.state.config.CUSTOM_BLOG_PAGE_URL &&
                                     <li>
@@ -102,6 +113,7 @@ class Footer extends Component {
                                         {translate('IMPRINT')}
                                     </a>
                                 </li>
+                                
                             </ul>
                         </div>
                         <div className="col-xs-12 text-center">

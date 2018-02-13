@@ -34,18 +34,21 @@ export default class TaskListItem extends Component {
         this.state = {
             task: props.task,
             properties: props.properties,
-            bookedRequest: props
+            request: props
                 .task
                 .requests
-                .find(_ => _.status === REQUEST_STATUS.BOOKED || _.status === REQUEST_STATUS.MARKED_DONE),
-            doneRequest: props
-                .task
-                .requests
-                .find(_ => _.status === REQUEST_STATUS.SETTLED || _.status === REQUEST_STATUS.CLOSED),
+                .find(_ => {
+                    if (props.task.status === TASK_STATUS.BOOKED) {
+                        return _.status === REQUEST_STATUS.BOOKED || _.status === REQUEST_STATUS.MARKED_DONE
+                    } else if (props.task.status === TASK_STATUS.COMPLETED) {
+                        return _.status === REQUEST_STATUS.SETTLED || _.status === REQUEST_STATUS.CLOSED
+                    }
+                }),
             review: props
                 .task
                 .reviews
-                .find(_ => _.fromUserId === props.task.userId)
+                .find(_ => _.fromUserId === props.task.userId),
+            userType: props.userType
         };
     }
 
@@ -57,19 +60,21 @@ export default class TaskListItem extends Component {
 
     markAsDone() {
         if (this.state.task.taskType === 1) {
-            openConfirmDialog({
+            return openConfirmDialog({
                 headerLabel: translate('SETTLE_ORDER'),
                 confirmationLabel: translate('SETTLE_ORDER_DESC')
             }, () => {
                 apiOrderActions
-                    .settleOrder(this.state.bookedRequest.order.id)
+                    .settleOrder(this.state.request.order.id)
                     .then(_ => {
-                        const request = this.state.bookedRequest;
+                        console.log('_', _)
+                        const request = this.state.request;
                         request.status = REQUEST_STATUS.SETTLED;
                         request.order.status = ORDER_STATUS.SETTLED;
 
+                        console.log('reqe', request)
                         this.setState({
-                            bookedRequest: request,
+                            request,
                             properties: {
                                 ...this.state.properties,
                                 bookingDetails: false,
@@ -80,29 +85,30 @@ export default class TaskListItem extends Component {
                         return openDialog({header: translate('ORDER_SETTLED_SUCCESS')});
                     }, errorFactory());
             });
-        } else {
-            openConfirmDialog({
-                headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
-                confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
-            }, () => {
-    
-                apiRequest
-                    .updateItem(this.state.bookedRequest.id, {status: REQUEST_STATUS.MARKED_DONE})
-                    .then(_ => {
-                        const request = this.state.bookedRequest;
-    
-                        request.status = REQUEST_STATUS.MARKED_DONE;
-    
-                        request.order.autoSettlementStartedAt = getUtcUnixTimeNow();
-    
-                        this.setState({
-                            bookedRequest: request
-                        });
-    
-                        return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
-                    }, errorFactory());
-            });
         }
+
+        openConfirmDialog({
+            headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
+            confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
+        }, () => {
+
+            apiRequest
+                .updateItem(this.state.request.id, {status: REQUEST_STATUS.MARKED_DONE})
+                .then(_ => {
+                    const request = this.state.request;
+
+                    request.status = REQUEST_STATUS.MARKED_DONE;
+
+                    request.order.autoSettlementStartedAt = getUtcUnixTimeNow();
+
+                    this.setState({
+                        request
+                    });
+
+                    return openDialog({header: translate("REQUEST_ACTION_MARK_DONE_SUCCESS")});
+                }, errorFactory());
+        });
+        
     }
 
     cancelTask() {
@@ -117,6 +123,7 @@ export default class TaskListItem extends Component {
                     const task = this.state.task;
 
                     task.status = TASK_STATUS.INACTIVE;
+
 
                     this.setState({
                         task,
@@ -137,8 +144,8 @@ export default class TaskListItem extends Component {
 
     leaveReview() {
         return this.state.task.taskType === 2 ?
-            goTo(`/request/${this.state.doneRequest.id}/review`) :
-            goTo(`/order/${this.state.doneRequest.order.id}/review`)
+            goTo(`/request/${this.state.request.id}/review`) :
+            goTo(`/order/${this.state.request.order.id}/review`)
     }
 
     render() {
@@ -235,70 +242,69 @@ export default class TaskListItem extends Component {
                                                     marginTop: 18
                                                 }}>
                                                     <strong>
-                                                        {String(this.state.task.status) === TASK_STATUS.ACTIVE && translate("TASK_STATUS_ACTIVE")}
+                                                        {String(this.state.request.status) === REQUEST_STATUS.PENDING && translate("TASK_STATUS_ACTIVE")}
 
                                                         {
-                                                            String(this.state.task.status) === TASK_STATUS.BOOKED &&
-                                                            this.state.bookedRequest &&
-                                                            !this.state.bookedRequest.order.autoSettlementStartedAt &&
+                                                            String(this.state.request.status) === REQUEST_STATUS.BOOKED &&
+                                                            this.state.request &&
+                                                            !this.state.request.order.autoSettlementStartedAt &&
                                                             translate("TASK_STATUS_BOOKED")
                                                             }
 
                                                         {
-                                                            String(this.state.task.status) === TASK_STATUS.BOOKED &&
-                                                            this.state.bookedRequest &&
-                                                            this.state.bookedRequest.order.autoSettlementStartedAt &&
+                                                            String(this.state.request.status) === REQUEST_STATUS.MARKED_DONE &&
+                                                            this.state.request &&
+                                                            this.state.request.order.autoSettlementStartedAt &&
                                                             <span>
                                                                 {translate("TASK_STATUS_MARKED_DONE")}&nbsp;
                                                                 ({translate("ORDER_AUTOSETTLEMENT_ON")}&nbsp;
-                                                                <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(this.state.bookedRequest.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
+                                                                <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(this.state.request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
                                                             </span>
                                                         }
 
-                                                        {String(this.state.task.status) === TASK_STATUS.COMPLETED && translate("TASK_STATUS_COMPLETED")}
+                                                        {String(this.state.request.status) === REQUEST_STATUS.SETTLED && translate("TASK_STATUS_COMPLETED")}
 
-                                                        {String(this.state.task.status) === TASK_STATUS.SPAM && translate("TASK_STATUS_SPAM")}
+                                                        {String(this.state.task.status) === TASK_STATUS.INACTIVE && translate("TASK_STATUS_CANCELED")}
 
-                                                        {String(this.state.task.status) === TASK_STATUS.INACTIVE && translate("TASK_STATUS_INACTIVE")}
                                                     </strong>
                                                 </p>
                                             }
                                         </div>
                                         <div className="col-xs-12 col-sm-6 text-right">
                                             {
-                                                this.state.bookedRequest && this.state.properties.bookingDetails && 
+                                                this.state.request && this.state.properties.bookingDetails && 
                                                 <IconButton
-                                                    onClick={() => goTo(`/profile/${this.state.bookedRequest.fromUser.id}`)}
+                                                    onClick={() => goTo(`/profile/${this.state.request.fromUser.id}`)}
                                                     tooltipPosition="top-center"
-                                                    tooltip={`${this.state.bookedRequest.fromUser.firstName} ${this.state.bookedRequest.fromUser.lastName}`}>
+                                                    tooltip={`${this.state.request.fromUser.firstName} ${this.state.request.fromUser.lastName}`}>
                                                     <Avatar
-                                                        src={this.state.bookedRequest.fromUser.imageUrl || '/images/avatar.png'}/>
+                                                        src={this.state.request.fromUser.imageUrl || '/images/avatar.png'}/>
                                                 </IconButton>
                                             }
                                             {
-                                                this.state.bookedRequest &&
+                                                this.state.request &&
                                                 this.state.properties.bookingDetails &&
                                                 (
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.ACCEPTED ||
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.BOOKED ||
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.MARKED_DONE
+                                                    this.state.request.status === REQUEST_STATUS.ACCEPTED ||
+                                                    this.state.request.status === REQUEST_STATUS.BOOKED ||
+                                                    this.state.request.status === REQUEST_STATUS.MARKED_DONE
                                                 ) &&
                                                     <IconButton
                                                     style={{
                                                     top: 10
                                                 }}
                                                     tooltipPosition="top-center"
-                                                    tooltip={getUserProperty(this.state.bookedRequest.fromUser, 'phoneNo')}>
+                                                    tooltip={getUserProperty(this.state.request.fromUser, 'phoneNo')}>
                                                     <IconCall/>
                                                 </IconButton>
                                             }
                                             {
-                                                this.state.bookedRequest &&
+                                                this.state.request &&
                                                 this.state.properties.bookingDetails &&
                                                 (
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.ACCEPTED ||
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.BOOKED ||
-                                                    this.state.bookedRequest.status === REQUEST_STATUS.MARKED_DONE 
+                                                    this.state.request.status === REQUEST_STATUS.ACCEPTED ||
+                                                    this.state.request.status === REQUEST_STATUS.BOOKED ||
+                                                    this.state.request.status === REQUEST_STATUS.MARKED_DONE 
                                                 ) &&                                                
                                                 <IconButton
                                                     style={{
@@ -306,24 +312,34 @@ export default class TaskListItem extends Component {
                                                 }}
                                                     tooltip={'Chat'}
                                                     tooltipPosition="top-center"
-                                                    onClick={() => goTo(`/chat/${this.state.bookedRequest.id}`)}>
+                                                    onClick={() => goTo(`/chat/${this.state.request.id}`)}>
                                                     <IconChatBubble/>
                                                 </IconButton>
                                             }
                                             {
-                                                this.state.bookedRequest &&
-                                                this.state.bookedRequest.status === REQUEST_STATUS.ACCEPTED &&
+                                                this.state.request &&
+                                                this.state.request.status === REQUEST_STATUS.ACCEPTED &&
                                                 Number(this.state.task.taskType) ===  1 &&
                                                 this.state.properties.bookButton &&
                                                 <RaisedButton
                                                     primary={true}
                                                     label={translate('ORDER_CREATE')}
-                                                    onTouchTap={() => goTo(`/request/${this.state.bookedRequest.id}/book`)}
+                                                    onTouchTap={() => goTo(`/request/${this.state.request.id}/book`)}
                                                 />
                                             }
                                             {
-                                                this.state.bookedRequest &&
-                                                this.state.bookedRequest.status === REQUEST_STATUS.BOOKED &&
+                                                this.state.request &&
+                                                (
+                                                    (
+                                                        this.state.userType === 1 &&
+                                                        this.state.request.status === REQUEST_STATUS.MARKED_DONE ||
+                                                        this.state.request.status === REQUEST_STATUS.BOOKED
+                                                    ) ||
+                                                    (
+                                                        this.state.userType === 2 &&
+                                                        this.state.request.status === REQUEST_STATUS.BOOKED
+                                                    )
+                                                ) &&
                                                 this.state.properties.markAsDoneButton &&
                                                 <RaisedButton
                                                     primary={true}
@@ -332,12 +348,12 @@ export default class TaskListItem extends Component {
                                                 />
                                             }
                                             {
-                                                this.state.doneRequest &&
+                                                this.state.request &&
                                                 !this.state.review &&
                                                 (
-                                                    this.state.doneRequest.status === REQUEST_STATUS.MARKED_DONE ||
-                                                    this.state.doneRequest.status === REQUEST_STATUS.SETTLED ||
-                                                    this.state.doneRequest.status === REQUEST_STATUS.CLOSED
+                                                    this.state.request.status === REQUEST_STATUS.MARKED_DONE ||
+                                                    this.state.request.status === REQUEST_STATUS.SETTLED ||
+                                                    this.state.request.status === REQUEST_STATUS.CLOSED
                                                 ) &&
                                                 (
                                                     (
@@ -364,11 +380,11 @@ export default class TaskListItem extends Component {
                                                 </div>
                                             }
                                             {
-                                                this.state.doneRequest &&
+                                                this.state.request &&
                                                 this.state.review &&
                                                 (
-                                                    this.state.doneRequest.status === REQUEST_STATUS.SETTLED ||
-                                                    this.state.doneRequest.status === REQUEST_STATUS.CLOSED
+                                                    this.state.request.status === REQUEST_STATUS.SETTLED ||
+                                                    this.state.request.status === REQUEST_STATUS.CLOSED
                                                 ) &&
                                                 (
                                                     (
@@ -384,10 +400,10 @@ export default class TaskListItem extends Component {
                                                 ) &&
                                                 this.state.properties.leaveReviewButton &&
                                                 this.state.properties.statusText &&
-                                                <Chip labelColor={getReadableTextColor(CONFIG.COLOR_SECONDARY)} backgroundColor={CONFIG.COLOR_PRIMARY} style={{float: 'right'}}>
+                                                <Chip labelColor={getReadableTextColor(CONFIG.COLOR_PRIMARY)} backgroundColor={CONFIG.COLOR_PRIMARY} style={{float: 'right'}}>
                                                     <Avatar
                                                         backgroundColor={luminateColor(CONFIG.COLOR_PRIMARY, -0.2)}
-                                                        color={getReadableTextColor(CONFIG.COLOR_SECONDARY)}
+                                                        color={getReadableTextColor(CONFIG.COLOR_PRIMARY)}
                                                         icon={<CheckCircleIcon />}/> {translate('TASK_ALREADY_REVIEWED')}
                                                 </Chip>
                                             }
@@ -411,7 +427,7 @@ export default class TaskListItem extends Component {
                                                     }}
                                                         backgroundColor={CONFIG.COLOR_PRIMARY}
                                                         onTouchTap={() => {
-                                                        openRequestDialog(task.requests);
+                                                        openRequestDialog(task.requests, task);
                                                     }}
                                                     />
                                                 </div>

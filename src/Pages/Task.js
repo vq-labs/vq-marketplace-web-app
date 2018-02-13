@@ -447,7 +447,7 @@ class Task extends Component {
                                                     .filter(_ => _.status === REQUEST_STATUS.PENDING || _.status === REQUEST_STATUS.ACCEPTED)
                                                     .length} ${translate('REQUESTS')}`}
                                                 onTouchTap={() => {
-                                                    openRequestDialog(this.state.task.requests);
+                                                    openRequestDialog(this.state.task.requests, this.state.task);
                                                 }}
                                             />
                                        }

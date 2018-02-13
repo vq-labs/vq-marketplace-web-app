@@ -116,11 +116,12 @@ export default class AdminPage extends React.Component {
                                         <ul className="list-unstyled vq-account-sector-list">
                                             { menuGroup[1].map((menuItem, index2) =>
                                                 <li key={index2} className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
-                                                    <a 
-                                                        href="#"
-                                                        onClick={() =>
-                                                            this.goToSection(menuItem[0])
-                                                        }
+                                                    <a
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            this.goToSection(menuItem[0]);
+                                                        }}
                                                     >
                                                         {menuItem[1]}
                                                     </a>

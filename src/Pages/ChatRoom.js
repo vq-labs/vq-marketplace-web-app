@@ -44,7 +44,7 @@ const REQUEST_ORDER = [
     REQUEST_STATUS.CANCELED
 ];
 
-let STEPER_STATUSES = [];
+let STEPPER_STATUS = [];
 
 const actionBtnStyle = {
     marginTop: 10,
@@ -194,7 +194,6 @@ export default class ChatRoom extends React.Component {
     }
 
     renderStepper(orientation) {
-        this.constructStepperStatuses();
         let steps = [];
 
         //Disabled by request of Ani
@@ -269,14 +268,21 @@ export default class ChatRoom extends React.Component {
     }
 
     getActiveStep(requestStatus) {
+        this.constructStepperStatuses();
+
+        if (requestStatus === REQUEST_STATUS.PENDING) {
+            //so that we skip the pending step
+            return 0;
+        }
+
         let stepIndex = 1;
         let stepperMap = {};
     
-        STEPER_STATUSES.forEach((STEPPER_STATUS, index) => {
-            stepIndex = STEPPER_STATUS.indexOf(requestStatus) > -1 ? index : stepIndex;
+        STEPPER_STATUS.forEach((status, index) => {
+            stepIndex = status.indexOf(requestStatus) > -1 ? index : stepIndex;
         });
 
-        if (stepIndex === STEPER_STATUSES.length - 1 && getReviewFromState(this.state)) {
+        if (stepIndex === STEPPER_STATUS.length - 1 && getReviewFromState(this.state)) {
             stepIndex += 1;
         }
     
@@ -284,17 +290,15 @@ export default class ChatRoom extends React.Component {
     };
 
     constructStepperStatuses() {
-        STEPER_STATUSES = [];
-        STEPER_STATUSES.push(
-            [],
-            [REQUEST_STATUS.PENDING]
-        )
-    
+        
+        STEPPER_STATUS = []; //we should reset it because component may have rerendered
+        STEPPER_STATUS.push([]);
+
         if (this.state.taskType && Number(this.state.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1") {
-            STEPER_STATUSES.push([REQUEST_STATUS.ACCEPTED])
+            STEPPER_STATUS.push([REQUEST_STATUS.ACCEPTED])
         }
     
-        STEPER_STATUSES.push(
+        STEPPER_STATUS.push(
             [REQUEST_STATUS.BOOKED],
             [REQUEST_STATUS.MARKED_DONE],
             [REQUEST_STATUS.SETTLED, REQUEST_STATUS.CLOSED]

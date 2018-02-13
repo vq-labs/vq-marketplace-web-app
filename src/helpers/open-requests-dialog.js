@@ -15,8 +15,8 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 
 let onOpen;
 
-export const openRequestDialog = requests => {
-    onOpen(requests);
+export const openRequestDialog = (requests, task) => {
+    onOpen(requests, task);
 };
 
 export const Component = class RequestDialog extends React.Component {
@@ -34,10 +34,12 @@ export const Component = class RequestDialog extends React.Component {
             this.setState({ config });
         });
 
-        onOpen = requests => {
+        onOpen = (requests, task) => {
+            console.log('task', task)
             this.setState({
                 pendingRequests: requests.filter(_ => _.status === REQUEST_STATUS.PENDING),
                 acceptedRequests: requests.filter(_ => _.status === REQUEST_STATUS.ACCEPTED),
+                task,
                 isOpen: true
             });
         }
@@ -109,57 +111,66 @@ export const Component = class RequestDialog extends React.Component {
                                         }
                                         </List>
 
-                                        <br />
-                                        <Divider />
-                                        <br />
+                                        {
+                                            this.state.task &&
+                                            this.state.task.taskType === 2 &&
+                                            <div>
+                                                <br />
+                                                <Divider />
+                                                <br />
+                                                <h4>{translate('ACCEPTED_REQUESTS')}</h4>
+                                                <List>
+                                                {this.state.acceptedRequests
+                                                .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
+                                                .map((request, index) =>
+                                                    <ListItem
+                                                        key={index}
+                                                        onTouchTap={() => {
+                                                            this.setState({
+                                                                pendingRequests: [],
+                                                                acceptedRequests: [],
+                                                                isOpen: false
+                                                            });
 
-                                        <h4>{translate('ACCEPTED_REQUESTS')}</h4>
-                                        <List>
-                                        {this.state.acceptedRequests
-                                        .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
-                                        .map((request, index) =>
-                                            <ListItem
-                                                key={index}
-                                                onTouchTap={() => {
-                                                    this.setState({
-                                                        pendingRequests: [],
-                                                        acceptedRequests: [],
-                                                        isOpen: false
-                                                    });
-
-                                                    return goTo(`/request/${request.id}`);
-                                                }}
-                                                primaryText={`${request.fromUser.firstName} ${request.fromUser.lastName}`}
-                                                secondaryText={
-                                                    <p>
-                                                        {this.state.config &&
-                                                            <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{request.createdAt}</Moment>
+                                                            return goTo(`/request/${request.id}`);
+                                                        }}
+                                                        primaryText={`${request.fromUser.firstName} ${request.fromUser.lastName}`}
+                                                        secondaryText={
+                                                            <p>
+                                                                {this.state.config &&
+                                                                    <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{request.createdAt}</Moment>
+                                                                }
+                                                            </p>
                                                         }
-                                                    </p>
+                                                        leftAvatar={<Avatar src={request.fromUser.imageUrl || DEFAULTS.PROFILE_IMG_URL} />}
+                                                        rightIcon={
+                                                            <div style={{ width: '60px' }}>
+                                                                <ReactStars
+                                                                    edit={false}
+                                                                    disable={true}
+                                                                    count={5}
+                                                                    size={12}
+                                                                    half={false}
+                                                                    value={request.fromUser.avgReviewRate}
+                                                                    color2={'#ffd700'}
+                                                                />
+                                                            </div>
+                                                        }
+                                                    />
+                                                )}
+                                                {!this.state.acceptedRequests
+                                                .length &&
+                                                <p className="text-muted">
+                                                    {translate('NO_REQUESTS')}
+                                                </p>
                                                 }
-                                                leftAvatar={<Avatar src={request.fromUser.imageUrl || DEFAULTS.PROFILE_IMG_URL} />}
-                                                rightIcon={
-                                                    <div style={{ width: '60px' }}>
-                                                        <ReactStars
-                                                            edit={false}
-                                                            disable={true}
-                                                            count={5}
-                                                            size={12}
-                                                            half={false}
-                                                            value={request.fromUser.avgReviewRate}
-                                                            color2={'#ffd700'}
-                                                        />
-                                                    </div>
-                                                }
-                                            />
-                                        )}
-                                        {!this.state.acceptedRequests
-                                        .length &&
-                                        <p className="text-muted">
-                                            {translate('NO_REQUESTS')}
-                                        </p>
+                                                </List>
+                                            </div>
                                         }
-                                        </List>
+
+                                        
+
+                                        
                                     </div>
                                     }
                                 </Dialog>

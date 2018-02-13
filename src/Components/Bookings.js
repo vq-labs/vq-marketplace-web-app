@@ -34,7 +34,8 @@ export default class Bookings extends Component {
             status: props.status,
             isLoading: true,
             tasks: [],
-            properties: props.properties
+            properties: props.properties,
+            userType: props.userType
         };
     }
 
@@ -93,6 +94,7 @@ export default class Bookings extends Component {
                                         <TaskListItem
                                             task={task}
                                             properties={this.state.properties}
+                                            userType={this.state.userType}
                                         />
                                     </div>
                                 )

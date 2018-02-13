@@ -133,7 +133,12 @@ export default class Dashboard extends Component {
   setViewTypes(dashboardType) {
     switch (dashboardType) {
       case "listings":
-        return {LISTINGS_PENDING: 'LISTINGS_PENDING', LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS', LISTINGS_COMPLETED: 'LISTINGS_COMPLETED', LISTINGS_CANCELED: 'LISTINGS_CANCELED'}
+        return {
+          LISTINGS_PENDING: 'LISTINGS_PENDING',
+          LISTINGS_IN_PROGRESS: 'LISTINGS_IN_PROGRESS',
+          LISTINGS_COMPLETED: 'LISTINGS_COMPLETED',
+          LISTINGS_CANCELED: 'LISTINGS_CANCELED'
+        }
 
         break;
       case "requests":
@@ -164,7 +169,7 @@ export default class Dashboard extends Component {
             return {
               REQUESTS_PENDING: 'REQUESTS_PENDING',
               REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
-              REQUESTS_SETTLED: 'REQUESTS_SETTLED',
+              REQUESTS_COMPLETED: 'REQUESTS_COMPLETED',
               REQUESTS_CANCELED: 'REQUESTS_CANCELED',
             }
             break;
@@ -172,7 +177,7 @@ export default class Dashboard extends Component {
           return {
             REQUESTS_PENDING: 'REQUESTS_PENDING',
             REQUESTS_IN_PROGRESS: 'REQUESTS_IN_PROGRESS',
-            REQUESTS_SETTLED: 'REQUESTS_SETTLED',
+            REQUESTS_COMPLETED: 'REQUESTS_COMPLETED',
             REQUESTS_CANCELED: 'REQUESTS_CANCELED',
             REQUESTS_DECLINED: 'REQUESTS_DECLINED'
           }
@@ -209,14 +214,16 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.ACTIVE}
               properties={{
-              statusText: false,
-              editButton: true,
-              cancelButton: true,
-              requestsButton: true,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: false,
+                editButton: true,
+                cancelButton: true,
+                requestsButton: true,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -224,14 +231,16 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.BOOKED}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              requestsButton: false,
-              bookingDetails: true,
-              markAsDoneButton: true,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                requestsButton: false,
+                bookingDetails: true,
+                markAsDoneButton: true,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -239,14 +248,16 @@ export default class Dashboard extends Component {
             <Bookings
               status={TASK_STATUS.COMPLETED}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: true
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: true
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -254,14 +265,16 @@ export default class Dashboard extends Component {
             <Bookings
               status={[TASK_STATUS.INACTIVE, TASK_STATUS.SPAM]}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -269,14 +282,16 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.PENDING}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: true,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: true,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -284,15 +299,17 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.ACCEPTED}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: true,
-              bookButton: true,
-              requestsButton: false,
-              bookingDetails: true,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: true,
+                bookButton: true,
+                requestsButton: false,
+                bookingDetails: true,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -300,15 +317,17 @@ export default class Dashboard extends Component {
             <Requests
               status={[REQUEST_STATUS.BOOKED, REQUEST_STATUS.MARKED_DONE]}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              bookButton: false,
-              requestsButton: false,
-              bookingDetails: true,
-              markAsDoneButton: true,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                bookButton: false,
+                requestsButton: false,
+                bookingDetails: true,
+                markAsDoneButton: true,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -316,15 +335,17 @@ export default class Dashboard extends Component {
             <Requests
               status={[REQUEST_STATUS.CLOSED, REQUEST_STATUS.SETTLED]}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              bookButton: false,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: true
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                bookButton: false,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: true
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -332,15 +353,17 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.CANCELED}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              bookButton: false,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                bookButton: false,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
 
@@ -348,15 +371,17 @@ export default class Dashboard extends Component {
             <Requests
               status={REQUEST_STATUS.DECLINED}
               properties={{
-              statusText: true,
-              editButton: false,
-              cancelButton: false,
-              bookButton: false,
-              requestsButton: false,
-              bookingDetails: false,
-              markAsDoneButton: false,
-              leaveReviewButton: false
-            }}/>
+                statusText: true,
+                editButton: false,
+                cancelButton: false,
+                bookButton: false,
+                requestsButton: false,
+                bookingDetails: false,
+                markAsDoneButton: false,
+                leaveReviewButton: false
+              }}
+              userType={this.state.userType}
+            />
           </div>
 }
         </div>

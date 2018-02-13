@@ -96,7 +96,20 @@ class Header extends Component {
   }
 
   checkForMobile() {
-    this.setState({ isMobile: window.innerWidth < 769 });
+    /* 
+    * do not remove the else statement otherwise
+    * it keeps checking for window.innerWidth everytime
+    * which sets the state each time causing performance problems
+    */
+    if (window.innerWidth < 769) {
+      if (this.state.isMobile === false) {
+        this.setState({isMobile: true});
+      }
+    } else {
+      if (this.state.isMobile === true) {
+        this.setState({isMobile: false});
+      }
+    }
   }
 
   shouldShowButton(buttonType){

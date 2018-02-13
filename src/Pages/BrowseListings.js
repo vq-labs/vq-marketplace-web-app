@@ -38,6 +38,8 @@ class Offers extends Component {
             locationQueryString = (query.q || `${query.lat} ${query.lng} ${query.rad}`);
         }
 
+        const appliedFilter = this.setFilterDefaults(query);
+
         this.state = {
             offers: [],
             offerMarkers: [],
@@ -46,18 +48,20 @@ class Offers extends Component {
             isLoading: false,
             userType: 1,
             locationQueryString,
-            appliedFilter: {
-                viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
-                q: locationQueryString,
-                category: query.category,
-                lat: query.lat,
-                lng: query.lng,
-                rad: query.rad
-            },
+            appliedFilter,
             offer: {
                 utm: {}
             }
         };
+
+        /* appliedFilter: {
+            viewType: Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW),
+            q: locationQueryString,
+            category: query.category,
+            lat: query.lat,
+            lng: query.lng,
+            rad: query.rad
+        }, */
     }
 
     componentDidMount() {
@@ -202,22 +206,8 @@ class Offers extends Component {
         });
     }
 
-    updateResults (query) {
-        const appliedFilter = this.state.appliedFilter;
-
-        appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
-        appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
-
-        appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
-
-        if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
-            appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? this.getConfigValue('LISTING_PRICE_FILTER_MIN') : query.minPrice;
-            appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? this.getConfigValue('LISTING_PRICE_FILTER_MAX') : query.maxPrice;
-        }
-
-        if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1") {
-            appliedFilter.rad = typeof query.rad === 'undefined' ? this.getConfigValue('LISTING_RANGE_FILTER_DEFAULT_VALUE') : query.rad;
-        }
+    updateResults (query) {        
+        const appliedFilter = this.setFilterDefaults(query);
 
         setQueryParams(appliedFilter);
 
@@ -226,6 +216,24 @@ class Offers extends Component {
         });
 
         this.loadTasks(appliedFilter);
+    }
+
+    setFilterDefaults(query) {
+        const appliedFilter = this.state && this.state.appliedFilter ? this.state.appliedFilter : {};
+        appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
+        appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
+
+        appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
+
+        if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
+            appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
+            appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+        }
+
+        if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1") {
+            appliedFilter.rad = typeof query.rad === 'undefined' ? CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE : query.rad;
+        }
+        return appliedFilter;
     }
 
     render() {
@@ -316,12 +324,12 @@ class Offers extends Component {
                     <h4 style={{ fontSize: '14px' }}>{this.state.appliedFilter.minPrice}-{this.state.appliedFilter.maxPrice} {displayPrice(undefined, this.getConfigValue('PRICING_DEFAULT_CURRENCY'), 1)}</h4>
                         <InputRange
                             formatLabel={value => displayPrice(value, this.getConfigValue('PRICING_DEFAULT_CURRENCY'), 1)}
-                            maxValue={Number(this.getConfigValue('LISTING_PRICE_FILTER_MAX'))}
-                            minValue={Number(this.getConfigValue('LISTING_PRICE_FILTER_MIN'))}
-                            step={Number(this.getConfigValue('LISTING_PRICE_FILTER_STEP'))}
+                            maxValue={Number(CONFIG.LISTING_PRICE_FILTER_MAX)}
+                            minValue={Number(CONFIG.LISTING_PRICE_FILTER_MIN)}
+                            step={Number(CONFIG.LISTING_PRICE_FILTER_STEP)}
                             value={{
-                                min: Number(this.state.appliedFilter.minPrice) || Number(this.getConfigValue('LISTING_PRICE_FILTER_MIN')),
-                                max: Number(this.state.appliedFilter.maxPrice) || Number(this.getConfigValue('LISTING_PRICE_FILTER_MAX'))
+                                min: Number(this.state.appliedFilter.minPrice),
+                                max: Number(this.state.appliedFilter.maxPrice)
                             }}
                             onChange={value => {
                                 const appliedFilter = this.state.appliedFilter;
@@ -362,9 +370,9 @@ class Offers extends Component {
                     <h4 style={{ fontSize: '14px' }}>{this.getConfigValue('LISTING_RANGE_FILTER_MIN')}-{this.state.appliedFilter.rad} {displayUnit(undefined, 'meters')}</h4>
                         <InputRange
                             formatLabel={value => displayUnit(value, 'meters')}
-                            maxValue={Number(this.getConfigValue('LISTING_RANGE_FILTER_MAX'))}
-                            minValue={Number(this.getConfigValue('LISTING_RANGE_FILTER_MIN'))}
-                            step={Number(this.getConfigValue('LISTING_RANGE_FILTER_STEP'))}
+                            maxValue={Number(CONFIG.LISTING_RANGE_FILTER_MAX)}
+                            minValue={Number(CONFIG.LISTING_RANGE_FILTER_MIN)}
+                            step={Number(CONFIG.LISTING_RANGE_FILTER_STEP)}
                             value={Number(this.state.appliedFilter.rad)}
                             onChange={value => {
                                 const appliedFilter = this.state.appliedFilter;

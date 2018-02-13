@@ -575,9 +575,6 @@ class Offers extends Component {
                                                     task={offer}
                                                     displayPrice={true}
                                                 />
-                                                {
-                                                    'sercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercansercan'
-                                                }
                                                 <div className="row"><hr /></div>
                                             </div>
                                         )

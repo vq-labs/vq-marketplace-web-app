@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import USER_TYPES from '../constants/USER_TYPES';
 import ViewTypeChoice from '../Components/ViewTypeChoice';
 import { CONFIG } from '../core/config';
 export default class DashboardViewTypeChoice extends Component {
@@ -34,32 +35,36 @@ export default class DashboardViewTypeChoice extends Component {
          * DEMAND SIDE
          * Has two dashboards: listing dashboard and request dashboard
          */
-        if (this.props.userType === 1) {
-            if (this.state.dashboardType === "requests" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        if (this.props.userType === USER_TYPES.DEMAND) {
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
                 VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';
             }
 
-            if (this.state.dashboardType === "listings" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
                 VIEW_TYPES.LISTINGS_POSTED = 'LISTINGS_POSTED';
-                VIEW_TYPES.ORDERS_IN_PROGRESS = 'ORDERS_IN_PROGRESS';
-                VIEW_TYPES.ORDERS_COMPLETED = 'ORDERS_COMPLETED';
             }
+
+            VIEW_TYPES.ORDERS_IN_PROGRESS = 'ORDERS_IN_PROGRESS';
+            VIEW_TYPES.ORDERS_COMPLETED = 'ORDERS_COMPLETED';
         }
 
         /**
          * SUPPLY SIDE
          * Has two dashboards: listing dashboard and request dashboard
+         * 
+         * We have not really figured out the design here when both supply and demand mode is on (@todo)
          */
-        if (this.props.userType === 2) {
-            if (this.state.dashboardType === "listings" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+        if (this.props.userType === USER_TYPES.SUPPLY) {
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
                 VIEW_TYPES.OFFER_LISTINGS_POSTED = 'OFFER_LISTINGS_POSTED';
             }
 
-            if (this.state.dashboardType === "requests" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+            if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
                 VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';
-                VIEW_TYPES.SENT_REQUESTS_ACCEPTED = 'SENT_REQUESTS_ACCEPTED';
-                VIEW_TYPES.SENT_REQUESTS_SETTLED= 'SENT_REQUESTS_SETTLED';
             }
+
+            VIEW_TYPES.SENT_REQUESTS_ACCEPTED = 'SENT_REQUESTS_ACCEPTED';
+            VIEW_TYPES.SENT_REQUESTS_SETTLED= 'SENT_REQUESTS_SETTLED';
         }
 
         return (

@@ -328,12 +328,15 @@ class Task extends Component {
                                             (
                                                 !this.state.sentRequestId ||
                                                 (
-                                                    (
-                                                        Number(this.state.task.taskType) === 2 &&
+                                                    Number(this.state.task.taskType) === 2 ||
+                                                    /**
+                                                     * 180218 - disabled as there is no usecase for it now
+                                                    && (
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1" &&
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
                                                     ) ||
+                                                    */
                                                     (
                                                         Number(this.state.task.taskType) === 1 &&
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
@@ -549,12 +552,15 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <RequestDialog
-                    listing={this.state.task}
-                    toUserId={this.state.task.userId}
-                    taskId={this.state.task.id}
-                    open={this.state.applicationInProgress}
-                  />
+                  
+                  { this.state.task && this.state.task.id &&
+                    <RequestDialog
+                        listing={this.state.task}
+                        toUserId={this.state.task.userId}
+                        taskId={this.state.task.id}
+                        open={this.state.applicationInProgress}
+                    />
+                  }
             </div>
         );
     }

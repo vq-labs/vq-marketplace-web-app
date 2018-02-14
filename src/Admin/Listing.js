@@ -240,6 +240,7 @@ const workflowFields = [
     },
     type: 'hr'
   },
+  // Workflow for SUPPLY listings
   {
       condition: {
           key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
@@ -261,6 +262,11 @@ const workflowFields = [
                 type: 'bool',
                 key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED',
                 label: 'Demand side can send multiple requests for the same supply listing.'
+            },
+            {
+                type: 'bool',
+                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_INSTANT_BOOKING_ENABLED',
+                label: 'An order will be created for every request sent'
             }
           ]
         },

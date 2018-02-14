@@ -5,8 +5,11 @@ import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
 import LoginSignup from '../Components/LoginSignup';
+import BookRequest from '../Pages/BookRequest';
 import * as apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
+import { goTo } from '../core/navigation';
+import { CONFIG } from '../core/config';
 import { translate } from '../core/i18n';
 import { browserHistory } from 'react-router';
 import { displayMessage } from '../helpers/display-message.js';
@@ -22,12 +25,12 @@ export default class RequestDialog extends React.Component {
             mask: 'init', 
             logged: Boolean(coreAuth.getToken()),
             open: false,
+            listing: this.props.listing,
             application: {
                 toUserId: this.props.toUserId,
                 taskId: this.props.taskId,
                 message: ''
             }
-
         };
   }
   componentWillReceiveProps(nextProps) {
@@ -75,19 +78,41 @@ export default class RequestDialog extends React.Component {
   }
 
   sendRequest() {
-    if (Boolean(coreAuth.getToken())) {
-            this.setState({ isBeingPosted: true });
-            
-            return apiRequest.createItem(this.state.application)
-                .then(result => this.setState({
-                    mask: 'success', 
-                    isBeingPosted: false 
-                }));
+    if (!Boolean(coreAuth.getToken())) {
+        return this.setState({
+            mask: 'auth'
+        });
     }
+
+    this.setState({ isBeingPosted: true });
     
-    this.setState({
-        mask: 'auth'
-    });
+    return apiRequest
+        .createItem(this.state.application)
+        .then(result => {
+            const requestId = result.requestId;
+
+            this.setState({
+                requestId,
+                /**
+                 * A) this.state.listing.taskType) === 1
+                 * Model where a request needs to be explicitely accepted by the supplier.
+                 * Currently its the only supported model for demand listings.
+                
+                */
+                mask: 'success',
+
+                isBeingPosted: false 
+            });
+
+        /**
+        * B) this.state.listing.taskType) === 2
+        * Instant Booking
+        * Currently its the only model supported for supply listings
+        */
+            if (Number(this.state.listing.taskType) === 2) {
+                return goTo(`/request/${requestId}/book`);
+            }
+        });
   }
 
   continuePosting (currentMask) {
@@ -100,7 +125,8 @@ export default class RequestDialog extends React.Component {
          switch (currentMask) {
             case 'init':
                 this.sendRequest();
-                break;
+
+                return;
             case 'confirmation':
                 this.sendRequest();
 
@@ -132,7 +158,7 @@ export default class RequestDialog extends React.Component {
       />;
      
      const getActions = currentMask => {
-         if (currentMask === 'auth') {
+         if (currentMask === 'auth' || currentMask === 'billing') {
              return [ ];
          }
 
@@ -189,10 +215,11 @@ export default class RequestDialog extends React.Component {
           modal={ true }
           open={ this.state.open }
         >
-          { this.state.mask==='init' && InitApplication }
-          { this.state.mask==='auth' && <LoginSignup
+          { this.state.mask === 'init' && InitApplication }
+          { this.state.mask === 'auth' && <LoginSignup
                 onSuccess={ () => this.sendRequest() }
           /> }
+
           { this.state.mask==='confirmation' && ApplicationConfirmation }
           { this.state.mask==='success' && Success }
         </Dialog>

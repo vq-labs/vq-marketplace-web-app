@@ -216,15 +216,30 @@ export default class Requests extends Component {
                                             </p>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 text-right">
-                                            <IconButton
-                                                onClick={() => goTo(`/profile/${request.toUser.id}`)}
-                                                tooltipPosition="top-center"
-                                                tooltip={
-                                                    `${request.toUser.firstName} ${request.toUser.lastName}`
-                                                }
-                                            >
-                                                <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
-                                            </IconButton>
+                                            { Number(request.task.taskType) === 1 &&
+                                                <IconButton
+                                                    onClick={() => goTo(`/profile/${request.toUser.id}`)}
+                                                    tooltipPosition="top-center"
+                                                    tooltip={
+                                                        `${request.toUser.firstName} ${request.toUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                </IconButton>
+                                            }
+
+                                            { Number(request.task.taskType) === 2 &&
+                                                <IconButton
+                                                    onClick={() => goTo(`/profile/${request.fromUser.id}`)}
+                                                    tooltipPosition="top-center"
+                                                    tooltip={
+                                                        `${request.fromUser.firstName} ${request.fromUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={request.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                </IconButton>
+                                            }
+
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton
                                                     style={{ top: 10 }}

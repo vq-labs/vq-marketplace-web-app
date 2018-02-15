@@ -27,7 +27,6 @@ import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
 import Review from './Pages/Review';
-import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
 import UserDocuments from './Pages/UserDocuments';
 import UserPreferences from './Pages/UserPreferences';

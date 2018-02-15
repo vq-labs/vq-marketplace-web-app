@@ -37,9 +37,6 @@ import { pageView } from './core/tracking';
 
 const AppRoutes = (
     <Router history={browserHistory} onUpdate={pageView}>
-        <Route path="/">
-            <IndexRoute component={StartPage}/>
-        </Route>
         <Route path="/app">
             <IndexRoute component={BrowseListings}/>
             <Route path="account(/:sector)" component={Account}></Route>

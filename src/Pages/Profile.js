@@ -486,7 +486,7 @@ class Profile extends React.Component {
                                             paddingRight: 0
                                         }}
                                             className="col-xs-12 col-sm-3 col-md-2"
-                                            onTouchTap={() => goTo(`/profile/${review.fromUser.id}`)}>
+                                            onTouchTap={() => goTo(`/profile/${review.fromUser.id}`, true)}>
                                             <div className="row">
                                                 <div
                                                     className="col-xs-4 col-sm-12 text-center"

@@ -36,9 +36,13 @@ export default class DashboardViewTypeChoice extends Component {
          * Has two dashboards: listing dashboard and request dashboard
          */
         if (this.props.userType === USER_TYPES.DEMAND) {
+           
+            // disabled for rental scenario, we'll see if that won't change in the future
+            /**
             if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
                 VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';
             }
+            */
 
             if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
                 VIEW_TYPES.LISTINGS_POSTED = 'LISTINGS_POSTED';
@@ -58,6 +62,7 @@ export default class DashboardViewTypeChoice extends Component {
             if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
                 VIEW_TYPES.OFFER_LISTINGS_POSTED = 'OFFER_LISTINGS_POSTED';
             }
+         
 
             if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
                 VIEW_TYPES.SENT_REQUESTS_PENDING = 'SENT_REQUESTS_PENDING';

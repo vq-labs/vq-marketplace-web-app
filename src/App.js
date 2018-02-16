@@ -25,6 +25,24 @@ import * as apiConfig from './api/config';
 
 setBase('app');
 
+/**
+ * In production env. the config will be in the index.html defined as global variable.
+ */
+const getConfig = cb => {
+  if (typeof window.CONFIG !== 'undefined') {
+    return cb(undefined, window.CONFIG);
+  }
+
+  return apiConfig
+    .appConfig
+    .getItems({}, {
+      cache: true
+    })
+    .then(config => {
+      cb(undefined, config);
+    }, cb);
+};
+
 let muiTheme;
 class App extends Component {
   constructor (props) {
@@ -53,12 +71,7 @@ class App extends Component {
       coreCategories.set(categories);
     });
 
-    apiConfig
-    .appConfig
-    .getItems({}, {
-      cache: true
-    })
-    .then(config => {
+    getConfig((err, config) => {
         coreConfig.set(config);
        
         // This replaces the textColor value on the palette

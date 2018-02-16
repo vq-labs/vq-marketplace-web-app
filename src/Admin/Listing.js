@@ -159,7 +159,7 @@ const workflowFields = [
             type: 'bool',
             key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED',
             label: 'Request Step',
-            explanation: 'Enable the step on task where the supply makes a request (an offer) on a demand listing. The demand will have to book (or cancel) the request',
+            explanation: 'Enable the step where the supply makes a request (an offer) on a demand listing. The demand will have to book (or cancel) the request',
             disabled: true,
             forceChecked: true,
             subFields: [
@@ -212,6 +212,7 @@ const workflowFields = [
             type: 'bool',
             key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED',
             label: 'Review Step',
+            disabled: true,
             explanation: 'Enable the step on task where the demand and the supply leave reviews for each other',
             subFields: [
                 // {
@@ -247,6 +248,7 @@ const workflowFields = [
           value: "1"
       },
       type: 'bool',
+      disabled: true,
       key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS',
       label: 'Enable task workflow of the supply listings',
       subFields: [
@@ -254,16 +256,18 @@ const workflowFields = [
           type: 'bool',
           key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED',
           label: 'Request Step',
-          explanation: 'Enable the step on task where the demand makes a request on a supply listing. The supply will have to confirm (or cancel) the request',
+          explanation: 'Enable the step on task where the demand makes a request on a supply listing.',
           disabled: true,
           forceChecked: true,
           subFields: [
             {
+                disabled: true,
                 type: 'bool',
                 key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED',
                 label: 'Demand side can send multiple requests for the same supply listing.'
             },
             {
+                disabled: true,
                 type: 'bool',
                 key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_INSTANT_BOOKING_ENABLED',
                 label: 'An order will be created for every request sent'
@@ -309,6 +313,7 @@ const workflowFields = [
           ]
         },
         {
+          disabled: true,
           type: 'bool',
           key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED',
           label: 'Review Step',
@@ -325,6 +330,7 @@ const workflowFields = [
               //   label: 'Review of demand side is required'
               // },
               {
+                disabled: true,
                 type: 'bool',
                 key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS',
                 label: 'Reviews should be provided by both sides. If not provided by both sides, the review will not be visible on neither of their profiles'

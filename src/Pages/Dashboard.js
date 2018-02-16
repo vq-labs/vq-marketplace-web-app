@@ -74,7 +74,6 @@ export default class Dashboard extends Component {
         };
 
         if (!this.state.viewType) {
-          debugger;
           if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
             newState.viewType = "LISTINGS_POSTED";
           }

@@ -25,23 +25,6 @@ import * as apiConfig from './api/config';
 
 setBase('app');
 
-/**
- * In production env. the config will be in the index.html defined as global variable.
- */
-const getConfig = cb => {
-  if (typeof window.CONFIG !== 'undefined') {
-    return cb(undefined, window.CONFIG);
-  }
-
-  return apiConfig
-    .appConfig
-    .getItems({}, {
-      cache: true
-    })
-    .then(config => {
-      cb(undefined, config);
-    }, cb);
-};
 
 let muiTheme;
 class App extends Component {
@@ -61,6 +44,24 @@ class App extends Component {
       goTo('/');
     }
      */
+
+  const getConfig = cb => {
+    /**
+     * @todo - to does not work now but we should have something like this!
+     * In production env. the config will be in the index.html defined as global variable.
+    if (typeof window.CONFIG !== 'undefined') {
+      return cb(undefined, window.CONFIG);
+    }
+    */
+    return apiConfig
+      .appConfig
+      .getItems({}, {
+        cache: true
+      })
+      .then(config => {
+        cb(undefined, config);
+      }, cb);
+  };
 
     apiConfig
     .categories

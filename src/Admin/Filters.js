@@ -1,5 +1,7 @@
 import React from 'react';
 import * as apiConfig from '../api/config';
+import FILTER_DEFAULTS from '../constants/FILTER_DEFAULTS';
+import COUNTRY_CODES from '../constants/COUNTRIES.js';
 import ConfigEdit from './Components/ConfigEdit';
 
 const geofilterFields = [
@@ -9,10 +11,8 @@ const geofilterFields = [
         label: 'Enable geolocation of listings?'
     },
     {
-        selection: [ "AT","BE","BG","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","GB" ].map(_ => {
-            _ = _.toLowerCase();
-
-            return { value: _, label: _ };
+        selection: COUNTRY_CODES.map(_ => {
+            return { value: _.value.toLowerCase(), label: _.label };
         }),
         type: 'select',
         key: 'LISTING_GEOFILTER_COUNTRY_RESTRICTION',
@@ -40,17 +40,52 @@ const priceFields = [
     {
         type: 'number',
         key: 'LISTING_PRICE_FILTER_MIN',
+        default: FILTER_DEFAULTS.LISTING_PRICE_FILTER_MIN,
         label: 'Price filter (min. value)',
     },
     {
         type: 'number',
         key: 'LISTING_PRICE_FILTER_MAX',
+        default: FILTER_DEFAULTS.LISTING_PRICE_FILTER_MAX,
         label: 'Price filter (max. value)',
     },
     {
         type: 'number',
         key: 'LISTING_PRICE_FILTER_STEP',
+        default: FILTER_DEFAULTS.LISTING_PRICE_FILTER_STEP,
         label: 'By how much is the price to be incremented?',
+    }
+];
+
+const rangeFields = [
+    {
+        type: 'bool',
+        key: 'LISTING_RANGE_FILTER_ENABLED',
+        label: 'Enable range filtering?'
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_DEFAULT_VALUE',
+        default: FILTER_DEFAULTS.LISTING_RANGE_FILTER_DEFAULT_VALUE,
+        label: 'What is the default radius of search in meters'
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_MIN',
+        default: FILTER_DEFAULTS.LISTING_RANGE_FILTER_MIN,
+        label: 'Range filter (min. radius in meters)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_MAX',
+        default: FILTER_DEFAULTS.LISTING_RANGE_FILTER_MAX,
+        label: 'Range filter (max. radius in meters)',
+    },
+    {
+        type: 'number',
+        key: 'LISTING_RANGE_FILTER_STEP',
+        default: FILTER_DEFAULTS.LISTING_RANGE_FILTER_STEP,
+        label: 'By how much is the range to be incremented?',
     }
 ];
 
@@ -86,6 +121,11 @@ export default class SectionFilters extends React.Component {
                 <ConfigEdit
                     header={"Location filter"}
                     fields={geofilterFields}
+                />
+
+                <ConfigEdit
+                    header={"Range filter"}
+                    fields={rangeFields}
                 />
             </div>
         );

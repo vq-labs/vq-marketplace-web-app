@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // Library components
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { StickyContainer } from 'react-sticky';
 
 import AppRoutes from './AppRoutes';  
 import Header from './Partials/Header';
@@ -24,6 +25,7 @@ import * as apiConfig from './api/config';
 
 setBase('app');
 
+
 let muiTheme;
 class App extends Component {
   constructor (props) {
@@ -43,6 +45,24 @@ class App extends Component {
     }
      */
 
+  const getConfig = cb => {
+    /**
+     * @todo - to does not work now but we should have something like this!
+     * In production env. the config will be in the index.html defined as global variable.
+    if (typeof window.CONFIG !== 'undefined') {
+      return cb(undefined, window.CONFIG);
+    }
+    */
+    return apiConfig
+      .appConfig
+      .getItems({}, {
+        cache: true
+      })
+      .then(config => {
+        cb(undefined, config);
+      }, cb);
+  };
+
     apiConfig
     .categories
     .getItems({}, {
@@ -52,12 +72,7 @@ class App extends Component {
       coreCategories.set(categories);
     });
 
-    apiConfig
-    .appConfig
-    .getItems({}, {
-      cache: true
-    })
-    .then(config => {
+    getConfig((err, config) => {
         coreConfig.set(config);
        
         // This replaces the textColor value on the palette
@@ -138,9 +153,8 @@ class App extends Component {
       return (
         this.state.ready && this.state.config &&
         <MuiThemeProvider muiTheme={muiTheme}>
-          <div>
-            <Header user={this.state.user}></Header>
-           
+        <StickyContainer style={{paddingBottom: '50px'}}>
+          <Header user={this.state.user} />
             { AppRoutes }
          
             { window.location.pathname.indexOf("admin") === -1 &&
@@ -156,7 +170,7 @@ class App extends Component {
             <RequestDialog />
             <MessageDialog />
             <MessageSnackbar />
-          </div>
+      </StickyContainer>
         </MuiThemeProvider> 
       );
    }

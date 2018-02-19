@@ -51,13 +51,7 @@ export const goTo = (url, shouldReload) => {
 };
 
 export const goStartPage = () => {
-    // history.push(`/`);
-    // browserHistory.push(`/`);
-
-    window.open('/', '_blank');
-
-    // location.pathname = '/';
-    // location.reload();
+    location.href = location.origin;
 };
 
 export const getAppPath = url => `${BASE}${url}`;
@@ -81,6 +75,6 @@ export const tryGoBack = url => {
     history.pop();
 }
 
-export const setQueryParams = query => {
-    browserHistory.push(`${location.pathname}?${serializeQueryObj(query)}`);
+export const setQueryParams = (query, fieldsToSet) => {
+    browserHistory.push(`${location.pathname}?${serializeQueryObj(query, undefined, fieldsToSet)}`);
 };

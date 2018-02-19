@@ -6,6 +6,7 @@ import EditableEntity from '../Components/EditableEntity';
 import * as apiConfig from '../api/config';
 import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
+import TASK_CATEGORY_STATUS from '../constants/TASK_CATEGORY_STATUS.js';
 
 function slugify(text) {
     return text.toString().toLowerCase()
@@ -64,17 +65,17 @@ export default class SectionCategories extends React.Component {
                                 key: 'minQuantity',
                                 type: 'number',
                                 label: 'Min. Quantity',
-                                explanation: 'Enter the minimum quantity'
+                                explanation: 'Enter the minimum quantity of products in this category'
                             }, {
                                 key: 'maxQuantity',
                                 type: 'number',
                                 label: 'Max. Quantity',
-                                explanation: 'Enter the maximum quantity'
+                                explanation: 'Enter the maximum quantity of products in this category'
                             }, {
                                 key: 'quantityStep',
                                 type: 'number',
                                 label: 'Quantity step',
-                                explanation: 'Enter the quantity step'
+                                explanation: 'Enter the quantity steps for sliding filter of products in this category'
                             }, {
                                 key: 'imageUrl',
                                 type: 'single-image',
@@ -105,8 +106,10 @@ export default class SectionCategories extends React.Component {
                         }}
                         onConfirm={newCategory => {
                             const categories = this.state.categories;
+                            const category = newCategory;
+                            category.status = String(TASK_CATEGORY_STATUS.ACTIVE);
 
-                            categories[index] = newCategory;
+                            categories[index] = category;
 
                             if (this.state.isAddingNewCategory) {
                                 apiConfig.categories
@@ -145,7 +148,7 @@ export default class SectionCategories extends React.Component {
         
                 { !this.state.categoryInEdit && this.state.categories && this.state.categories
                     .map((category, index) =>
-                    <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10 }}>
+                    <div key={index} className="col-xs-12 col-sm-3" style={{ marginBottom: 10 }}>
                     <Card>
                         <CardMedia>
                             <img src={category.imageUrl || '/images/category-default-img.jpeg'} alt={category.label}/>
@@ -160,35 +163,78 @@ export default class SectionCategories extends React.Component {
                                     categoryInEdit: category
                                 });
                             }}/>
-                            { false &&
+                            {
+                                String(category.status) === TASK_CATEGORY_STATUS.ACTIVE && 
                                 <FlatButton
-                                    label="Delete"
-                                    onTouchTap={() => {
-                                        openConfirmDialog({
-                                            headerLabel: `Delete category "${category.code}"`,
-                                            confirmationLabel: `Are you sure?`,
-                                            okLabel: 'Confirm',
-                                            cancelLabel: 'Cancel'
-                                        }, () => {
-                                            this.state.categories.splice(index, 1);
+                                label="Deactivate"
+                                onTouchTap={() => {
+                                    openConfirmDialog({
+                                        headerLabel: `Deactivate a category "${category.code}"`,
+                                        confirmationLabel: `This action will cancel all unbooked listings. Are you sure?`,
+                                        okLabel: 'Confirm',
+                                        cancelLabel: 'Cancel'
+                                    }, () => {
+                                        
+                                        apiConfig.categories
+                                        .updateItem(category.id, { status: TASK_CATEGORY_STATUS.INACTIVE })
+                                        .then(() => {
+                                            this.state.categories.forEach(_ => {
+                                                if (_.id === category.id) {
+                                                    return _.status = TASK_CATEGORY_STATUS.INACTIVE;
+                                                }
+                                            })
 
-                                            apiConfig.categories
-                                            .deleteItem(category.id)
-                                            .then(() => {
-                                                this.setState({ 
-                                                    categories: this.state.categories
-                                                });
+                                            this.setState({ 
+                                                categories: this.state.categories
                                             });
                                         });
-                                    }}
-                                />
+                                    });
+                                }}
+                            />
+                            }
+                            { String(category.status) === TASK_CATEGORY_STATUS.INACTIVE &&
+                                <FlatButton
+                                label="Activate"
+                                onTouchTap={() => {
+                                    openConfirmDialog({
+                                        headerLabel: `Activate a category "${category.code}"`,
+                                        confirmationLabel: `Are you sure?`,
+                                        okLabel: 'Confirm',
+                                        cancelLabel: 'Cancel'
+                                    }, () => {
+                                        
+                                        apiConfig.categories
+                                        .updateItem(category.id, { status: TASK_CATEGORY_STATUS.ACTIVE })
+                                        .then(() => {
+
+                                            this.state.categories.forEach(_ => {
+                                                if (_.id === category.id) {
+                                                    _.status = TASK_CATEGORY_STATUS.ACTIVE;
+                                                }
+                                            });
+
+
+                                            this.setState({ 
+                                                categories: this.state.categories
+                                            });
+                                        });
+                                    });
+                                }}
+                            />
+                            }
+                            { category.status === TASK_CATEGORY_STATUS.INACTIVE &&
+                                <strong>
+                                    <span style={{color: '#9E9E9E', lineHeight: '36px', float: 'right', paddingRight: '8px'}}>
+                                        Deactivated
+                                    </span>
+                              </strong>
                             }
                         </CardActions>
                     </Card>
                 </div>
                 )}
                 { !this.state.categoryInEdit && !this.state.isAddingNewCategory && 
-                    <div className="col-xs-12 col-sm-6" style={{ marginBottom: 10}}>       
+                    <div className="col-xs-12 col-sm-3" style={{ marginBottom: 10}}>       
                         <FloatingActionButton
                             primary={true}
                             onClick={() => {

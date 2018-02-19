@@ -36,8 +36,8 @@ export default class ViewTypeChoice extends Component {
         return (
             <div className={`row pull-${this.props.halign}`}>
                 { this.state.ready && Object.keys(this.state.viewTypes)
-                .map(viewType => 
-                    <div style={{ display: 'inline-block' }}>
+                .map((viewType, index) =>
+                    <div key={index} style={{ display: 'inline-block' }}>
                         { this.state.viewType !== this.state.viewTypes[viewType] &&
                             <FlatButton
                                 primary={true}

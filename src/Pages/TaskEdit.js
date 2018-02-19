@@ -15,9 +15,9 @@ import * as apiCategory from '../api/category';
 import { goTo, goBack } from '../core/navigation';
 import { factory as errorFactory } from '../core/error-handler';
 import { translate } from '../core/i18n';
-import { getConfigAsync } from '../core/config';
+import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
-import { displayPrice } from '../core/format';
+import { displayPrice, trimSpaces } from '../core/format';
 import { displayMessage } from '../helpers/display-message.js';
 import '../App.css';
 
@@ -36,79 +36,86 @@ export default class TaskEdit extends Component {
     }
    
     componentDidMount() {
-        getConfigAsync(config => {
-            this.setState({
-                config
-            });
+        getUserAsync(user => {
+            if (!user) {
+                return goTo('/');
+            }
 
-            getUserAsync(user => {
-                if (!user) {
+            let taskId = this.props.params.taskId;
+            
+            apiTask
+            .getItem(taskId)
+            .then(rTask => {
+                if (!rTask) {
                     return goTo('/');
                 }
 
-                let taskId = this.props.params.taskId;
-                
-                apiTask
-                .getItem(taskId)
-                .then(rTask => {
-                    if (!rTask) {
-                        return goTo('/');
-                    }
+                if (rTask.userId !== user.id) {
+                    goTo('/');
 
-                    if (rTask.userId !== user.id) {
-                        goTo('/');
+                    return alert('NOT_YOUR_TASK');
+                }
 
-                        return alert('NOT_YOUR_TASK');
-                    }
+                const canEdit = Boolean(
+                    this.state.task &&
+                    this.state.task.status === TASK_STATUS.ACTIVE &&
+                    this.state.task.requests &&
+                    !this.state.task.requests
+                    .filter(_ => _.status === REQUEST_STATUS.PENDING).length
+                );
 
-                    const canEdit = Boolean(
-                        this.state.task &&
-                        this.state.task.status === TASK_STATUS.ACTIVE &&
-                        this.state.task.requests &&
-                        !this.state.task.requests
-                        .filter(_ => _.status === REQUEST_STATUS.PENDING).length
-                    );
+                if (canEdit) {
+                    goTo('/');
 
-                    if (canEdit) {
-                        goTo('/');
+                    return alert('EDITING_NOT_POSSIBLE');
+                }
 
-                        return alert('EDITING_NOT_POSSIBLE');
-                    }
+                apiCategory
+                .getItems()
+                .then(listingCategories => {
+                    const category = listingCategories
+                        .filter(
+                            _ => _.code === rTask.categories[0].code
+                        )[0];
+                        
+                    const minPrice = category ? category.minPriceHour || 0 : 0;
 
-                    apiCategory
-                    .getItems()
-                    .then(listingCategories => {
-                        const category = listingCategories
-                            .filter(
-                                _ => _.code === rTask.categories[0].code
-                            )[0];
-                            
-                        const minPrice = category ? category.minPriceHour || 0 : 0;
-    
-                        this.setState({
-                            minPrice,
-                            isLoading: false,
-                            task: rTask,
-                            updatedTask: {
-                                images: rTask.images,
-                                title: rTask.title,
-                                description: rTask.description,
-                                price: rTask.price,
-                                priceType: rTask.priceType
-                            }
-                        });
+                    this.setState({
+                        minPrice,
+                        isLoading: false,
+                        task: rTask,
+                        updatedTask: {
+                            callToActionLabel: rTask.callToActionLabel,
+                            callToActionUrl: rTask.callToActionUrl,
+                            images: rTask.images,
+                            title: rTask.title,
+                            description: {
+                                value: rTask.description,
+                                rawText: trimSpaces(rTask.description)
+                            },
+                            price: rTask.price,
+                            priceType: rTask.priceType
+                        }
                     });
-                }, errorFactory());
-            }, false);
-        });
+                });
+            }, errorFactory());
+        }, false);
     }
 
   handleFieldChange (field, transform)  {
-        return (event, value) => {
+        return (event, value, rawText) => {
             const updatedTask = this.state.updatedTask;
-         
-            updatedTask[field] = transform ? transform(value) : value;
-            
+            if (!rawText) {
+              updatedTask[field] = transform ?
+                transform(value) :
+                typeof value === 'string' ?
+                    trimSpaces(value) :
+                    value;
+            } else {
+              updatedTask[field].value = typeof value === 'string' ? trimSpaces(value) : value;
+              updatedTask[field].rawText = rawText;
+            }
+
             this.setState({
                 updatedTask
             });
@@ -125,13 +132,7 @@ export default class TaskEdit extends Component {
         });
     }
 
-    updatedTask.description = updatedTask.description
-        .split('<p><br></p>')
-        .filter(_ => _ !== '<p><br></p>')
-        .join('')
-        .replace(/(\r\n|\n|\r)/gm, "");
-
-    if (updatedTask.description.length < 50) {
+    if (updatedTask.description.rawText.length < 50) {
         return displayMessage({
             label: translate('LISTING_DESCRIPTION_TOO_SHORT')
         });
@@ -140,6 +141,8 @@ export default class TaskEdit extends Component {
     // updatedTask.price *= 100;
 
     apiTaskImage.createItem(taskId, updatedTask.images);
+
+    updatedTask.description = updatedTask.description.value;
 
     apiTask
         .updateItem(taskId, updatedTask)
@@ -156,7 +159,7 @@ export default class TaskEdit extends Component {
                         <div className="container">
                             <div className="col-xs-12 col-sm-8">
                                 <div className="col-xs-12">
-                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_TITLE")}</h4>
+                                    <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TITLE")}</h4>
                                     <TextField
                                         ref="title"
                                         onChange={this.handleFieldChange('title')}
@@ -166,16 +169,26 @@ export default class TaskEdit extends Component {
                                     />
                                 </div>
                                 <div className="col-xs-12">
-                                    <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
+                                    <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
                                         <HtmlTextField
-                                            onChange={this.handleFieldChange('description')}
-                                            value={this.state.updatedTask.description}
+                                            onChange={(ev, descriptionValue, rawText) => {
+                                                this.setState({
+                                                    updatedTask: {
+                                                        ...this.state.updatedTask,
+                                                        description: {
+                                                            value: descriptionValue,
+                                                            rawText: rawText
+                                                        }
+                                                    }
+                                                });
+                                            }}
+                                            value={this.state.updatedTask.description.value}
                                         />
                                     <hr />
                                 </div>
                                 { false &&
                                     <div className="col-xs-12">
-                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
+                                        <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("NEW_LISTING_PRICING_HEADER")}</h4>
                                         <RadioButtonGroup 
                                             name="priceType" 
                                             onChange={ this.handleFieldChange('priceType', value => Number(value))} 
@@ -190,13 +203,14 @@ export default class TaskEdit extends Component {
                                         </RadioButtonGroup>
                                     </div>
                                 }
+
                                 { this.state.task.priceType !== 2 &&
                                     <div className={"col-xs-12"}>
                                         <h2 
-                                            style={{color: this.state.config.COLOR_PRIMARY}}
+                                            style={{color: CONFIG.COLOR_PRIMARY}}
                                             className="text-center"
                                         >
-                                            {displayPrice(this.state.updatedTask.price, this.state.config.PRICING_DEFAULT_CURRENCY, this.state.updatedTask.priceType)}
+                                            {displayPrice(this.state.updatedTask.price, CONFIG.PRICING_DEFAULT_CURRENCY, this.state.updatedTask.priceType)}
                                         </h2>
                                         <Slider
                                             min={this.state.minPrice}
@@ -208,20 +222,45 @@ export default class TaskEdit extends Component {
                                     </div>
                                 }
 
-                                { false &&
+                                { CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE === "1" &&
                                     <div className="col-xs-12">
-                                        <h4 style={{color: this.state.config.COLOR_PRIMARY}}>Photos</h4>
+                                        <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_CALL_TO_ACTION_LABEL")}</h4>
+                                        <TextField
+                                            onChange={this.handleFieldChange('callToActionLabel')}
+                                            value={this.state.updatedTask.callToActionLabel}
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                        />
+                                    </div>
+                                }
+
+                                { CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE === "1" &&
+                                    <div className="col-xs-12">
+                                        <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_CALL_TO_ACTION_URL")}</h4>
+                                        <TextField
+                                            onChange={this.handleFieldChange('callToActionUrl')}
+                                            value={this.state.updatedTask.callToActionUrl}
+                                            style={{width: '100%'}}
+                                            inputStyle={{width: '100%'}}
+                                        />
+                                    </div>
+                                }
+
+                                { CONFIG.LISTING_IMAGES_MODE === "1" &&
+                                    <div className="col-xs-12">
+                                        <h4 style={{color: CONFIG.COLOR_PRIMARY}}>Photos</h4>
                                         <ImageUploader images={this.state.updatedTask.images} onChange={images => {
                                             const updatedTask = this.state.updatedTask;
 
                                             updatedTask.images = images;
 
-                                            this.setState({ updatedTask });
+                                            this.setState({
+                                                updatedTask
+                                            });
                                         }} />
                                     </div>
                                 }
 
-                                { this.state.config && 
                                 <div className="col-xs-12 vq-margin-bottom-xs vq-margin-top-xs">
                                     <FlatButton
                                         style={{float: 'left'}}
@@ -234,12 +273,11 @@ export default class TaskEdit extends Component {
                                         style={{ float: 'right' }}
                                         label={translate('CONFIRM')}
                                         labelStyle={{color: 'white '}}
-                                        backgroundColor={this.state.config.COLOR_PRIMARY}
+                                        backgroundColor={CONFIG.COLOR_PRIMARY}
                                         disabled={ false }
                                         onTouchTap={ this.handleUpdate }
                                     />
                                 </div>
-                                }
                              </div>
                         </div>
                   }

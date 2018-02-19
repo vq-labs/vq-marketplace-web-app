@@ -2,6 +2,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import Moment from 'react-moment';
 import ReactStars from 'react-stars';
 import { translate } from '../core/i18n';
@@ -14,8 +15,8 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 
 let onOpen;
 
-export const openRequestDialog = requests => {
-    onOpen(requests);
+export const openRequestDialog = (requests, task) => {
+    onOpen(requests, task);
 };
 
 export const Component = class RequestDialog extends React.Component {
@@ -23,7 +24,8 @@ export const Component = class RequestDialog extends React.Component {
         super();
         this.state = {
             isOpen: false,
-            requests: []
+            pendingRequests: [],
+            acceptedRequests: [],
         };
     }
 
@@ -32,9 +34,11 @@ export const Component = class RequestDialog extends React.Component {
             this.setState({ config });
         });
 
-        onOpen = requests => {
+        onOpen = (requests, task) => {
             this.setState({
-                requests,
+                pendingRequests: requests.filter(_ => _.status === REQUEST_STATUS.PENDING),
+                acceptedRequests: requests.filter(_ => _.status === REQUEST_STATUS.ACCEPTED),
+                task,
                 isOpen: true
             });
         }
@@ -56,25 +60,19 @@ export const Component = class RequestDialog extends React.Component {
                             >
                                     { this.state.isOpen &&
                                     <div className="row">
-                                        <h1>{translate('REQUESTS')}</h1>
+                                        <h1 style={{fontWeight: 'bold'}}>{translate('REQUESTS')}</h1>
                                         
-                                        {!this.state.requests
-                                        .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                        .length &&
-                                        <p className="text-muted">
-                                            {translate('NO_REQUESTS')}
-                                        </p>
-                                        }
-
+                                        <h4>{translate('PENDING_REQUESTS')}</h4>
                                         <List>
-                                        {this.state.requests
-                                        .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                        {this.state.pendingRequests
                                         .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
-                                        .map(request => 
+                                        .map((request, index) =>
                                             <ListItem
+                                                key={index}
                                                 onTouchTap={() => {
                                                     this.setState({
-                                                        requests: [],
+                                                        pendingRequests: [],
+                                                        acceptedRequests: [],
                                                         isOpen: false
                                                     });
 
@@ -104,7 +102,74 @@ export const Component = class RequestDialog extends React.Component {
                                                 }
                                             />
                                         )}
+                                        {!this.state.pendingRequests
+                                        .length &&
+                                        <p className="text-muted">
+                                            {translate('NO_REQUESTS')}
+                                        </p>
+                                        }
                                         </List>
+
+                                        {
+                                            this.state.task &&
+                                            this.state.task.taskType === 2 &&
+                                            <div>
+                                                <br />
+                                                <Divider />
+                                                <br />
+                                                <h4>{translate('ACCEPTED_REQUESTS')}</h4>
+                                                <List>
+                                                {this.state.acceptedRequests
+                                                .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
+                                                .map((request, index) =>
+                                                    <ListItem
+                                                        key={index}
+                                                        onTouchTap={() => {
+                                                            this.setState({
+                                                                pendingRequests: [],
+                                                                acceptedRequests: [],
+                                                                isOpen: false
+                                                            });
+
+                                                            return goTo(`/request/${request.id}`);
+                                                        }}
+                                                        primaryText={`${request.fromUser.firstName} ${request.fromUser.lastName}`}
+                                                        secondaryText={
+                                                            <p>
+                                                                {this.state.config &&
+                                                                    <Moment format={`${this.state.config.DATE_FORMAT}, ${this.state.config.TIME_FORMAT}`}>{request.createdAt}</Moment>
+                                                                }
+                                                            </p>
+                                                        }
+                                                        leftAvatar={<Avatar src={request.fromUser.imageUrl || DEFAULTS.PROFILE_IMG_URL} />}
+                                                        rightIcon={
+                                                            <div style={{ width: '60px' }}>
+                                                                <ReactStars
+                                                                    edit={false}
+                                                                    disable={true}
+                                                                    count={5}
+                                                                    size={12}
+                                                                    half={false}
+                                                                    value={request.fromUser.avgReviewRate}
+                                                                    color2={'#ffd700'}
+                                                                />
+                                                            </div>
+                                                        }
+                                                    />
+                                                )}
+                                                {!this.state.acceptedRequests
+                                                .length &&
+                                                <p className="text-muted">
+                                                    {translate('NO_REQUESTS')}
+                                                </p>
+                                                }
+                                                </List>
+                                            </div>
+                                        }
+
+                                        
+
+                                        
                                     </div>
                                     }
                                 </Dialog>

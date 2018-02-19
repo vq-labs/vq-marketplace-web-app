@@ -5,6 +5,7 @@ import * as coreAuth from '../core/auth';
 import * as apiCategory from '../api/category';
 import * as apiTaskLocation from '../api/task-location';
 import { translate } from '../core/i18n';
+import { trimSpaces } from '../core/format';
 import { goTo, convertToAppPath } from '../core/navigation';
 import NewListingBasics from './NewListingBasics';
 import NewListingCategory from './NewListingCategory';
@@ -77,6 +78,7 @@ const verifyPostalCode = postalCode => {
 
     return true;
 };
+
 export default class NewListing extends Component {
     constructor(props) {
         super();
@@ -85,7 +87,10 @@ export default class NewListing extends Component {
 
         const task = {
             title: '',
-            description: '',
+            description: {
+              value: '',
+              rawText: ''
+            },
             location: {},
             duration: 2,
             priceType: Number(CONFIG.DEFAULT_PRICING_MODE) || 1,
@@ -119,7 +124,7 @@ export default class NewListing extends Component {
         };
     }
 
-    updateCurrentCategoryConfig = (listingCategories) => {
+    updateCurrentCategoryConfig(listingCategories) {
         const task = this.state.task;
 
         const category = listingCategories
@@ -288,12 +293,20 @@ export default class NewListing extends Component {
         });
     }
 
-    handleListingFieldChange(fieldName, fieldValue) {
+    handleListingFieldChange(fieldName, fieldValue, fieldRawText) {
         const task = this.state.task;
 
-        task[fieldName] = fieldValue;
+        if (!fieldRawText) {
+          task[fieldName] = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
+        } else {
+          task[fieldName] = {};
+          task[fieldName].value = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
+          task[fieldName].rawText = fieldRawText;
+        }
 
-        this.setState({ task });
+        this.setState({
+            task
+        });
     }
 
     selectListingType(listingType) {
@@ -380,21 +393,20 @@ export default class NewListing extends Component {
                                     onPricingChange={
                                         pricing => this.handlePricingChange(pricing.priceType, pricing.price)
                                     } 
-                                /> 
+                                />
                             }
                             { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics
                                     listingType={this.state.task.taskType}
                                     title={{ value: this.state.task.title, mode: CONFIG.LISTING_TITLE_MODE }}
-                                    description={{ value: this.state.task.description, mode: CONFIG.LISTING_DESCRIPTION_MODE }}
+                                    description={{ value: this.state.task.description.value, mode: CONFIG.LISTING_DESCRIPTION_MODE }}
                                     location={{
                                         value: this.state.task.location,
                                         mode: CONFIG.LISTING_LOCATION_MODE
                                     }}
                                     onTitleChange={_ => this.handleListingFieldChange('title', _)}
-                                    onDescriptionChange={_ => this.handleListingFieldChange('description', _)}
+                                    onDescriptionChange={(_, rawText) => { this.handleListingFieldChange('description', _, rawText) }}
                                     onLocationChange={_ => {
-                                        
                                         return this.handleListingFieldChange('location', _);
                                     }}
                                 />
@@ -403,7 +415,6 @@ export default class NewListing extends Component {
                             { this.state.step === LISTING_VIEWS.LOCATION &&
                                 <NewListingLocation
                                     listingType={this.state.task.taskType}
-                                    countryRestriction={CONFIG.COUNTRY_RESTRICTION}
                                     location={this.state.task.location}
                                     onLocationChange={_ => {
                                         if (verifyPostalCode(String(_.postalCode)) === -1) {
@@ -603,19 +614,19 @@ export default class NewListing extends Component {
                                             }
 
                                             if (currentStep === LISTING_VIEWS.BASICS) {
-                                                if (Number(CONFIG.LISTING_TITLE_MODE) === 2 && !this.state.task.title) {
+                                                if (Number(CONFIG.LISTING_TITLE_MODE) === 2 && (!this.state.task.title || (this.state.task.title && trimSpaces(this.state.task.title).length === 0))) {
                                                     return displayMessage({
                                                         label: translate("LISTING_TITLE") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
-                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && !this.state.task.description) {
+                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && (!this.state.task.description.rawText || (this.state.task.description.rawText && trimSpaces(this.state.task.description.rawText).length === 0))) {
                                                     return displayMessage({
                                                         label: translate("LISTING_DESCRIPTION") + " " + translate("IS_REQUIRED")
                                                     });
                                                 }
 
-                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && this.state.task.description.length < 50) {
+                                                if (Number(CONFIG.LISTING_DESCRIPTION_MODE) === 2 && trimSpaces(this.state.task.description.rawText).length < 50) {
                                                     return displayMessage({
                                                         label: translate("LISTING_DESCRIPTION_TOO_SHORT")
                                                     });
@@ -691,6 +702,7 @@ export default class NewListing extends Component {
                                             delete task.location.countryRestriction;
                                             
                                             task.status = TASK_STATUS.ACTIVE;
+                                            task.description = task.description.value;
 
                                             createListing(task, err => {
                                                 if (err) {

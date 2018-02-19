@@ -29,6 +29,7 @@ export const translate = fieldKey => {
         return '';
     }
 
+
     if (typeof TRANSLATIONS[LANG][fieldKey.toUpperCase()] === 'undefined') {
         return fieldKey;
     }

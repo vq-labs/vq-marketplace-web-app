@@ -5,6 +5,7 @@ import Moment from 'react-moment';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import Loader from "../Components/Loader";
 import * as apiAdmin from '../api/admin';
 import { goTo } from '../core/navigation';
 import { translate } from '../core/i18n';
@@ -36,6 +37,7 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             showProperty: false,
             showDetails: false,
             selectedUserId: null,
@@ -43,15 +45,18 @@ export default class SectionUsers extends React.Component {
             users: []
         };
     }
+
     componentDidMount() {
         apiAdmin.users
         .getItems()
         .then(users => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 users
             });
         });
     }
+
     render() {
             return (
                 <div className="row">
@@ -106,8 +111,9 @@ export default class SectionUsers extends React.Component {
                                 <MenuItem value={undefined} primaryText="No filter" />
                                 {
                                     Object.keys(USER_STATUS)
-                                    .map(status => 
+                                    .map((status, index) =>
                                         <MenuItem
+                                            key={index}
                                             value={USER_STATUS[status]}
                                             primaryText={status}
                                         />
@@ -125,7 +131,7 @@ export default class SectionUsers extends React.Component {
                     </div>
                     <div className="col-xs-12">
                         <table className="table">
-                            <thead class="thead-dark">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Email</th>
@@ -155,7 +161,7 @@ export default class SectionUsers extends React.Component {
                                 return true;
                             })
                             .map(user => 
-                                <tr>
+                                <tr key={user.id}>
                                    <td>
                                         <a href="#" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
                                    </td>
@@ -216,6 +222,10 @@ export default class SectionUsers extends React.Component {
                             </tbody>
                         </table>
                     </div>
+                   
+                    { this.state.isLoading &&
+                        <Loader isLoading={true} />
+                    }
 
                     <div>
                         <Dialog

@@ -14,7 +14,7 @@ import { getUserAsync } from '../core/auth';
 import { translate, getLang } from '../core/i18n';
 import { fetchAndAddLang } from '../helpers/i18n-helpers';
 import { openConfirmDialog } from '../helpers/confirm-before-action.js';
-import LANG_CODES from '../constants/LANG_CODES.js';
+import {LANG_CODES} from '../constants/LANGUAGES.js';
 import EmailSettings from './Account/EmailSettings.js';
 import StripePaymentConnector from '../Components/PaymentConnectors/Stripe.js';
 import { CONFIG } from '../core/config';
@@ -36,7 +36,7 @@ export default class Account extends Component {
             sector,
             data: {
                 emailNotifDisabled: false,
-                phoneNo: null
+                phoneNo: ''
             },
             toBeUpdated: {
                 phoneNo: false
@@ -55,9 +55,19 @@ export default class Account extends Component {
 
             apiUser
             .getItem(user.id)
-            .then(profile => this.setState({
-                profile
-            }));
+            .then(profile => {
+                const data = this.state.data;
+                const phoneNoProp = profile.userProperties.find(_ => _.propKey === 'phoneNo');
+                debugger;
+                if (phoneNoProp) {
+                    data.phoneNo = phoneNoProp.propValue;
+                }
+
+                this.setState({
+                    data,
+                    profile
+                });
+            });
 
             apiTaskLocation
             .getItems({
@@ -95,23 +105,25 @@ export default class Account extends Component {
         }, true);
     }
 
-    changeSectorFn = sector => () => {
-        if (sector === 'profile') {
-            goTo(`/account/${sector}`)
+    changeSectorFn(sector) {
+        return () => {
+            if (sector === 'profile') {
+                goTo(`/account/${sector}`)
 
-            return apiUser
-            .getItem(this.state.user.id)
-            .then(profile => this.setState({
-                profile,
+                return apiUser
+                    .getItem(this.state.user.id)
+                    .then(profile => this.setState({
+                        profile,
+                        sector
+                    }));
+            }
+
+            goTo(`/account/${sector}`);
+
+            this.setState({
                 sector
-            }));
+            });
         }
-
-        goTo(`/account/${sector}`);
-
-        this.setState({
-            sector
-        });
     }
 
     render() {
@@ -129,35 +141,170 @@ export default class Account extends Component {
                                         <a href="#" onTouchTap={this.changeSectorFn('language')}>{translate('ACCOUNT_MENU_LANGUAGE')}</a>
                                     </li>
 
-                                    { this.state.user &&
-                                    (
-                                        this.state.user.userType === 1 ||
-                                        (CONFIG && CONFIG.PAYMENTS_ENABLED === '1')
-                                    ) &&
+                                    {
+                                        this.state.user &&
+                                        (
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED === '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    )
+                                                )
+                                            ) ||
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED !== '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) 
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1
+                                                    )
+                                                )
+                                            )
+                                        ) &&
                                         <li className={this.state.sector === 'billing-address' && 'vq-account-sector-active'}>
                                             <a href="#" onTouchTap={this.changeSectorFn('billing-address')}>{translate('ACCOUNT_MENU_BILLING_ADDRESS')}</a>
                                         </li>
                                     }
 
-                                    { this.state.user && this.state.user.userType === 1 &&
-                                        <li className={this.state.sector === 'listing' && 'vq-account-sector-active'}>
-                                            <a href="#" onTouchTap={this.changeSectorFn('listing')}>{translate('ACCOUNT_MENU_LISTING')}</a>
+                                    {
+                                        this.state.user &&
+                                        (
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED === '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                            
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    )
+                                                )
+                                            ) ||
+                                            (
+                                                CONFIG &&
+                                                CONFIG.PAYMENTS_ENABLED !== '1' &&
+                                                (
+                                                    (
+                                                        this.state.user.userType === 2 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    ) ||
+                                                    (
+                                                        this.state.user.userType === 1 &&
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" &&
+                                                            CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1"
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        ) &&
+                                        <li className={this.state.sector === 'listing-address' && 'vq-account-sector-active'}>
+                                            <a href="#" onTouchTap={this.changeSectorFn('listing-address')}>{translate('ACCOUNT_MENU_LISTING_ADDRESS')}</a>
                                         </li>
                                     }
-
-                                    { this.state.user && this.state.user.userType === 2 &&
+                                    { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_DOCUMENTS_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_DOCUMENTS_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-documents?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('HEADER_USER_DOCUMENTS')}</a>
                                         </li>
                                     }
 
-                                    { this.state.user && this.state.user.userType === 2 &&
+                                    { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-preferences?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_PREFERENCES')}</a>
                                         </li>
                                     }
-
-                                    { this.state.user && this.state.user.userType === 2 &&
+                                { CONFIG && this.state.user &&
+                                    (
+                                      (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && this.state.user.userType === 2) ||
+                                      (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && this.state.user.userType === 1) ||
+                                      (
+                                        (CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" || CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1") &&
+                                        this.state.user.userType === 0
+                                      )
+                                    ) &&
                                         <li>
                                             <a href="#" onTouchTap={() => goTo(`/user-verifications?redirectTo=${convertToAppPath(location.pathname)}`)}>{translate('USER_VERIFICATIONS')}</a>
                                         </li>
@@ -421,7 +568,7 @@ export default class Account extends Component {
                             </div>
                             }
 
-                            { this.state.sector === 'listing' &&
+                            { this.state.sector === 'listing-address' &&
                             <div className="row">
                                 <div className="col-xs-12">
                                     <h2>{translate('ACCOUNT_DEFAULT_LISTING_LOCATION_HEADER')}</h2>

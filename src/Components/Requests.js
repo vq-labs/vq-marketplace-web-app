@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
+import Loader from "../Components/Loader";
 import IconCall from 'material-ui/svg-icons/communication/call';
 import IconChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import Avatar from 'material-ui/Avatar';
@@ -41,14 +42,15 @@ export default class Requests extends Component {
             if (this.props.showOutgoing) {
                 queryObj.fromUserId = user.id;
             }
+
         }
 
         apiRequest
             .getItems(queryObj)
             .then(requests => {
+
                 this.setState({
                     requests,
-                    ready: true,
                     isLoading: false
                 });
 
@@ -57,7 +59,7 @@ export default class Requests extends Component {
     });
   }
 
-  markAsDone = request => {
+  markAsDone(request) {
     openConfirmDialog({
         headerLabel: translate('REQUEST_ACTION_MARK_DONE'),
         confirmationLabel: translate('REQUEST_ACTION_MARK_DONE_DESC')
@@ -86,20 +88,20 @@ export default class Requests extends Component {
     });
   }
 
-  cancelRequest = request => {
+  cancelRequest(request) {
     openConfirmDialog({
         headerLabel: translate('CANCEL_REQUEST_ACTION_HEADER'),
         confirmationLabel: translate('CANCEL_REQUEST_ACTION_DESC')
     }, () => {
         const requests = this.state.requests;
-        
+
         apiRequest.updateItem(request.id, {
             status: REQUEST_STATUS.CANCELED
         }).then(_ => {
             requests
                 .find(_ => _.id === request.id)
                 .status = REQUEST_STATUS.CANCELED;
-    
+
             this.setState({
                 requests
             });
@@ -111,19 +113,19 @@ export default class Requests extends Component {
     })
   };
 
-  handleClose = () => {
+  handleClose() {
     this.setState({
         selectedOrderId: null,
         open: false
     });
-  };
+  }
 
-  shouldShowPhoneNumber = request => {
+  shouldShowPhoneNumber (request) {
     return request.status === REQUEST_STATUS.ACCEPTED ||
     request.status === REQUEST_STATUS.MARKED_DONE;
   }
 
-  shouldAllowCancel = request => {
+  shouldAllowCancel(request) {
       return request.status === REQUEST_STATUS.PENDING;
         /**
          request.status != REQUEST_STATUS.CANCELED &&
@@ -133,14 +135,18 @@ export default class Requests extends Component {
         */
   }
 
-  shouldAllowMarkingAsDone = request => {
+  shouldAllowMarkingAsDone(request) {
       return request.status === REQUEST_STATUS.ACCEPTED;
   }
 
   render() {
     return (
         <div className="container">
-            { this.state.ready &&
+            { this.state.isLoading &&
+                <Loader isLoading={true} />
+            }
+
+            { !this.state.isLoading &&
                 <div className="row">
                     <div className="col-xs-12">
                     { this.props.showTitle &&
@@ -180,6 +186,10 @@ export default class Requests extends Component {
                                                         translate("REQUEST_STATUS_ACCEPTED")
                                                     }
 
+                                                    { String(request.status) === REQUEST_STATUS.BOOKED &&
+                                                        translate("REQUEST_STATUS_BOOKED")
+                                                    }
+
                                                     { String(request.status) === REQUEST_STATUS.MARKED_DONE &&
                                                         <span>
                                                             {translate("REQUEST_STATUS_MARKED_DONE")} ({translate("ORDER_AUTOSETTLEMENT_ON")} <Moment format={`${CONFIG.DATE_FORMAT}, ${CONFIG.TIME_FORMAT}`}>{(new Date(request.order.autoSettlementStartedAt * 1000).addHours(8))}</Moment>)
@@ -206,15 +216,30 @@ export default class Requests extends Component {
                                             </p>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 text-right">
-                                            <IconButton
-                                                onClick={() => goTo(`/profile/${request.toUser.id}`)}
-                                                tooltipPosition="top-center"
-                                                tooltip={
-                                                    `${request.toUser.firstName} ${request.toUser.lastName}`
-                                                }
-                                            >
-                                                <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
-                                            </IconButton>
+                                            { Number(request.task.taskType) === 1 &&
+                                                <IconButton
+                                                    onClick={() => goTo(`/profile/${request.toUser.id}`)}
+                                                    tooltipPosition="top-center"
+                                                    tooltip={
+                                                        `${request.toUser.firstName} ${request.toUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={request.toUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                </IconButton>
+                                            }
+
+                                            { Number(request.task.taskType) === 2 &&
+                                                <IconButton
+                                                    onClick={() => goTo(`/profile/${request.fromUser.id}`)}
+                                                    tooltipPosition="top-center"
+                                                    tooltip={
+                                                        `${request.fromUser.firstName} ${request.fromUser.lastName}`
+                                                    }
+                                                >
+                                                    <Avatar src={request.fromUser.imageUrl || CONFIG.USER_PROFILE_IMAGE_URL || '/images/avatar.png'} />
+                                                </IconButton>
+                                            }
+
                                             { this.shouldShowPhoneNumber(request) &&
                                                 <IconButton
                                                     style={{ top: 10 }}

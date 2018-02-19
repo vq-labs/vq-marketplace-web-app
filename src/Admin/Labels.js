@@ -7,7 +7,7 @@ import * as apiConfig from '../api/config';
 import * as coreNavigation from '../core/navigation';
 import { getParams } from '../core/util.js'
 import { getConfigAsync } from '../core/config';
-import LANG_CODES from '../constants/LANG_CODES.js';
+import {LANG_CODES} from '../constants/LANGUAGES.js';
 import LABELS from '../constants/LABELS.js';
 import LabelEdit from './Components/LabelEdit';
 
@@ -87,8 +87,8 @@ export default class SectionLabels extends React.Component {
                             this.getLabels(value);
                         }}>
                             <MenuItem value={this.state.defaultLang} primaryText={LANG_CODES[this.state.defaultLang]} />
-                            { this.state.languages.map(language => 
-                                <MenuItem value={language} primaryText={LANG_CODES[language]} />
+                            { this.state.languages.map((language, index) =>
+                                <MenuItem key={index} value={language} primaryText={LANG_CODES[language]} />
                             )}
                         </DropDownMenu>
                     </div>

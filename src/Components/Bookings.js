@@ -32,7 +32,7 @@ export default class Bookings extends Component {
     };
   }
   
-  settleOrder = order => {
+  settleOrder(order) {
     const orderId = order.id;
     const orders = this.state.orders;
     const orderRef = this.state.orders
@@ -52,21 +52,21 @@ export default class Bookings extends Component {
             header: translate("ORDER_SETTLED_SUCCESS")
         });
     }, _ => _);
-  };
+  }
 
-  initSettleOrder = order => {
+  initSettleOrder(order) {
     this.setState({
         selectedOrderId: order.id,
         open: true
     });
-  };
+  }
 
-  handleClose = () => {
+  handleClose() {
     this.setState({
         selectedOrderId: null,
         open: false
     });
-  };
+  }
 
   componentDidMount() {
     getConfigAsync(config => {
@@ -119,7 +119,8 @@ export default class Bookings extends Component {
                         </div>
                     }
                     { !this.state.isLoading && this.state.orders.map((order, index) =>
-                        <div 
+                        <div
+                            key={index}
                             className="col-xs-12"
                             style={{ marginTop: 10 }}
                         >

@@ -10,12 +10,14 @@ export const displayMessage = (data, cb) => {
     pendingCb = cb;
 };
 
+
 export const Component = class MessageSnackbar extends React.Component {
     constructor(props) {
         super();
 
         this.state = {
-            isOpen: false
+            isOpen: false,
+            label: ''
         };
     }
     componentDidMount() {
@@ -31,14 +33,14 @@ export const Component = class MessageSnackbar extends React.Component {
     render() {
             return (
                     <div>
-                         <Snackbar
+                      <Snackbar
                             open={this.state.isOpen}
                             message={this.state.label}
                             autoHideDuration={3000}
                             onRequestClose={() => {
                                 this.setState({
                                     isOpen: false,
-                                    label: null
+                                    label: ''
                                 });
                             }}
                         />

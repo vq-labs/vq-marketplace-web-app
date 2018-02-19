@@ -2,6 +2,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Moment from 'react-moment';
+import Loader from "../Components/Loader";
 import * as apiAdmin from '../api/admin';
 import { translate } from '../core/i18n';
 
@@ -9,6 +10,7 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             selectedUserId: null,
             isBlockingUser: false,
             orders: []
@@ -19,7 +21,8 @@ export default class SectionUsers extends React.Component {
         .order
         .getItems()
         .then(orders => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 orders
             });
         });
@@ -32,7 +35,7 @@ export default class SectionUsers extends React.Component {
                     </div>
                     <div className="col-xs-12">
                         <table className="table">
-                            <thead class="thead-dark">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Amount</th>
@@ -43,8 +46,8 @@ export default class SectionUsers extends React.Component {
                             </thead>
                             <tbody>
                             { this.state.orders
-                            .map(order => 
-                               <tr>
+                            .map((order, index) =>
+                               <tr key={index}>
                                    <td>
                                         {order.id}
                                    </td>
@@ -64,6 +67,16 @@ export default class SectionUsers extends React.Component {
                             )}
                             </tbody>
                         </table>
+
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && !this.state.orders.length &&
+                            <p className="text-center">
+                                No Orders
+                            </p>
+                        }
                     </div>
 
                     <div>

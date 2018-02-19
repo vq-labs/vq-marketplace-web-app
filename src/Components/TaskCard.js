@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Card, CardText } from 'material-ui/Card';
+import { Card, CardText, CardMedia, CardHeader } from 'material-ui/Card';
+import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
 import * as coreNavigation from '../core/navigation';
 import { translate } from '../core/i18n';
-import { stripHtml } from '../core/util';
-
+import { displayPrice, stripHTML }  from '../core/format';
+import { CONFIG } from '../core/config';
 export default class TaskCard extends Component {
   constructor(props) {
     super(props);
@@ -15,32 +17,6 @@ export default class TaskCard extends Component {
     this.state = {
       task: this.props.task
     }
-  }
-
-  displayPrice (offer) {
-    if (offer.priceType === 2) {
-        return translate('PRICING_MODEL_REQUEST_QUOTE');
-    }
-
-    let priceLabel;
-
-    if (offer.currency === 'EUR') {
-       priceLabel = String((offer.price / 100 ).toFixed(0)) + '€';
-    }
-
-    if (offer.currency === 'HUF') {
-       priceLabel = String(offer.price) + 'Ft.';
-    }
-    
-    if (offer.priceType === 0) {
-        return `${priceLabel} ${translate('PRICING_MODEL_TOTAL')}`;
-    }
-
-    if (offer.priceType === 1) {
-        return `${priceLabel} ${translate('PRICING_MODEL_HOURLY')}`;
-    }
-
-    throw new Error(`Unknown price model ${offer.priceType}`);
   }
 
   handleGoToTask (taskId) {
@@ -76,7 +52,7 @@ export default class TaskCard extends Component {
 
   formatDesc (desc) {
     if (desc) {
-       return stripHtml(desc).substring(0, 75) + '..'
+       return stripHTML(desc).substring(0, 75) + '..'
     }
 
     return 'No description';
@@ -85,10 +61,22 @@ export default class TaskCard extends Component {
   getTaskListItem(task) {
     return (
             <Card key={task.id} style={{ cursor: "pointer" }} >
-                <CardText 
+                    { task.images.length > 0 &&
+                  <CardMedia style={{ minHeight: 130, maxHeight: 130, overflow: "hidden" }} onClick={() => this.handleGoToTask(task.id) }>
+                      <img style={{ maxWidth: "initial" }} src={task.images[0].imageUrl} alt="Listing image" />
+                  </CardMedia>
+                    }
+                       {
+                      task.images.length === 0 &&
+                         <div style={{ minHeight: 130, maxHeight: 130, backgroundColor: '#9D9D9D', textAlign: 'center', lineHeight: '12' }} onClick={() => this.handleGoToTask(task.id) }>
+
+                          <PhotoIcon color="#fff" viewBox="0 0 25 25" style={{width: '50px', height: '50px'}}/>
+                         </div>
+                    }
+                <CardText
                   onClick={() => this.handleGoToTask(task.id)}
                   style={{
-                    height: '80px',
+                    Height: '85px',
                     paddingBottom: 0,
                     lineHeight: '18px', 
                     overflow: 'hidden'
@@ -102,38 +90,43 @@ export default class TaskCard extends Component {
                         </p>
                       }
                 </CardText>
-                <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
-                    height: '75px',
-                    paddingTop: 0,
-                    paddingBottom: 0,
-                    lineHeight: '20px',
-                    overflow: 'hidden'
-                }}>
-                  { this.formatDesc(this.state.task.description) }
-                </CardText>
-                 { this.props.displayPrice && 
+                { this.props.displayDesc &&
                   <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
-                      height: '50px',
+                      height: '75px',
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      lineHeight: '20px',
+                      overflow: 'hidden'
+                  }}>
+                    { this.formatDesc(this.state.task.description) }
+                  </CardText>
+                }
+
+                { CONFIG.LISTING_PRICING_MODE === "1" && this.props.displayPrice && 
+                  <CardText onClick={() => this.handleGoToTask(task.id) } style={ {
+                      height: '53px',
                       paddingTop: 0,
                       lineHeight: '20px',
                       overflow: 'hidden'
                   }}>
-                        <h4 style={{ 
-                          color: '#26a69a', 
-                          marginTop: 20,
-                          width: '100%' 
-                        }} primary={true}>
-                          { this.displayPrice(this.state.task) }
+                        <h4>
+                          { displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType) }
                         </h4>
                   </CardText>
                 }
+
                 { this.props.displayManagement &&
                   <CardText style={{'marginBottom': '20px'}}>
-                    <div class="row">
+                    <div className="row">
                       <div className="col-xs-10 col-sm-11 col-md-9 col-lg-10 text-muted">
-                        <p style={{ marginTop: '16px', marginLeft: '-17px'} }>
-                          { task.status !== 0 && <span>{translate('INACTIVE')}</span> }
-                          { task.status === 0 && <span>{translate('ACTIVE')}</span> }
+                        <p style={{ marginTop: '16px', marginLeft: '-17px' }}>
+                          { task.status !== 0 &&
+                            <span>{translate('INACTIVE')}</span>
+                          }
+
+                          { task.status === 0 &&
+                            <span>{translate('ACTIVE')}</span>
+                          }
                         </p>
                       </div>
                       <div className="col-xs-1 col-sm-1 col-md-2 col-lg-1 text-right"> 

@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import displayObject from '../helpers/display-object';
 import * as apiAdmin from '../api/admin';
-import { stripHtml } from '../core/util';
+import { stripHTML } from '../core/format';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 
 const REQUEST_STATUS_LABEL = {};
@@ -20,13 +20,15 @@ Object
         REQUEST_STATUS_LABEL[REQUEST_STATUS[STATUS_CODE]] = STATUS_CODE;
     });
 
-
 export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            isLoading: true,
             statusFilter: undefined,
-            requests: []
+            requests: [],
+            showDetails: false,
+            isShowingRequestMessages: false
         };
     }
 
@@ -34,7 +36,8 @@ export default class SectionUsers extends React.Component {
         apiAdmin.request
         .getItems()
         .then(requests => {
-            this.setState({ 
+            this.setState({
+                isLoading: false,
                 requests
             });
         });
@@ -75,8 +78,9 @@ export default class SectionUsers extends React.Component {
                                 <MenuItem value={undefined} primaryText="No filter" />
                                 {
                                     Object.keys(REQUEST_STATUS)
-                                    .map(status => 
+                                    .map((status, index) =>
                                         <MenuItem
+                                            key={index}
                                             value={REQUEST_STATUS[status]}
                                             primaryText={status}
                                         />
@@ -93,11 +97,9 @@ export default class SectionUsers extends React.Component {
                         </div>
                     </div>
 
-                
-
                     <div className="col-xs-12">
-                    <table className="table">
-                            <thead class="thead-dark">
+                        <table className="table">
+                            <thead className="thead-dark">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">From user</th>
@@ -130,8 +132,8 @@ export default class SectionUsers extends React.Component {
 
                                     return this.state.statusFilter === request.status && String(request.taskId) === String(this.state.listingIdSearchValue);
                                 })
-                                .map(request =>
-                                <tr>
+                                .map((request, index) =>
+                                <tr key={index}>
                                    <td>
                                         {request.id}
                                    </td>
@@ -193,6 +195,16 @@ export default class SectionUsers extends React.Component {
                             )}
                             </tbody>
                         </table>
+
+                        { this.state.isLoading &&
+                            <Loader isLoading={true} />
+                        }
+
+                        { !this.state.isLoading && !this.state.requests.length &&
+                            <p className="text-center">
+                                No Requests
+                            </p>
+                        }
                     </div>
 
                     <div>
@@ -230,7 +242,7 @@ export default class SectionUsers extends React.Component {
                             open={this.state.isShowingRequestMessages}
                         >
                                 <div className="row" style={{ minHeight: 300}}>
-                                    <div class="col-xs-12">
+                                    <div className="col-xs-12">
                                         <h1>Request messages</h1>
                                     </div>
                                     <div className="col-xs-12">
@@ -240,9 +252,9 @@ export default class SectionUsers extends React.Component {
                                     </div>
                                     <div className="col-xs-12">
                                         { this.state.requestMessages && this.state.requestMessages
-                                        .map(message =>
-                                            <p>
-                                                {message.fromUser.firstName} {message.fromUser.lastName} (<Moment format={`DD.MM.DD, HH:mm`}>{message.createdAt}</Moment>): {stripHtml(message.message)}
+                                        .map((message, index) =>
+                                            <p key={index}>
+                                                {message.fromUser.firstName} {message.fromUser.lastName} (<Moment format={`DD.MM.DD, HH:mm`}>{message.createdAt}</Moment>): {stripHTML(message.message)}
                                             </p>
                                         )}
                                     </div>

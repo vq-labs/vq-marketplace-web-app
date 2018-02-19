@@ -1,8 +1,56 @@
 import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
+import USER_TYPES from '../constants/USER_TYPES';
 
-
-
+const listingSettingsFields = [
+    {
+        condition: [
+            {
+                key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                value: "1"
+            }, {
+                key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                value: "1"
+            }
+        ],
+        type: 'bool',
+        key: 'LISTING_ENABLE_PUBLIC_VIEW',
+        label: 'Enable listings to be viewed without registration'
+    },
+    {
+        condition: [
+            {
+                key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                value: "1"
+            }, {
+                key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                value: "1"
+            }
+        ],
+        type: 'select',
+        key: 'LISTING_PUBLIC_VIEW_MODE',
+        default: '1',
+        label: 'Default listing type to show to the public',
+        selection: [
+            { 
+                value: "2",
+                label: 'Supply Listings',
+                condition: {
+                    key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+                    value: "1"
+                } 
+            },
+            { 
+                value: "1",
+                label: 'Demand Listings',
+                condition: {
+                    key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+                    value: "1"
+                } 
+            }
+        ]
+    }
+];
 
 const browsingFields = [
     {
@@ -11,7 +59,6 @@ const browsingFields = [
         label: 'List'
     },
     {
-        disabled: true,
         type: 'bool',
         key: 'LISTINGS_VIEW_GRID',
         label: 'Grid'
@@ -23,6 +70,7 @@ const browsingFields = [
     },
     {
         selection: [
+            { value: '1', label: 'Grid' },
             { value: '2', label: 'List' },
             { value: '3', label: 'Map' }
         ],
@@ -68,6 +116,12 @@ const newListingFields = [
     },
     {
         type: 'bool',
+        key: 'LISTING_CUSTOM_CALL_TO_ACTION_MODE',
+        label: 'Enable Listing Custom Call to Action',
+        explanation: 'This option will add a listing for custom call to action.'
+    },
+    {
+        type: 'bool',
         key: 'LISTING_QUANTITY_MODE',
         label: 'Enable Listing quantity',
         explanation: 'This option will add a new section to a listing creation page and will allow to specify the wholesale quantity'
@@ -88,13 +142,203 @@ const newListingFields = [
         type: 'bool',
         key: 'LISTING_EDIT_ENABLED',
         label: 'Enable editing of listings after they have been published.'
-    },
-    {
-        type: 'bool',
-        key: 'LISTING_TASK_WORKFLOW_ENABLED',
-        label: 'Enable task workflow of the listings',
-        explanation: 'Request received -> Request booked -> Market as done -> Done & Paid -> Reviewed'
     }
+];
+
+const workflowFields = [
+  {
+        condition: {
+          key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
+          value: "1"
+        },
+        type: 'bool',
+        key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS',
+        label: 'Enable task workflow of the demand listings',
+        subFields: [
+          {
+            type: 'bool',
+            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED',
+            label: 'Request Step',
+            explanation: 'Enable the step where the supply makes a request (an offer) on a demand listing. The demand will have to book (or cancel) the request',
+            disabled: true,
+            forceChecked: true,
+            subFields: [
+              {
+                  type: 'bool',
+                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED',
+                  label: 'Supply side can send multiple requests for the same demand listing.'
+              }
+            ]
+          },
+          {
+            type: 'bool',
+            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_BOOKING_STEP_ENABLED',
+            label: 'Booking Step',
+            explanation: 'Enable the step on task where the demand books the offer of the supply side',
+            disabled: true,
+            forceChecked: true,
+          },
+          {
+            type: 'bool',
+            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_ENABLED',
+            label: 'Complete Step',
+            explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
+            disabled: true,
+            forceChecked: true,
+            subFields: [
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
+                //   label: 'Completion of supply side is required'
+                // },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
+                //   label: 'Completion of demand side is required'
+                // },
+              // {
+              //     selection: [
+              //         { value: String(USER_TYPES.ANY), label: 'Any' },
+              //         { value: String(USER_TYPES.DEMAND), label: 'Demand' },
+              //         { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
+              //     ],
+              //     type: 'select',
+              //     key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
+              //     label: 'Choose a side to enforce to mark the task as complete first'
+              // },
+            ]
+          },
+          {
+            type: 'bool',
+            key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_ENABLED',
+            label: 'Review Step',
+            disabled: true,
+            explanation: 'Enable the step on task where the demand and the supply leave reviews for each other',
+            subFields: [
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
+                //   label: 'Review of supply side is required'
+                // },
+                // {
+                //   type: 'bool',
+                //   key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
+                //   label: 'Review of demand side is required'
+                // },
+                {
+                  type: 'bool',
+                  key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS',
+                  label: 'Reviews should be provided by both sides. If not provided by both sides, the review will not be visible on neither of their profiles'
+                }
+            ]
+          }
+        ]
+    },
+  {
+    condition: {
+      key: 'LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS',
+      value: '1'
+    },
+    type: 'hr'
+  },
+  // Workflow for SUPPLY listings
+  {
+      condition: {
+          key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
+          value: "1"
+      },
+      type: 'bool',
+      disabled: true,
+      key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS',
+      label: 'Enable task workflow of the supply listings',
+      subFields: [
+        {
+          type: 'bool',
+          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED',
+          label: 'Request Step',
+          explanation: 'Enable the step on task where the demand makes a request on a supply listing.',
+          disabled: true,
+          forceChecked: true,
+          subFields: [
+            {
+                disabled: true,
+                type: 'bool',
+                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED',
+                label: 'Demand side can send multiple requests for the same supply listing.'
+            },
+            {
+                disabled: true,
+                type: 'bool',
+                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_INSTANT_BOOKING_ENABLED',
+                label: 'An order will be created for every request sent'
+            }
+          ]
+        },
+        {
+          type: 'bool',
+          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_BOOKING_STEP_ENABLED',
+          label: 'Booking Step',
+          explanation: 'Enable the step on task where the demand books the offer of the supply side',
+          disabled: true,
+          forceChecked: true,
+        },
+        {
+          type: 'bool',
+          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_ENABLED',
+          label: 'Complete Step',
+          explanation: 'Enable the step on task where the demand and the supply marks the task as complete',
+          disabled: true,
+          forceChecked: true,
+          subFields: [
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_SUPPLY',
+              //   label: 'Completion of supply side is required'
+              // },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_MANDATORY_FOR_DEMAND',
+              //   label: 'Completion required by demand'
+              // },
+              // {
+              //     selection: [
+              //         { value: String(USER_TYPES.ANY), label: 'Any' },
+              //         { value: String(USER_TYPES.DEMAND), label: 'Demand' },
+              //         { value: String(USER_TYPES.SUPPLY), label: 'Supply' }
+              //     ],
+              //     type: 'select',
+              //     key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_COMPLETE_STEP_FIRST_SIDE_TO_COMPLETE',
+              //     label: 'Choose a side to enforce to mark the task as complete first'
+              // },
+          ]
+        },
+        {
+          disabled: true,
+          type: 'bool',
+          key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_ENABLED',
+          label: 'Review Step',
+          explanation: 'Enable the step on task where the demand and the supply leave reviews for each other',
+          subFields: [
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_SUPPLY',
+              //   label: 'Review of supply side is required'
+              // },
+              // {
+              //   type: 'bool',
+              //   key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_MANDATORY_FOR_DEMAND',
+              //   label: 'Review of demand side is required'
+              // },
+              {
+                disabled: true,
+                type: 'bool',
+                key: 'LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REVIEW_STEP_REQUIRE_BOTH_REVIEWS',
+                label: 'Reviews should be provided by both sides. If not provided by both sides, the review will not be visible on neither of their profiles'
+              }
+          ]
+        }
+      ]
+}
 ];
 
 export default class SectionListing extends React.Component {
@@ -109,6 +353,11 @@ export default class SectionListing extends React.Component {
         return (
             <div>
                 <ConfigEdit
+                    header={'Listing settings'}
+                    fields={listingSettingsFields}
+                />
+
+                <ConfigEdit
                     header={'"Browse" Page'}
                     desc={'Configure your browsing page. Choose which browsing views are available to the user.'}
                     fields={browsingFields}
@@ -118,6 +367,12 @@ export default class SectionListing extends React.Component {
                     header={'Listing properties'}
                     desc={'Adapt the process of creating listings. Some of these options are only configurable once at the launch of a marketplace and may be only changed by the support team.'}
                     fields={newListingFields}
+                />
+
+              <ConfigEdit
+                    header={'Workflow properties'}
+                    desc={'Manage the workflow of listings.'}
+                    fields={workflowFields}
                 />
             </div>
         );

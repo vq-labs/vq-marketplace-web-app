@@ -47,7 +47,7 @@ export default class NewListingReview extends Component {
                     </div>
 
                 <div className="col-xs-12">
-                    { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
+                    { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_TYPE")}</h4>
@@ -55,7 +55,6 @@ export default class NewListingReview extends Component {
                             </div>
                         </div>
                     }
-
                     <div className="row">
                         <div className="col-xs-12">
                             <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("CATEGORY")}</h4>
@@ -81,7 +80,7 @@ export default class NewListingReview extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("LISTING_DESCRIPTION")}</h4>
-                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description)}}></div>
+                                <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.listing.description.value)}}></div>
                             </div>
                         </div>
                     }
@@ -119,7 +118,22 @@ export default class NewListingReview extends Component {
                         <div className="row">
                             <div className="col-xs-12">
                                 <h4 style={{color: CONFIG.COLOR_PRIMARY}}>{translate("PRICING")}</h4>
-                                { this.state.listing.priceType === 1 ? translate("PRICING_MODEL_HOURLY") : this.state.listing.priceType === 0 ? translate("PRICING_MODEL_TOTAL") : translate("PRICING_MODEL_REQUEST_QUOTE") }
+                                {
+                                    this.state.listing.priceType === 1 &&
+                                    translate("PRICING_MODEL_HOURLY")
+                                }
+                                {
+                                    this.state.listing.priceType === 2 &&
+                                    translate("PRICING_MODEL_TOTAL")
+                                }
+                                {
+                                    this.state.listing.priceType === 3 &&
+                                    translate("PRICING_MODEL_QUANTATIVE")
+                                }
+                                {
+                                    this.state.listing.priceType === 4 &&
+                                    translate("PRICING_MODEL_REQUEST_QUOTE")
+                                }
                             </div>
                         </div>
                     }

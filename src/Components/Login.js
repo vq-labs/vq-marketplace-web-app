@@ -10,16 +10,24 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      authMode: 'login'
+      isSubmitting: false,
+      authMode: 'login',
+      email: '',
+      password: ''
     };
 
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
   }
   handleLogin(event) {
       event.preventDefault()
-       
+      
+      this.setState({
+        isSubmitting: true
+      });
+
       const data = {
-        email: this.refs.email.getValue()
+        email: this.state.email
       };
 
       if (this.state.authMode === 'password_reset') {
@@ -32,7 +40,7 @@ export default class Login extends Component {
           })
       }
 
-      data.password = this.refs.password.getValue();
+      data.password = this.state.password;
 
       apiAuth
         .login(data)
@@ -46,6 +54,10 @@ export default class Login extends Component {
           }
         })
         .catch(err => {
+          this.setState({
+            isSubmitting: false
+          });
+
           if (err.code === 'USER_NOT_VERIFIED' || (err && err.err && err.err.code && err.err.code === 'USER_NOT_VERIFIED')) {
             if (this.props.onNotVerified) {
               coreAuth.setUserId(err.user.id);
@@ -59,6 +71,14 @@ export default class Login extends Component {
           alert(err ? translate(err.code) : err);
         })
   }
+
+  handleFieldChange(field, event) {
+    this.setState({
+      ...this.state,
+      [field]: event.target.value
+    });
+  }
+
   render() {
     return (
       <div className="col-xs-12">
@@ -82,7 +102,7 @@ export default class Login extends Component {
                 <TextField
                   floatingLabelFixed={true}
                   style={{width: '100%'}}
-                  ref="email"
+                  onChange={e => this.handleFieldChange('email', e)}
                   floatingLabelText={translate('EMAIL')}
                   type="email"/>
                 <br/>
@@ -90,13 +110,14 @@ export default class Login extends Component {
                   <TextField
                     floatingLabelFixed={true}
                     style={{width: '100%'}}
-                    ref="password"
+                    onChange={e => this.handleFieldChange('password', e)}
                     floatingLabelText={translate('PASSWORD')}
                     type="password"
                   />
                 }  
                   <br />
-                  <RaisedButton 
+                  <RaisedButton
+                    disabled={this.state.isSubmitting || this.state.email === '' || (this.state.authMode !== 'password_reset' && this.state.password === '')}
                     type="submit" 
                     label={translate('SUBMIT')}
                     fullWidth={true} 

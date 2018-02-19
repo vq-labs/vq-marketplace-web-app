@@ -1,5 +1,3 @@
-import { stripHtml } from './util';
-
 const CENT_CURRENCIES = [
     'PLN',
     'EUR',
@@ -46,8 +44,8 @@ export const displayTotalPrice = (price, timings, currencyCode) => {
 
 export const displayListingDesc = desc => {
     if (desc) {
-        return stripHtml(desc)
-            .substring(0, 75) + '..';
+        return stripHTML(desc)
+            .substring(0, 80) + '..';
     }
 
     return 'No description';
@@ -55,26 +53,163 @@ export const displayListingDesc = desc => {
 
 export const displayLocation = (location, showDetails) => {
     if (location) {
-        return showDetails ?
-        `${location.street} ${location.streetNumber}, ${location.postalCode} ${location.city}` :
-        `${location.street}, ${location.postalCode} ${location.city}`
+        let neededFields = [
+            'street',
+            'streetNumber',
+            ',',
+            'postalCode',
+            'city'
+        ];
+
+        if (!showDetails) {
+            neededFields = [
+                'street',
+                ',',
+                'postalCode',
+                'city'
+            ];
+        }
+
+        let renderedLocation = "";
+
+        neededFields.forEach((field, index) => {
+            if (field === ',') {
+                renderedLocation = renderedLocation.substr(0, renderedLocation.length - 1);
+                renderedLocation += field + ' '
+            } else if (location[field] !== undefined && location[field] !== null) {
+                renderedLocation += location[field] + ' '
+            }
+        });
+
+        return renderedLocation;
     }
 
     return '';
 };
 
 export const displayPrice = (amount, currencyCode, pricingModel) => {
-    amount = amount || '';
+    if (amount === undefined || amount === null) {
+      amount = '';
+    }
 
     // per hour
     if (pricingModel === 1) {
-        return `${amount} ${CURRENCY_LABELS[currencyCode]}/h`;
+        return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}/h`;
     }
 
     // per unit
     if (pricingModel === 3) {
-        return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+        return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
     }
 
-    return `${amount} ${CURRENCY_LABELS[currencyCode]}`;
+    return `${amount} ${CURRENCY_LABELS[currencyCode] || currencyCode}`;
 };
+
+
+export const trimSpaces = string => {
+  return string.replace(/\s+/g,' ').replace(/&nbsp;/gi,'').trim();
+};
+
+
+export const stripHTML = (html, noOfChars) => {
+   const tmp = document.createElement("DIV");
+
+   tmp.innerHTML = html;
+
+   const text = (tmp.textContent || tmp.innerText || "")
+    .replace(/\s+$/, '');
+
+   if (noOfChars && text.length > noOfChars) {
+       return `${text.substring(0, noOfChars)}...`;
+   }
+
+   return text;
+};
+
+export const displayUnit = (amount, unit) => {
+    if (amount === undefined || amount === null) {
+      amount = '';
+    }
+
+    return `${amount} ${unit}`;
+};
+
+export const luminateColor = (hex, lum) => {
+
+	// validate hex string
+	hex = String(hex).replace(/[^0-9a-f]/gi, '');
+	if (hex.length < 6) {
+		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+	}
+	lum = lum || 0;
+
+	// convert to decimal and change luminosity
+	let rgb = "#", c, i;
+	for (i = 0; i < 3; i++) {
+		c = parseInt(hex.substr(i*2,2), 16);
+		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+		rgb += ("00"+c).substr(c.length);
+	}
+
+	return rgb;
+}
+
+export const getRGBColors = (color) => {
+    let r, g, b;
+
+    if (color.match(/^rgb/)) {
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        r = color[1];
+        g = color[2];
+        b = color[3];
+      } else {
+        color = +("0x" + color.slice(1).replace( // thanks to jed : http://gist.github.com/983661
+            color.length < 5 && /./g, '$&$&'
+          )
+        );
+        r = color >> 16;
+        g = color >> 8 & 255;
+        b = color & 255;
+      }
+      return [r, g, b];
+}
+
+export const lightOrDark = (color) => {
+        let hsp;
+        let a = color;
+
+        const [r, g, b] = getRGBColors(color);
+        
+        
+        hsp = Math.sqrt( // HSP equation from http://alienryderflex.com/hsp.html
+          0.299 * (r * r) +
+          0.587 * (g * g) +
+          0.114 * (b * b)
+        );
+        if (hsp>127.5) {
+          return 'light'
+        } else {
+          return 'dark'
+        }
+}
+
+export const getReadableTextColor = (color) => {
+        const [r, g, b] = getRGBColors(color);
+      
+        // http://www.w3.org/TR/AERT#color-contrast
+        var o = Math.round(((parseInt(r) * 299) +
+                            (parseInt(g) * 587) +
+                            (parseInt(b) * 114)) / 1000);
+        var fore = (o > 125) ? 'black' : 'white';
+        return fore;
+        
+}
+
+export const sluggify = (text) => {
+    return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+}

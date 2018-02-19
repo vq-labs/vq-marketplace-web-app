@@ -4,7 +4,7 @@ import { CONFIG } from '../core/config';
 export const getMeOutFromHereIfAmNotAuthorized = user => {
     if (!user) {
         goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
-
+        
         return true;
     }
 
@@ -24,15 +24,27 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
         return true;
     }
 
-    if (user.userType === 0) {
-        return false;
-    }
+    if (
+        (
+            user.userType === 1 && CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1"
+        ) ||
+        (
+            user.userType === 2 && CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1"
+        ) ||
+        (
+            user.userType === 0 && (
+                (
+                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" &&
+                    CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1"
+                ) ||
+                (
 
-    if (user.userType === 1) {
-        return false;
-    }
-
-    if (CONFIG.USER_TYPE_SUPPLY_DOCUMENT_REQUIRED === "1") {
+                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" &&
+                    CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1"
+                )
+            )
+        )
+    ) {
         // users of type sellers are required to upload a document
         if (!user.userProperties.find(_ => _.propKey === 'studentIdUrl')) {
             goTo('/user-verifications');

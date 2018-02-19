@@ -1,4 +1,4 @@
-const LANGUAGES = [
+export const LANGUAGES = [
     {
       "value": "cs",
       "label": "Czech"
@@ -61,4 +61,9 @@ const LANGUAGES = [
     }
 ];
 
-export default LANGUAGES;
+const _LANG_CODES = {};
+LANGUAGES.forEach(_ => {
+    _LANG_CODES[_.value] = _.label;
+});
+
+export const LANG_CODES = _LANG_CODES;

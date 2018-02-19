@@ -1,17 +1,4 @@
-export const stripHtml = (html, noOfChars) => {
-   const tmp = document.createElement("DIV");
 
-   tmp.innerHTML = html;
-
-   const text = (tmp.textContent || tmp.innerText || "")
-    .replace(/\s+$/, '');
-
-   if (noOfChars && text.length > noOfChars) {
-       return `${text.substring(0, noOfChars)}...`;
-   }
-   
-   return text;
-};
 
 export const parseJSON = response => new Promise((resolve, reject) => {
   if (response.status !== 200) {
@@ -22,7 +9,9 @@ export const parseJSON = response => new Promise((resolve, reject) => {
   let jsonResponse;
 
   try {
-    jsonResponse = response.json();
+    jsonResponse = response.text().then(function(text) {
+      return text ? JSON.parse(text) : {status: response.status}
+    });
   } catch (err) {
     console.warn("jsonResponse could not be parsed")
   }
@@ -30,16 +19,18 @@ export const parseJSON = response => new Promise((resolve, reject) => {
     .then(resolve);
 });
 
-export const serializeQueryObj = (obj, prefix) => {
+export const serializeQueryObj = (obj, prefix, fieldsToSet) => {
   let str = [], p;
 
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
-      var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
-      if (typeof v !== 'undefined') {
-         str.push((v !== null && typeof v === "object") ?
-            serializeQueryObj(v, k) :
-            encodeURIComponent(k) + "=" + encodeURIComponent(v));
+      if((fieldsToSet && fieldsToSet.length > 0 && fieldsToSet.indexOf(p) !== -1) || !fieldsToSet) {
+        var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+        if (typeof v !== 'undefined') {
+           str.push((v !== null && typeof v === "object") ?
+              serializeQueryObj(v, k) :
+              encodeURIComponent(k) + "=" + encodeURIComponent(v));
+        }
       }
     }
   }
@@ -172,12 +163,4 @@ export const getUtcUnixTimeNow = () => {
     const nowUtcUnix = nowUtc.getTime() / 1000;
 
     return nowUtcUnix;
-};
-
-export const purifyHtmlMessage = message => {
-    return message
-        .split('<p><br></p>')
-        .filter(_ => _ !== '<p><br></p>')
-        .join('')
-        .replace(/(\r\n|\n|\r)/gm, "");
 };

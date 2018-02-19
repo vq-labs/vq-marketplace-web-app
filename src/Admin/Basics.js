@@ -1,7 +1,7 @@
 import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
 import LabelEdit from './Components/LabelEdit';
-import LANGUAGES from '../constants/LANGUAGES';
+import {LANGUAGES} from '../constants/LANGUAGES';
 
 const basicFields = [
     {
@@ -25,12 +25,11 @@ const basicFields = [
         selection: LANGUAGES
     },
     {
-        disabled: true,
         type: 'select',
-        multiple: true,
         key: 'PRICING_DEFAULT_CURRENCY',
         label: 'Default currency',
         selection: [
+            { value: 'CAD', label: 'Canadian Dollar' },
             { value: 'EUR', label: 'EUR' },
             { value: 'HUF', label: 'HUF' },
             { value: 'PLN', label: 'PLN' },

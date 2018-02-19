@@ -10,6 +10,7 @@ import ListingHeader from '../Components/ListingHeader';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
+import TASK_TYPES from '../constants/TASK_TYPES';
 export default class TaskListItem extends Component {
   constructor(props) {
       super(props);
@@ -43,10 +44,7 @@ export default class TaskListItem extends Component {
               }
             }}
           >
-                    <ListingHeader
-                      task={task}
-                      config={this.state.config}
-                    />
+                    <ListingHeader task={task} />
                     <div className="row">
                         { this.props.displayManagement &&
                           <div className="col-xs-12">
@@ -66,7 +64,7 @@ export default class TaskListItem extends Component {
                                         <a
                                             className="vq-link"
                                             label={`${translate('EDIT_LISTING')}`}
-                                            labelStyle={{color: CONFIG.COLOR_PRIMARY}}
+                                            style={{color: CONFIG.COLOR_PRIMARY}}
                                             onTouchTap={() => goTo(`/task/${task.id}/edit`)}
                                         >
                                             {translate('EDIT')}
@@ -83,7 +81,7 @@ export default class TaskListItem extends Component {
                                       <a  
                                           className="vq-link"
                                           label={`${translate('CANCEL_LISTING_ACTION_HEADER')}`}
-                                          labelStyle={{color: CONFIG.COLOR_PRIMARY}}
+                                          style={{color: CONFIG.COLOR_PRIMARY}}
                                           onTouchTap={() => {
                                             openConfirmDialog({
                                               headerLabel: translate("CANCEL_LISTING_ACTION_HEADER"),
@@ -114,23 +112,25 @@ export default class TaskListItem extends Component {
                                       </strong>
                                   </div>
                               </div>
-                              <div className="col-xs-12 col-sm-6 text-right">
-                                    <div style={{
-                                      display: 'inline-block',
-                                      padding: 2
-                                    }}>
-                                      <RaisedButton
-                                          label={`${this.state.task.requests
-                                            .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                            .length} ${translate('REQUESTS')}`}
-                                          labelStyle={{color: 'white '}}
-                                          backgroundColor={CONFIG.COLOR_PRIMARY}
-                                          onTouchTap={() => {
-                                            openRequestDialog(task.requests);
-                                          }}
-                                      />
-                                    </div>
-                              </div>
+                              { Number(this.state.task.taskType) === TASK_TYPES.DEMAND &&
+                                <div className="col-xs-12 col-sm-6 text-right">
+                                      <div style={{
+                                        display: 'inline-block',
+                                        padding: 2
+                                      }}>
+                                        <RaisedButton
+                                            label={`${this.state.task.requests
+                                              .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                              .length} ${translate('REQUESTS')}`}
+                                            labelStyle={{color: 'white '}}
+                                            backgroundColor={CONFIG.COLOR_PRIMARY}
+                                            onTouchTap={() => {
+                                              openRequestDialog(task.requests);
+                                            }}
+                                        />
+                                      </div>
+                                </div>
+                              }
                             </div>
                           </div>
                         }

@@ -9,6 +9,7 @@ import TaskCategories from '../Partials/TaskCategories';
 import TaskComments from '../Components/TaskComments';
 import Avatar from 'material-ui/Avatar';
 import Moment from 'react-moment';
+import ImageGallery from 'react-image-gallery';
 import FileCloud from 'material-ui/svg-icons/file/cloud';
 import MapsPlace from 'material-ui/svg-icons/maps/place';
 import * as coreAuth from '../core/auth';
@@ -24,11 +25,15 @@ import { displayPrice, displayLocation } from '../core/format';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import { CONFIG } from '../core/config';
 import { getUserAsync } from '../core/auth';
+import { getMeOutFromHereIfAmNotAuthorized } from '../helpers/user-checks';
 import { openRequestDialog } from '../helpers/open-requests-dialog';
 import * as DEFAULTS from '../constants/DEFAULTS';
 import REQUEST_STATUS from '../constants/REQUEST_STATUS';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import { displayErrorFactory } from '../core/error-handler';
+
+import "react-image-gallery/styles/css/image-gallery.css";
+
 class Task extends Component {
     constructor(props) {
         super(props);
@@ -41,28 +46,31 @@ class Task extends Component {
             isLoading: true,
             isMyTask: false,
             taskOwner: {},
-            comments: [],
             task: {
+                comments: [],
                 images: [],
                 categories: [],
                 location: {},
-                requests: []  
-            }  
+                requests: []
+            }
         };
     }
-    handleTouchTap = (event) => {
+
+    handleTouchTap(event) {
         event.preventDefault();
 
         this.setState({
             open: true,
-            anchorEl: event.currentTarget,
+            anchorEl: event.currentTarget
         });
     }
-    handleRequestClose = () => {
+
+    handleRequestClose() {
         this.setState({
             open: false
         });
     }
+
     displayIconElement (task) {
         if (task && task.location) {
             return <MapsPlace viewBox='-20 -7 50 10' />;
@@ -84,9 +92,13 @@ class Task extends Component {
             });
 
             getUserAsync(user => {
-                if (!user) {
-                    return goTo(`/login?redirectTo=${convertToAppPath(`${location.pathname}`)}`);
-                }
+              if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1" && getMeOutFromHereIfAmNotAuthorized(user)){
+                  return;
+              }
+
+              let taskId = this.props.params.taskId;
+
+              if (user) {
 
                 apiPayment
                 .getUserAccount("stripe")
@@ -99,43 +111,51 @@ class Task extends Component {
                         ignoreCodes: [ "STRIPE_NOT_CONNECTED" ]
                     }));
 
-                apiRequest
-                .getItems({
-                    userId: user.id
-                })
-                .then(userRequests => {
-                    this.setState({
-                        userRequests
-                    });
-                });
+                  apiRequest
+                  .getItems({
+                      userId: user.id
+                  })
+                  .then(userRequests => {
+                      this.setState({
+                          userRequests
+                      });
+                  });
+                }
 
-                let taskId = this.props.params.taskId;
+
                 
                 apiTask
                     .getItem(taskId)
                     .then(task => {
-                        const isMyTask = task.userId === user.id;
+                        const isMyTask = user ? task.userId === user.id : false;
 
                         if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
-                            if (user.userType === 1 && !isMyTask) {
+                            if (user && user.userType === 1 && !isMyTask) {
                                 goTo('/');
     
                                 return alert('You cannot access this page.');
                             }
                         }
 
-                        this.setState({
-                            configReady: true,
-                            user,
-                            task
-                        });
+                        if (user) {
+                          this.setState({
+                              configReady: true,
+                              user,
+                              task
+                          });
+                        } else {
+                          this.setState({
+                              configReady: true,
+                              task
+                          });
+                        }
 
                         pricingModelProvider.get()
                         .then(pricingModels => this.setState({
                             pricingModels
                         }));
 
-                        let sentRequest;
+                        let sentRequest, bookedRequest;
 
                         if (user) {
                             sentRequest = task.requests
@@ -145,10 +165,15 @@ class Task extends Component {
                                 .find(
                                     _ => _.fromUserId === user.id
                                 );
+                            bookedRequest = task.requests
+                                .find(
+                                    _ => _.status === REQUEST_STATUS.BOOKED
+                                )
                         }
-                        
+
                         this.setState({
                             taskOwner: task.user,
+                            bookedRequestId: bookedRequest ? bookedRequest.id : null,
                             sentRequestId: sentRequest ? sentRequest.id : null,
                             isLoading: false,
                             isMyTask: task.userId === coreAuth.getUserId()
@@ -163,13 +188,13 @@ class Task extends Component {
             <GoogleMap
                 ref={() => {}}
                 defaultZoom={12}
-                defaultCenter={{ lat: props.lat, lng: props.lng }}
+                defaultCenter={{ lat: parseFloat(props.lat), lng: parseFloat(props.lng) }}
                 onClick={() => {}}
             >
                 <Marker
                     position={{
-                        lat: props.lat,
-                        lng: props.lng
+                        lat: parseFloat(props.lat),
+                        lng: parseFloat(props.lng)
                     }}
                     key={`Task Location`}
                     defaultAnimation={2}
@@ -186,6 +211,7 @@ class Task extends Component {
               }
               { !this.state.isLoading &&
                     <div className="container-fluid" >
+
                         { this.state.task && this.state.task.status === '103' &&
                             <div className="row">
                                 <div className="text-center" style={{ 'marginTop': '40px' }}>
@@ -199,6 +225,18 @@ class Task extends Component {
                                 <div className="text-center" style={{ 'marginTop': '40px' }}>
                                     <h1>{translate('BOOKED')}</h1>
                                 </div>
+                            </div>
+                        }
+
+                        { CONFIG.LISTING_IMAGES_MODE === "1" && this.state.task.images.length > 0 &&
+                            <div className="row listing-gallery-section" >
+                                <ImageGallery
+                                    style={{ height: 300, maxHeight: "100%" }}
+                                    showPlayButton={false}
+                                    useBrowserFullscreen={false}
+                                    showFullscreenButton={true}
+                                    items={this.state.task.images.map(_ => ({ original: _.imageUrl, thumbnail: _.imageUrl }))}
+                                />
                             </div>
                         }
 
@@ -247,21 +285,34 @@ class Task extends Component {
                                 </div>
                     
                                 <div className="col-xs-12 col-sm-4">
+                                    { CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE !== "1" &&
                                     <Card style={{ 'marginTop': 50 }}>
                                         <CardText>
-                                            { CONFIG.LISTING_PRICING_MODE === "1" &&
+                                            { CONFIG.LISTING_PRICING_MODE === "1" && this.state.task.price &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
-                                                    {displayPrice(this.state.task.price, this.state.task.currency, this.state.task.priceType)}
+                                                    {this.state.task.price && displayPrice(
+                                                        this.state.task.price,
+                                                        this.state.task.currency,
+                                                        this.state.task.priceType
+                                                    )}
                                                 </h2>
                                             }
 
-                                            { CONFIG.LISTING_QUANTITY_MODE === "1" &&
+                                            { CONFIG.LISTING_QUANTITY_MODE === "1" && (this.state.task.quantity || this.state.task.unitOfMeasure) &&
                                                 <h2 style={{color: CONFIG.COLOR_PRIMARY}}>
                                                     {this.state.task.quantity} {this.state.task.unitOfMeasure}
                                                 </h2>
                                             }
                                         </CardText>
-                                        { !this.state.user &&
+                                        { !this.state.user && this.state.configReady &&
+                                            (
+                                                (
+                                                    Number(this.state.task.taskType) === 2 && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                ) ||
+                                                (
+                                                    Number(this.state.task.taskType) === 1 && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                ) 
+                                            ) &&
                                             <RaisedButton
                                                 backgroundColor={CONFIG.COLOR_PRIMARY}
                                                 labelColor={"white"}
@@ -269,15 +320,31 @@ class Task extends Component {
                                                 label={translate("REGISTER_TO_APPLY")} 
                                                 onClick={ () => goTo('/signup') }
                                             /> 
-                                       }>
+                                       }
                                         {   
                                             this.state.user &&
-                                            (   this.state.user.userType === 2 ||
-                                                (this.state.user.userType === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") ||
-                                                this.state.user.userType === 0
-                                            ) &&
+                                            this.state.configReady &&
                                             !this.state.isMyTask &&
-                                            !this.state.sentRequestId &&
+                                            (
+                                                !this.state.sentRequestId ||
+                                                (
+                                                    Number(this.state.task.taskType) === 2 ||
+                                                    /**
+                                                     * 180218 - disabled as there is no usecase for it now
+                                                    && (
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                    ) ||
+                                                    */
+                                                    (
+                                                        Number(this.state.task.taskType) === 1 &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1" &&
+                                                        CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
+                                                    )
+                                                )
+                                            ) && 
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 primary={true}
@@ -307,7 +374,23 @@ class Task extends Component {
                                                 }
                                             }/>
                                        }
-                                       { !this.state.isMyTask && this.state.sentRequestId &&
+
+                                       {
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                )
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1" && CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED !== "1"
+                                                )
+                                            )
+                                        ) &&
+                                        !this.state.isMyTask &&
+                                        this.state.sentRequestId &&
                                             <FlatButton
                                                 style={{width: '100%'}}
                                                 label={translate("REQUEST_ALREADY_SENT")}
@@ -315,21 +398,75 @@ class Task extends Component {
                                                     goTo(`/chat/${this.state.sentRequestId}`)
                                                 }}
                                             /> 
+                                        }
+                                        {
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                )
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && (
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                    CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                )
+                                            )
+                                        ) &&
+                                        this.state.isMyTask &&
+                                        this.state.bookedRequestId &&
+                                            <RaisedButton
+                                                primary={true}
+                                                style={{width: '100%'}}
+                                                label={translate("REQUEST_ALREADY_BOOKED")}
+                                                onTouchTap={() => {
+                                                    goTo(`/chat/${this.state.bookedRequestId}`)
+                                                }}
+                                            /> 
                                        }
-                                       { this.state.isMyTask &&
+
+                                       { 
+                                        (
+                                            (
+                                                Number(this.state.task.taskType) === 2 && 
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS === "1" &&
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_SUPPLY_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                            ) ||
+                                            (
+                                                Number(this.state.task.taskType) === 1 && 
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS === "1" &&
+                                                CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_ENABLED === "1"
+                                                
+                                            )
+                                        ) &&   
+                                        this.state.isMyTask &&
                                          this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 style={{width: '100%'}}
                                                 primary={true}
                                                 label={`${this.state.task.requests
-                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING || _.status === REQUEST_STATUS.ACCEPTED)
                                                     .length} ${translate('REQUESTS')}`}
                                                 onTouchTap={() => {
-                                                    openRequestDialog(this.state.task.requests);
+                                                    openRequestDialog(this.state.task.requests, this.state.task);
                                                 }}
                                             />
                                        }
-                                    </Card> 
+                                    </Card>
+                                    }
+
+                                    {
+                                           CONFIG.LISTING_CUSTOM_CALL_TO_ACTION_MODE === "1" && this.state.task.callToActionUrl &&
+                                           <a href={this.state.task.callToActionUrl}>
+                                                <RaisedButton
+                                                    style={{width: '100%'}}
+                                                    primary={true}
+                                                    label={`${this.state.task.callToActionLabel || this.state.task.callToActionUrl}`}
+                                                />
+                                            </a>
+                                       }
                                 </div> 
                             </div>
                         </div>
@@ -338,57 +475,36 @@ class Task extends Component {
                             <div className="row">
                                 <div className="col-sm-9">
                                     <div className="row">
-                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS !== "1" &&
-                                            <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                                <div style={{width: '100%', marginBottom: '20px'}}>
-                                                    <div>
-                                                        <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
-                                                    </div>
-                                                    <div>
-                                                        { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                       }
-
-                                       { CONFIG.LISTING_IMAGES_MODE === "1" &&
-                                        <div className="col-xs-12" style={{ marginTop: 10 }}>
-                                            <h3 className="text-left">{translate("LISTING_IMAGES")}</h3>
-                                            { this.state.task.images && this.state.task.images.map(img =>
-                                                <div className="col-xs-12 col-sm-12 col-md-6" style={{ marginBottom: 10 }}>
-                                                    <img className="img-responsive" role="presentation" src={img.imageUrl}/>
-                                                </div>
-                                            )}
-                                            { ( !this.state.task.images || !this.state.task.images.length) &&
-                                                <div className="col-xs-12 text-left">
-                                                    <div className="row">
-                                                        <p className="text-muted">
-                                                            { translate('NO_LISTING_IMAGES') }
-                                                        </p>
+                                        { CONFIG.USER_ENABLE_SUPPLY_DEMAND_ACCOUNTS === "1" &&
+                                                <div className="col-xs-12" style={{ marginTop: 10 }}>
+                                                    <div style={{width: '100%', marginBottom: '20px'}}>
+                                                        <div>
+                                                            <h3 className="text-left">{translate('LISTING_TYPE')}</h3>
+                                                        </div>
+                                                        <div>
+                                                            { this.state.task.taskType === 2 ? translate("SUPPLY_LISTING") : translate("DEMAND_LISTING")}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            }
-                                        </div>
                                         }
-
-                                       { CONFIG.LISTING_DESC_MODE === "1" &&
+                                       { CONFIG.LISTING_DESC_MODE === "1" && this.state.task.description && this.state.task.description.length > 0  &&
                                         <div className="col-xs-12" style={{ marginTop: 10 }}>
                                             <div style={{width: '100%', marginBottom: '20px'}}>
                                                 <div>
                                                     <h3 className="text-left">{translate('LISTING_DESCRIPTION')}</h3>
                                                 </div>
                                                 <div>
-                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div> 
+                                                    <div className="content" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(this.state.task.description)}}></div>
                                                 </div>
                                             </div>
                                         </div>
                                        }
-                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location &&
+                                       { CONFIG.LISTING_GEOLOCATION_MODE === "1" && this.state.task.location && Object.keys(this.state.task.location).length > 0 &&
                                         <div className="col-xs-12" style={{ marginBottom: 20 }}>
                                             <h3 className="text-left">{translate('LISTING_LOCATION')}</h3>
-                                            <p className="text-muted">
-                                                <div style={{ display: 'block-inline' }}>{displayLocation(this.state.task.location)}</div>
-                                            </p>
+                                            <div style={{ display: 'block-inline' }}>
+                                                <p className="text-muted">{displayLocation(this.state.task.location)}</p>
+                                            </div>
 
                                             <TaskLocationMap
                                                 lat={this.state.task.location.lat}
@@ -420,15 +536,12 @@ class Task extends Component {
                                         </div>
                                         }
                                         
-                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task && this.state.task.comments &&
+                                        { CONFIG.LISTING_DISCUSSION_MODE === "1" && this.state.task.comments &&
                                             <div className="row">
-                                                <div className="col-xs-12">
                                                     <TaskComments
-                                                        taskId={this.state.task.id}
+                                                        task={this.state.task}
                                                         canSubmit={this.state.task.status === TASK_STATUS.ACTIVE}
-                                                        comments={this.state.task.comments}
                                                     />
-                                                </div>
                                             </div>
                                         }
                                     </div>
@@ -439,12 +552,15 @@ class Task extends Component {
                         </div>
                   </div>
                   }
-                  <RequestDialog
-                    listing={this.state.task}
-                    toUserId={this.state.task.userId}
-                    taskId={this.state.task.id}
-                    open={this.state.applicationInProgress}
-                  />
+                  
+                  { this.state.task && this.state.task.id &&
+                    <RequestDialog
+                        listing={this.state.task}
+                        toUserId={this.state.task.userId}
+                        taskId={this.state.task.id}
+                        open={this.state.applicationInProgress}
+                    />
+                  }
             </div>
         );
     }

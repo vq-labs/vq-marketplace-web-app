@@ -1,6 +1,12 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+
 html {
   box-sizing: border-box;
   min-height: 100% !important;
+  height: 100% !important;
 }
 
 .vq-row-option {
@@ -17,16 +23,21 @@ html {
   color: #000639
 }
 
-body, #root > div {
+/* body, #root > div {
   height: 100%;
   position: relative;
-}
+} */
 
 body {
-  padding-bottom: 6rem;
   margin: 0;
   line-height: 1.5em;
+  min-height: 100%;
   overflow-wrap: break-word;
+  overflow-x: hidden;
+}
+
+body > #root, #root > [data-reactroot] {
+  min-height: 100vh;
 }
 
 #vq-footer {
@@ -65,11 +76,13 @@ p {
 
 .vq-homepage .vq-intro {
   width: 100%;
-  height: 640px;
+  height: calc(100vh - 56px);
   -webkit-background-size: cover !important;
   -moz-background-size: cover !important;
   -o-background-size: cover !important;
   background-size: cover !important;
+  
+  text-shadow: black 1px 1px 0;
 }
 
 .with-pointer {
@@ -123,7 +136,8 @@ p {
 }
 
 .vq-account-sector-list > li > a {
-  text-transform: uppercase;
+  margin-left: 10px;
+  text-transform: capitalize;
   text-decoration: none;
   color: #484848;
 }
@@ -280,9 +294,12 @@ width:172px;
 }
 }
   .st-nav  {
-    position: relative ;
+    /* position: fixed; */
+    width: 100%;
+    /* min-width: 100%; */
     height: 100%;
     background-color: #fff !important;
+    /* z-index: 2000; */
   }
 .iconHeightAdjust {
   margin-top : 20px !important;
@@ -408,4 +425,25 @@ form.vq-payment-form {
 }
 .StripeElement.PaymentRequestButton {
   padding: 0;
+}
+
+/**
+  CSS overwrites to react-image-gallery
+*/
+.image-gallery .image-gallery-content .image-gallery-slide .image-gallery-image {
+    max-height:50vh;
+}
+.image-gallery .image-gallery-content .image-gallery-slide .image-gallery-image img {
+    max-height:100%;
+    width: 100%;
+    display: block;
+}
+.image-gallery.fullscreen-modal .image-gallery-content.fullscreen .image-gallery-slide .image-gallery-image {
+    max-height:85vh !important;
+}
+
+.image-gallery.fullscreen-modal .image-gallery-content.fullscreen .image-gallery-slide .image-gallery-image img {
+    width: auto;
+    max-height: inherit;
+    margin: 0 auto;
 }

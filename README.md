@@ -7,7 +7,7 @@ npm install gulp -g
 ```
 
 ## Running
-Review .env file and make necessary changes first!
+Review .env.example file and make necessary changes first then rename it to .env file. You should not commit this file because it might contain sensitive information, therefore we have an ignore rule in .gitignore so if you want to commit that, remove that from .gitignore
 
 This will start the app on localhost:3000. The app will assume that the [VQ-MARKETPLACE-API](https://github.com/vq-labs/vq-marketplace-api) is available at http://localhost:8080.
 ```
@@ -45,6 +45,16 @@ AWS_REGION=eu-central-1 \
 VQ_API_URL=yourMarketplaceId.vqmarketplace.com \ 
 gulp deploy
 ```
+
+# Environments
+
+We have tested the application in these environments but a .nvmrc and package.json engines have been setup for you to take a hint on:
+(If you use NVM, you can do nvm use which will take .nvmrc file into account)
+(If you want to install Node and NPM manually you can check the engines in package.json)
+
+NodeJS 7.2.1 and NPM 3.10.9 on macOS Sierra 10.12.6,
+NodeJS 8.3.0 and NPM 5.6 on Windows 10,
+NodeJS 9.0.0 and NPM 5.5.1 on AWS Linux Ubuntu 16.04.2
 
 ## Technology stack
 React

@@ -163,10 +163,10 @@ export default class SectionUsers extends React.Component {
                             .map(user => 
                                 <tr key={user.id}>
                                    <td>
-                                        <a href="#" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
+                                        <a href="javascript:void(0)" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
                                    </td>
                                    <td>
-                                        <a href="#" onClick={() => {
+                                        <a href="javascript:void(0)" onClick={() => {
                                             apiAdmin.users
                                                 .getUserEmail(user.id)
                                                 .then(userEmails => {

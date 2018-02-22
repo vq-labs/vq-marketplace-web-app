@@ -83,7 +83,7 @@ export default class SectionPosts extends React.Component {
         {this.state.type === 'email' &&
         <div className="col-xs-12">
           <p className="text-muted">Read about e-mail content here: <a
-            href="https://vqlabs.freshdesk.com/solution/articles/33000208415-email-descriptions"
+            href="https://vqlabs.freshdesk.com/solution/folders/33000134285"
             target="_blank">here</a>.</p>
         </div>
         }

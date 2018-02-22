@@ -4,11 +4,11 @@ const gulp = require('gulp');
 const replace = require('gulp-replace-task');
 const spawn = require('child_process').spawn;
 const branch = require('git-branch');
-const args = require('yargs').argv;
+let args = require('yargs').argv;
 const runSequence = require('run-sequence');
 
 gulp.task('build', cb => {
-    var VQ_API_URL = args.VQ_API_URL || process.env.API_URL;
+    var VQ_API_URL = args.VQ_API_URL || process.env.VQ_API_URL;
 
     if (VQ_API_URL.indexOf('http://') === -1 && VQ_API_URL.indexOf('https://') === -1) {
         VQ_API_URL = `http://${VQ_API_URL}`;
@@ -43,7 +43,7 @@ gulp.task('deploy', [ 'build' ], cb => {
     const defaultBucketName = branch.sync() === 'master' ? 'vq-marketplace' : 'vq-marketplace-dev';
     const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME || defaultBucketName;
     const AWS_REGION = process.env.AWS_REGION || 'eu-central-1';
-    const VQ_TENANT_ID = args.VQ_TENANT_ID || process.env.TENANT_ID;
+    const VQ_TENANT_ID = process.env.VQ_TENANT_ID;
 
     if (!AWS_BUCKET_NAME) {
         throw new Error('AWS_BUCKET_NAME is required');

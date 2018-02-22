@@ -15,7 +15,9 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import TASK_STATUS from '../constants/TASK_STATUS';
 import RaisedButton from 'material-ui/RaisedButton';
 
-export default class SectionUsers extends React.Component {
+import __ from 'underscore';
+
+export default class SectionListings extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -37,6 +39,16 @@ export default class SectionUsers extends React.Component {
                 });
             });
     }
+
+    taskHasOrders(task) {
+        for (let request of task.requests) {
+            if (request.order) {
+                return true;
+            }
+            return false;
+        }
+    }
+
     render() {
             return (
                 <div className="row">
@@ -153,35 +165,38 @@ export default class SectionUsers extends React.Component {
                                             })
                                         }}>Details</a>
 
-                                        <a className="vq-row-option" href="#" onTouchTap={() => {
-                                            openConfirmDialog({
-                                                headerLabel: 'Mark the listing as spam',
-                                                confirmationLabel: `Listing "${task.title}" (id: ${task.id}) will be marked as spam, the owner will be notified and the listing will disapear from the "Browse" page. It is only possible to mark unassigned tasks as spam. Beware that once a task are marked as spam, this process cannot be reversed. Are you sure?`
-                                            }, () => {
-                                                apiAdmin.task
-                                                .markAsSpam(task.id)
-                                                .then(_ => {
-                                                    const tasks = this.state.tasks;
-
-                                                    const taskRef = tasks
-                                                        .find(_ => _.id === task.id);
-
-                                                    taskRef.status = '99';
-
-                                                    this.setState({
-                                                        tasks
-                                                    });
-
-                                                    alert('OK! Task has been marked as spam.');
-                                                }, err => {
-                                                    if (err.code === "TASK_IS_NOT_ACTIVE") {
-                                                        return alert('TASK_IS_NOT_ACTIVE: You can only mark active tasks as spam.');
-                                                    }
-                                                    
-                                                    return alert(`Unknown error occured ${err}`);
+                                        {
+                                            !this.taskHasOrders(task) &&
+                                            <a className="vq-row-option" href="#" onTouchTap={() => {
+                                                openConfirmDialog({
+                                                    headerLabel: 'Mark the listing as spam',
+                                                    confirmationLabel: `Listing "${task.title}" (id: ${task.id}) will be marked as spam, the owner will be notified and the listing will disapear from the "Browse" page. It is only possible to mark listings that are not in progress as spam. Beware that once a listing is marked as spam, this process cannot be reversed. Are you sure?`
+                                                }, () => {
+                                                    apiAdmin.task
+                                                    .markAsSpam(task.id)
+                                                    .then(_ => {
+                                                        const tasks = this.state.tasks;
+    
+                                                        const taskRef = tasks
+                                                            .find(_ => _.id === task.id);
+    
+                                                        taskRef.status = '99';
+    
+                                                        this.setState({
+                                                            tasks
+                                                        });
+    
+                                                        alert('OK! Task has been marked as spam.');
+                                                    }, err => {
+                                                        if (err.code === "TASK_IS_NOT_ACTIVE") {
+                                                            return alert('TASK_IS_NOT_ACTIVE: You can only mark active tasks as spam.');
+                                                        }
+                                                        
+                                                        return alert(`Unknown error occured ${err}`);
+                                                    })
                                                 })
-                                            })
-                                        }}>Spam</a>
+                                            }}>Spam</a>
+                                        }
                                     </td>
                                 </tr>
                             )}

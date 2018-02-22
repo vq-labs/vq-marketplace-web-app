@@ -97,6 +97,8 @@ export default class SectionPosts extends React.Component {
                 <TableHeaderColumn tooltip="Type">Type</TableHeaderColumn>
                 <TableHeaderColumn tooltip="Slug">Slug</TableHeaderColumn>
                 <TableHeaderColumn tooltip="Title">Title</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Title">Receiver</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Event code when the email is sent.">Sent when?</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false} stripedRows={true}>
@@ -113,6 +115,8 @@ export default class SectionPosts extends React.Component {
                     <TableRowColumn>{post.type}</TableRowColumn>
                     <TableRowColumn>{post.code}</TableRowColumn>
                     <TableRowColumn>{post.title}</TableRowColumn>
+                    <TableRowColumn>{post.targetUserType ? (post.targetUserType === 1 ? 'Demand' : 'Supply') : '-'}</TableRowColumn>
+                    <TableRowColumn>{post.eventTrigger}</TableRowColumn>
                   </TableRow>
                 )}
             </TableBody>

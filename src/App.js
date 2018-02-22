@@ -155,7 +155,7 @@ class App extends Component {
         <MuiThemeProvider muiTheme={muiTheme}>
         <StickyContainer style={{paddingBottom: '50px'}}>
           <Header user={this.state.user} />
-            { AppRoutes }
+            <AppRoutes user={this.state.user} />
          
             { window.location.pathname.indexOf("admin") === -1 &&
               this.state.config.APP_FOOTER_VISIBLE === "1" &&

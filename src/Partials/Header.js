@@ -33,7 +33,6 @@ class Header extends Component {
 
     this.state = {
       userMode: getMode(),
-      shouldDisplay: location.pathname.indexOf("admin") === -1,
       logged: Boolean(props.user),
       user: props.user,
       isMobile: false
@@ -73,7 +72,7 @@ class Header extends Component {
 
     browserHistory.listen(location =>  {
       this.setState({
-        shouldDisplay: location.pathname.indexOf("admin") === -1
+        location: location.pathname
       })
     });
   }
@@ -235,14 +234,18 @@ class Header extends Component {
                   logo={CONFIG.LOGO_URL}
                 />
 
-                { !this.state.shouldDisplay &&
+                { this.props.user &&
+                this.props.user.isAdmin &&
+                this.state.location &&
+                this.state.location.indexOf("admin") !== -1 &&
                   <ToolbarGroup>
                     <MenuItem onTouchTap={() => goStartPage()} primaryText="Homepage" />
                     <MenuItem onTouchTap={() => goTo("/", true)} primaryText="Marketplace" />
                     <MenuItem onClick={this.handleLogout} primaryText="Logout" />
                   </ToolbarGroup>
                 }
-                { this.state.shouldDisplay &&
+                { this.state.location &&
+                this.state.location.indexOf("admin") === -1 &&
                   <ToolbarGroup>
                       {
                         this.shouldShowButton('dashboard') &&

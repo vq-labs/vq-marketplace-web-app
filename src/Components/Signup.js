@@ -56,11 +56,13 @@ class Signup extends Component {
       apiAuth
         .signup(data)
         .then(result => {
-          coreAuth.setToken(result.token);
-          coreAuth.setUserId(result.user.id);
-          coreAuth.setUser(result.user);
-          
-          this.props.onSuccess(result.user);
+          if (result && result.token && result.user) {
+            coreAuth.setToken(result.token);
+            coreAuth.setUserId(result.user.id);
+            coreAuth.setUser(result.user);
+            
+            this.props.onSuccess(result.user);
+          }
         })
         .catch(err => {
             err = err.err || err;

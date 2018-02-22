@@ -88,13 +88,13 @@ export default class AdminPage extends React.Component {
 
     componentDidMount() {
         getUserAsync(user => {
-            if (!user) {
+/*             if (!user) {
                 return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
             }
 
             if (!user.isAdmin) {
                 return goTo('/');
-            }
+            } */
         }, true);
     }
 

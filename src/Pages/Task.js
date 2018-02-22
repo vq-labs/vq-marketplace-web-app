@@ -92,9 +92,9 @@ class Task extends Component {
             });
 
             getUserAsync(user => {
-              if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1" && getMeOutFromHereIfAmNotAuthorized(user)){
+  /*             if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1" && getMeOutFromHereIfAmNotAuthorized(user)){
                   return;
-              }
+              } */
 
               let taskId = this.props.params.taskId;
 

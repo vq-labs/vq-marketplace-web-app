@@ -104,7 +104,6 @@
   },
   "scripts": {
     "start": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
-    "start:local": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
     "start:talentwand": "npm run start --VQ_API_URL=https://talentwand.vqmarketplace.com/api",
     "start:airtasker": "npm run start --VQ_API_URL=https://taskrabbit.vqmarketplace.com/api",
     "start:rentkitchen": "npm run start --VQ_API_URL=https://rentkitchen.vqmarketplace.com/api",
@@ -117,7 +116,8 @@
     "build-rename": "npm run build-rename-js && npm run build-rename-css",
     "build-rename-js": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.js' --replace 'main.js' build/static/js/*.js",
     "build-rename-css": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.css' --replace 'main.css' build/static/css/*.css",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "deploy": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/build.js && node ./node_modules/gulp/bin/gulp.js deploy"
   },
   "jest": {
     "moduleFileExtensions": [

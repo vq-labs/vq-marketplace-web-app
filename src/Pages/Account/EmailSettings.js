@@ -6,6 +6,7 @@ import { translate } from '../../core/i18n';
 import { getUserAsync } from '../../core/auth';
 import { goTo, convertToAppPath } from '../../core/navigation';
 import * as apiUserProperty from '../../api/user-property';
+import { getConfigAsync } from '../../core/config';
 
 export default class UserPropsEdit extends React.Component {
     constructor() {
@@ -19,89 +20,183 @@ export default class UserPropsEdit extends React.Component {
     }
 
     componentDidMount() {
-        getUserAsync(user => {
-            if (!user) {
-                return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
-            }
-
-            const data = this.state.data;
-
-            const SUPPLY_SIDE_EMAILS = [
-                "new-request-sent",
-                "request-accepted",
-                "new-message",
-                "review-left",
-                "request-marked-as-done",
-                "request-completed",
-                "request-declined",
-                "message-received",
-                "review-left",
-                "request-cancelled",
-                "request-closed",
-                "new-task",
-                "user-blocked"
-            ];
-
-            const DEMAND_SIDE_EMAILS = [
-                "new-request-received",
-                "new-order",
-                "message-received",
-                "review-left",
-                "task-request-cancelled",
-                "order-marked-as-done",
-                "order-completed",
-                "task-marked-spam",
-                "user-blocked",
-                "listing-cancelled",
-                "order-closed"
-            ]
-            
-            const EMAILS = user.userType === 1 ? DEMAND_SIDE_EMAILS : SUPPLY_SIDE_EMAILS;
-            const emailCodes = EMAILS.map(code => `EMAIL_${code}`);
-            
-            this.setState({
-                emails: emailCodes
-            });
-               
-            const propertyCodes = JSON.parse(JSON.stringify(emailCodes));
-
-            propertyCodes
-            .forEach(userPropertyKey => {
-                let property = user.userProperties
-                    .find(_ => _.propKey === userPropertyKey);
-
-                if (!property) {
-                    property = {
-                        propKey: userPropertyKey,
-                        propValue: null
-                    };
-
-                    user
-                    .userProperties
-                    .push(userPropertyKey);
-
-                    data[userPropertyKey] = false;
-                } else {
-                    switch (property.propValue) {
-                        case '1':
-                            data[userPropertyKey] = true;
-                            break;
-                        case '0':
-                            data[userPropertyKey] = false;
-                            break;
-                        default:
-                            data[userPropertyKey] = property.propValue;
-                    }
+        getConfigAsync(CONFIG => {
+            getUserAsync(user => {
+                if (!user) {
+                    return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
                 }
-            });
+    
+                const data = this.state.data;
+    
+                const EMAILS = [];
+    
+                (
+                    function (userType) {
+                        switch (userType) {
+                            case (0): {
+                                return EMAILS.push(
+                                    'new-order-for-supply',
+                                    'listing-cancelled',
+                                    'request-marked-as-done',
+                                    'request-completed',
+                                    'review-left',
+                                    'order-closed-for-supply',
+                                    'message-received',
+                                    'task-marked-spam',
+                                    'new-order',
+                                    'order-marked-as-done',
+                                    'order-completed',
+                                    'order-closed'
+                                )
+                            }
+                            case (1): {
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'new-request-received',
+                                        'listing-cancelled',
+                                        'task-request-cancelled',
+                                        'new-order',
+                                        'order-marked-as-done',
+                                        'order-completed',
+                                        'review-left',
+                                        'order-closed',
+                                        'message-received',
+                                        'task-marked-spam'
+                                    );
+                                }
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'new-order',
+                                        'order-marked-as-done',
+                                        'order-completed',
+                                        'review-left',
+                                        'order-closed',
+                                        'message-received'
+                                    );
+                                }
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'review-left',
+                                        'message-received',
+                                        'listing-cancelled',
+                                        'new-order',
+                                        'order-marked-as-done',
+                                        'order-completed',
+                                        'order-closed',
+                                        'request-marked-as-done'
+                                    );
+                                }
+                            }
+                            case (2): {
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'new-task',
+                                        'new-request-sent',
+                                        'request-declined',
+                                        'request-cancelled',
+                                        'request-accepted',
+                                        'request-marked-as-done',
+                                        'request-completed',
+                                        'review-left',
+                                        'request-closed',
+                                        'message-received'
+               
+                                    );
+                                }
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'new-order-for-supply',
+                                        'listing-cancelled',
+                                        'request-marked-as-done',
+                                        'request-completed',
+                                        'review-left',
+                                        'order-closed-for-supply',
+                                        'message-received',
+                                        'user-blocked',
+                                        'task-marked-spam'
+                                    );
+                                }
+                                if (
+                                    CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" &&
+                                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1"
+                                ) {
+                                    return EMAILS.push(
+                                        'review-left',
+                                        'message-received',
+                                        'listing-cancelled',
+                                        'new-order',
+                                        'order-marked-as-done',
+                                        'order-completed',
+                                        'order-closed',
+                                        'request-marked-as-done'
+                                    );
+                                }
+                            }
+                        }
+                    }
+                )(user.userType);
 
-            // we introduce some timeout because it feels a little bit smoother
-            setTimeout(() => {
+                const emailCodes = EMAILS.map(code => `EMAIL_${code}`);
+                
                 this.setState({
-                    data,
-                    isLoading: false
+                    emails: emailCodes
                 });
-            }, 450);
+                   
+                const propertyCodes = JSON.parse(JSON.stringify(emailCodes));
+    
+                propertyCodes
+                .forEach(userPropertyKey => {
+                    let property = user.userProperties
+                        .find(_ => _.propKey === userPropertyKey);
+    
+                    if (!property) {
+                        property = {
+                            propKey: userPropertyKey,
+                            propValue: null
+                        };
+    
+                        user
+                        .userProperties
+                        .push(userPropertyKey);
+    
+                        data[userPropertyKey] = false;
+                    } else {
+                        switch (property.propValue) {
+                            case '1':
+                                data[userPropertyKey] = true;
+                                break;
+                            case '0':
+                                data[userPropertyKey] = false;
+                                break;
+                            default:
+                                data[userPropertyKey] = property.propValue;
+                        }
+                    }
+                });
+    
+                // we introduce some timeout because it feels a little bit smoother
+                setTimeout(() => {
+                    this.setState({
+                        data,
+                        isLoading: false
+                    });
+                }, 450);
+            });
         });
     }
 

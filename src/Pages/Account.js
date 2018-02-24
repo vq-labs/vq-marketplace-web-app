@@ -58,7 +58,6 @@ export default class Account extends Component {
             .then(profile => {
                 const data = this.state.data;
                 const phoneNoProp = profile.userProperties.find(_ => _.propKey === 'phoneNo');
-                debugger;
                 if (phoneNoProp) {
                     data.phoneNo = phoneNoProp.propValue;
                 }

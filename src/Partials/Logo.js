@@ -14,7 +14,6 @@ class Logo extends Component {
               onClick={ 
                 (e) => {
                   e.preventDefault();
-                  debugger;
                   getUserAsync(user => {
                     if (user) {
                       if (Number(user.userType) === 1) {

@@ -1,12 +1,10 @@
 import 'whatwg-fetch';
 import { getToken } from './auth'
 import { serializeQueryObj, parseJSON } from './util'
-
-// VQ_API_URL is defined in production mode
-const API_URL = window.VQ_API_URL;
+import CONFIG from '../generated/ConfigProvider.js';
 
 export const doGet = (url, queryObject, params) => {
-    url = API_URL + url;
+    url = CONFIG.VQ_API_URL + url;
 
     if (queryObject) {
         url += `?${serializeQueryObj(queryObject)}`;
@@ -34,7 +32,7 @@ export const doGet = (url, queryObject, params) => {
     });
 };
 
-export const doPost = (url, body) => fetch(API_URL + url, {
+export const doPost = (url, body) => fetch(CONFIG.VQ_API_URL + url, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -46,7 +44,7 @@ export const doPost = (url, body) => fetch(API_URL + url, {
         return parseJSON(response);
 });
 
-export const doPut = (url, body) => fetch(API_URL + url, {
+export const doPut = (url, body) => fetch(CONFIG.VQ_API_URL + url, {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -58,7 +56,7 @@ export const doPut = (url, body) => fetch(API_URL + url, {
     return parseJSON(response);
 });
 
-export const doDelete = (url, body) => fetch(API_URL + url, {
+export const doDelete = (url, body) => fetch(CONFIG.VQ_API_URL + url, {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',

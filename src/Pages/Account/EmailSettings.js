@@ -127,7 +127,6 @@ export default class UserPropsEdit extends React.Component {
                                         'review-left',
                                         'order-closed-for-supply',
                                         'message-received',
-                                        'user-blocked',
                                         'task-marked-spam'
                                     );
                                 }

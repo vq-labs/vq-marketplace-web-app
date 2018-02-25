@@ -51,13 +51,13 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
 
             return true;
         }
+    }
 
-        // user has not preferences
-        if (!user.userPreferences.length) {
-            goTo('/user-preferences');
+    // user has not preferences
+    if (!user.userPreferences.length) {
+        goTo('/user-preferences');
 
-            return true;
-        }
+        return true;
     }
 
     return false;

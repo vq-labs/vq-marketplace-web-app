@@ -57,8 +57,8 @@ class Offers extends Component {
 
     componentDidMount() {
         getUserAsync(user => {
-            if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1" && getMeOutFromHereIfAmNotAuthorized(user)){
-                return;
+            if (CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1"){
+                return getMeOutFromHereIfAmNotAuthorized(user);
             }
 
             const appliedFilter = this.state.appliedFilter;

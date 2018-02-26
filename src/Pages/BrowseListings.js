@@ -15,6 +15,7 @@ import TaskMap from "../Components/TaskMap";
 import Autocomplete from 'react-google-autocomplete';
 import OfferViewTypeChoice from "../Components/OfferViewTypeChoice";
 import { formatGeoResults } from '../core/util';
+import { luminateColor } from '../core/format';
 import { goTo, setQueryParams } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
 import { CONFIG } from '../core/config';
@@ -393,6 +394,19 @@ class Offers extends Component {
 
         return (
             <div>
+                <style dangerouslySetInnerHTML={
+                    //this is to change colors of the range slider
+                    {__html: `
+                        .input-range__track--active {
+                            background: ${CONFIG.COLOR_PRIMARY} !important;
+                        }
+                        .input-range__slider {
+                            background: ${luminateColor(CONFIG.COLOR_PRIMARY, -0.2)} !important;
+                            border-color: ${luminateColor(CONFIG.COLOR_PRIMARY, -0.2)} !important;
+                        }
+                    `}
+                }>
+            </style>
                 <div className="vq-listings-intro text-center" style={{
                     background: `url(${CONFIG.PROMO_URL_MARKETPLACE_BROWSE || CONFIG.PROMO_URL_SELLERS || CONFIG.PROMO_URL}) ${CONFIG.PROMO_URL_MARKETPLACE_BROWSE ? "" : "no-repeat center center fixed"}`,
                     backgroundSize: 'cover'

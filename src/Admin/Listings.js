@@ -41,12 +41,15 @@ export default class SectionListings extends React.Component {
     }
 
     taskHasOrders(task) {
-        for (let request of task.requests) {
-            if (request.order) {
-                return true;
+        if (task.requests) {
+            for (let request of task.requests) {
+                if (request.order) {
+                    return true;
+                }
+                return false;
             }
-            return false;
         }
+        return false;
     }
 
     render() {

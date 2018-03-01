@@ -561,10 +561,13 @@ class Task extends Component {
                                                 style={{width: '100%'}}
                                                 primary={true}
                                                 label={`${this.state.task.requests
-                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING || _.status === REQUEST_STATUS.ACCEPTED)
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                                     .length} ${translate('REQUESTS')}`}
                                                 onTouchTap={() => {
-                                                    openRequestDialog(this.state.task.requests, this.state.task);
+                                                    openRequestDialog(
+                                                        this.state.task.requests.filter(_ => _.status === REQUEST_STATUS.PENDING),
+                                                        this.state.task
+                                                    );
                                                 }}
                                             />
                                        }

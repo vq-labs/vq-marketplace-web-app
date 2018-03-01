@@ -125,7 +125,7 @@ export default class TaskListItem extends Component {
                                             labelStyle={{color: 'white '}}
                                             backgroundColor={CONFIG.COLOR_PRIMARY}
                                             onTouchTap={() => {
-                                              openRequestDialog(task.requests);
+                                              openRequestDialog(task.requests.filter(_ => _.status === REQUEST_STATUS.PENDING));
                                             }}
                                         />
                                       </div>

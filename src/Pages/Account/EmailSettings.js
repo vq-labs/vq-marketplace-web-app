@@ -53,7 +53,9 @@ export default class UserPropsEdit extends React.Component {
                 DEMAND_SIDE_EMAILS.push("task-request-cancelled");
                 DEMAND_SIDE_EMAILS.push("listing-cancelled");
 
-                SUPPLY_SIDE_EMAILS.push("new-task");
+                if (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1") {
+                    SUPPLY_SIDE_EMAILS.push("new-task");
+                }
                 SUPPLY_SIDE_EMAILS.push("request-accepted");
                 SUPPLY_SIDE_EMAILS.push("request-cancelled");
                 SUPPLY_SIDE_EMAILS.push("request-closed");

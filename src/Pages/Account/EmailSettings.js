@@ -62,7 +62,10 @@ export default class UserPropsEdit extends React.Component {
             }
 
             if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-                SUPPLY_SIDE_EMAILS.push("new-order-for-supply")
+                SUPPLY_SIDE_EMAILS.push("new-order-for-supply");
+                SUPPLY_SIDE_EMAILS.push("listing-cancelled");
+                SUPPLY_SIDE_EMAILS.push("order-closed-for-supply");
+                
             }
             
             

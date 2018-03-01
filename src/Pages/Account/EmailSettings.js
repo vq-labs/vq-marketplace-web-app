@@ -32,7 +32,6 @@ export default class UserPropsEdit extends React.Component {
              */
 
             const SUPPLY_SIDE_EMAILS = [
-                "new-message",
                 "review-left",
                 "request-marked-as-done",
                 "request-completed",

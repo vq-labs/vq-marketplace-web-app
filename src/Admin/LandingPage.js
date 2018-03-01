@@ -38,11 +38,12 @@ export default class SectionLandingPage extends React.Component {
                     fields={landingPageGeneralSettings}
                 />
 
-                <ConfigEdit
+                { //03012018, Sercan: disabled at the request of Ani; VM-152
+                /* <ConfigEdit
                     header={'Landing page template sections'}
                     desc={'You can use pre-configured templates to include on the landing page.'}
                     fields={landingPageFields}
-                />
+                /> */}
 
                 <div className="row">
                     <h1>Custom HTML for Demand Side (Buyers, Clients)</h1>

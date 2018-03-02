@@ -38,7 +38,7 @@ class Offers extends Component {
         if ((query.q && query.q !== 'null') || (query.lat && query.lng && query.rad)) {
             locationQueryString = (query.q || `${query.lat} ${query.lng} ${query.rad}`);
         }
-
+        
         const appliedFilter = this.setFilterDefaults(query);
 
         this.state = {
@@ -46,14 +46,25 @@ class Offers extends Component {
             offerMarkers: [],
             queryCity: null,
             autoCompleteText: '',
-            isLoading: false,
-            userType: 1,
+            isLoading: true,
+            userType: undefined,
             locationQueryString,
             appliedFilter,
             offer: {
                 utm: {}
             }
-        };
+        };        
+    }
+
+    componentWillMount() {
+        apiCategory
+        .getItems()
+        .then(categories => {
+           this.setState({
+               categories
+           });
+           this.updateResults(this.state.appliedFilter);
+        });
     }
 
     componentDidMount() {
@@ -64,39 +75,15 @@ class Offers extends Component {
 
             const appliedFilter = this.state.appliedFilter;
 
-            /**
-             * Only sellers can access this page unless public view is enabled
-             */
-/*             if (
-                (
-                    user &&
-                    user.userType === 1 &&
-                    CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1"
-                ) &&
-                CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1"
-            ) {
-                return goTo('/dashboard');
-            } */
-
-
-            appliedFilter.listingType = this.getListingTypeFromUser(user);
-
+            const userType = user ? user.userType : undefined;
+            appliedFilter.listingType = this.getListingTypeFromUserType(userType);
+            
             this.setState({
-                appliedFilter,
-                listingType: appliedFilter.listingType,
-                isLoading: true,
-                userType: user ? user.userType : undefined
-            });
-
-            apiCategory
-            .getItems()
-            .then(categories =>
-                this.setState({
-                    categories
-                })
-            );
-
-            this.updateResults(this.state.appliedFilter);
+                userType,
+                appliedFilter
+            })
+            this.updateResults(appliedFilter);
+            
         }, true);
     }
 
@@ -108,25 +95,29 @@ class Offers extends Component {
         return <FileCloud viewBox='-20 -7 50 10'/>;
     }
 
-    getListingTypeFromUser(user) {
-        if (
-            !user &&
-            CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1"
-        ) {
+    getListingTypeFromUserType(userType) {
+        if (!userType && CONFIG.LISTING_ENABLE_PUBLIC_VIEW === "1") {
             return Number(CONFIG.LISTING_PUBLIC_VIEW_MODE);
-        } else if (user) {
-            switch(user.userType) {
+        } else if (!userType && CONFIG.LISTING_ENABLE_PUBLIC_VIEW !== "1") {
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
+                return 2;
+            }
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                return 1;
+            }
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                return 2;
+            }
+        } else if (userType) {
+            switch(userType) {
                 case 0: {
                     return Number(getMode()) === 1 ? 2 : 1;
-                    break;
                 }
                 case 1: {
                     return CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" ? 2 : 1;
-                    break;
                 }
                 case 2: {
                     return CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" ? 1 : 2;
-                    break;
                 }
                 default: {
                     return 1
@@ -182,6 +173,7 @@ class Offers extends Component {
                     return _;
                 });
 
+
             this.setState({
                 isLoading: false,
                 offerMarkers,
@@ -199,33 +191,32 @@ class Offers extends Component {
     }
 
     updateResults (query) {        
-        const appliedFilter = this.setFilterDefaults(query);
-
-        setQueryParams(appliedFilter);
+        setQueryParams(query);
 
         this.setState({
-            appliedFilter
+            appliedFilter: query
         });
 
-        this.loadTasks(appliedFilter);
+        this.loadTasks(query);
     }
 
     setFilterDefaults(query) {
-        const appliedFilter = this.state && this.state.appliedFilter ? this.state.appliedFilter : {};
-        appliedFilter.lat = typeof query.lat === 'undefined' ? appliedFilter.lat : query.lat ? query.lat : undefined;
-        appliedFilter.lng = typeof query.lng === 'undefined' ? appliedFilter.lng : query.lng ? query.lng : undefined;
+        const appliedFilter = {};
+        appliedFilter.lat = query.lat ? query.lat : undefined;
+        appliedFilter.lng = query.lng ? query.lng : undefined;
         if (CONFIG.LISTING_RANGE_FILTER_ENABLED === "1" && appliedFilter.lat && appliedFilter.lng) {
-            appliedFilter.rad = typeof query.rad === 'undefined' ? CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE : query.rad;
+            appliedFilter.rad = query.rad ? query.rad : CONFIG.LISTING_RANGE_FILTER_DEFAULT_VALUE;
         }
 
-        appliedFilter.category = typeof query.category === 'undefined' ? appliedFilter.category : query.category ? query.category : undefined;
+        appliedFilter.category = query.category ? query.category : undefined;
 
         if (CONFIG.LISTING_PRICE_FILTER_ENABLED === "1") {
-            appliedFilter.minPrice = typeof query.minPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MIN : query.minPrice;
-            appliedFilter.maxPrice = typeof query.maxPrice === 'undefined' ? CONFIG.LISTING_PRICE_FILTER_MAX : query.maxPrice;
+            appliedFilter.minPrice = query.minPrice ? query.minPrice : CONFIG.LISTING_PRICE_FILTER_MIN;
+            appliedFilter.maxPrice = query.maxPrice ? query.maxPrice : CONFIG.LISTING_PRICE_FILTER_MAX;
         }
 
-        appliedFilter.viewType = Number(query.viewType) || Number(CONFIG.LISTINGS_DEFAULT_VIEW)
+        appliedFilter.viewType = query.viewType ? Number(query.viewType) : Number(CONFIG.LISTINGS_DEFAULT_VIEW);
+        appliedFilter.listingType = query.listingType ? query.listingType : this.getListingTypeFromUserType(undefined);
         
         return appliedFilter;
     }

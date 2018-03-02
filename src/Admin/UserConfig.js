@@ -63,7 +63,13 @@ const userAccountConfigFields = [
                 label: 'Mandatory?',
             },
         ]
-    }
+    },
+    {
+        type: 'single-image',
+        key: 'USER_PROFILE_IMAGE_URL',
+        label: 'Default user profile image (150px x 150px)',
+        imageResolution: [ 150, 150 ]
+    },
 ];
 
 const userDashboardConfigFields = [
@@ -101,6 +107,18 @@ export default class SectionUserConfig extends React.Component {
                     header={'User dashboard configuration'}
                     desc={''}
                     fields={userDashboardConfigFields}
+                />
+
+                <ConfigEdit
+                    header={'Emails'}
+                    desc={''}
+                    fields={[
+                        {
+                            type: 'bool',
+                            key: 'EMAILS_ENABLED',
+                            label: 'Should the e-mails be sent to your users? (does not affect the welcome e-mail)'
+                        }
+                    ]}
                 />
             </div>
         );

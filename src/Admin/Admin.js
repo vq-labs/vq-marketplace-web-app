@@ -43,21 +43,21 @@ const menuPoints = [
     ],
     [ 'Configuration',
         [
-            [ 'basics', 'Basics details' ],
+            [ 'basics', 'General' ],
             [ 'design', 'Design' ],
             [ 'seo', 'SEO' ],
-            [ 'analytics', 'Analytics' ],
-            [ 'landing-page', 'Landing Page (beta)' ],
-            [ 'user-types', 'Supply and Demand' ],
+            /* [ 'analytics', 'Analytics' ], */
+            [ 'landing-page', 'Landing Page' ],
+/*             [ 'user-types', 'Supply and Demand' ], */
             [ 'labels', 'Labels' ],
             [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
-            [ 'custom-pages', 'Custom Pages' ],
+/*             [ 'custom-pages', 'Custom Pages' ], */
             [ 'listing', 'Listing' ],
             [ 'user-config', 'User' ],
-            [ 'listing-filters', 'Listing filters' ],
-            [ 'categories', 'Listing categories' ],
-            [ 'pricing', 'Pricing' ],
+            [ 'listing-filters', 'Listing Filters' ],
+            [ 'categories', 'Listing Categories' ],
+/*             [ 'pricing', 'Pricing' ], */
             [ 'posts', 'Content' ]
         ]
     ]

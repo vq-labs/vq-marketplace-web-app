@@ -2,21 +2,6 @@ import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
 import USER_TYPES from '../constants/USER_TYPES';
 
-const userTypeActions = [
-    {
-        type: 'bool',
-        key: 'USER_TYPE_DEMAND_LISTING_ENABLED',
-        label: 'Enable "Demand" listings',
-        explanation: 'The Demand side will be able insert demand listings for which the supply side would be able to send requests.',
-    },
-    {
-        type: 'bool',
-        key: 'USER_TYPE_SUPPLY_LISTING_ENABLED',
-        label: 'Enable "Supply" listings',
-        explanation: 'The Supply side will be able to create supply listings that can by booked by demand side.',
-    }
-];
-
 const listingSettingsFields = [
     {
         condition: [
@@ -128,17 +113,6 @@ const newListingFields = [
         key: 'LISTING_PRICING_MODE',
         label: 'Enable Listing pricing',
         explanation: 'This option will add a new section to a listing creation page and will allow to specify the the price for a listing'
-    },
-    {
-        type: 'select',
-        key: 'DEFAULT_PRICING_MODE',
-        label: 'Default listing pricing',
-        selection: [
-            { value: "1", label: 'Price per Hour' },
-            { value: "2", label: 'Price per Listing' },
-            { value: "3", label: "Price per Unit" },
-            { value: "4", label: 'Price on Request' }
-        ]
     },
     {
         type: 'bool',
@@ -378,13 +352,6 @@ export default class SectionListing extends React.Component {
     render() {
         return (
             <div>
-
-                <ConfigEdit
-                    header={"Demand and Supply Model"}
-                    desc={`Users and listings can be of both types: 'Demand' and 'Supply'. Read more about the <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">Demand and Supply Model</a>.`}
-                    fields={userTypeActions}
-                />
-
                 <ConfigEdit
                     header={'Listing settings'}
                     fields={listingSettingsFields}

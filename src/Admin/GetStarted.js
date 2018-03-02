@@ -139,10 +139,7 @@ export default class SectionOverview extends React.Component {
                                     </div>
                                 </StepContent>
                             </Step>
-                            {
-                                //02032018, Sercan: disabled at the request of Ani, VM-152 
-                            }
-                            {/* <Step>
+                            <Step>
                                  <StepButton onClick={() => this.setState({stepIndex: 4})}>
                                     Describe how it works
                                 </StepButton>
@@ -158,45 +155,10 @@ export default class SectionOverview extends React.Component {
                                         />
                                     </div>
                                 </StepContent>
-                            </Step> */}
-                            <Step>
-                                 <StepButton onClick={() => this.setState({stepIndex: 4})}>
-                                    Edit the content of your landing page
-                                </StepButton>
-                                <StepContent>
-                                    <div className="col-xs-12">
-                                        <RaisedButton
-                                            primary={true}
-                                            onTouchTap={() => {
-                                                goTo('/admin/landing-page?fromSection=get-started');
-                                                location.reload();
-                                            }}
-                                            label="Go to landing page"
-                                        />
-                                    </div>
-                                </StepContent>
-                            </Step>
-
-                            <Step>
-                                 <StepButton onClick={() => this.setState({stepIndex: 5})}>
-                                    Edit all the labels such as popup and button texts, titles, descriptions or translate them to other languages if you specified a Supported Language in the Basics
-                                </StepButton>
-                                <StepContent>
-                                    <div className="col-xs-12">
-                                        <RaisedButton
-                                            primary={true}
-                                            onTouchTap={() => {
-                                                goTo('/admin/labels?fromSection=get-started');
-                                                location.reload();
-                                            }}
-                                            label="Go to labels page"
-                                        />
-                                    </div>
-                                </StepContent>
                             </Step>
                             
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 6})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 5})}>
                                     Connect your social media channels
                                 </StepButton>
                                 <StepContent>
@@ -217,11 +179,13 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 6})}>
                                     Setup Analytics
                                 </StepButton>
                                 <StepContent>
-                                    <div className="col-xs-12">                                   
+                                    <div className="col-xs-12">
+
+                                   
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
@@ -235,7 +199,7 @@ export default class SectionOverview extends React.Component {
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 8})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
                                     Setup payments
                                 </StepButton>
                                 <StepContent>
@@ -255,12 +219,8 @@ export default class SectionOverview extends React.Component {
                                     </div>
                                 </StepContent>
                             </Step>
-                            {
-                                //@todo
-                                //02032018, Sercan: disabled because there is no such feature yet
-                            }
-                            {/* <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 9})}>
+                            <Step>
+                                <StepButton onClick={() => this.setState({stepIndex: 8})}>
                                     Invite your users
                                 </StepButton>
                                 <StepContent>
@@ -277,7 +237,7 @@ export default class SectionOverview extends React.Component {
                                         />
                                     </div>
                                 </StepContent>
-                            </Step> */}
+                            </Step>
                         </Stepper>
                     </div>
 

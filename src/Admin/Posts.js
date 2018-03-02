@@ -44,7 +44,7 @@ export default class SectionPosts extends React.Component {
     return (
       <div className="row">
         <div className="col-xs-12">
-          <h1>Content</h1>
+          <h1>Posts</h1>
         </div>
         <div className="col-xs-12">
           <div className="row">
@@ -63,7 +63,7 @@ export default class SectionPosts extends React.Component {
               }}>
                 <MenuItem value={'email'} primaryText="Emails"/>
                 <MenuItem value={'terms'} primaryText="Terms"/>
-                <MenuItem value={'page'} primaryText="Custom Page"/>
+                <MenuItem value={'page'} primaryText="Page"/>
                 {false && <MenuItem value={'blog'} primaryText="Blog"/>}
               </DropDownMenu>
             </div>
@@ -75,7 +75,7 @@ export default class SectionPosts extends React.Component {
                   goTo('/post');
                   location.reload();
                 }}
-                label="New Custom Page"/>
+                label="New Page"/>
               }
             </div>
           </div>

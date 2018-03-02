@@ -190,14 +190,18 @@ class Offers extends Component {
         });
     }
 
-    updateResults (query) {        
-        setQueryParams(query);
+    updateResults (query) {
+        const appliedFilter = {
+            ...this.state.appliedFilter,
+            ...query
+        };
+        setQueryParams(appliedFilter);
 
         this.setState({
-            appliedFilter: query
+            appliedFilter
         });
 
-        this.loadTasks(query);
+        this.loadTasks(appliedFilter);
     }
 
     setFilterDefaults(query) {
@@ -262,7 +266,7 @@ class Offers extends Component {
                     className="vq-uppercase with-pointer" onClick={
                         () => this.updateResults({
                             listingType: this.state.appliedFilter.listingType,
-                            category: null
+                            category: undefined
                         })
                     }>
                         { translate('ALL_CATEGORIES') }

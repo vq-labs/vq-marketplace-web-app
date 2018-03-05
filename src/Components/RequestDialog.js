@@ -21,7 +21,7 @@ export default class RequestDialog extends React.Component {
         super(props);
 
         this.state = {
-            isBeingPosted: true,
+            isBeingPosted: false,
             mask: 'init', 
             logged: Boolean(coreAuth.getToken()),
             open: false,
@@ -146,14 +146,14 @@ export default class RequestDialog extends React.Component {
      const backBtn = <FlatButton
         onTouchTap={ () => this.goBack(this.state.mask) }
         label={ this.showBackBtnLabel(this.state.mask) }
-        disabled={ false }
+        disabled={ this.state.isBeingPosted }
         primary={ true }
       />;
 
       const continueBtn = <FlatButton
         label={ this.showContinueBtnLabel(this.state.mask) }
         primary={ true }
-        disabled={ false }
+        disabled={ this.state.isBeingPosted }
         onTouchTap={ () => this.continuePosting(this.state.mask) }
       />;
      

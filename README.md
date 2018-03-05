@@ -20,8 +20,15 @@ You can always connect to the marketplace that is hosted by VQ-LABS. You just ne
 VQ_API_URL=https://<yourMarketplaceId>.vqmarketplace.com npm run start:local
 ```
 
-To try it out and start up quickly and connect to an existing marketplace https://talentwand.de, enter:
+To try it out and start up quickly and connect to an existing marketplaces, enter:
 ```
+// starts rental marketplace Airhome (ala TaskRabbit)
+npm run start:taskbee
+
+// starts rental marketplace Airhome (ala AirBnB)
+npm run start:airhome
+
+// starts offers marketplace Airhome (ala Fiverr)
 npm run start:talentwand
 ```
 

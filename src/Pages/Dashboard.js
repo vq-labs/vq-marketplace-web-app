@@ -75,19 +75,19 @@ export default class Dashboard extends Component {
 
         if (!this.state.viewType) {
           if (Number(userMode) === 1 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = "LISTINGS_POSTED";
           }
 
           if (Number(userMode) === 1 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = "ORDERS_IN_PROGRESS";
           }
 
           if (Number(userMode) === 2 && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
-            newState.viewType = dashboardType === "listings" ? "OFFER_LISTINGS_POSTED" : "SENT_REQUESTS_PENDING";
+            newState.viewType = "OFFER_LISTINGS_POSTED";
           }
 
           if (Number(userMode) === 2 && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
-            newState.viewType = this.state.dashboardType === "requests" ? "SENT_REQUESTS_PENDING" : "SENT_REQUESTS_PENDING";
+            newState.viewType = "SENT_REQUESTS_PENDING";
           }
         }
 
@@ -98,9 +98,9 @@ export default class Dashboard extends Component {
           status: '0',
           userId: user.id,
         }).then(tasks => this.setState({
-          tasks,
-          isLoading: false
-        }));
+            tasks,
+            isLoading: false
+          }))
       }, true);
   }
 

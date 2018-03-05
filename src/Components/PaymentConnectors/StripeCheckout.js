@@ -55,7 +55,7 @@ const createOptions = (fontSize) => {
 };
 
 class _SplitForm extends React.Component {
-  handleSubmit = ev => {
+  handleSubmit(ev) {
     ev.preventDefault();
 
     this.props.stripe

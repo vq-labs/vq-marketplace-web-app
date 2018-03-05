@@ -124,7 +124,7 @@ export default class NewListing extends Component {
         };
     }
 
-    updateCurrentCategoryConfig = (listingCategories) => {
+    updateCurrentCategoryConfig(listingCategories) {
         const task = this.state.task;
 
         const category = listingCategories
@@ -296,13 +296,11 @@ export default class NewListing extends Component {
     handleListingFieldChange(fieldName, fieldValue, fieldRawText) {
         const task = this.state.task;
 
-        const processedValue = typeof fieldValue === "string" ? trimSpaces(fieldValue) : fieldValue;
-
         if (!fieldRawText) {
-          task[fieldName] = processedValue;
+          task[fieldName] = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
         } else {
           task[fieldName] = {};
-          task[fieldName].value = processedValue;
+          task[fieldName].value = typeof fieldValue === 'string' ? trimSpaces(fieldValue) : fieldValue;
           task[fieldName].rawText = fieldRawText;
         }
 
@@ -395,7 +393,7 @@ export default class NewListing extends Component {
                                     onPricingChange={
                                         pricing => this.handlePricingChange(pricing.priceType, pricing.price)
                                     } 
-                                /> 
+                                />
                             }
                             { this.state.step === LISTING_VIEWS.BASICS && 
                                 <NewListingBasics

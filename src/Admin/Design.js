@@ -7,12 +7,13 @@ const defaultConfigsFields = [
         key: 'COLOR_PRIMARY',
         label: 'Primary color',
         explanation: 'You can change the main color of the user interface by entering a hex color value. ColorPicker.com can help you choose the color and give you the hex color code. You can then copy the code here.'
-    }, {
+    },
+    {
         type: 'bool',
         key: 'APP_FOOTER_VISIBLE',
         label: 'App footer',
         explanation: 'Should display footer? (It will only affect the marketplace, not the landing page)'
-    }
+    },
     /** @TODO {
         type: 'color',
         key: 'COLOR_SECONDARY',
@@ -52,13 +53,7 @@ const coverPhotoFields = [
         key: 'PROMO_URL_MARKETPLACE_BROWSE',
         label: 'Cover image for the marketplace browsing page (1280x140px)',
         imageResolution: [ 1280, 140 ]
-    },
-    {
-        type: 'single-image',
-        key: 'USER_PROFILE_IMAGE_URL',
-        label: 'Default user profile image (150px x 150px)',
-        imageResolution: [ 150, 150 ]
-    },
+    }
 ];
 
 export default class SectionBasics extends React.Component {

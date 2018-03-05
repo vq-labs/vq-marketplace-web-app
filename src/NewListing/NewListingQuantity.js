@@ -17,7 +17,7 @@ export default class NewListingQuantity extends React.Component {
         };
     }
 
-    onQuantityChange = quantity => {
+    onQuantityChange(quantity) {
         if (quantity) {
             this.setState({
                 quantity
@@ -29,7 +29,7 @@ export default class NewListingQuantity extends React.Component {
         }
     }
 
-    getSlider = (state) => {
+    getSlider(state) {
         return <Slider
             min={state.minQuantity}
             max={state.maxQuantity}

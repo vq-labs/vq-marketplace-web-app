@@ -5,8 +5,11 @@ import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
 import Snackbar from 'material-ui/Snackbar';
 import LoginSignup from '../Components/LoginSignup';
+import BookRequest from '../Pages/BookRequest';
 import * as apiRequest from '../api/request';
 import * as coreAuth from '../core/auth';
+import { goTo } from '../core/navigation';
+import { CONFIG } from '../core/config';
 import { translate } from '../core/i18n';
 import { browserHistory } from 'react-router';
 import { displayMessage } from '../helpers/display-message.js';
@@ -18,16 +21,16 @@ export default class RequestDialog extends React.Component {
         super(props);
 
         this.state = {
-            isBeingPosted: true,
+            isBeingPosted: false,
             mask: 'init', 
             logged: Boolean(coreAuth.getToken()),
             open: false,
+            listing: this.props.listing,
             application: {
                 toUserId: this.props.toUserId,
                 taskId: this.props.taskId,
                 message: ''
             }
-
         };
   }
   componentWillReceiveProps(nextProps) {
@@ -64,6 +67,7 @@ export default class RequestDialog extends React.Component {
             return translate("BACK");
     }
   }
+  
   showContinueBtnLabel (currentMask) {
       switch (currentMask) {
         case 'success':
@@ -72,19 +76,45 @@ export default class RequestDialog extends React.Component {
             return translate("REQUEST_MESSAGE_CONFIRM");
     }
   }
+
   sendRequest() {
-    if (Boolean(coreAuth.getToken())) {
-            this.setState({ isBeingPosted: true });
-            
-            apiRequest.createItem(this.state.application)
-                .then(result => this.setState({
-                    mask: 'success', 
-                    isBeingPosted: false 
-                }));
-    } else {
-        this.setState({ mask: 'auth' });
+    if (!Boolean(coreAuth.getToken())) {
+        return this.setState({
+            mask: 'auth'
+        });
     }
+
+    this.setState({ isBeingPosted: true });
+    
+    return apiRequest
+        .createItem(this.state.application)
+        .then(result => {
+            const requestId = result.requestId;
+
+            this.setState({
+                requestId,
+                /**
+                 * A) this.state.listing.taskType) === 1
+                 * Model where a request needs to be explicitely accepted by the supplier.
+                 * Currently its the only supported model for demand listings.
+                
+                */
+                mask: 'success',
+
+                isBeingPosted: false 
+            });
+
+        /**
+        * B) this.state.listing.taskType) === 2
+        * Instant Booking
+        * Currently its the only model supported for supply listings
+        */
+            if (Number(this.state.listing.taskType) === 2) {
+                return goTo(`/request/${requestId}/book`);
+            }
+        });
   }
+
   continuePosting (currentMask) {
          if (!this.state.application.message) {
             return displayMessage({
@@ -95,7 +125,8 @@ export default class RequestDialog extends React.Component {
          switch (currentMask) {
             case 'init':
                 this.sendRequest();
-                break;
+
+                return;
             case 'confirmation':
                 this.sendRequest();
 
@@ -106,25 +137,28 @@ export default class RequestDialog extends React.Component {
                 return alert('I do not know what to do');
         }   
   }
-  getDialogTitle = currentMask => translate('SEND_REQUEST');
+
+  getDialogTitle(currentMask) {
+    return translate('SEND_REQUEST');
+  } 
   
   render() {
      const backBtn = <FlatButton
         onTouchTap={ () => this.goBack(this.state.mask) }
         label={ this.showBackBtnLabel(this.state.mask) }
-        disabled={ false }
+        disabled={ this.state.isBeingPosted }
         primary={ true }
       />;
 
       const continueBtn = <FlatButton
         label={ this.showContinueBtnLabel(this.state.mask) }
         primary={ true }
-        disabled={ false }
+        disabled={ this.state.isBeingPosted }
         onTouchTap={ () => this.continuePosting(this.state.mask) }
       />;
      
      const getActions = currentMask => {
-         if (currentMask === 'auth') {
+         if (currentMask === 'auth' || currentMask === 'billing') {
              return [ ];
          }
 
@@ -181,10 +215,11 @@ export default class RequestDialog extends React.Component {
           modal={ true }
           open={ this.state.open }
         >
-          { this.state.mask==='init' && InitApplication }
-          { this.state.mask==='auth' && <LoginSignup
+          { this.state.mask === 'init' && InitApplication }
+          { this.state.mask === 'auth' && <LoginSignup
                 onSuccess={ () => this.sendRequest() }
           /> }
+
           { this.state.mask==='confirmation' && ApplicationConfirmation }
           { this.state.mask==='success' && Success }
         </Dialog>

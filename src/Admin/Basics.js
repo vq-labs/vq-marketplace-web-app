@@ -1,7 +1,7 @@
 import React from 'react';
 import ConfigEdit from './Components/ConfigEdit';
 import LabelEdit from './Components/LabelEdit';
-import LANGUAGES from '../constants/LANGUAGES';
+import {LANGUAGES} from '../constants/LANGUAGES';
 
 const basicFields = [
     {
@@ -103,23 +103,50 @@ const otherFields = [
     {
         type: 'string',
         key: 'COMPANY_NAME',
-        label: 'What is your company name? (will be included in emails and impressum)'
+        label: 'What is your company name? (will be included in emails and imprint)'
     },
     {
         type: 'string',
         key: 'COMPANY_ADDRESS',
-        label: 'What is your company address? (will be included in emails and impressum)'
+        label: 'What is your company address? (will be included in emails and imprint)'
     },
     {
         type: 'string',
         key: 'COMPANY_CEO',
-        label: 'Who is the CEO of your company? (will be included in emails and impressum)'
+        label: 'Who is the CEO of your company? (will be included in emails and imprint)'
     },
     {
         type: 'string',
         key: 'COMPANY_URL',
-        label: 'Company website (will be included in landing page, emails and impressum)'
+        label: 'Company website (will be included in landing page, emails and imprint)'
     }
+];
+
+const customPageFields = [
+    {
+        type: 'string',
+        key: 'CUSTOM_CONTACT_PAGE_URL',
+        label: 'Contact Page URL',
+        explanation: 'If filled, users will see "Contact"-Link in the footer. You can create your custom contact page <a href="https://www.typeform.com/" target="_blank">here</a>.'
+    },
+    {
+        type: 'string',
+        key: 'CUSTOM_BLOG_PAGE_URL',
+        label: 'Blog Page URL',
+        explanation: 'If filled, users will see "Blog"-Link in the footer. You can create your custom blog <a href="http://wixstats.com/?a=15982&c=391&s1=" target="_blank">here</a>.'
+    },
+    {
+        type: 'string',
+        key: 'CUSTOM_HOW_IT_WORKS_URL',
+        label: 'How it works URL',
+        explanation: 'Walk your users through the whole process.'
+    },
+    {
+        type: 'string',
+        key: 'CUSTOM_FAQ_URL',
+        label: 'FAQ URL',
+        explanation: 'Every marketplace needs to have a FAQ section.'
+    },
 ];
 
 export default class SectionBasics extends React.Component {
@@ -143,16 +170,11 @@ export default class SectionBasics extends React.Component {
                 />
 
                 <ConfigEdit
-                    header={'Emails'}
-                    desc={''}
-                    fields={[
-                        {
-                            type: 'bool',
-                            key: 'EMAILS_ENABLED',
-                            label: 'Should the e-mails be sent to your users? (does not affect the welcome e-mail)'
-                        }
-                    ]}
+                    header={'Custom pages'}
+                    desc={'Integrate your marketplace with custom pages and other websites.'}
+                    fields={customPageFields}
                 />
+                
             </div>
         );
     }

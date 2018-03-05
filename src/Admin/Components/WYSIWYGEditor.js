@@ -5,21 +5,20 @@ import { Editor } from 'react-draft-wysiwyg';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 
-
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-class EditorConvertToHTML extends Component {
+class WYSIWYGEditor extends Component {
     constructor(props) {
         super();
 
         this.state = {
             editorState: props.value ?
                 EditorState.createWithContent(stateFromHTML(props.value || '')) :
-                EditorState.createEmpty(),
+                EditorState.createEmpty()
         };
     }
   
-    onEditorStateChange = editorState => {
+    onEditorStateChange(editorState) {
         this.setState({
             editorState
         });
@@ -29,13 +28,9 @@ class EditorConvertToHTML extends Component {
         if (this.props.onChange) { 
             this.props.onChange(null, html);
         }
-    };
+    }
 
     render() {
-        const {
-            editorState
-        } = this.state;
-
         return (
             <div
                 style={{
@@ -63,12 +58,12 @@ class EditorConvertToHTML extends Component {
                             'history'
                         ]
                     }}
-                    editorState={editorState}
-                    onEditorStateChange={this.onEditorStateChange}
+                    editorState={this.state.editorState}
+                    onEditorStateChange={editorState => this.onEditorStateChange(editorState)}
                 />
             </div>
         );
     }
 }
 
-export default EditorConvertToHTML;
+export default WYSIWYGEditor;

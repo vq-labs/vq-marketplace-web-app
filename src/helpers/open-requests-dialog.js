@@ -2,6 +2,7 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import Avatar from 'material-ui/Avatar';
 import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import Moment from 'react-moment';
 import ReactStars from 'react-stars';
 import { translate } from '../core/i18n';
@@ -14,8 +15,8 @@ import * as DEFAULTS from '../constants/DEFAULTS';
 
 let onOpen;
 
-export const openRequestDialog = requests => {
-    onOpen(requests);
+export const openRequestDialog = (requests, task) => {
+    onOpen(requests, task);
 };
 
 export const Component = class RequestDialog extends React.Component {
@@ -23,7 +24,7 @@ export const Component = class RequestDialog extends React.Component {
         super();
         this.state = {
             isOpen: false,
-            requests: []
+            requests: [],
         };
     }
 
@@ -32,9 +33,10 @@ export const Component = class RequestDialog extends React.Component {
             this.setState({ config });
         });
 
-        onOpen = requests => {
+        onOpen = (requests, task) => {
             this.setState({
                 requests,
+                task,
                 isOpen: true
             });
         }
@@ -56,19 +58,10 @@ export const Component = class RequestDialog extends React.Component {
                             >
                                     { this.state.isOpen &&
                                     <div className="row">
-                                        <h1>{translate('REQUESTS')}</h1>
-                                        
-                                        {!this.state.requests
-                                        .filter(_ => _.status === REQUEST_STATUS.PENDING)
-                                        .length &&
-                                        <p className="text-muted">
-                                            {translate('NO_REQUESTS')}
-                                        </p>
-                                        }
-
+                                        <h1 style={{fontWeight: 'bold'}}>{translate('REQUESTS')}</h1>
+                                    
                                         <List>
                                         {this.state.requests
-                                        .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                         .sort((a, b) => b.fromUser.avgReviewRate - a.fromUser.avgReviewRate )
                                         .map((request, index) =>
                                             <ListItem
@@ -105,7 +98,13 @@ export const Component = class RequestDialog extends React.Component {
                                                 }
                                             />
                                         )}
-                                        </List>
+                                        {!this.state.requests
+                                        .length &&
+                                        <p className="text-muted">
+                                            {translate('NO_REQUESTS')}
+                                        </p>
+                                        }
+                                        </List>                                                                        
                                     </div>
                                     }
                                 </Dialog>

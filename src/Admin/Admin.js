@@ -44,21 +44,21 @@ const menuPoints = [
     ],
     [ 'Configuration',
         [
-            [ 'basics', 'Basics details' ],
+            [ 'basics', 'General' ],
             [ 'design', 'Design' ],
             [ 'seo', 'SEO' ],
-            [ 'analytics', 'Analytics' ],
-            [ 'landing-page', 'Landing Page (beta)' ],
-            [ 'user-types', 'Supply and Demand' ],
+            /* [ 'analytics', 'Analytics' ], */
+            [ 'landing-page', 'Landing Page' ],
+/*             [ 'user-types', 'Supply and Demand' ], */
             [ 'labels', 'Labels' ],
             [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
-            [ 'custom-pages', 'Custom Pages' ],
+/*             [ 'custom-pages', 'Custom Pages' ], */
             [ 'listing', 'Listing' ],
-            [ 'user-config', 'User' ],
-            [ 'listing-filters', 'Listing filters' ],
-            [ 'categories', 'Listing categories' ],
-            [ 'pricing', 'Pricing' ],
+            [ 'user', 'User' ],
+            [ 'listing-filters', 'Listing Filters' ],
+            [ 'categories', 'Listing Categories' ],
+/*             [ 'pricing', 'Pricing' ], */
             [ 'posts', 'Content' ]
         ]
     ]
@@ -117,11 +117,12 @@ export default class AdminPage extends React.Component {
                                         <ul className="list-unstyled vq-account-sector-list">
                                             { menuGroup[1].map((menuItem, index2) =>
                                                 <li key={index2} className={this.state.section === menuItem[0] && 'vq-account-sector-active'}>
-                                                    <a 
-                                                        href="#"
-                                                        onClick={() =>
-                                                            this.goToSection(menuItem[0])
-                                                        }
+                                                    <a
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            this.goToSection(menuItem[0]);
+                                                        }}
                                                     >
                                                         {menuItem[1]}
                                                     </a>
@@ -185,7 +186,7 @@ export default class AdminPage extends React.Component {
                                     { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                     { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                     { this.state.section === 'user-types' && <SectionUserTypes /> }
-                                    { this.state.section === 'user-config' && <SectionUserConfig /> }
+                                    { this.state.section === 'user' && <SectionUserConfig /> }
                                     { this.state.section === 'categories' && <SectionCategories /> }
                                     { this.state.section === 'basics' && <SectionBasics /> }
                                     { this.state.section === 'seo' && <SectionSEO /> }

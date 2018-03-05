@@ -84,27 +84,33 @@ const tableData = [
  * A more complex example, allowing the table height to be set, and key boolean properties to be toggled.
  */
 export default class TableExampleComplex extends Component {
-  state = {
-    fixedHeader: true,
-    fixedFooter: true,
-    stripedRows: false,
-    showRowHover: false,
-    selectable: true,
-    multiSelectable: false,
-    enableSelectAll: false,
-    deselectOnClickaway: true,
-    showCheckboxes: true,
-    height: '300px',
-  };
+  constructor() {
+    super()
 
-  handleToggle = (event, toggled) => {
+    this.state = {
+      fixedHeader: true,
+      fixedFooter: true,
+      stripedRows: false,
+      showRowHover: false,
+      selectable: true,
+      multiSelectable: false,
+      enableSelectAll: false,
+      deselectOnClickaway: true,
+      showCheckboxes: true,
+      height: '300px',
+    };
+  }
+
+  handleToggle(event, toggled) {
     this.setState({
       [event.target.name]: toggled,
     });
-  };
+  }
 
-  handleChange = (event) => {
-    this.setState({height: event.target.value});
+  handleChange(event) {
+    this.setState({
+      height: event.target.value
+    });
   };
 
   upgrade = () => {

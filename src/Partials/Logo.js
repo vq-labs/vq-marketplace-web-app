@@ -12,7 +12,9 @@ class Logo extends Component {
         <div style={{ cursor: 'marker' }}>
             <a
               onClick={ 
-                () => {
+                (e) => {
+                  e.preventDefault();
+                  debugger;
                   getUserAsync(user => {
                     if (user) {
                       if (Number(user.userType) === 1) {
@@ -26,6 +28,7 @@ class Logo extends Component {
                   }, true);
                 }
               }
+              target={'_self'}
               style={{ textDecoration: 'none' }}
             >
               { this.props.logo &&

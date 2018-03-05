@@ -13,6 +13,18 @@ const defaultConfigsFields = [
         key: 'SEO_DESCRIPTION',
         label: 'Description',
         explanation: 'Meta descriptions can be any length, but search engines generally truncate snippets longer than 160 characters'
+    },
+    {
+        type: 'string',
+        key: 'SEO_KEYWORDS',
+        label: 'Keywords',
+        explanation: 'Meta keywords should be seperated by a comma'
+    },
+    {
+        type: 'single-image',
+        key: 'SEO_IMAGE',
+        label: 'Marketplace image for social media (1200x630px recommended)',
+        imageResolution: [ 1200, 630 ]
     }
 ];
 
@@ -44,6 +56,15 @@ const socialMediaFields = [
     }
 ];
 
+const analyticsFields = [
+    {
+        type: 'string',
+        key: 'GOOGLE_ANALYTICS_ID',
+        label: 'Google Analytics Tracking ID',
+        explanation: 'Tracking ID of your Google Analytics account. <a target="_blank" href="https://vqlabs.freshdesk.com/solution/articles/33000212285-how-to-track-your-marketplace-traffic-with-google-analytics">Read more about connecting Google Analytics</a>.'
+    }
+];
+
 export default class SectionBasics extends React.Component {
     render() {
         return (
@@ -52,6 +73,11 @@ export default class SectionBasics extends React.Component {
                     header={'Search engines'}
                     desc={'Define how you appear in search results.'}
                     fields={defaultConfigsFields}
+                />
+                <ConfigEdit
+                    header={'Analytics'}
+                    desc={'Gathering traffic information on who visits your marketplace and how they browse is the key to grow your project.'}
+                    fields={analyticsFields}
                 />
                 <ConfigEdit
                     header={'Social media'}

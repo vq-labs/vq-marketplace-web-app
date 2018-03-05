@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Loader from "../../Components/Loader";
 import { translate } from '../../core/i18n';
 import { getUserAsync } from '../../core/auth';
+import { CONFIG } from '../../core/config';
 import { goTo, convertToAppPath } from '../../core/navigation';
 import * as apiUserProperty from '../../api/user-property';
 
@@ -26,35 +27,49 @@ export default class UserPropsEdit extends React.Component {
 
             const data = this.state.data;
 
+            /**
+             * This needs to be adjusted in the future for new emailing system
+             */
+
             const SUPPLY_SIDE_EMAILS = [
-                "new-request-sent",
-                "request-accepted",
-                "new-message",
                 "review-left",
                 "request-marked-as-done",
                 "request-completed",
-                "request-declined",
                 "message-received",
-                "review-left",
-                "request-cancelled",
-                "request-closed",
-                "new-task",
-                "user-blocked"
+                "review-left"
             ];
 
             const DEMAND_SIDE_EMAILS = [
-                "new-request-received",
                 "new-order",
                 "message-received",
                 "review-left",
-                "task-request-cancelled",
                 "order-marked-as-done",
                 "order-completed",
-                "task-marked-spam",
-                "user-blocked",
-                "listing-cancelled",
                 "order-closed"
-            ]
+            ];
+
+            if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1") {
+                DEMAND_SIDE_EMAILS.push("new-request-received");
+                DEMAND_SIDE_EMAILS.push("task-request-cancelled");
+                DEMAND_SIDE_EMAILS.push("listing-cancelled");
+
+                if (CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1") {
+                    SUPPLY_SIDE_EMAILS.push("new-task");
+                }
+                SUPPLY_SIDE_EMAILS.push("request-accepted");
+                SUPPLY_SIDE_EMAILS.push("request-cancelled");
+                SUPPLY_SIDE_EMAILS.push("request-closed");
+                SUPPLY_SIDE_EMAILS.push("request-declined");
+                SUPPLY_SIDE_EMAILS.push("new-request-sent");
+            }
+
+            if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
+                SUPPLY_SIDE_EMAILS.push("new-order-for-supply");
+                SUPPLY_SIDE_EMAILS.push("listing-cancelled");
+                SUPPLY_SIDE_EMAILS.push("order-closed-for-supply");
+                
+            }
+            
             
             const EMAILS = user.userType === 1 ? DEMAND_SIDE_EMAILS : SUPPLY_SIDE_EMAILS;
             const emailCodes = EMAILS.map(code => `EMAIL_${code}`);

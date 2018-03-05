@@ -6,6 +6,7 @@ import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
 import { translate } from '../core/i18n';
 import { goTo } from '../core/navigation';
 import { getConfigAsync } from '../core/config';
+import COUNTRY_CODES  from '../constants/COUNTRIES';
 
 const getLocation = cb => {
     if (navigator.geolocation) {
@@ -18,16 +19,18 @@ const getLocation = cb => {
 const TaskMapBuilt = compose(
     withGoogleMap
     )(props => {
+        let defaultZoom = props.markers.length ? 12 : 4;
+
         const defaultCenter = props.markers.length ?
         props.markers[0].position :
         {
-            lat: 47.539333,
-            lng: 18.986934
+            lat: COUNTRY_CODES.find(country => country.value.toLowerCase() === props.country).lat,
+            lng: COUNTRY_CODES.find(country => country.value.toLowerCase() === props.country).lng
         };
 
         return <GoogleMap
             ref={() => {}}
-            defaultZoom={12}
+            defaultZoom={defaultZoom}
             defaultCenter={defaultCenter}
             onClick={() => {}}
         >
@@ -141,6 +144,7 @@ class TaskMap extends Component {
                     markers={
                         markers
                     }
+                    country={this.state.config ? this.state.config.LISTING_GEOFILTER_COUNTRY_RESTRICTION : ''}
                     containerElement={
                         <div style={{ height: `100%` }} />
                     }

@@ -39,7 +39,7 @@ class BookRequest extends Component {
     }
 
     componentDidMount() {
-        let requestId = this.props.params.requestId;
+        let requestId = this.props.requestId || this.props.params.requestId;
         
         this.setState({
             ready: true
@@ -50,7 +50,7 @@ class BookRequest extends Component {
         .then(requestDetails => {
             const request = requestDetails.request;
 
-            if (request.status !== REQUEST_STATUS.PENDING) {
+            if (request.status !== REQUEST_STATUS.PENDING && request.status !== REQUEST_STATUS.ACCEPTED) {
                 return goTo(`/chat/${request.id}`);
             }
 
@@ -141,7 +141,7 @@ class BookRequest extends Component {
                         header: translate('BOOKING_SUCCESS_HEADER'),
                         desc: translate('BOOKING_SUCCESS_DESC')
                     }, () => {
-                        goTo(`/chat/${rOrder.requestId}`);
+                        goTo(`/chat/${rOrder.requestId}`, true);
                     });
                 }, displayErrorFactory({
                     // possible error codes: NO_SUPPLY_PAYMENT_ACCOUNT
@@ -193,7 +193,7 @@ class BookRequest extends Component {
                 }
                 { !this.state.isLoading && this.state.requestReady &&
                     <div className="row">
-                        { Boolean(this.state.requestDetails.task.taskLocations.length) &&
+                        { Number(this.state.requestDetails.task.taskType) === 1 && Boolean(this.state.requestDetails.task.taskLocations.length) &&
                             <div className="col-xs-12" style={{
                                 marginTop: 10,
                                 marginBottom: 10
@@ -238,10 +238,16 @@ class BookRequest extends Component {
                                  }
                             </div>
                             <div className="col-xs-12">
-                                <p className="text-muted">Application by:</p>
-                                <strong>{this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].firstName} {this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].lastName}</strong>
-                                <hr />
+                                { Number(this.state.requestDetails.task.taskType) === 1 &&
+                                    <strong>{this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].firstName} {this.state.requestDetails.users[this.state.requestDetails.request.fromUserId].lastName}</strong>
+                                }
+
+                                { Number(this.state.requestDetails.task.taskType) === 2 &&
+                                    <strong>{this.state.requestDetails.users[this.state.requestDetails.request.toUserId].firstName} {this.state.requestDetails.users[this.state.requestDetails.request.toUserId].lastName}</strong>
+                                }
                             </div>
+                            
+                            <hr />
                         </div>
                         <div className="col-xs-12 col-sm-6">
                             <h3>{translate('BILLING_ADDRESS')}</h3>

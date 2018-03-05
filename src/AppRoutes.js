@@ -27,7 +27,6 @@ import Post from './Pages/Post';
 import PostPrivacyPolicy from './Pages/PostPrivacyPolicy';
 import PostTermsOfService from './Pages/PostTermsOfService';
 import Review from './Pages/Review';
-import StartPage from './Pages/StartPage';
 import Imprint from './Pages/Imprint';
 import UserDocuments from './Pages/UserDocuments';
 import UserPreferences from './Pages/UserPreferences';
@@ -37,9 +36,6 @@ import { pageView } from './core/tracking';
 
 const AppRoutes = (
     <Router history={browserHistory} onUpdate={pageView}>
-        <Route path="/">
-            <IndexRoute component={StartPage}/>
-        </Route>
         <Route path="/app">
             <IndexRoute component={BrowseListings}/>
             <Route path="account(/:sector)" component={Account}></Route>

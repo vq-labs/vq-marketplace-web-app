@@ -11,6 +11,7 @@ export const users = {
 
 export const tenant = {
     getTenant: () => communication.doGet('/admin/tenant'),
+    signOnToCustomerPortal: () => communication.doPost(`/admin/subscription-portal`),
     upgradeSubscription: taskId => communication.doPost(`/admin/tenant/subscription`)
 };
 

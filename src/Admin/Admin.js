@@ -22,16 +22,39 @@ import SectionPricing from './Pricing';
 import SectionListing from './Listing';
 import SectionPosts from './Posts';
 import SectionSubscriptionPlan from './SubscriptionPlan';
-
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { goTo, convertToAppPath } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
+
+import * as apiAdmin from '../api/admin';
+
+const goToCustomerPortal = () => {
+    openConfirmDialog({
+        headerLabel: `Customer portal`,
+        confirmationLabel: `You will be redirected to customer portal.`,
+        okLabel: 'Confirm',
+        cancelLabel: 'Cancel'
+        }, () => {
+            apiAdmin
+            .tenant
+            .signOnToCustomerPortal()
+            .then(data => {
+            console.log(data);
+        
+            location.href = data.portal_session.access_url;
+            })
+            .catch(err => {
+            console.log(err);
+            })
+        });
+};
 
 const menuPoints = [
     [ "General",
         [
             [ 'get-started', 'Get Started' ],
             [ 'overview', 'Overview' ],
-            [ 'subscription-plan', 'Subscription' ],
+            [ goToCustomerPortal, 'Customer portal' ],
         ]
     ],
     [ 'Entities',
@@ -121,6 +144,13 @@ export default class AdminPage extends React.Component {
                                                         style={{cursor: 'pointer'}}
                                                         onClick={(e) => {
                                                             e.preventDefault();
+
+                                                            if (typeof menuItem[0] === "function") {
+                                                                menuItem[0]();
+
+                                                                return;
+                                                            }
+
                                                             this.goToSection(menuItem[0]);
                                                         }}
                                                     >

@@ -22,15 +22,39 @@ import SectionPricing from './Pricing';
 import SectionListing from './Listing';
 import SectionPosts from './Posts';
 import SectionSubscriptionPlan from './SubscriptionPlan';
-
+import { openConfirmDialog } from '../helpers/confirm-before-action.js';
 import { goTo, convertToAppPath } from '../core/navigation';
 import { getUserAsync } from '../core/auth';
+
+import * as apiAdmin from '../api/admin';
+
+const goToCustomerPortal = () => {
+    openConfirmDialog({
+        headerLabel: `Customer portal`,
+        confirmationLabel: `You will be redirected to customer portal.`,
+        okLabel: 'Confirm',
+        cancelLabel: 'Cancel'
+        }, () => {
+            apiAdmin
+            .tenant
+            .signOnToCustomerPortal()
+            .then(data => {
+            console.log(data);
+        
+            location.href = data.portal_session.access_url;
+            })
+            .catch(err => {
+            console.log(err);
+            })
+        });
+};
 
 const menuPoints = [
     [ "General",
         [
             [ 'get-started', 'Get Started' ],
-            [ 'overview', 'Overview' ]
+            [ 'overview', 'Overview' ],
+            [ goToCustomerPortal, 'Customer portal' ],
         ]
     ],
     [ 'Entities',
@@ -43,21 +67,21 @@ const menuPoints = [
     ],
     [ 'Configuration',
         [
-            [ 'basics', 'Basics details' ],
+            [ 'basics', 'General' ],
             [ 'design', 'Design' ],
             [ 'seo', 'SEO' ],
-            [ 'analytics', 'Analytics' ],
-            [ 'landing-page', 'Landing Page (beta)' ],
-            [ 'user-types', 'Supply and Demand' ],
+            /* [ 'analytics', 'Analytics' ], */
+            [ 'landing-page', 'Landing Page' ],
+/*             [ 'user-types', 'Supply and Demand' ], */
             [ 'labels', 'Labels' ],
             [ 'payments', 'Payments' ],
             [ 'custom-scripts', 'Custom Scripts (beta)' ],
-            [ 'custom-pages', 'Custom Pages' ],
+/*             [ 'custom-pages', 'Custom Pages' ], */
             [ 'listing', 'Listing' ],
-            [ 'user-config', 'User' ],
-            [ 'listing-filters', 'Listing filters' ],
-            [ 'categories', 'Listing categories' ],
-            [ 'pricing', 'Pricing' ],
+            [ 'user', 'User' ],
+            [ 'listing-filters', 'Listing Filters' ],
+            [ 'categories', 'Listing Categories' ],
+/*             [ 'pricing', 'Pricing' ], */
             [ 'posts', 'Content' ]
         ]
     ]
@@ -120,6 +144,13 @@ export default class AdminPage extends React.Component {
                                                         style={{cursor: 'pointer'}}
                                                         onClick={(e) => {
                                                             e.preventDefault();
+
+                                                            if (typeof menuItem[0] === "function") {
+                                                                menuItem[0]();
+
+                                                                return;
+                                                            }
+
                                                             this.goToSection(menuItem[0]);
                                                         }}
                                                     >
@@ -185,7 +216,7 @@ export default class AdminPage extends React.Component {
                                     { this.state.section === 'listing-filters' && <SectionListingFilters /> }
                                     { this.state.section === 'custom-pages' && <SectionCustomPages /> }
                                     { this.state.section === 'user-types' && <SectionUserTypes /> }
-                                    { this.state.section === 'user-config' && <SectionUserConfig /> }
+                                    { this.state.section === 'user' && <SectionUserConfig /> }
                                     { this.state.section === 'categories' && <SectionCategories /> }
                                     { this.state.section === 'basics' && <SectionBasics /> }
                                     { this.state.section === 'seo' && <SectionSEO /> }

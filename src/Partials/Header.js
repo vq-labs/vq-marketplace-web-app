@@ -23,7 +23,7 @@ import { switchMode, getMode } from '../core/user-mode.js';
 const headerBtnStyle = {
   'marginRight': '0px',
   'marginLeft': '0px',
-  'fontSize': '1',
+  'fontSize': 1,
   'borderRadius': '25px'
 };
 

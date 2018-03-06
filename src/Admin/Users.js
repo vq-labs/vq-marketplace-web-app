@@ -42,6 +42,7 @@ export default class SectionUsers extends React.Component {
             showDetails: false,
             selectedUserId: null,
             isBlockingUser: false,
+            isUnblockingUser: false,
             users: []
         };
     }
@@ -163,10 +164,10 @@ export default class SectionUsers extends React.Component {
                             .map(user => 
                                 <tr key={user.id}>
                                    <td>
-                                        <a href="#" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
+                                        <a href="javascript:void(0)" onClick={() => goTo(`/profile/${user.id}`)}>{user.id}</a>
                                    </td>
                                    <td>
-                                        <a href="#" onClick={() => {
+                                        <a href="javascript:void(0)" onClick={() => {
                                             apiAdmin.users
                                                 .getUserEmail(user.id)
                                                 .then(userEmails => {
@@ -204,11 +205,13 @@ export default class SectionUsers extends React.Component {
                                         }}>Verifications</a>
 
                                         <a className="vq-row-option" href="#" onClick={() => {
+                                            const blockToSetState = user.status === '10' ? 'isBlockingUser' : 'isUnblockingUser'
                                             this.setState({
-                                                isUnblockingUser: true,
+                                                [blockToSetState]: true,
+                                                selectedUserStatus: user.status,
                                                 selectedUserId: user.id
                                             })
-                                        }}>Block</a>
+                                        }}>{user.status === '10' ? 'Block' : 'Unblock'}</a>
 
                                         <a className="vq-row-option" href="#" onClick={() => {
                                             this.setState({
@@ -246,25 +249,29 @@ export default class SectionUsers extends React.Component {
                                     onTouchTap={() => {
                                         const users = this.state.users;
                                         const userId = this.state.selectedUserId;
-                                        const isBlocking = this.state.isBlockingUser;
-                                        const USER_STATUS_BLOCKED = isBlocking ? '20' : '10';
+                                        const userStatus = this.state.selectedUserStatus;
+                                        const isBlocking = userStatus === '10' ? 'isBlockingUser' : 'isUnblockingUser';
+                                        const statusToChange = userStatus === '10' ? '20' : '10';
+                                        const apiEndpoint = userStatus === '10' ? 'blockUser' : 'unblockUser';
+                                        const textToAlert = userStatus === '10' ? 'Blocked' : 'Unblocked';
 
                                         apiAdmin
                                             .users[
-                                                isBlocking ? 'blockUser' : 'unblockUser'
+                                                apiEndpoint
                                             ](userId)
                                             .then(_ => {
-                                                alert('OK! User Blocked!');
+                                                alert(`OK! User ${textToAlert}!`);
 
                                                 users
                                                 .find(_ => _.id === userId)
-                                                .status = USER_STATUS_BLOCKED;
+                                                .status = statusToChange;
 
                                                 this.setState({
                                                     users,
                                                     isBlockingUser: false,
                                                     isUnblockingUser: false,
-                                                    selectedUserId: null
+                                                    selectedUserId: null,
+                                                    selectedUserStatus: null
                                                 });
                                             }, err => {
                                                 return alert(JSON.stringify(err));
@@ -276,7 +283,7 @@ export default class SectionUsers extends React.Component {
                             open={this.state.isBlockingUser || this.state.isUnblockingUser}
                             >
                                 { this.state.isBlockingUser && <h1>Block user #{this.state.selectedUserId}</h1> }
-                                { !this.state.isBlockingUser && <h1>Unblock user #{this.state.selectedUserId}</h1> }
+                                { this.state.isUnblockingUser && <h1>Unblock user #{this.state.selectedUserId}</h1> }
 
                                 <p>
                                 Read in VQ-MARKETPLACE Solution Center: <br />

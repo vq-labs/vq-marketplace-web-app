@@ -51,13 +51,34 @@ export const getMeOutFromHereIfAmNotAuthorized = user => {
 
             return true;
         }
+    }
 
-        // user has not preferences
-        if (!user.userPreferences.length) {
-            goTo('/user-preferences');
+    if (
+        (
+            user.userType === 1 && CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1"
+        ) ||
+        (
+            user.userType === 2 && CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1"
+        ) ||
+        (
+            user.userType === 0 && (
+                (
+                    CONFIG.USER_PREFERENCES_ENABLED_FOR_DEMAND === "1"
+                ) ||
+                (
 
-            return true;
-        }
+                    CONFIG.USER_PREFERENCES_ENABLED_FOR_SUPPLY === "1"
+                )
+            )
+        )
+    ) {
+            // user has not preferences
+            if (!user.userPreferences.length) {
+                goTo('/user-preferences');
+    
+                return true;
+            }
+
     }
 
     return false;

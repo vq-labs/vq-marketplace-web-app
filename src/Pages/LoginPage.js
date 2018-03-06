@@ -17,34 +17,28 @@ const getOutOfHere = (user, redirectTo) => {
     case 1: // demand user has to go to browse if supply listings are enabled otherwise has to go to dashboard
       if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
         return goTo(`/`);
-        break;
       }
 
       if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
         return goTo(`/dashboard`);
-        break;
       }
 
       if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
         return goTo(`/`);
-        break;
       }
 
       break;
     case 2: //supply user has to go to dashboard if supply listings are enabled otherwise has to go to browse to supply
       if (CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED !== "1") {
         return goTo(`/dashboard`);
-        break;
       }
 
       if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED !== "1") {
         return goTo(`/`);
-        break;
       }
       
       if (CONFIG.USER_TYPE_DEMAND_LISTING_ENABLED === "1" && CONFIG.USER_TYPE_SUPPLY_LISTING_ENABLED === "1") {
         return goTo(`/`);
-        break;
       }              
 
       break;

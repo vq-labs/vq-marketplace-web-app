@@ -46,7 +46,7 @@ export default class SectionOverview extends React.Component {
                                 <StepContent>
                                     <div className="col-xs-12">
                                         <p style={{ marginTop: 30 }}>
-                                            In online marketplaces, there are two sides (supply & demand) who interact with one another. While on some Marketplace platforms a user can both act as the supply and demand, other marketplaces prefer to limit the user's role into one. The decision depends on the business model and use-case of the Marketplace.
+                                        In online marketplaces, there are two sides (supply & demand) who interact with one another. While in one type of marketplace demand side posts listings and supply side sends a request (Taskrabbit) then the demand side books; in other type, it is the supply side who posts a listing and demand side books the listing (Airbnb).  The decision depends on the business model and use-case of the Marketplace.
                                         </p>
                                         <p style={{ marginTop: 30 }}>
                                             VQ Marketplace allows you to configure it. Read more about the <a target="_blank" href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" >Demand and Supply Model</a>.
@@ -54,7 +54,7 @@ export default class SectionOverview extends React.Component {
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
-                                                goTo('/admin/user-types?fromSection=get-started');
+                                                goTo('/admin/listing?fromSection=get-started');
                                                 location.reload();
                                             }}
                                             label="Configure Demand and Supply"
@@ -72,7 +72,6 @@ export default class SectionOverview extends React.Component {
                                         <p style={{ marginTop: 30 }}>
                                             The slogan and description help new visitors understand what your marketplace is about. They are the first thing visitors notice when they land on your site, so try to make them compact but descriptive.
                                         </p>
-
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
@@ -94,10 +93,10 @@ export default class SectionOverview extends React.Component {
                                             Marketplaces have categories for different types of listings. You can define and manage these categories from the Admin panel.
 
                                             When users add new listings, they have to choose what category it belongs to.
-
-                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166407-creating-new-listing-categories" target="_blank">Listing categories</a>.
                                         </p>
-                                            
+                                        <p style={{ marginTop: 30 }}>
+                                        Read more about <a target="_blank" href="https://vqlabs.freshdesk.com/solution/articles/33000166407-creating-new-listing-categories" >listing categories</a>.
+                                        </p>
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
@@ -116,16 +115,16 @@ export default class SectionOverview extends React.Component {
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
-                                        <p>
-                                            You can add a cover photo by going to the Design Tab of the admin panel. The cover photo is shown in the homepage for non-logged-in users. Image size should be <b>1280px x 850px</b> pixels.
+                                        <p style={{ marginTop: 30 }}>
+                                            You can add a cover photo by going to the Design Tab of the admin panel. The cover photo is shown in the homepage for all users that visit the landing page. Recommended size for the photo is <b>1280x850</b> pixels.
                                         </p>
-                                        <p>
-                                            If you use a photo with any other size, it will be resized automatically and taller images will be cut in the middle (top and bottom will be cropped).
+                                        <p style={{ marginTop: 30 }}>
+                                            If you use a photo with any other size, it will be resized automatically meaning that images that are tall will have some of their top and bottom sides cropped.
                                             
                                             To enjoy the best results, you should use the recommended size.
                                         </p>
-                                        <p>
-                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166407-creating-new-listing-categories" target="_blank">Cover photos</a>.
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212959-configure-the-cover-photos-and-logo" target="_blank">Cover photos</a>.
                                         </p>
                                         <RaisedButton
                                             primary={true}
@@ -141,30 +140,106 @@ export default class SectionOverview extends React.Component {
                             </Step>
                             <Step>
                                  <StepButton onClick={() => this.setState({stepIndex: 4})}>
-                                    Describe how it works
+                                    User configuration
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
+                                        <p style={{ marginTop: 30 }}>
+                                            In online marketplaces, there are two sides (supply & demand) who interact with one another. While on some marketplaces a user can be both the supply and demand at the same time, for other marketplace platforms it might be preferred to limit the user's role into one. The decision depends on the business model and use-case of the Marketplace.
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212957-demand-supply-model" target="_blank">user configuration</a>.
+                                        </p>
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/user?fromSection=get-started');
+                                                location.reload();
+                                            }}
+                                            label="Define user settings"
+                                        />
+                                    </div>
+                                </StepContent>
+                            </Step>
+                            <Step>
+                                 <StepButton onClick={() => this.setState({stepIndex: 5})}>
+                                    Edit the content of your landing page
+                                </StepButton>
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p style={{ marginTop: 30 }}>
+                                            There are two landing pages which are determined according to the user type - supply and demand. As an admin, you can edit the content of both pages. This step requires knowledge of HTML. 
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212407-using-custom-html-javascript-and-css-on-your-landing-page" target="_blank">the landing page</a>.
+                                        </p>
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/landing-page?fromSection=get-started');
+                                                location.reload();
+                                            }}
+                                            label="Go to landing page settings"
+                                        />
+                                    </div>
+                                </StepContent>
+                            </Step>
+
+                            <Step>
+                                 <StepButton onClick={() => this.setState({stepIndex: 6})}>
+                                    Configure all labels in the marketplace
+                                </StepButton>
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p style={{ marginTop: 30 }}>
+                                            Configure all the labels such as titles, descriptions, button texts, pop ups that you have on your marketplace. Additionally, you can configure labels in any additional language that you set up for your marketplace. 
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166408-configure-all-the-labels-of-your-marketplace" target="_blank">the configuration</a>.
+                                        </p>
                                         <RaisedButton
                                             primary={true}
                                             onTouchTap={() => {
                                                 goTo('/admin/labels?fromSection=get-started');
                                                 location.reload();
                                             }}
-                                            label="Define custom labels"
+                                            label="Go to labels"
                                         />
                                     </div>
                                 </StepContent>
                             </Step>
-                            
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 5})}>
-                                    Connect your social media channels
+                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
+                                    Configure privacy policy, terms of service, email content and create custom pages
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
-                                        <p>
-                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212962-configure-seo-and-social-media-channels" target="_blank">Social Media</a> configuration.
+                                        <p style={{ marginTop: 30 }}>
+                                        Add/edit the content of privacy policy, terms of service and emails. Add custom pages to your site with HTML.
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000166409-editing-privacy-policy-terms-of-service-and-imprint" target="_blank">the configuration</a>.
+                                        </p>                             
+                                        <RaisedButton
+                                            primary={true}
+                                            onTouchTap={() => {
+                                                goTo('/admin/posts?fromSection=get-started');
+                                                
+                                                location.reload();
+                                            }}
+                                            label="Go to content"
+                                        />
+                                    </div>
+                                </StepContent>
+                            </Step>
+                            <Step>
+                                <StepButton onClick={() => this.setState({stepIndex: 8})}>
+                                    Connect your social media channels and google analytics
+                                </StepButton>
+                                <StepContent>
+                                    <div className="col-xs-12">
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212962-configure-seo-and-social-media-channels" target="_blank">social media, SEO configuration andsetting up Google analytics</a>.
                                         </p>
                                         <RaisedButton
                                             primary={true}
@@ -173,39 +248,22 @@ export default class SectionOverview extends React.Component {
                                                 
                                                 location.reload();
                                             }}
-                                            label="Setup your Social Media channels"
+                                            label="Go to SEO"
                                         />
                                     </div>
                                 </StepContent>
                             </Step>
                             <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 6})}>
-                                    Setup Analytics
-                                </StepButton>
-                                <StepContent>
-                                    <div className="col-xs-12">
-
-                                   
-                                        <RaisedButton
-                                            primary={true}
-                                            onTouchTap={() => {
-                                                goTo('/admin/analytics?fromSection=get-started');
-                                                
-                                                location.reload();
-                                            }}
-                                            label="Connect Google Analytics"
-                                        />
-                                    </div>
-                                </StepContent>
-                            </Step>
-                            <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 7})}>
+                                <StepButton onClick={() => this.setState({stepIndex: 9})}>
                                     Setup payments
                                 </StepButton>
                                 <StepContent>
                                     <div className="col-xs-12">
-                                        <p>
+                                        <p style={{ marginTop: 30 }}>
                                             VQ Marketplace's Stripe-powered payment system helps your buyers (Demand side) purchase goods and services from your providers (Supply side). The buyers can pay with either their credit or debit card. As the administrator of the marketplace, you can easily charge a fee for each transaction.
+                                        </p>
+                                        <p style={{ marginTop: 30 }}>
+                                            Read more about <a href="https://vqlabs.freshdesk.com/solution/articles/33000212964-connect-to-payment-provider-stripe-" target="_blank">Stripe configuration</a>.
                                         </p>
                                         <RaisedButton
                                             primary={true}
@@ -219,8 +277,12 @@ export default class SectionOverview extends React.Component {
                                     </div>
                                 </StepContent>
                             </Step>
-                            <Step>
-                                <StepButton onClick={() => this.setState({stepIndex: 8})}>
+                            {
+                                //@todo
+                                //02032018, Sercan: disabled because there is no such feature yet
+                            }
+                            {/* <Step>
+                                <StepButton onClick={() => this.setState({stepIndex: 9})}>
                                     Invite your users
                                 </StepButton>
                                 <StepContent>
@@ -237,7 +299,7 @@ export default class SectionOverview extends React.Component {
                                         />
                                     </div>
                                 </StepContent>
-                            </Step>
+                            </Step> */}
                         </Stepper>
                     </div>
 

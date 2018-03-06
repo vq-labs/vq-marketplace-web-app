@@ -44,7 +44,7 @@ export default class SectionPosts extends React.Component {
     return (
       <div className="row">
         <div className="col-xs-12">
-          <h1>Posts</h1>
+          <h1>Content</h1>
         </div>
         <div className="col-xs-12">
           <div className="row">
@@ -63,7 +63,7 @@ export default class SectionPosts extends React.Component {
               }}>
                 <MenuItem value={'email'} primaryText="Emails"/>
                 <MenuItem value={'terms'} primaryText="Terms"/>
-                <MenuItem value={'page'} primaryText="Page"/>
+                <MenuItem value={'page'} primaryText="Custom Page"/>
                 {false && <MenuItem value={'blog'} primaryText="Blog"/>}
               </DropDownMenu>
             </div>
@@ -75,7 +75,7 @@ export default class SectionPosts extends React.Component {
                   goTo('/post');
                   location.reload();
                 }}
-                label="New Page"/>
+                label="New Custom Page"/>
               }
             </div>
           </div>
@@ -83,7 +83,7 @@ export default class SectionPosts extends React.Component {
         {this.state.type === 'email' &&
         <div className="col-xs-12">
           <p className="text-muted">Read about e-mail content here: <a
-            href="https://vqlabs.freshdesk.com/solution/articles/33000208415-email-descriptions"
+            href="https://vqlabs.freshdesk.com/solution/folders/33000134285"
             target="_blank">here</a>.</p>
         </div>
         }
@@ -97,6 +97,8 @@ export default class SectionPosts extends React.Component {
                 <TableHeaderColumn tooltip="Type">Type</TableHeaderColumn>
                 <TableHeaderColumn tooltip="Slug">Slug</TableHeaderColumn>
                 <TableHeaderColumn tooltip="Title">Title</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Title">Receiver</TableHeaderColumn>
+                <TableHeaderColumn tooltip="Event code when the email is sent.">Sent when?</TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false} stripedRows={true}>
@@ -113,6 +115,8 @@ export default class SectionPosts extends React.Component {
                     <TableRowColumn>{post.type}</TableRowColumn>
                     <TableRowColumn>{post.code}</TableRowColumn>
                     <TableRowColumn>{post.title}</TableRowColumn>
+                    <TableRowColumn>{post.targetUserType ? (post.targetUserType === 1 ? 'Demand' : 'Supply') : '-'}</TableRowColumn>
+                    <TableRowColumn>{post.eventTrigger}</TableRowColumn>
                   </TableRow>
                 )}
             </TableBody>

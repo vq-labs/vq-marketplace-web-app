@@ -344,7 +344,74 @@ class Task extends Component {
                                                         CONFIG.LISTING_TASK_WORKFLOW_FOR_DEMAND_LISTINGS_REQUEST_STEP_MULTIPLE_REQUESTS_ENABLED === "1"
                                                     )
                                                 )
-                                            ) && 
+                                            ) &&
+                                            (
+                                                (
+                                                    this.state.user.userType === 2 &&
+                                                    (
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1" &&
+                                                            this.state.user.userProperties.find(_ => _.propKey === 'studentIdUrl')
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY !== "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "0"
+                                                        )
+                                                    )
+                                                ) ||
+                                                (
+                                                    this.state.user.userType === 1 &&
+                                                    (
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1" &&
+                                                            this.state.user.userProperties.find(_ => _.propKey === 'studentIdUrl')
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND !== "1"
+                                                        ) ||
+                                                        (
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "0"
+                                                        )
+                                                    )
+                                                ) ||
+                                                (
+                                                    this.state.user.userType === 0 &&
+                                                    (
+                                                        (
+                                                            Number(this.state.task.taskType) === 1 &&
+                                                            (
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1" &&
+                                                                    !this.state.user.userProperties.find(_ => _.propKey === 'studentIdUrl')
+                                                                ) ||
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND !== "1"
+                                                                ) ||
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "0"
+                                                                )
+                                                            )
+                                                        ) ||
+                                                        (
+                                                            Number(this.state.task.taskType) === 2 &&
+                                                            (
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1" &&
+                                                                    this.state.user.userProperties.find(_ => _.propKey === 'studentIdUrl')
+                                                                ) ||
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY !== "1"
+                                                                ) ||
+                                                                (
+                                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "0"
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            ) &&
                                             this.state.task.status === TASK_STATUS.ACTIVE &&
                                             <RaisedButton
                                                 primary={true}
@@ -373,7 +440,54 @@ class Task extends Component {
                                                     goTo("/account/payments");
                                                 }
                                             }/>
-                                       }
+                                        }
+                                        {   
+                                            this.state.user &&
+                                            this.state.configReady &&
+                                            !this.state.isMyTask &&
+                                            !this.state.user.userProperties.find(_ => _.propKey === 'studentIdUrl') &&
+                                            (
+                                                (
+                                                    this.state.user.userType === 2 &&
+                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1"
+                                                ) ||
+                                                (
+                                                    this.state.user.userType === 1 &&
+                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1"
+                                                ) ||
+                                                (
+                                                    this.state.user.userType === 2 &&
+                                                    CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1"                                                 
+                                                ) ||
+                                                (
+                                                    this.state.user.userType === 0 &&
+                                                    (
+                                                        (
+                                                            Number(this.state.task.taskType) === 1 &&
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_DEMAND === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_DEMAND === "1"
+                                                        ) ||
+                                                        (
+                                                            Number(this.state.task.taskType) === 2 &&
+                                                            CONFIG.USER_VERIFICATIONS_ENABLED_FOR_SUPPLY === "1" && CONFIG.USER_VERIFICATIONS_REQUIRED_FOR_SUPPLY === "1"
+                                                        )
+                                                    )
+                                                )
+                                            ) &&
+                                            this.state.task.status === TASK_STATUS.ACTIVE &&
+                                            <RaisedButton
+                                                primary={true}
+                                                style={{width: '100%'}}
+                                                label={translate("USER_VERIFICATIONS_REQUIRED_FOR_REQUEST")}
+                                                onClick={() => {
+
+                                                    this.setState({
+                                                        applicationInProgress: true
+                                                    });
+                                                    
+                                                    goTo("/user-verifications");
+                                                }
+                                            }/>
+                                        }
 
                                        {
                                         (
@@ -447,10 +561,13 @@ class Task extends Component {
                                                 style={{width: '100%'}}
                                                 primary={true}
                                                 label={`${this.state.task.requests
-                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING || _.status === REQUEST_STATUS.ACCEPTED)
+                                                    .filter(_ => _.status === REQUEST_STATUS.PENDING)
                                                     .length} ${translate('REQUESTS')}`}
                                                 onTouchTap={() => {
-                                                    openRequestDialog(this.state.task.requests, this.state.task);
+                                                    openRequestDialog(
+                                                        this.state.task.requests.filter(_ => _.status === REQUEST_STATUS.PENDING),
+                                                        this.state.task
+                                                    );
                                                 }}
                                             />
                                        }

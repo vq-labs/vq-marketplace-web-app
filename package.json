@@ -149,8 +149,8 @@
     "node": "~8.3.0",
     "npm": "~5.6.0"
   },
-  "git": {
-    "scripts": {
+  "husky": {
+    "hooks": {
       "pre-push": "npm run deploy"
     }
   }

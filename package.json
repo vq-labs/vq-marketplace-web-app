@@ -151,7 +151,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run deploy"
+      "post-receive": "npm run deploy"
     }
   }
 }

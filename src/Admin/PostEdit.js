@@ -4,7 +4,7 @@ import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
 import HtmlTextField from '../Components/HtmlTextField';
 import WYSIWYGEditor from './Components/WYSIWYGEditor';
-const CodeMirror = require('react-codemirror');
+import {Controlled as CodeMirror} from 'react-codemirror2';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/mode/javascript/javascript');

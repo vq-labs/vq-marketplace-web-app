@@ -3,7 +3,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Loader from "../../Components/Loader";
 import apiPost from '../../api/post';
 
-import {Controlled as CodeMirror} from 'react-codemirror2';
+const CodeMirror = require('react-codemirror');
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/mode/javascript/javascript');

@@ -7,7 +7,8 @@ import WYSIWYGEditor from './Components/WYSIWYGEditor';
 import CodeEditor from './Components/CodeEditor';
 import apiPost from '../api/post';
 import {sluggify} from '../core/format';
-import {Controlled as CodeMirror} from 'react-codemirror2';
+
+const CodeMirror = require('react-codemirror');
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/mode/javascript/javascript');

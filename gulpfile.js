@@ -1,10 +1,14 @@
+require('dotenv').config();
+
 const gulp = require('gulp');
 const replace = require('gulp-replace-task');
 const spawn = require('child_process').spawn;
 const branch = require('git-branch');
+let args = require('yargs').argv;
+const runSequence = require('run-sequence');
 
-gulp.task('prepare', cb => {
-    var VQ_API_URL = process.env.VQ_API_URL || 'http://localhost:8080/api';
+gulp.task('build', cb => {
+    var VQ_API_URL = 'http://localhost:8080/api' || process.env.VQ_API_URL;
 
     if (VQ_API_URL.indexOf('http://') === -1 && VQ_API_URL.indexOf('https://') === -1) {
         VQ_API_URL = `http://${VQ_API_URL}`;
@@ -26,22 +30,6 @@ gulp.task('prepare', cb => {
         .pipe(gulp.dest('src/generated'));
 
         cb();
-});
-
-gulp.task('build', [ "prepare" ], cb => {
-    const npm = spawn('npm', [ 'run', 'build' ], { cwd: './'  });
-
-    npm.stdout.on('data', data => {
-        console.log(`${data}`);
-    });
-
-    npm.stderr.on('data', err => {
-        console.log(`stderr: ${err}`);
-    });
-
-    npm.on('close', code => {
-        cb(code !== 0 ? 'error in build' : null);
-    });
 });
 
 gulp.task('deploy', [ 'build' ], cb => {

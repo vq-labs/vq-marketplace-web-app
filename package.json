@@ -49,6 +49,7 @@
     "recursive-readdir": "2.1.0",
     "renamer": "^0.6.1",
     "rimraf": "2.5.4",
+    "run-sequence": "^2.2.1",
     "s3-deploy": "^0.7.3",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
@@ -104,20 +105,21 @@
     "yargs": "^6.6.0"
   },
   "scripts": {
-    "preparestart": "node ./node_modules/gulp/bin/gulp.js prepare && node scripts/start.js",
-    "start:local": "node ./node_modules/gulp/bin/gulp.js prepare --env local && node scripts/start.js",
-    "start:talentwand": "VQ_API_URL=https://talentwand.vqmarketplace.com/api npm run preparestart",
-    "start:taskbee": "VQ_API_URL=https://taskbee.vqmarketplace.com/api npm run preparestart",
-    "start:airhome": "VQ_API_URL=https://airhome.vqmarketplace.com/api npm run preparestart",
-    "start:rentkitchen": "VQ_API_URL=https://rentkitchen.vqmarketplace.com/api npm run preparestart",
-    "start:click4work": "VQ_API_URL=https://click4work.vqmarketplace.com/api npm run preparestart",
-    "start:templates": "VQ_API_URL=https://templates.vqmarketplace.com/api npm run preparestart",
-    "start:bitcoinmeetup": "VQ_API_URL=https://bitcoinmeetup.vqmarketplace.com/api npm run preparestart",
-    "build": "node ./node_modules/gulp/bin/gulp.js prepare --env production && node scripts/build.js && npm run build-rename",
+    "start": "node ./node_modules/gulp/bin/gulp.js build && node scripts/start.js",
+    "start:talentwand": "npm run start --VQ_API_URL=https://talentwand.vqmarketplace.com/api",
+    "start:airtasker": "npm run start --VQ_API_URL=https://taskrabbit.vqmarketplace.com/api",
+    "start:rentkitchen": "npm run start --VQ_API_URL=https://rentkitchen.vqmarketplace.com/api",
+    "start:click4work": "npm run start --VQ_API_URL=https://click4work.vqmarketplace.com/api",
+    "start:emergency-click4work": "npm run start --VQ_API_URL=https://emergency-click4work.vqmarketplace.com/api",
+    "start:b2btemplate": "npm run start --VQ_API_URL=https://b2btemplate.vqmarketplace.com/api",
+    "start:templates": "npm run start --VQ_API_URL=https://templates.vqmarketplace.com/api",
+    "start:bitcoinmeetup": "npm run start --VQ_API_URL=https://bitcoinmeetup.vqmarketplace.com/api ",
+    "build": "node ./node_modules/gulp/bin/gulp.js build && node scripts/build.js && npm run build-rename",
     "build-rename": "npm run build-rename-js && npm run build-rename-css",
     "build-rename-js": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.js' --replace 'main.js' build/static/js/*.js",
     "build-rename-css": "node ./node_modules/renamer/bin/cli --regex --find 'main\\.[^\\.]+\\.css' --replace 'main.css' build/static/css/*.css",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "deploy": "node ./node_modules/gulp/bin/gulp.js build && node scripts/build.js && node ./node_modules/gulp/bin/gulp.js deploy"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -144,5 +146,14 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "engines": {
+    "node": "~8.3.0",
+    "npm": "~5.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "post-receive": "echo 'web-app'>>web-app.txt && npm install && npm run deploy"
+    }
   }
 }

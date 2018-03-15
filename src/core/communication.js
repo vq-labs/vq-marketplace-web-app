@@ -1,9 +1,14 @@
 import 'whatwg-fetch';
 import { getToken } from './auth'
 import { serializeQueryObj, parseJSON } from './util'
+import VQ_API_URL  from '../generated/ConfigProvider.js';
 
 // VQ_API_URL is defined in production mode
-const API_URL = window.VQ_API_URL;
+let API_URL = window.VQ_API_URL;
+
+if (!API_URL) {
+    API_URL = VQ_API_URL;
+}
 
 export const doGet = (url, queryObject, params) => {
     url = API_URL + url;

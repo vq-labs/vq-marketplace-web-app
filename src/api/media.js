@@ -1,7 +1,12 @@
 import * as coreMedia from '../core/media';
+import VQ_API_URL from '../generated/ConfigProvider.js';
 
 // VQ_API_URL is defined in production mode
-const API_URL = window.VQ_API_URL;
+let API_URL = window.VQ_API_URL;
+
+if (!API_URL) {
+    API_URL = VQ_API_URL;
+}
 
 export const upload = coreMedia.uploadImageFactory(API_URL + '/upload/image');
 

@@ -53,10 +53,10 @@ gulp.task('deploy', [ 'build' ], cb => {
         AWS_BUCKET_NAME
     ];
 
-    if (VQ_TENANT_ID) {
+/*     if (VQ_TENANT_ID) {
         aws_args.push('--filePrefix');
         aws_args.push(VQ_TENANT_ID);
-    }
+    } */
 
     const npm = spawn("s3-deploy", aws_args, { cwd: './build' });
 

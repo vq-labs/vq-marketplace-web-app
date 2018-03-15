@@ -45,7 +45,7 @@ gulp.task('deploy', [ 'build' ], cb => {
     console.log(`AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}`);
     console.log(`AWS_REGION: ${AWS_REGION}`);
     
-    const args = [
+    const aws_args = [
         './**',
         '--region',
         AWS_REGION,
@@ -54,11 +54,11 @@ gulp.task('deploy', [ 'build' ], cb => {
     ];
 
     if (VQ_TENANT_ID) {
-        args.push('--filePrefix');
-        args.push(VQ_TENANT_ID);
+        aws_args.push('--filePrefix');
+        aws_args.push(VQ_TENANT_ID);
     }
 
-    const npm = spawn("s3-deploy", args, { cwd: './build' });
+    const npm = spawn("s3-deploy", aws_args, { cwd: './build' });
 
     npm.stdout.on('data', data => {
         console.log(`stdout: ${data}`);

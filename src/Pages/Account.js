@@ -48,6 +48,7 @@ export default class Account extends Component {
             if (!user) {
                 return goTo(`/login?redirectTo=${convertToAppPath(location.pathname)}`);
             }
+            
 
             this.setState({
                 user

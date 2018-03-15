@@ -1,13 +1,32 @@
 # VQ Marketplace - Web App
-Storefront for your Sharing Economy Marketplace (https://vqmarketplace.com).
+Storefront for your Sharing Economy Marketplace (https://vqmarketplace.com). Runs on React (no Redux yet)
+
 ## Installation
+Clone the repository into your local developement envirment.
 ```
-npm install
-npm install gulp -g
+git clone https://github.com/vq-labs/vq-marketplace-web-app.git     // clones the repository from remote
+cd vq-marketplace-web-app   // goes to the repository folder
+npm install     // installs the npm packages from ./package.json
 ```
 
 ## Running
 Review .env.example file and make necessary changes first then rename it to .env file. You should not commit this file because it might contain sensitive information, therefore we have an ignore rule in .gitignore so if you want to commit that, remove that from .gitignore
+
+```
+ENV=production  //if you run it with an env other than production,
+                //npm start will also watch for file changes and restart.
+PORT=4000
+API_URL=http://localhost:8080/api   //this is the API url that you connect to.
+                                    //If you run vq-marketplace-platform API, you can leave it as it is
+TENANT_API_URL=http://localhost:8081/api    //this is the URL that manages multi-tenancy.
+                                            //If you specify TENANT_ID it means you are only running one tenant 
+                                            //therefore you can leave this as it is
+TENANT_ID=test  //this is the TENANT_ID, in other terms the name of the marketplace that you want to setup.
+                //can be anything. only accepts slug-style.
+                //By default, all the TENANT_ID in all parts of the app (API, WEB-APP) are test.
+                //If you change it please make sure that all your env files on every repository
+                // related to this project has the same TENANT_ID
+```
 
 This will start the app on localhost:3000. The app will assume that the [VQ-MARKETPLACE-API](https://github.com/vq-labs/vq-marketplace-api) is available at http://localhost:8080.
 ```
@@ -23,14 +42,19 @@ npm start
 
 To try it out and start up quickly and connect to an existing marketplaces, enter:
 ```
-// starts rental marketplace Airhome (ala TaskRabbit)
+// starts rental marketplace TaskBee (ala TaskRabbit)
 npm run start:taskbee
 
-// starts rental marketplace Airhome (ala AirBnB)
+// starts rental marketplace AirHome (ala AirBnB)
 npm run start:airhome
 
-// starts offers marketplace Airhome (ala Fiverr)
+// starts offers marketplace Talentwand (ala Fiverr)
 npm run start:talentwand
+```
+
+## Connect to existing API:
+```
+node ./node_modules/gulp/bin/gulp.js build --API_URL=https://taskrabbit.vqmarketplace.com/api && node scripts/start.js
 ```
 
 ## Deployment
@@ -50,10 +74,10 @@ The following command will prepare, build and deploy the app to S3 bucket:
 AWS_BUCKET_NAME=xxx.vqmarketplace.com \
 AWS_REGION=eu-central-1 \
 VQ_API_URL=yourMarketplaceId.vqmarketplace.com \ 
-gulp deploy
+npm run deploy
 ```
 
-# Environments
+## Environments
 
 We have tested the application in these environments but a .nvmrc and package.json engines have been setup for you to take a hint on:
 (If you use NVM, you can do nvm use which will take .nvmrc file into account)
@@ -77,8 +101,15 @@ VQ Marketplace Web-App is not developed with the full support for mobile screens
 <br />
 However, the web app aims to be work accross a range of mobile devices and screen-sizes. Please submit issues on our support page.
 
-## Support
+# Support
 https://vqlabs.freshdesk.com/support/home
 
-## MIT License
-https://vqmarketplace.com
+# Contribute
+We follow the following branching model:
+[http://nvie.com/posts/a-successful-git-branching-model/](http://nvie.com/posts/a-successful-git-branching-model/)
+
+# License
+MIT
+
+# Contributors
+[VQ LABS](https://vq-labs.com)

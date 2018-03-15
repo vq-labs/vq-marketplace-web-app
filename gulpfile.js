@@ -8,7 +8,7 @@ let args = require('yargs').argv;
 const runSequence = require('run-sequence');
 
 gulp.task('build', cb => {
-    var VQ_API_URL = process.env.API_URL || 'http://localhost:8080/api';
+    var VQ_API_URL = args.API_URL || process.env.API_URL || 'http://localhost:8080/api';
 
     if (VQ_API_URL.indexOf('http://') === -1 && VQ_API_URL.indexOf('https://') === -1) {
         VQ_API_URL = `http://${VQ_API_URL}`;

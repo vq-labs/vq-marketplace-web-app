@@ -101,6 +101,10 @@ export default class ChatRoom extends React.Component {
                             return goTo('/');
                         }
 
+                        if (user.id !== chat.request.toUserId && user.id !== chat.request.fromUserId) {
+                            return goTo('/');
+                        }
+
                         const task = chat.task;
 
                         if (task.status === '99') {

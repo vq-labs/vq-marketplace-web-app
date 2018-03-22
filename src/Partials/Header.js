@@ -92,7 +92,10 @@ class Header extends Component {
       user: false
     });
 
-    location.reload();
+    const getUrl = window.location;
+    const baseUrl = getUrl.protocol + "//" + getUrl.host;
+
+    location.href = baseUrl;
   }
 
   checkForMobile() {

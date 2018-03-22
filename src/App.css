@@ -137,7 +137,7 @@ p {
 
 .vq-account-sector-list > li > a {
   margin-left: 10px;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
   text-decoration: none;
   color: #484848;
 }

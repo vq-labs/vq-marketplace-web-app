@@ -55,6 +55,7 @@ const menuPoints = [
             [ 'get-started', 'Get Started' ],
             [ 'overview', 'Overview' ],
             [ goToCustomerPortal, 'Customer portal' ],
+            [ 'subscription-plan', 'Your plans' ],
         ]
     ],
     [ 'Entities',

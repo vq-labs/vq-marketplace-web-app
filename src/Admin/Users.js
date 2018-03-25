@@ -37,6 +37,8 @@ export default class SectionUsers extends React.Component {
     constructor() {
         super();
         this.state = {
+            offset: 0,
+            canLoadMore: true,
             isLoading: true,
             showProperty: false,
             showDetails: false,
@@ -47,15 +49,25 @@ export default class SectionUsers extends React.Component {
         };
     }
 
-    componentDidMount() {
-        apiAdmin.users
-        .getItems()
-        .then(users => {
+    getUsers(offset) {
+        this.setState({ isLoading: true });
+
+        apiAdmin
+        .users
+        .getItems({ offset })
+        .then(rUsers => {
+            const users = this.state.users;
+
             this.setState({
+                canLoadMore: !(rUsers.length < 20),
                 isLoading: false,
-                users
+                users: users.concat(rUsers)
             });
         });
+    }
+
+    componentDidMount() {
+        this.getUsers(this.state.offset);
     }
 
     render() {
@@ -226,10 +238,26 @@ export default class SectionUsers extends React.Component {
                         </table>
                     </div>
                    
-                    { this.state.isLoading &&
+                   { this.state.isLoading &&
                         <Loader isLoading={true} />
+                   }
+
+                   { this.state.canLoadMore &&
+                        <button
+                        className={"text-center block-btn"}
+                        disabled={this.state.isLoading}
+                        onTouchTap={() => {
+                            const newOffset = this.state.offset + 20;
+
+                            this.getUsers(newOffset);
+
+                            this.setState({
+                                offset: newOffset
+                            });
+                        }}>Load more</button>
                     }
 
+                    
                     <div>
                         <Dialog
                             actions={[

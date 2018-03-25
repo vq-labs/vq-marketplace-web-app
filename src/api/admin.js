@@ -1,7 +1,7 @@
 import * as communication from '../core/communication';
 
 export const users = {
-    getItems: () => communication.doGet('/admin/user'),
+    getItems: queryObj => communication.doGet('/admin/user', queryObj),
     getUserProperties: userId => communication.doGet(`/user/${userId}/property`),
     getUserEmail: userId => communication.doGet(`/admin/user/${userId}/emails`),
     blockUser: userId => communication.doPut(`/admin/user/${userId}/block`, {}),
